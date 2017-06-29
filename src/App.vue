@@ -8,11 +8,11 @@
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_3ccb6emxmmuf2yb9.eot');
-    src: url('//at.alicdn.com/t/font_3ccb6emxmmuf2yb9.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_3ccb6emxmmuf2yb9.woff') format('woff'),
-    url('//at.alicdn.com/t/font_3ccb6emxmmuf2yb9.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_3ccb6emxmmuf2yb9.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.eot');
+    src: url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.woff') format('woff'),
+    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.svg#iconfont') format('svg');
   }
 
   .iconfont {

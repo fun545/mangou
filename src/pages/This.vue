@@ -26,7 +26,8 @@
       <flexbox-item :span="2.8" class="flex-left">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
-                     @click.native="memuChange(item.classifyId,index)" :class="{'active':index===ind}">
+                     @click.native="memuChange(item.classifyId,index)"
+                     :class="{'active':index===ind,'strong':index>=0&&index<3}">
             <span v-html="item.classifyName"></span>
           </side-item>
         </side-bar>
@@ -37,15 +38,15 @@
           <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
             按价格
             <div class="sort-icon d-ib">
-              <span class="iconfont up">&#xe617;</span>
-              <span class="iconfont down">&#xe632;</span>
+              <span class="iconfont up" :class="{'sort-icon-selected':!priceSortFlag}">&#xe617;</span>
+              <span class="iconfont down" :class="{'sort-icon-selected':priceSortFlag}">&#xe632;</span>
             </div>
           </div>
           <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
             按销量
             <div class="sort-icon d-ib">
-              <span class="iconfont up">&#xe617;</span>
-              <span class="iconfont down">&#xe632;</span>
+              <span class="iconfont up" :class="{'sort-icon-selected':saleSortFlag}">&#xe617;</span>
+              <span class="iconfont down" :class="{'sort-icon-selected':!saleSortFlag}">&#xe632;</span>
             </div>
           </div>
         </div>
@@ -66,7 +67,7 @@
 </template>
 
 <script>
-  import { Flexbox, FlexboxItem } from 'vux'
+  import {Flexbox, FlexboxItem} from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   import Tabs from '../components/Tabs'
@@ -99,7 +100,6 @@
     created () {
       this.post('/classify/firstClassifyList_new', {storeId: 2, villageId: 1, shopType: 2}).then((res) => {
         if (res.data.code === 100) {
-//          console.log(res.data)
           this.sideList = res.data.firstClassifyList
         }
       })
@@ -139,7 +139,6 @@
       memuChange (id, index) {
         this.getGoods(id)
         this.ind = index
-        console.log(index)
       },
       priceSort () {
         this.sortSelectIndex = 2
@@ -174,6 +173,17 @@
   @import "../common/style/sum";
 
   .this-view {
+    .strong {
+      span {
+        padding: 5px;
+        background: #5abbf6;
+        border-radius: 5px;
+        color: #fff;
+      }
+    }
+    .sort-icon-selected {
+      color: @theme-color-blue !important;
+    }
     .is-cont {
       padding: 5px 10px;
       .pt(25);
@@ -356,6 +366,7 @@
                 position: absolute;
                 .fs(15);
                 .l(6);
+                color: #666;
                 &.up {
                   .t(-5);
                 }

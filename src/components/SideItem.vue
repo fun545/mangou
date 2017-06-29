@@ -1,23 +1,9 @@
 <template>
-  <div class="side-item" :class="{active:isActive}">
+  <div class="side-item">
     <slot></slot>
   </div>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        isActive: false,
-        currentIndex: -1
-      }
-    },
-    props: {},
-    methods: {
-      onItemClick (id) {
-        this.$parent.currentIndex = this.currentIndex
-        this.$emit('click')
-      }
-    }
-  }
+  export default {}
 </script>

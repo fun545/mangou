@@ -5,25 +5,7 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        currentIndex: -1
-      }
-    },
-    mounted () {
-      if (!this.$children || !this.$children.length) return
-      for (let i in this.$children) {
-        this.$children[i].currentIndex = i
-      }
-    },
-    watch: {
-      currentIndex (val, oldVal) {
-        if (oldVal > -1) this.$children[oldVal].isActive = false
-        this.$children[val].isActive = true
-      }
-    }
-  }
+  export default {}
 </script>
 
 <style lang="less">
@@ -36,9 +18,6 @@
     position: relative;
 
     .side-item {
-      /*margin-bottom: 1px;*/
-      /*padding: 10px;*/
-      /*line-height: 20px;*/
       box-sizing: border-box;
       text-align: center;
       .h(91);
@@ -48,7 +27,6 @@
       color: #666666;
       text-align: center;
       transition: all 400ms;
-
       .iconfont {
         margin-right: 5px;
         color: #d3b7b3;
@@ -59,7 +37,6 @@
       background-color: #ffffff;
       color: #089cf6;
       border-left: 2px solid #f95d43;
-
       .iconfont {
         color: #f95d43;
       }

@@ -1,0 +1,262 @@
+<template>
+  <div class="order-info-view">
+    <!-- 页面头部 -->
+    <x-header :left-options="{backText:''}">订单详情</x-header>
+    <!-- 页面内容 -->
+    <div class="view-content">
+      <!-- 订单状态 -->
+      <div class="flex-box top-info-box">
+        <div class="flex-item" style="color:#f78752;">
+          <div class="iconfont">&#xe607;</div>
+          <div class="text-center">已签收</div>
+        </div>
+        <div class="flex-col">
+          <p>订单类型：<span>即时送 - 送货上门</span></p>
+          <p>订单状态：<span>已签收</span></p>
+          <p>订单编号：<span>19840238402348</span></p>
+          <p>客服电话：<span>0731 - 8298301</span></p>
+        </div>
+      </div>
+      <!-- 订单状态时间线 -->
+      <timeline>
+        <timeline-item>
+          <p class="font-mind">订单已完成，感谢您使用即时达，祝您生活愉快</p>
+          <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
+        </timeline-item>
+        <timeline-item>
+          <p class="font-mind">您的订单已有配送员：小乐乐配送，手机号码为：<a href="tel:18688556633">18688556633</a>，请耐心等待，保持电话畅通。</p>
+          <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
+        </timeline-item>
+        <timeline-item>
+          <p class="font-mind">店家已确认接单，正在拣货包装。</p>
+          <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
+        </timeline-item>
+        <timeline-item>
+          <p class="font-mind">您的订单已提交，等待店家确认。</p>
+          <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
+        </timeline-item>
+      </timeline>
+      <!-- 收货人信息 -->
+      <div class="flex-box top-info-box">
+        <div class="iconfont" style="color:#666;">&#xe638;</div>
+        <div class="flex-col">
+          <p>&emsp;收货人：<span>加多宝</span></p>
+          <p>联系电话：<span>18612345678</span></p>
+          <p>收货地址：<span>珠江花城锦里3期13栋808</span></p>
+          <p>买家留言：<span>配送前电话通知</span></p>
+        </div>
+      </div>
+      <div class="flex-box title-box">
+        <div class="flex-col">商品详情</div>
+        <div class="flex-item">共<span style="color:#f78752;">12</span>件</div>
+      </div>
+      <div class="flex-box goods-item" v-for="i in 3">
+        <img src="../assets/goods_img.jpg" width="20%" alt="">
+        <div class="flex-col">
+          <p>熊孩子榴莲干零食</p>
+          <p style="color:#f78752;">¥9.9<span class="float-right" style="color:#666">x2</span></p>
+        </div>
+      </div>
+      <div class="more-btn">显示更多</div>
+      <div class="flex-box mind-flex">
+        <div class="flex-col">商品总价</div>
+        <div class="flex-item">¥188.1</div>
+      </div>
+      <div class="flex-box mind-flex">
+        <div class="flex-col">优惠金额</div>
+        <div class="flex-item">¥5.0</div>
+      </div>
+      <div class="flex-box mind-flex">
+        <div class="flex-col">配送费</div>
+        <div class="flex-item">¥3</div>
+      </div>
+      <div class="flex-box top-border-box">
+        <div class="flex-col">实际付款</div>
+        <div style="color:#ff5500;">¥183.1</div>
+      </div>
+      <div class="flex-box title-box">订单信息</div>
+      <div class="time-info-box">
+        <p>下单时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
+        <p>支付时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
+        <p>配送时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
+        <p>完成时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
+      </div>
+    </div>
+    <!-- 底部按钮 -->
+    <div class="view-footer">
+      <router-link to="/order_refund" class="order-btn">申请退款</router-link>
+      <div class="order-btn" @click="remove">删除</div>
+      <router-link to="/order_rater" class="order-btn">评价</router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { XHeader, Timeline, TimelineItem } from 'vux'
+
+  export default{
+    components: {
+      XHeader,
+      Timeline,
+      TimelineItem
+    },
+    methods: {
+      remove () {
+        this.$vux.alert.show({content: '删除订单成功'})
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .order-info-view .vux-header {
+    background-color: #f78752;
+
+    [class^=vux-header-] {
+      color: #fff;
+    }
+
+    .left-arrow:before {
+      border-color: #fff;
+      border-width: 2px 0 0 2px;
+    }
+  }
+
+  .order-info-view .view-content {
+    height: calc(~'100% - 86px');
+    overflow-y: scroll;
+    box-sizing: border-box;
+    padding-bottom: 10px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .order-info-view .top-info-box {
+    padding: 15px 20px;
+    align-items: center;
+    background-color: #fff;
+
+    .iconfont {
+      font-size: 24px;
+      text-align: center;
+    }
+
+    span {
+      color: #666;
+    }
+
+    .flex-col {
+      margin-left: 20px;
+      padding-left: 10px;
+      border-left: 1px solid #ddd;
+      font-size: 12px;
+    }
+  }
+
+  .order-info-view .vux-timeline {
+    margin: 5px auto 10px;
+    background-color: #fff;
+
+    .vux-timeline-item-content {
+      padding-left: 1.8em;
+    }
+  }
+
+  .order-info-view .title-box {
+    margin-top: 5px;
+    background-color: #fff;
+    padding: 10px;
+    line-height: 20px;
+    position: relative;
+
+    &:after {
+      content: '';
+      height: 1px;
+      background-color: #ddd;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  .order-info-view .goods-item {
+    align-items: center;
+    padding: 10px;
+    position: relative;
+
+    &:after {
+      content: '';
+      height: 1px;
+      background-color: #ddd;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .flex-col {
+      margin-left: 10px;
+      font-size: 13px;
+    }
+  }
+
+  .order-info-view .more-btn {
+    padding: 4px 24px;
+    color: #666;
+    background-color: #ddd;
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 100px;
+    display: table;
+    margin: 3px auto;
+  }
+
+  .order-info-view .mind-flex {
+    font-size: 12px;
+    line-height: 1;
+    color: #666;
+    padding: 5px 10px;
+    background-color: #fff;
+  }
+
+  .order-info-view .time-info-box {
+    font-size: 12px;
+    background-color: #fff;
+    padding: 10px;
+  }
+
+  .order-info-view .top-border-box {
+    line-height: 20px;
+    background-color: #fff;
+    padding: 10px;
+    height: 40px;
+    box-sizing: border-box;
+    border-top: 1px solid #ddd;
+  }
+
+  .order-info-view .view-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: #fff;
+
+    .order-btn {
+      font-size: 12px;
+      line-height: 1;
+      border-radius: 100px;
+      color: #666;
+      border: 1px solid #666;
+      padding: 3px 10px;
+      margin-right: 10px;
+    }
+
+    .order-btn:last-child {
+      margin-right: 0;
+      color: #f78752;
+      border-color: #f78752;
+    }
+  }
+</style>

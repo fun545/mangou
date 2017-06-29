@@ -1,0 +1,67 @@
+.t-c {
+  text-align: center;
+}
+.t-l {
+  text-align: left;
+}
+.t-r {
+  text-align: right;
+}
+.f-l {
+  float: left;
+}
+.f-r {
+  float: right;
+}
+.clearfix:after {
+  content: "";
+  clear: both;
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+.d-ib {
+  display: inline-block;
+}
+.d-b {
+  display: block;
+}
+.va-m {
+  vertical-align: middle;
+}
+.va-t {
+  vertical-align: top;
+}
+.va-b {
+  vertical-align: bottom;
+}
+.ui-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.border-none:after {
+  display: none;
+}
+.clearfix {
+  display: inline-block;
+}
+.clearfix:after {
+  display: block;
+  content: "";
+  height: 0;
+  line-height: 0;
+  clear: both;
+}
+@media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5) {
+  .border-1px:after {
+    -webkit-transform: scaleY(0.7);
+    transform: scaleY(0.7);
+  }
+}
+@media (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2) {
+  .border-1px:after {
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+}

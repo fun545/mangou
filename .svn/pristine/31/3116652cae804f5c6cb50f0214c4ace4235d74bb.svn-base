@@ -1,0 +1,442 @@
+<template>
+  <div class="home-view">
+    <!-- 地址/搜索拦 -->
+    <div class="address-search">
+      <div class="address" @click="goLink('/location')">
+        <i class="iconfont">&#xe63d;</i>
+        <p>珠江花城锦珠江花城锦</p>
+        <i class="iconfont">&#xe638;</i>
+      </div>
+      <div class="search" @click="goLink('/search')">
+        <input type="search" value="搜索商品" readonly>
+      </div>
+    </div>
+    <!-- 轮播 -->
+    <swiper :list="swiperList" :aspect-ratio="400/750" dots-position="center" auto loop></swiper>
+    <!-- 次日达/即时达 -->
+    <div class="link-box">
+      <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
+      <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+    </div>
+    <!-- 源地直供 -->
+    <div class="source"><i class="iconfont">&#xe606;</i>源地直供</div>
+    <div class="source-scroll">
+      <div class="source-box" :style="{width:`calc(100vw / 3.3 * ${sourceGoods.length})`}">
+        <router-link to="/goodsDetail" class="source-item" v-for="(item,index) in sourceGoods" :key="index">
+          <img :src="item.img" width="100%" alt="">
+          <p>次日价 : ¥2.3</p>
+          <p>即时价 : ¥6.3</p>
+          <p class="cart-btn"><i class="iconfont">&#xe609;</i>购物车</p>
+        </router-link>
+      </div>
+    </div>
+    <!-- 优选精选 -->
+    <div class="fine"><i class="iconfont">&#xe614;</i>优选精选</div>
+    <div class="fine-box">
+      <router-link to="/goodsDetail" class="fine-item" v-for="(item,index) in sourceGoods" :key="index">
+        <img :src="item.img" width="30%" alt="">
+        <div class="col">
+          <p>农夫茶12元/瓶促销</p>
+          <p>次日价:1.5元</p>
+          <p>即时价:1.5元</p>
+          <i class="iconfont">&#xe613;</i>
+        </div>
+      </router-link>
+    </div>
+    <!-- 广告轮播图 -->
+    <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
+    <!-- 热门畅销 -->
+    <div class="hot"><i class="iconfont">&#xe612;</i>热门畅销</div>
+    <div class="hot-box">
+      <router-link to="/goodsDetail" class="hot-item" v-for="(item,index) in sourceGoods" :key="index">
+        <img :src="item.img" width="100%" alt="">
+        <p>百草味和田红枣百草味和田红枣百草味和田红枣</p>
+        <p>次日价:¥26.00</p>
+        <p>即时价:¥36.00</p>
+        <i class="iconfont">&#xe613;</i>
+      </router-link>
+    </div>
+    <!-- 新品上架 -->
+    <div class="new"><i class="iconfont">&#xe615;</i>新品上架</div>
+    <div class="new-box">
+      <router-link to="/goodsDetail" class="new-item" v-for="item in sourceGoods" :key="item">
+        <img :src="item.img" width="100%" alt="">
+        <p>气凋盒装卤鸭脖320g武汉特产食品零食小吃气凋盒装卤鸭脖320g武汉特产食品零食小吃</p>
+        <p>次日价:¥26.00</p>
+        <p>即时价:¥36.00</p>
+        <i class="iconfont">&#xe613;</i>
+      </router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+  import {Swiper} from 'vux'
+
+  export default {
+    components: {Swiper},
+    computed: {
+      swiperList () {
+        return [
+          {img: './static/banner-first.png'},
+          {img: './static/banner-kuaisheng.jpg'},
+          {img: './static/banner-qingliang.jpg'},
+          {img: './static/banner-shequ.jpg'},
+          {img: './static/banner-tuihuanhuo.jpg'}
+        ]
+      },
+      sourceGoods () {
+        return [
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'}
+        ]
+      },
+      adverList () {
+        return [
+          {img: './static/adver.png'},
+          {img: './static/adver.png'}
+        ]
+      }
+    },
+    methods: {
+      /* 链接跳转 */
+      goLink (path) {
+        this.$router.push(path)
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .home-view {
+    .address-search {
+      display: flex;
+      padding: 0 5px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 9;
+
+      .address {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        color: #ffffff;
+
+        .iconfont {
+          line-height: normal;
+          font-size: 14px;
+        }
+
+        p {
+          margin: 0 5px;
+          width: 60px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 12px;
+        }
+      }
+
+      .search {
+        flex-grow: 1;
+        padding: 5px;
+        position: relative;
+
+        &:before {
+          content: '\e639';
+          color: #e5f1dc;
+          font-family: 'iconfont';
+          font-size: 12px;
+          line-height: normal;
+          position: absolute;
+          top: 12px;
+          left: 13px;
+        }
+
+        input {
+          padding: 5px 10px 5px 25px;
+          font-size: 12px;
+          line-height: normal;
+          width: 100%;
+          background-color: rgba(255, 255, 255, .5);
+          border: none;
+          border-radius: 25px/2;
+          outline: none;
+          color: #e5f1dc;
+        }
+      }
+    }
+
+    .link-box {
+      display: flex;
+      padding: 5px;
+
+      a {
+        margin: 5px;
+      }
+    }
+
+    .source {
+      box-sizing: border-box;
+      height: 40px;
+      padding: 10px;
+      line-height: 20px;
+      color: #ee524d;
+      background-color: #ffffff;
+      font-style: italic;
+
+      .iconfont {
+        margin-right: 5px;
+      }
+    }
+
+    .source-scroll {
+      width: 100%;
+      border-top: 1px solid #eeeeee;
+      border-bottom: 1px solid #eeeeee;
+      overflow-x: scroll;
+
+      .source-box {
+        display: flex;
+
+        .source-item {
+          background-color: #ffffff;
+          border-right: 1px solid #eeeeee;
+          padding-bottom: 8px;
+          font-size: 12px;
+          text-align: center;
+
+          p {
+            line-height: 20px;
+          }
+
+          p:nth-child(2) {
+            color: #fc5050;
+          }
+
+          p:nth-child(3) {
+            color: #666666;
+          }
+
+          .cart-btn {
+            margin: 0 auto;
+            padding: 0 10px;
+            display: table;
+            color: #ffffff;
+            background-color: #f95d43;
+            border-radius: 20px/2;
+
+            .iconfont {
+              font-size: 13px;
+              margin-right: 5px;
+            }
+          }
+        }
+
+        .source-item:last-child {
+          border-right: none;
+        }
+      }
+    }
+
+    .fine {
+      text-align: center;
+      color: #ff01a2;
+      background-color: #ffffff;
+      margin-top: 10px;
+      line-height: 20px;
+      padding: 10px;
+      height: 40px;
+      box-sizing: border-box;
+
+      .iconfont {
+        color: #ff01a2;
+        margin-right: 5px;
+      }
+    }
+
+    .fine-box {
+      display: flex;
+      flex-wrap: wrap;
+      border-top: 1px solid #eeeeee;
+      margin-bottom: 10px;
+
+      .fine-item {
+        width: calc(~'100vw / 2');
+        display: flex;
+        align-items: center;
+        background-color: #ffffff;
+        box-sizing: border-box;
+        font-size: 12px;
+        border-bottom: 1px solid #eeeeee;
+        border-right: 1px solid #eeeeee;
+
+        .col {
+          flex-grow: 1;
+          margin: 5px;
+          position: relative;
+
+          p {
+            line-height: normal;
+          }
+
+          p:nth-child(1) {
+            color: #333333;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+          }
+
+          p:nth-child(2) {
+            color: #fc5050;
+          }
+
+          p:nth-child(3) {
+            color: #aaaaaa;
+          }
+
+          .iconfont {
+            line-height: normal;
+            color: #fc5050;
+            font-size: 20px;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+          }
+        }
+      }
+    }
+
+    .hot {
+      margin-top: 10px;
+      line-height: 20px;
+      color: #ff3d01;
+      background-color: #ffffff;
+      text-align: center;
+      padding: 10px;
+      height: 40px;
+      box-sizing: border-box;
+
+      .iconfont {
+        margin-right: 5px;
+        color: #ff3d01;
+      }
+    }
+
+    .hot-box {
+      display: flex;
+      flex-wrap: wrap;
+      border-top: 1px solid #eeeeee;
+
+      .hot-item {
+        width: calc(~'100vw / 3');
+        box-sizing: border-box;
+        padding: 5px;
+        background-color: #ffffff;
+        text-align: center;
+        border-right: 1px solid #eeeeee;
+        border-bottom: 1px solid #eeeeee;
+
+        p:nth-child(2) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: #333333;
+          font-size: 13px;
+          line-height: normal;
+          margin: 5px 0;
+        }
+
+        p:nth-child(3) {
+          font-size: 12px;
+          color: #fc5050;
+          line-height: normal;
+        }
+
+        p:nth-child(4) {
+          font-size: 12px;
+          color: #aaaaaa;
+          line-height: normal;
+        }
+
+        .iconfont {
+          color: #fc5050;
+          font-size: 20px;
+        }
+      }
+    }
+
+    .new {
+      color: #ff8401;
+      text-align: center;
+      margin: 10px 0;
+      line-height: normal;
+
+      .iconfont {
+        margin-right: 5px;
+      }
+    }
+
+    .new-box {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0 5px 5px 5px;
+      margin-top: -5px;
+
+      .new-item {
+        box-sizing: border-box;
+        width: calc(~'100vw / 2 - 15px');
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: #dddddd 2px 2px 2px;
+        margin: 5px;
+        overflow: hidden;
+        position: relative;
+
+        p:nth-child(2) {
+          font-size: 13px;
+          margin: 5px;
+          line-height: normal;
+          color: #444444;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+        }
+
+        p:nth-child(3) {
+          line-height: normal;
+          color: #fc5050;
+          font-size: 12px;
+          border-top: 1px dashed #eeeeee;
+          padding-top: 5px;
+          padding-left: 5px;
+        }
+
+        p:nth-child(4) {
+          line-height: normal;
+          color: #aaaaaa;
+          font-size: 12px;
+          padding-bottom: 5px;
+          padding-left: 5px;
+        }
+
+        .iconfont {
+          font-size: 22px;
+          line-height: normal;
+          color: #fc5050;
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+        }
+      }
+    }
+  }
+</style>

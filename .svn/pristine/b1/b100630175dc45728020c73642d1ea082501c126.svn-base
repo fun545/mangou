@@ -1,0 +1,285 @@
+<template>
+  <div class="next-view">
+    <!-- 搜索框 -->
+    <div class="search-box">
+      <input type="search" v-model="search" @keyup.enter="searchText" placeholder="搜索商品">
+      <i class="iconfont" @click="isDialog = !isDialog">&#xe625;</i>
+    </div>
+    <!-- 类型列表 -->
+    <div class="aside">
+      <ul class="menu">
+        <li v-for="(item,index) in asideList" :class="{active:typeIndex === index}" @click="typeIndex = index">
+          <i class="iconfont" v-html="item.icon"></i>
+          <span v-html="item.name"></span>
+        </li>
+      </ul>
+    </div>
+    <!-- 商品列表 -->
+    <div class="article">
+      <!-- 商品类别 -->
+      <tabs>
+        <tabs-item v-for="(item,index) in tabsList" :key="index" @click="getGoodsList(item)">{{item.name}}</tabs-item>
+      </tabs>
+      <!-- 商品列表 -->
+      <div class="list scroller">
+        <router-link to="/goodsDetail" class="list-item" v-for="(item,index) in goodsList" :key="index">
+          <img :src="item.img" alt="">
+          <div class="col">
+            <p>景田百岁山348ml</p>
+            <p>即时价：¥2.0</p>
+            <p>次日价：¥1.5</p>
+          </div>
+          <i class="iconfont">&#xe613;</i>
+        </router-link>
+      </div>
+    </div>
+    <!-- 弹窗内容 -->
+    <x-dialog v-model="isDialog" hide-on-blur>
+      <div class="dialog-head">用户须知</div>
+      <div class="dialog-cont">
+        <p><i class="iconfont">&#xe614;</i><b>简介</b></p>
+        <p>漫购次日达：全场低价，最高低于市面40%每天为小区集中采购一次。今天下单，第二天到。</p>
+        <p>漫购商超————超省钱，超便利！</p>
+        <p><i class="iconfont">&#xe61f;</i><b>取货方式</b></p>
+        <p>1.自提：收到取货信息后，你可前往小区楼下的漫购店自取订单。</p>
+        <p>2.送货上门：加三元上门费，漫购店小二送货到家。</p>
+        <p>享快速配送服务，进入"即时送"，29分钟内闪送到家。</p>
+      </div>
+    </x-dialog>
+  </div>
+</template>
+
+<script>
+  import { XDialog } from 'vux'
+  import Tabs from '../components/Tabs'
+  import TabsItem from '../components/TabsItem'
+
+  export default {
+    components: {Tabs, TabsItem, XDialog},
+    data () {
+      return {
+        isDialog: false,
+        search: '',
+        typeIndex: 0
+      }
+    },
+    computed: {
+      asideList () {
+        return [
+          {icon: '&#xe61c;', name: '饮料乳品'},
+          {icon: '&#xe62d;', name: '酒水槟榔'},
+          {icon: '&#xe622;', name: '休闲食品'},
+          {icon: '&#xe623;', name: '冲调速饮'},
+          {icon: '&#xe619;', name: '粮油面食'},
+          {icon: '&#xe631;', name: '进口食品'},
+          {icon: '&#xe61a;', name: '文体用品'},
+          {icon: '&#xe623;', name: '个人护理'},
+          {icon: '&#xe637;', name: '针棉服饰'},
+          {icon: '&#xe636;', name: '代&emsp;&emsp;购'}
+        ]
+      },
+      tabsList () {
+        return [
+          {name: '方便面'},
+          {name: '火腿'},
+          {name: '面粉'},
+          {name: '调料'},
+          {name: '大米'}
+        ]
+      },
+      goodsList () {
+        return [
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'}
+        ]
+      }
+    },
+    methods: {
+      searchText () {
+        if (!this.search) {
+          this.$vux.alert.show({content: '请输入搜索内容'})
+          return
+        }
+        this.$router.push({path: '/searchText', query: {search: this.search}})
+      },
+      getGoodsList (item) {
+        console.log(item)
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .next-view {
+    .search-box {
+      display: flex;
+      position: relative;
+      padding: 5px;
+      background: linear-gradient(#f17459, #eb4e3b);
+
+      &:before {
+        content: '\e639';
+        font-family: 'iconfont';
+        color: #f9d2cd;
+        font-size: 12px;
+        display: table;
+        line-height: 20px;
+        position: absolute;
+        top: 11px;
+        left: 20px;
+      }
+
+      input {
+        outline: 0;
+        line-height: 20px;
+        padding: 5px 5px 5px 25px;
+        flex-grow: 1;
+        background-color: #f28d7d;
+        border: none;
+        border-radius: 30px/2;
+        color: #ffffff;
+
+        margin: 0 5px;
+
+        &::-webkit-input-placeholder {
+          color: #f9d2cd;
+        }
+      }
+
+      .iconfont {
+        display: table;
+        padding: 5px;
+        line-height: 20px;
+        color: #ffffff;
+        font-size: 20px;
+      }
+    }
+
+    .aside {
+      overflow-x: scroll;
+      width: calc(~"100vw/3");
+      background-color: #eeeeee;
+      font-size: 12px;
+      position: absolute;
+      top: 40px;
+      left: 0;
+      bottom: 0;
+
+      .menu > li {
+        line-height: 20px;
+        text-align: center;
+        padding: 10px;
+        background-color: #f7f7f7;
+        margin-bottom: 1px;
+        color: #666666;
+        font-size: 13px;
+        transition: all 400ms;
+
+        .iconfont {
+          font-size: 13px;
+          margin-right: 5px;
+          color: #d3b7b3;
+        }
+
+        &.active {
+          background-color: #ffffff;
+          border-left: 2px solid #f95d43;
+          color: #f95d43;
+
+          .iconfont {
+            color: #f95d43;
+          }
+        }
+      }
+    }
+
+    .article {
+      background-color: #ffffff;
+      padding-left: 10px;
+      box-sizing: border-box;
+      width: calc(~"100vw - 100vw/3");
+      font-size: 12px;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      bottom: 0;
+
+      .list {
+        height: calc(~'100% - 31px');
+        width: 100%;
+        overflow: scroll;
+
+        .list-item {
+          padding: 10px;
+          padding-left: 0;
+          border-bottom: 1px solid #eeeeee;
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 30%;
+          }
+
+          .col {
+            margin: auto 10px;
+
+            p:nth-child(1) {
+              color: #444444;
+              font-size: 12px;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1;
+              overflow: hidden;
+            }
+
+            p:nth-child(2) {
+              color: #999999;
+              font-size: 12px;
+            }
+
+            p:nth-child(3) {
+              color: #f95d43;
+              font-size: 12px;
+            }
+          }
+
+          .iconfont {
+            color: #f95d43;
+            font-size: 22px;
+          }
+        }
+      }
+    }
+
+    .dialog-head {
+      font-size: 13px;
+      padding: 10px 0;
+      line-height: 15px;
+      color: #f95d43;
+      background-color: #f7f7f7;
+    }
+
+    .dialog-cont {
+      padding: 10px;
+
+      font-size: 12px;
+      line-height: 20px;
+      color: #444444;
+
+      p {
+        text-align: left;
+
+        .iconfont {
+          margin-right: 5px;
+          font-size: 13px;
+          vertical-align: middle;
+          color: #f95d43;
+        }
+      }
+    }
+  }
+</style>

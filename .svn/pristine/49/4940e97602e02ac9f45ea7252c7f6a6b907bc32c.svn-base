@@ -1,0 +1,331 @@
+<template>
+  <div class="user-view">
+    <!-- 设置图标 -->
+    <router-link to="/setting" class="setting">&#xe627;</router-link>
+
+    <!-- 用户头像卡片 -->
+    <div class="picture-card">
+      <router-link to="/user_info"><img src="../assets/vux_logo.png" class="picture" alt=""></router-link>
+      <div class="name">周涵羽</div>
+      <span class="address">珠江花城浮水岸</span>
+      <div class="line-bar">&nbsp;</div>
+      <div class="flex-box">
+        <div class="flex-item">
+          <p>30<span>天</span></p>
+          <p>您已注册</p>
+        </div>
+        <div class="flex-item">
+          <p>188<span>元</span></p>
+          <p>为您节省</p>
+        </div>
+        <div class="flex-item">
+          <p>88</p>
+          <p>当前排行</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 我的订单卡片 -->
+    <div class="order-card">
+      <!-- 卡片标题 -->
+      <div class="title-box">
+        <div class="title">我的订单</div>
+        <router-link to="/order_list">查看更多订单</router-link>
+      </div>
+      <!-- 订单入口 -->
+      <div class="entry-flex">
+        <router-link to="/order_pay_list" class="entry-item">
+          <div class="icon">
+            <i class="iconfont">&#xe62c;</i>
+            <span>6</span>
+          </div>
+          <div class="text">待付款</div>
+        </router-link>
+        <router-link to="/order_send_list" class="entry-item">
+          <div class="icon">
+            <i class="iconfont">&#xe620;</i>
+          </div>
+          <div class="text">待发货</div>
+        </router-link>
+        <router-link to="/order_shipping_list" class="entry-item">
+          <div class="icon">
+            <i class="iconfont">&#xe60b;</i>
+            <span>15</span>
+          </div>
+          <div class="text">配送中</div>
+        </router-link>
+        <router-link to="/order_rater_list" class="entry-item">
+          <div class="icon">
+            <i class="iconfont">&#xe645;</i>
+            <span>2</span>
+          </div>
+          <div class="text">待评价</div>
+        </router-link>
+        <router-link to="/order_after_sale_list" class="entry-item">
+          <div class="icon">
+            <i class="iconfont">&#xe630;</i>
+          </div>
+          <div class="text">退款/售后</div>
+        </router-link>
+      </div>
+    </div>
+
+    <!-- 我要分享卡片 -->
+    <div class="share-card">
+      <div class="title-box">
+        <div class="title">我要分享</div>
+        <router-link to="/share">推给好友</router-link>
+      </div>
+    </div>
+
+    <!-- 更多功能卡片 -->
+    <div class="more-card">
+      <!-- 卡片标题 -->
+      <div class="title-box">
+        <div class="title">更多功能</div>
+      </div>
+      <!-- 功能入口 -->
+      <div class="entry-flex">
+        <router-link to="/collection" class="entry-item">
+          <div class="iconfont">&#xe629;</div>
+          <div class="label">我的收藏</div>
+        </router-link>
+        <router-link to="/address" class="entry-item">
+          <div class="iconfont">&#xe621;</div>
+          <div class="label">收货地址</div>
+        </router-link>
+        <router-link to="/coupon" class="entry-item">
+          <div class="iconfont">&#xe62e;</div>
+          <div class="label">我的优惠券</div>
+        </router-link>
+        <router-link to="/help" class="entry-item">
+          <div class="iconfont">&#xe626;</div>
+          <div class="label">客服与帮助</div>
+        </router-link>
+        <router-link to="/label-entry" class="entry-item">
+          <div class="iconfont">&#xe61d;</div>
+          <div class="label">加入我们</div>
+        </router-link>
+        <router-link to="/label-entry" class="entry-item">
+          <div class="iconfont">&#xe616;</div>
+          <div class="label">我要开店</div>
+        </router-link>
+        <router-link to="/label-entry" class="entry-item">
+          <div class="iconfont">&#xe625;</div>
+          <div class="label">意见反馈</div>
+        </router-link>
+        <router-link to="/label-entry" class="entry-item">
+          <div class="iconfont">&#xe62f;</div>
+          <div class="label">关于我们</div>
+        </router-link>
+        <router-link to="/label-entry" class="entry-item">
+          <div class="iconfont">&#xe645;</div>
+          <div class="label">欢迎评分</div>
+        </router-link>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang='less'>
+  .user-view {
+    &:before {
+      content: '';
+      height: 100px;
+      background: linear-gradient(#f46f4b, #fa9f5a);
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .setting {
+      color: #ffffff;
+      line-height: normal;
+      font-size: 18px;
+      font-family: 'iconfont';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+    }
+
+    [class*=-card] {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      position: relative;
+      z-index: 2;
+
+      .title-box {
+        display: flex;
+        line-height: normal;
+        font-size: 13px;
+
+        .title {
+          flex-grow: 1;
+          margin-left: -10px;
+
+          &:before {
+            content: '';
+            display: inline-block;
+            margin-right: 10px;
+            width: 4px;
+            height: 10px;
+            background-color: #fc5050;
+          }
+        }
+
+        a {
+          color: #999999;
+
+          &:after {
+            content: '\e601';
+            vertical-align: middle;
+            font: 12px/1 'iconfont';
+          }
+        }
+      }
+    }
+
+    .picture-card {
+      margin-top: 60px;
+      padding-top: 40px;
+
+      .picture {
+        box-sizing: border-box;
+        width: 80px;
+        border-radius: 80px/2;
+        border: 2px solid #ffffff;
+        box-shadow: #d4d400 0 0 2px;
+        background-color: #e3eaee;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        top: 0;
+        left: 50%;
+      }
+
+      .name {
+        line-height: 20px;
+        padding: 5px 0;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .address {
+        display: table;
+        padding: 0 10px;
+        margin: 0 auto;
+        line-height: 20px;
+        font-size: 12px;
+        color: #eba098;
+        background-color: #fef7f5;
+        border-radius: 10px;
+      }
+
+      .line-bar {
+        margin: 10px auto;
+        height: 1px;
+        background-color: #eeeeee;
+      }
+
+      .flex-box {
+        display: flex;
+
+        .flex-item {
+          width: calc(~'100vw/3');
+          box-sizing: border-box;
+          padding: 0 10px;
+          border-left: 1px solid #eeeeee;
+          text-align: center;
+
+          &:first-child {
+            border-left: none;
+          }
+
+          p, span {
+            font-size: 12px;
+            line-height: normal;
+          }
+
+          p:first-child {
+            color: #fb9082;
+            font-size: 18px;
+          }
+        }
+      }
+    }
+
+    .order-card .entry-flex {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px -5px -5px -5px;
+      font-size: 12px;
+
+      .entry-item {
+        width: calc(~'(100% - 20px)/5');
+        box-sizing: border-box;
+        border-radius: 5px;
+        color: #444444;
+        background-color: #fff8ef;
+
+        .icon {
+          display: table;
+          margin: 10px auto 0 auto;
+          line-height: normal;
+          position: relative;
+
+          .iconfont {
+            color: #c08556;
+            font-size: 22px;
+          }
+
+          span {
+            width: 14px;
+            text-align: center;
+            height: 14px;
+            line-height: 14px;
+            border-radius: 14px/2;
+            font-size: 12px;
+            color: #ffffff;
+            background-color: red;
+            transform: translate(65%, -15%);
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+
+        .text {
+          margin: 5px auto;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+    }
+
+    .more-card .entry-flex {
+      display: flex;
+      flex-wrap: wrap;
+
+      .entry-item {
+        width: calc(~'100%/3');
+        padding: 10px 0;
+        text-align: center;
+        border-bottom: 1px solid #e4e4e4;
+
+        .iconfont {
+          color: #f75439;
+          font-size: 28px;
+        }
+
+        .label {
+          color: #444444;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,268 @@
+{
+  "mapClassify": [
+    {
+      "classifyId": 1001,
+      "classifys": [
+        {
+          "classifyId": 50,
+          "classifyParentId": 1001,
+          "classifyName": "饮用水"
+        },
+        {
+          "classifyId": 51,
+          "classifyParentId": 1001,
+          "classifyName": "茶饮果汁"
+        },
+        {
+          "classifyId": 53,
+          "classifyParentId": 1001,
+          "classifyName": "碳酸类"
+        },
+        {
+          "classifyId": 52,
+          "classifyParentId": 1001,
+          "classifyName": "奶饮功能"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "饮料果汁",
+      "classifyImgUrl": ""
+    },
+    {
+      "classifyId": 1002,
+      "classifys": [
+        {
+          "classifyId": 54,
+          "classifyParentId": 1002,
+          "classifyName": "酸奶"
+        },
+        {
+          "classifyId": 55,
+          "classifyParentId": 1002,
+          "classifyName": "常温奶"
+        },
+        {
+          "classifyId": 56,
+          "classifyParentId": 1002,
+          "classifyName": "冰激凌"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "牛奶制品"
+    },
+    {
+      "classifyId": 1003,
+      "classifys": [
+        {
+          "classifyId": 57,
+          "classifyParentId": 1003,
+          "classifyName": "蜜饯核果"
+        },
+        {
+          "classifyId": 58,
+          "classifyParentId": 1003,
+          "classifyName": "饼干糕点 "
+        },
+        {
+          "classifyId": 59,
+          "classifyParentId": 1003,
+          "classifyName": "熟食类"
+        },
+        {
+          "classifyId": 60,
+          "classifyParentId": 1003,
+          "classifyName": "膨化类"
+        },
+        {
+          "classifyId": 61,
+          "classifyParentId": 1003,
+          "classifyName": "糖果类"
+        },
+        {
+          "classifyId": 62,
+          "classifyParentId": 1003,
+          "classifyName": "冲调类"
+        },
+        {
+          "classifyId": 63,
+          "classifyParentId": 1003,
+          "classifyName": "巧克力"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "休闲食品"
+    },
+    {
+      "classifyId": 1004,
+      "classifys": [
+        {
+          "classifyId": 64,
+          "classifyParentId": 1004,
+          "classifyName": "白酒"
+        },
+        {
+          "classifyId": 65,
+          "classifyParentId": 1004,
+          "classifyName": "啤酒"
+        },
+        {
+          "classifyId": 66,
+          "classifyParentId": 1004,
+          "classifyName": "其他酒"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "酒类商品"
+    },
+    {
+      "classifyId": 1005,
+      "classifys": [
+        {
+          "classifyId": 67,
+          "classifyParentId": 1005,
+          "classifyName": "米油"
+        },
+        {
+          "classifyId": 68,
+          "classifyParentId": 1005,
+          "classifyName": "面条"
+        },
+        {
+          "classifyId": 69,
+          "classifyParentId": 1005,
+          "classifyName": "面粉"
+        },
+        {
+          "classifyId": 70,
+          "classifyParentId": 1005,
+          "classifyName": "方便面"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "米面粮油"
+    },
+    {
+      "classifyId": 1006,
+      "classifys": [
+        {
+          "classifyId": 71,
+          "classifyParentId": 1006,
+          "classifyName": "调味品"
+        },
+        {
+          "classifyId": 72,
+          "classifyParentId": 1006,
+          "classifyName": "干货"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "干货调味"
+    },
+    {
+      "classifyId": 1007,
+      "classifys": [
+        {
+          "classifyId": 73,
+          "classifyParentId": 1007,
+          "classifyName": "纸品"
+        },
+        {
+          "classifyId": 74,
+          "classifyParentId": 1007,
+          "classifyName": "牙膏牙刷"
+        },
+        {
+          "classifyId": 75,
+          "classifyParentId": 1007,
+          "classifyName": "个人洗护"
+        },
+        {
+          "classifyId": 76,
+          "classifyParentId": 1007,
+          "classifyName": "其他"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "个人护理"
+    },
+    {
+      "classifyId": 1008,
+      "classifys": [
+        {
+          "classifyId": 77,
+          "classifyParentId": 1008,
+          "classifyName": "蚊香杀虫"
+        },
+        {
+          "classifyId": 78,
+          "classifyParentId": 1008,
+          "classifyName": "衣物清洁"
+        },
+        {
+          "classifyId": 79,
+          "classifyParentId": 1008,
+          "classifyName": "家用清洁"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "居家清洁"
+    },
+    {
+      "classifyId": 1009,
+      "classifys": [
+        {
+          "classifyId": 80,
+          "classifyParentId": 1009,
+          "classifyName": "鞋服针绵"
+        },
+        {
+          "classifyId": 81,
+          "classifyParentId": 1009,
+          "classifyName": "雨具拖鞋"
+        },
+        {
+          "classifyId": 82,
+          "classifyParentId": 1009,
+          "classifyName": "电器五金"
+        },
+        {
+          "classifyId": 83,
+          "classifyParentId": 1009,
+          "classifyName": "文体"
+        },
+        {
+          "classifyId": 84,
+          "classifyParentId": 1009,
+          "classifyName": "小百货"
+        },
+        {
+          "classifyId": 85,
+          "classifyParentId": 1009,
+          "classifyName": "一次用品"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "家居百货"
+    },
+    {
+      "classifyId": 1010,
+      "classifys": [],
+      "classifyParentId": 0,
+      "classifyName": "预售团购"
+    },
+    {
+      "classifyId": 1011,
+      "classifys": [
+        {
+          "classifyId": 86,
+          "classifyParentId": 1011,
+          "classifyName": "全部"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "其他类别"
+    }
+  ],
+  "code": 100,
+  "msg": "成功"
+}

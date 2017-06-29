@@ -1,0 +1,279 @@
+<template>
+  <div class="shop-view">
+    <!-- 页面头部 -->
+    <x-header :left-options="{backText:''}">我要开店</x-header>
+    <!-- 电话 -->
+    <div class="phone-flex">
+      <a href="tel:13755038401" class="flex-box">
+        <div class="iconfont">&#xe641;</div>
+        <div class="flex-col">
+          <p>市场咨询：</p>
+          <p class="font-mind">13755038401</p>
+        </div>
+      </a>
+      <a href="tel:0731-85491868" class="flex-box">
+        <div class="iconfont">&#xe624;</div>
+        <div class="flex-col">
+          <p>客服咨询：</p>
+          <p class="font-mind">0731-85491868</p>
+        </div>
+      </a>
+    </div>
+    <!-- 页面内容 -->
+    <div class="content-scroller">
+      <div class="article">
+        <div class="title">加入漫购</div>
+        <div class="step-box">
+          <div class="step-item">
+            <div class="iconfont">&#xe602;</div>
+            <div class="label">提交申请</div>
+          </div>
+          <div class="step-item">
+            <div class="iconfont">&#xe602;</div>
+            <div class="label">客服受理</div>
+          </div>
+          <div class="step-item">
+            <div class="iconfont">&#xe602;</div>
+            <div class="label">资料审核</div>
+          </div>
+          <div class="step-item">
+            <div class="iconfont">&#xe602;</div>
+            <div class="label">审核完成</div>
+          </div>
+        </div>
+      </div>
+      <div class="article">
+        <div class="title">填写资料</div>
+        <div class="input-group">
+          <div class="input-box">
+            <span class="input-append">姓名：</span>
+            <input type="text" maxlength="6" placeholder="请填写您的姓名" v-model="name">
+          </div>
+          <div class="input-box">
+            <span class="input-append">电话：</span>
+            <input type="tel" maxlength="11" placeholder="请填写您的电话" v-model="phone">
+          </div>
+          <div class="input-box">
+            <span class="input-append">地址：</span>
+            <input type="text" placeholder="请填写您的地址" v-model="address">
+          </div>
+          <div class="input-box">
+            <div class="input-append">备注：</div>
+            <textarea rows="4" placeholder="填写详细备注" v-model="msg"></textarea>
+          </div>
+          <div class="submit-btn" @click="submitFrom">提交</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { XHeader } from 'vux'
+
+  export default{
+    components: {
+      XHeader
+    },
+    data () {
+      return {
+        name: '',
+        phone: '',
+        address: '',
+        msg: ''
+      }
+    },
+    methods: {
+      submitFrom () {
+        this.$vux.alert.show({content: '提交申请成功！'})
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .shop-view .vux-header {
+    background: linear-gradient(#f17458, #eb4e3b);
+
+    .left-arrow:before {
+      border-width: 2px 0 0 2px;
+      border-color: #fff;
+    }
+  }
+
+  .shop-view .phone-flex {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+
+    .iconfont {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      box-sizing: border-box;
+      color: #ea5d32;
+      font-size: 20px;
+      border-radius: 100px;
+      border: 1px solid #ea5d32;
+    }
+
+    .font-mind {
+      color: #999;
+    }
+
+    .flex-box {
+      padding: 10px;
+      color: #444;
+      align-items: center;
+      flex-grow: 1;
+      border-left: 1px solid #ddd;
+    }
+
+    .flex-box:first-child {
+      border-left: none;
+    }
+
+    .flex-col {
+      margin-left: 10px;
+    }
+  }
+
+  .shop-view .content-scroller {
+    height: calc(~'100% - 106px');
+    overflow-y: scroll;
+
+    .article {
+      padding: 10px 15px;
+      background-color: #fff;
+      margin-top: 10px;
+    }
+
+    .title {
+      padding-left: 20px;
+      line-height: 20px;
+      position: relative;
+    }
+
+    .title:before {
+      content: '';
+      height: 10px;
+      width: 10px;
+      background-color: #ea5d32;
+      position: absolute;
+      top: 5px;
+      left: 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  .shop-view .step-box {
+    padding-top: 15px;
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: center;
+
+    .step-item {
+      margin-left: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-item:before {
+      content: '\e672';
+      font: bold 14px/1px 'iconfont';
+      color: #ea5d32;
+      transform: translate(-100%, -50%);
+      position: absolute;
+      top: 35%;
+      left: -3px;
+    }
+
+    .step-item:first-child {
+      margin-left: 0;
+    }
+
+    .step-item:first-child:before {
+      display: none;
+    }
+
+    .iconfont {
+      display: table;
+      margin: 0 auto;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      background-color: #ea5d32;
+      font-size: 22px;
+      text-align: center;
+      color: #fff;
+      border-radius: 100px;
+    }
+
+    .label {
+      color: #666;
+      line-height: 22px;
+      font-size: 12px;
+    }
+  }
+
+  .shop-view .input-group {
+    padding: 10px;
+  }
+
+  .shop-view .input-box {
+    margin-bottom: 5px;
+    position: relative;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .input-append {
+      font-size: 12px;
+      color: #666;
+      line-height: 20px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      line-height: 20px;
+      padding: 10px 10px 10px 50px;
+      font-size: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    textarea {
+      display: table;
+      box-sizing: border-box;
+      width: 100%;
+      line-height: 20px;
+      padding: 10px 10px 10px 50px;
+      font-size: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      resize: none;
+      -webkit-appearance: none;
+      outline: none;
+    }
+  }
+
+  .shop-view .submit-btn {
+    margin-top: 20px;
+    padding: 10px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #ea5d32;
+  }
+</style>

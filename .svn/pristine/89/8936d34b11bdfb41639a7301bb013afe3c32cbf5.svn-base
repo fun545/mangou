@@ -1,0 +1,26 @@
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import FastClick from 'fastclick'
+import Router from './router'
+
+import {AjaxPlugin, AlertPlugin} from 'vux'
+Vue.use(AjaxPlugin)
+Vue.use(AlertPlugin)
+
+import vueScroll from 'vue-scroll'
+Vue.use(vueScroll)
+
+FastClick.attach(document.body)
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app-box',
+  router: Router,
+  template: '<App/>',
+  components: {
+    App: require('./App')
+  }
+})

@@ -1,0 +1,72 @@
+<template>
+  <div class="tabs-box">
+    <div class="tabs" :style="{width:tabsWidth}">
+      <slot></slot>
+      <div class="line-bar" :style="lineBarStyle"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        currentIndex: -1,
+        tabsWidth: '',
+        lineBarStyle: {}
+      }
+    },
+    mounted () {
+      if (!this.$children || !this.$children.length) return
+      for (let i in this.$children) {
+        this.$children[i].currentIndex = i
+      }
+      this.tabsWidth = `${this.$children.length * this.$children[0].width}px`
+    },
+    watch: {
+      currentIndex (val, oldVal) {
+        if (oldVal > -1) this.$children[oldVal].isActive = false
+        this.$children[val].isActive = true
+        this.lineBarStyle = {
+          width: `${this.$children[val].width}px`,
+          left: `${val * this.$children[val].width}px`
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .tabs-box {
+    border-bottom: 1px solid #eeeeee;
+    overflow-x: scroll;
+
+    .tabs {
+      display: flex;
+      position: relative;
+
+      .tabs-item {
+        line-height: 30px;
+        height: 30px;
+        text-align: center;
+        color: #b6b6b6;
+      }
+
+      .active {
+        color: #f95d43;
+      }
+
+      .line-bar {
+        background-color: #f95d43;
+        height: 2px;
+        transition: left 400ms;
+        position: absolute;
+        bottom: 0;
+      }
+    }
+  }
+
+  .tabs-box::-webkit-scrollbar {
+    display: none;
+  }
+</style>

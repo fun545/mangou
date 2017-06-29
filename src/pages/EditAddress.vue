@@ -1,0 +1,128 @@
+<template>
+  <div class="edit-address-view">
+    <!-- 页面标题 -->
+    <x-header :left-options="{backText:''}">收货地址<span slot="right" @click="save">保存</span></x-header>
+    <!-- 收货地址信息 -->
+    <group class="group">
+      <x-input title="收货人" placeholder="请填写" label-width="5em" required></x-input>
+      <x-input title="联系电话" placeholder="请填写" is-type="china-mobile" required></x-input>
+      <x-address title="地址选择" placeholder="请选择" :list="addressData" value-text-align="left"></x-address>
+      <x-textarea title="详细地址" placeholder="请填写"></x-textarea>
+    </group>
+    <!-- 是否设置为默认地址 -->
+    <group class="group">
+      <x-switch title="设为默认地址"></x-switch>
+    </group>
+    <!-- 删除地址按钮 -->
+    <div class="del-btn" @click="del">删除地址</div>
+  </div>
+</template>
+
+<script>
+  import { XHeader, Group, XInput, XTextarea, XAddress, ChinaAddressData, XSwitch } from 'vux'
+
+  export default {
+    components: {
+      XHeader,
+      Group,
+      XInput,
+      XTextarea,
+      XAddress,
+      XSwitch
+    },
+    data () {
+      return {
+        addressData: ChinaAddressData
+      }
+    },
+    methods: {
+      save () {
+        this.$vux.alert.show({content: '保存成功'})
+      },
+      del () {
+        this.$vux.alert.show({content: '删除地址成功'})
+        this.$router.go(-1)
+      }
+    }
+  }
+</script>
+
+<style lang='less'>
+  .edit-address-view .vux-header {
+    background-color: transparent;
+
+    [class^=vux-header-] {
+      color: #444;
+    }
+
+    .left-arrow:before {
+      border-width: 2px 0 0 2px;
+      border-color: #444;
+    }
+  }
+
+  .edit-address-view .group {
+    margin-bottom: 10px;
+
+    .weui-cells {
+      margin-top: 0;
+      font-size: 13px;
+    }
+
+    .weui-cell:before, .vux-cell-box:before {
+      left: 0;
+    }
+
+    .weui-cell_access .weui-label {
+      width: 5em;
+    }
+
+    .vux-popup-picker-placeholder {
+      color: #666;
+    }
+
+    .vux-input-icon, .vux-input-icon:before {
+      font-size: 18px;
+    }
+  }
+
+  .edit-address-view .del-btn {
+    display: block;
+    padding: 10px 15px;
+    font-size: 13px;
+    line-height: 20px;
+    color: red;
+    background-color: #ffffff;
+    position: relative;
+
+    &:before {
+      content: " ";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 1px;
+      border-top: 1px solid #D9D9D9;
+      color: #D9D9D9;
+      -webkit-transform-origin: 0 0;
+      transform-origin: 0 0;
+      -webkit-transform: scaleY(0.5);
+      transform: scaleY(0.5);
+    }
+
+    &:after {
+      content: " ";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      height: 1px;
+      border-bottom: 1px solid #D9D9D9;
+      color: #D9D9D9;
+      -webkit-transform-origin: 0 100%;
+      transform-origin: 0 100%;
+      -webkit-transform: scaleY(0.5);
+      transform: scaleY(0.5);
+    }
+  }
+</style>

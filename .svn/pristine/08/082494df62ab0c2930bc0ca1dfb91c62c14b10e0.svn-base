@@ -1,0 +1,339 @@
+<template>
+  <div class="order-enter-view">
+    <!-- 页面标题 -->
+    <x-header :left-options="{backText:''}" class="header">确认下单</x-header>
+    <!-- 页面内容 -->
+    <div class="order-goods">
+      <div class="order-item">
+        <!-- 商品类型 -->
+        <div class="flex-box">
+          <div class="flex-col this-title">即时送</div>
+          <div class="flex-item">送货上门</div>
+        </div>
+        <!-- 收货地址 -->
+        <router-link to="/address" class="address">
+          <div class="iconfont">&#xe638;</div>
+          <div class="flex-col">
+            <p>收货人：加多宝<span class="float-right">18688552211</span></p>
+            <p>收货人地址：开福区珠江花城扶水岸13栋202</p>
+          </div>
+          <div class="iconfont">&#xe601;</div>
+        </router-link>
+        <!-- 商品详情 -->
+        <div class="flex-box">
+          <div class="flex-col font-small">商品详情</div>
+          <div class="font-mind">共<span class="color-058bed">12</span>件</div>
+        </div>
+        <div class="goods-item" v-for="(item,index) in 2" :key="index">
+          <img src="../assets/goods_img.jpg" width="20%" alt="">
+          <div class="flex-col">
+            <p>熊孩子榴莲干零食</p>
+            <p><span class="color-058bed">¥9.9</span><span class="float-right">X2</span></p>
+          </div>
+        </div>
+        <!-- 显示/隐藏 - 更多商品 -->
+        <div class="more-btn">显示更多</div>
+        <!-- 收费价格详情 -->
+        <div class="price-box">
+          <div class="flex-box font-mind">
+            <div class="flex-col">商品总价</div>
+            <div class="flex-item">¥188.1</div>
+          </div>
+          <div class="flex-box font-mind">
+            <div class="flex-col">配送费</div>
+            <div class="flex-item">¥3</div>
+          </div>
+          <div class="flex-box top-line">
+            <div class="color-666">买家留言：</div>
+            <div class="flex-col">
+              <textarea placeholder="请输入留言内容" rows="1"></textarea>
+            </div>
+          </div>
+          <div class="flex-box top-line">
+            <div class="flex-col">实际付款</div>
+            <div class="color-058bed">¥186.1</div>
+          </div>
+        </div>
+      </div>
+      <div class="order-item">
+        <!-- 商品类型 -->
+        <div class="flex-box">
+          <div class="flex-col next-title">即时送</div>
+          <div class="flex-item">客户自取</div>
+        </div>
+        <!-- 收货地址 -->
+        <router-link to="/address" class="address">
+          <div class="iconfont">&#xe63b;</div>
+          <div class="flex-col">
+            <p>收货人：加多宝<span class="float-right">18688552211</span></p>
+            <p>收货人地址：开福区珠江花城扶水岸13栋202</p>
+          </div>
+          <div class="iconfont">&#xe601;</div>
+        </router-link>
+        <!-- 商品详情 -->
+        <div class="flex-box">
+          <div class="flex-col font-small">商品详情</div>
+          <div class="font-mind">共<span class="color-fc766d">12</span>件</div>
+        </div>
+        <div class="goods-item" v-for="(item,index) in 2" :key="index">
+          <img src="../assets/goods_img.jpg" width="20%" alt="">
+          <div class="flex-col">
+            <p>熊孩子榴莲干零食</p>
+            <p><span class="color-fc766d">¥9.9</span><span class="float-right">X2</span></p>
+          </div>
+        </div>
+        <!-- 显示/隐藏 - 更多商品 -->
+        <div class="more-btn">显示更多</div>
+        <!-- 收费价格详情 -->
+        <div class="price-box">
+          <div class="flex-box font-mind">
+            <div class="flex-col">商品总价</div>
+            <div class="flex-item">¥188.1</div>
+          </div>
+          <div class="flex-box font-mind">
+            <div class="flex-col">配送费</div>
+            <div class="flex-item">¥3</div>
+          </div>
+          <div class="flex-box top-line">
+            <div class="color-666">买家留言：</div>
+            <div class="flex-col">
+              <textarea placeholder="请输入留言内容" rows="1"></textarea>
+            </div>
+          </div>
+          <div class="flex-box top-line">
+            <div class="flex-col">实际付款</div>
+            <div class="color-fc766d">¥186.1</div>
+          </div>
+        </div>
+      </div>
+      <!-- 支付方式 -->
+      <div class="flex-box pay-box">
+        <div class="flex-item">支付方式：</div>
+        <checker class="flex-col text-right" default-item-class="default-checker" selected-item-class="selected-checker">
+          <checker-item value="1">微信</checker-item>
+          <checker-item value="2">支付宝</checker-item>
+        </checker>
+      </div>
+    </div>
+    <!-- 页面底部 -->
+    <div class="flex-box enter-box">
+      <div class="flex-col">合计：<span class="color-ff5500">¥218.3</span></div>
+      <div class="enter-order" @click="enterOrder">确认下单</div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { XHeader, Checker, CheckerItem } from 'vux'
+
+  export default{
+    components: {
+      XHeader,
+      Checker,
+      CheckerItem
+    },
+    methods: {
+      enterOrder () {
+        this.$vux.alert.show({content: '订单提交成功'})
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .order-enter-view .header {
+    background-color: #f78752;
+
+    [class^=vux-header-] {
+      color: #fff;
+    }
+  }
+
+  .order-enter-view .order-goods {
+    height: calc(~'100% - 96px');
+    overflow-y: scroll;
+
+    .order-item {
+      margin-bottom: 15px;
+
+      .color-058bed {
+        color: #058bed;
+      }
+
+      .color-fc766d {
+        color: #fc766d;
+      }
+
+      .color-666 {
+        color: #666;
+      }
+
+      .flex-box {
+        align-items: center;
+        line-height: 1;
+        padding: 10px 15px;
+        background-color: #fff;
+      }
+
+      .flex-item {
+        font-size: 13px;
+      }
+
+      .this-title {
+        font-size: 16px;
+        font-style: italic;
+        font-weight: bold;
+        color: #058bed;
+      }
+
+      .next-title {
+        font-size: 16px;
+        font-style: italic;
+        font-weight: bold;
+        color: #fc766d;
+      }
+
+      .address {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #444;
+        line-height: 1.4;
+        font-size: 12px;
+
+        .iconfont {
+          font-size: 20px;
+        }
+
+        .flex-col {
+          margin: 0 10px;
+        }
+      }
+
+      .goods-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        position: relative;
+
+        .flex-col {
+          margin-left: 10px;
+          color: #666;
+          font-size: 13px;
+        }
+
+        &:after {
+          content: '';
+          height: 1px;
+          background-color: #e1e1e1;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          left: 0;
+        }
+      }
+
+      .more-btn {
+        display: table;
+        margin: 5px auto;
+        padding: 2px 15px;
+        font-size: 12px;
+        line-height: 1;
+        border-radius: 100px;
+        color: #666;
+        background-color: #ddd;
+      }
+
+      .price-box {
+        padding: 10px 15px 0 15px;
+        background-color: #fff;
+
+        .flex-box.font-mind {
+          padding: 0 0 10px 0;
+          color: #666;
+        }
+
+        .flex-box {
+          padding: 10px 0;
+          font-size: 13px;
+          line-height: 1;
+          position: relative;
+        }
+
+        .top-line:before {
+          content: '';
+          height: 1px;
+          background-color: #ddd;
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+        }
+
+        textarea {
+          padding-left: 1em;
+          width: 100%;
+          vertical-align: middle;
+          font-size: 13px;
+          line-height: 1;
+          outline: none;
+          border: none;
+          resize: none;
+        }
+      }
+    }
+
+    .pay-box {
+      padding: 10px 15px;
+      background-color: #fff;
+      line-height: 1;
+      margin-bottom: 15px;
+      align-items: center;
+      font-size: 13px;
+
+      .default-checker {
+        margin-left: 10px;
+        padding: 4px 10px;
+        line-height: 1;
+        font-size: 12px;
+        color: #666;
+        background-color: #ddd;
+        border-radius: 100px;
+      }
+
+      .default-checker:first-child {
+        margin-left: 0;
+      }
+
+      .selected-checker {
+        color: #fff;
+      }
+
+      .selected-checker:nth-child(1) {
+        background-color: #01bd01;
+      }
+
+      .selected-checker:nth-child(2) {
+        background-color: #00a9f2;
+      }
+    }
+  }
+
+  .order-enter-view .enter-box {
+    align-items: center;
+    background-color: #fff;
+    padding-left: 15px;
+    box-shadow: #ddd 0 0 1px;
+
+    .color-ff5500 {
+      color: #ff5500;
+    }
+
+    .enter-order {
+      padding: 15px 20px;
+      line-height: 20px;
+      color: #fff;
+      background-color: #ff5500;
+    }
+  }
+</style>

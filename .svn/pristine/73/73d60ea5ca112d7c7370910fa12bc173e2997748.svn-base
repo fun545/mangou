@@ -1,0 +1,106 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      /* 宣传广告页面 */
+      path: '/',
+      component: require('../pages/Star')
+    },
+    {
+      /* Tabbar页面 */
+      path: '/tabbar',
+      component: require('../pages/Tabbar'),
+      children: [
+        {
+          /* 首页 */
+          path: 'home',
+          component: require('../pages/Home')
+        },
+        {
+          /* 即时达 */
+          path: 'this',
+          component: require('../pages/This')
+        },
+        {
+          /* 次日达 */
+          path: 'next',
+          component: require('../pages/Next')
+        },
+        {
+          /* 购物车 */
+          path: 'cart',
+          component: require('../pages/Cart')
+        },
+        {
+          /* 我的 */
+          path: 'user',
+          component: require('../pages/User')
+        }
+      ]
+    },
+    {
+      /* 定位页面 */
+      path: '/location',
+      component: require('../pages/Location')
+    },
+    {
+      /* 选择小区 */
+      path: '/village',
+      component: require('../pages/Village')
+    },
+    {
+      /* 搜索页面 */
+      path: '/search',
+      component: require('../pages/Search')
+    },
+    {
+      /* 搜索内容页面 */
+      path: '/search_text',
+      component: require('../pages/SearchText')
+    },
+    {
+      /* 登录 */
+      path: '/sign_in',
+      component: require('../pages/SignIn')
+    },
+    {
+      /* 商品详情 */
+      path: '/goods_detail',
+      component: require('../pages/GoodsDetail')
+    },
+    {
+      /* 即时送 - 专区页面 */
+      path: '/zhuanqu',
+      component: require('../pages/ZhuanQu')
+    },
+    {
+      /* 收获地址 */
+      path: '/address',
+      component: require('../pages/Address')
+    },
+    {
+      /* 收获地址 */
+      path: '/edit_address',
+      component: require('../pages/EditAddress')
+    },
+    {
+      /* 个人资料 */
+      path: '/user_info',
+      component: require('../pages/UserInfo')
+    },
+    {
+      /* 确认下单 */
+      path: '/enter_order',
+      component: require('../pages/EnterOrder')
+    },
+    {
+      /* 其它页面 */
+      path: '/:name',
+      component: {template: '<p>{{$route.params.name}} pages</p>>'}
+    }
+  ]
+})

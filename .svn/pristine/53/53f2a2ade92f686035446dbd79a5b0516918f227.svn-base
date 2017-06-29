@@ -1,0 +1,139 @@
+<template>
+  <div class="location-view">
+    <!-- 当前位置 -->
+    <div class="location"><i class="iconfont">&#xe638;</i>当前定位小区为：<span>珠江花城</span></div>
+    <!-- 搜索小区 -->
+    <div class="searchbox">
+      <input type="search" placeholder="输入搜索地区名称" @keyup.enter="searchLocation" v-model.trim="search">
+    </div>
+    <!-- 地址 -->
+    <div class="picker">
+      <ul class="city">
+        <li :class="{'active' : index === 1}" v-for="(item,index) in city">{{item}}</li>
+      </ul>
+      <ul class="area">
+        <li v-for="item in area" @click="$router.push({path:'/village'})">{{item}}</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        search: ''
+      }
+    },
+    computed: {
+      city () {
+        return ['株洲市', '长沙市', '湘潭市']
+      },
+      area () {
+        return ['雨花区', '开福区', '天心区', '芙蓉区', '岳麓区']
+      }
+    },
+    methods: {
+      searchLocation () {
+        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
+
+        this.$vux.alert.show({content: `您的搜索内容是${this.search}`})
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .location-view .location {
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 10px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+
+    i {
+      color: #f95d43;
+      display: inline-block;
+      margin-right: 5px;
+      font-size: inherit;
+      vertical-align: middle;
+    }
+
+    span {
+      color: #f95d43;
+    }
+  }
+
+  .location-view .searchbox {
+    padding: 5px 10px;
+    position: relative;
+
+    &:before {
+      content: '\e639';
+      color: #666;
+      font: 14px/1 'iconfont';
+      position: absolute;
+      top: 14px;
+      left: 20px;
+    }
+
+    input {
+      width: 100%;
+      height: 30px;
+      padding: 5px 5px 5px 28px;
+      line-height: 20px;
+      color: #666;
+      text-align: center;
+      box-sizing: border-box;
+      border-radius: 100px;
+      border: 1px solid #ddd;
+      outline: none;
+      -webkit-appearance: none;
+    }
+  }
+
+  .location-view .picker {
+    display: flex;
+    align-items: flex-start;
+    height: calc(~'100% - 80px');
+    overflow-y: scroll;
+
+    .city {
+      width: calc(~'100%/3');
+    }
+
+    .area {
+      flex-grow: 1;
+    }
+
+    .active, .area li {
+      background-color: #fff;
+    }
+
+    li {
+      padding: 5px 10px;
+      text-align: center;
+      line-height: 20px;
+      color: #444;
+      background-color: #e6e6e6;
+      list-style: none;
+      position: relative;
+    }
+
+    li:after {
+      content: '';
+      height: 1px;
+      background-color: #e6e6e6;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  .location-view .picker::-webkit-scrollbar {
+    display: none;
+  }
+</style>

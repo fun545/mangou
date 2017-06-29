@@ -1,0 +1,264 @@
+<template>
+  <div class="goods-detail-page">
+    <!-- 商品轮播图 -->
+    <swiper :list="swiperList" :aspect-ratio="639/748" dots-position="center" auto loop></swiper>
+    <div class="title-box">
+      <div class="title">
+        <h4>康利蜂蜜新西兰进口蜂蜜500g</h4>
+        <p>¥125.00<span>即时价:¥170.00</span></p>
+      </div>
+      <i class="iconfont">&#xe612;</i>
+    </div>
+    <div class="spec">
+      <p>商品规格：500g</p>
+      <p>商品编号：6912100268222624</p>
+    </div>
+    <!-- 猜你喜欢 -->
+    <div class="like"><i class="iconfont">&#xe612;</i>猜你喜欢</div>
+    <div class="like-box">
+      <div class="like-item" v-for="(item,index) in sourceGoods" :key="index">
+        <img :src="item.img" width="100%" alt="">
+        <p>气凋盒装卤鸭脖320g，武汉特产食品零食小吃</p>
+        <p>次日价：¥26.00</p>
+        <p>即时价：¥26.00</p>
+        <i class="iconfont">&#xe613;</i>
+      </div>
+    </div>
+    <!-- 结算 -->
+    <div class="total-box">
+      <div class="cart">
+        <i class="iconfont">&#xe609;</i>
+        <span>88</span>
+      </div>
+      <p>合计：<span>88.8</span></p>
+      <div class="total-btn">去结算</div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { Swiper, SwiperItem } from 'vux'
+
+  export default {
+    components: {Swiper, SwiperItem},
+    computed: {
+      swiperList () {
+        return [
+          {img: './static/goods_detail.png'},
+          {img: './static/goods_detail.png'}
+        ]
+      },
+      sourceGoods () {
+        return [
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'},
+          {img: './static/goods_img.jpg'}
+        ]
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .goods-detail-page {
+    padding-bottom: 50px;
+
+    .title-box {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      background-color: #ffffff;
+
+      .title {
+        flex-grow: 1;
+        line-height: normal;
+
+        p {
+          margin-top: 5px;
+          color: #fc5050;
+
+          span {
+            margin-left: 50px;
+            color: #aaaaaa;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .iconfont {
+        color: #fc5050;
+        font-size: 22px;
+      }
+    }
+
+    .spec {
+      line-height: 20px;
+      padding: 5px;
+      font-size: 12px;
+      color: #666666;
+      background-color: #ffffff;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .like {
+      color: #fc5050;
+      line-height: normal;
+      display: table;
+      margin: 10px auto;
+      position: relative;
+
+      &:before {
+        content: '';
+        display: table;
+        height: 1px;
+        width: 30px;
+        background-color: #fc5050;
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        transform: translate(-100%, -50%);
+      }
+
+      &:after {
+        content: '';
+        display: table;
+        height: 1px;
+        width: 30px;
+        background-color: #fc5050;
+        position: absolute;
+        right: -10px;
+        top: 50%;
+        transform: translate(100%, -50%);
+      }
+
+      .iconfont {
+        margin-right: 5px;
+        font-size: 14px;
+      }
+    }
+
+    .like-box {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0 5px 5px 5px;
+      margin-top: -5px;
+
+      .like-item {
+        background-color: #ffffff;
+        width: calc(~'100vw / 2 - 15px');
+        margin: 5px;
+        overflow: hidden;
+        border-radius: 5px;
+        box-shadow: #dddddd 2px 2px 2px;
+        font-size: 12px;
+        position: relative;
+
+        p:nth-child(2) {
+          line-height: normal;
+          margin: 5px;
+          color: #444444;
+        }
+
+        p:nth-child(3) {
+          color: #fc5050;
+          line-height: normal;
+          padding-top: 5px;
+          padding-left: 5px;
+          border-top: 1px dashed #eeeeee;
+        }
+
+        p:nth-child(4) {
+          line-height: normal;
+          color: #aaaaaa;
+          padding-bottom: 5px;
+          padding-left: 5px;
+        }
+
+        .iconfont {
+          color: #fc5050;
+          line-height: normal;
+          font-size: 22px;
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          z-index: 3;
+        }
+      }
+    }
+
+    .total-box {
+      display: flex;
+      align-items: center;
+      box-shadow: #bbbbbb 0 0 1px;
+      background-color: #ffffff;
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 9;
+
+      .cart {
+        margin: 5px 10px;
+        position: relative;
+
+        .iconfont {
+          color: #eb7e4c;
+          font-size: 30px;
+          width: 40px;
+          text-align: center;
+          height: 40px;
+          line-height: 40px;
+          display: block;
+        }
+
+        & > span {
+          text-align: center;
+          width: 15px;
+          line-height: 15px;
+          height: 15px;
+          font-size: 12px;
+          border: 1px solid #ffffff;
+          border-radius: 15px/2;
+          color: #ffffff;
+          background-color: #eb7e4c;
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+      }
+
+      p {
+        flex-grow: 1;
+        line-height: normal;
+        padding: 0 10px;
+        position: relative;
+
+        &:before {
+          content: '';
+          width: 1px;
+          height: 20px;
+          background-color: #eb7e4c;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          transform: translateY(-50%);
+        }
+
+        span {
+          color: #eb7e4c;
+        }
+      }
+
+      .total-btn {
+        align-self: stretch;
+        line-height: 50px;
+        color: #ffffff;
+        background-color: #eb7e4c;
+        padding: 0 30px;
+      }
+    }
+  }
+</style>

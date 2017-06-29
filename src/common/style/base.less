@@ -1,0 +1,28 @@
+.clearfix {
+  display: inline-block;
+  &:after {
+    display: block;
+    content: "";
+    height: 0;
+    line-height: 0;
+    clear: both;
+  }
+}
+
+@media (-webkit-device-pixel-ratio: 1.5),(device-pixel-ratio: 1.5) {
+  .border-1px {
+    &:after {
+      -webkit-transform: scaleY(.7);
+      transform: scaleY(.7);
+    }
+  }
+}
+
+@media (-webkit-device-pixel-ratio: 2),(device-pixel-ratio: 2) {
+  .border-1px {
+    &:after {
+      -webkit-transform: scaleY(.5);
+      transform: scaleY(.5);
+    }
+  }
+}

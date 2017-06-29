@@ -1,0 +1,122 @@
+<template>
+  <view-box>
+    <!-- 页面视图 -->
+    <router-view></router-view>
+    <!-- 底部标签 -->
+    <div class="tabbar" slot="bottom">
+      <router-link class="tabbar-item" to="home">
+        <div class="icon-home"></div>
+        <div class="label">首页</div>
+      </router-link>
+      <router-link class="tabbar-item" to="this">
+        <div class="icon-light"></div>
+        <div class="label">即时达</div>
+      </router-link>
+      <router-link class="tabbar-item" to="next">
+        <div class="nextday">
+          <div class="icon-nextday"></div>
+          <div class="label">次日达</div>
+        </div>
+      </router-link>
+      <router-link class="tabbar-item" to="cart">
+        <div class="icon-cart"></div>
+        <div class="label">购物车</div>
+      </router-link>
+      <router-link class="tabbar-item" to="user">
+        <div class="icon-user"></div>
+        <div class="label">我的</div>
+      </router-link>
+    </div>
+  </view-box>
+</template>
+
+<script>
+  import {ViewBox} from 'vux'
+
+  export default {
+    components: {
+      ViewBox
+    }
+  }
+</script>
+
+<style lang="less">
+  .tabbar {
+    display: flex;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: #bbbbbb 0 0 1px;
+    position: fixed;
+    bottom: 0;
+    z-index: 500;
+
+    [class^=icon-]:before {
+      font-size: 22px;
+      font-family: 'iconfont';
+      line-height: normal;
+    }
+
+    .tabbar-item {
+      flex-grow: 1;
+      padding: 5px 0;
+      height: 50px;
+      box-sizing: border-box;
+      color: #957b70;
+      text-align: center;
+      line-height: 20px;
+
+      .icon-home:before {
+        content: '\e605';
+      }
+
+      .icon-light:before {
+        content: '\e611';
+      }
+
+      .icon-nextday:before {
+        content: '\e60a';
+      }
+
+      .icon-cart:before {
+        content: '\e608';
+      }
+
+      .icon-user:before {
+        content: '\e60e';
+      }
+    }
+
+    .router-link-active {
+      color: #f75439;
+
+      .icon-home:before {
+        content: '\e60c';
+      }
+
+      .icon-light:before {
+        content: '\e60d';
+      }
+
+      .icon-cart:before {
+        content: '\e609';
+      }
+
+      .icon-user:before {
+        content: '\e60f';
+      }
+    }
+
+    .router-link-active .nextday {
+      height: 70px;
+      width: 70px;
+      border-radius: 35px;
+      box-shadow: #f9e3e0 2px 2px 2px;
+      padding: 10px;
+      margin: -12px auto -8px;
+      box-sizing: border-box;
+      color: #ffffff;
+      background: linear-gradient(#fa9e79, #f13f31);
+      transition: margin 300ms;
+    }
+  }
+</style>

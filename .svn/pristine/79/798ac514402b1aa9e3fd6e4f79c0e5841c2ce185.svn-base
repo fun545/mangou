@@ -1,0 +1,30 @@
+<template>
+  <div class="order-info-view">
+    <x-header :left-options="{backText:''}">订单详情</x-header>
+  </div>
+</template>
+
+<script>
+  import { XHeader } from 'vux'
+
+  export default{
+    components: {
+      XHeader
+    }
+  }
+</script>
+
+<style lang="less">
+  .order-info-view .vux-header {
+    background-color: #f78752;
+
+    [class^=vux-header-] {
+      color: #fff;
+    }
+
+    .left-arrow:before {
+      border-color: #fff;
+      border-width: 2px 0 0 2px;
+    }
+  }
+</style>

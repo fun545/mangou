@@ -1,0 +1,147 @@
+<template>
+  <div class="search-view">
+    <!-- 搜索窗口 -->
+    <div class="search-box">
+      <input type="search" v-model="search" @keyup.enter="searchText" placeholder="搜索内容">
+      <router-link to="/tabbar/home" class="cancel">取消</router-link>
+    </div>
+    <!-- 热词推荐 -->
+    <div class="word-box">热门搜索</div>
+    <div class="word-flex">
+      <span v-for="(item,index) in hotList" :key="index" @click="searchText(item.text)">{{item.text}}</span>
+    </div>
+    <!-- 历史搜索 -->
+    <div class="word-box">历史搜索<i class="iconfont" @click="delHistory">&#xe673;</i></div>
+    <div class="word-flex">
+      <span v-for="(item,index) in historyList" :key="index" @click="searchText(item.text)">{{item.text}}</span>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        hotList: [
+          {text: '清风纸巾促销装'},
+          {text: '汤达人酸辣豚骨面'},
+          {text: '毛毛鱼'},
+          {text: '百事可乐'},
+          {text: '健力宝运动饮料'}
+        ],
+        historyList: [],
+        search: ''
+      }
+    },
+    created () {
+      let self = this
+      this.$http.post('/slowbuy/goods/searchHistory').then(res => {
+        res.data.code === 100 ? self.historyList = res.data.KeyHistory : self.historyList = []
+      }, () => {
+        self.historyList = [
+          {text: '清风纸巾促销装'},
+          {text: '汤达人酸辣豚骨面'},
+          {text: '毛毛鱼'},
+          {text: '百事可乐'},
+          {text: '健力宝运动饮料'}
+        ]
+      })
+    },
+    methods: {
+      searchText (search) {
+        if (typeof search === 'object') {
+          if (!this.search) {
+            this.$vux.alert.show({content: '请输入搜索内容'})
+            return false
+          }
+        } else {
+          this.search = search
+        }
+        this.$router.push({path: 'searchText', query: {search: this.search}})
+      },
+      delHistory () {
+        let self = this
+        this.$http.post('/slowbuy/goods/DelHistory').then(res => {
+          res.data.code === 100
+            ? self.historyList.splice(0, self.historyList.length)
+            : self.$vux.alert.show({content: '删除历史数据出错'})
+        }, () => {
+          this.historyList.splice(0, this.historyList.length)
+        })
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .search-view {
+    background-color: #ffffff;
+
+    .search-box {
+      display: flex;
+      padding: 5px 10px;
+      border-bottom: 1px solid #eeeeee;
+      margin-bottom: 10px;
+      position: relative;
+
+      &:before {
+        content: '\e639';
+        font-family: 'iconfont';
+        color: #666666;
+        font-size: 12px;
+        line-height: normal;
+        position: absolute;
+        top: 14px;
+        left: 20px;
+      }
+
+      [type=search] {
+        flex-grow: 1;
+        line-height: 20px;
+        padding: 5px 5px 5px 30px;
+        background-color: #f2f2f2;
+        border: none;
+        border-radius: 15px;
+        box-sizing: border-box;
+        outline: none;
+      }
+
+      .cancel {
+        padding-left: 10px;
+        color: #666666;
+        font-size: 12px;
+        line-height: 30px;
+      }
+    }
+
+    .word-box {
+      display: flex;
+      line-height: 20px;
+      padding: 0 10px;
+      position: relative;
+
+      .iconfont {
+        font-size: 14px;
+        vertical-align: middle;
+        position: absolute;
+        top: 0;
+        right: 10px;
+      }
+    }
+
+    .word-flex {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 5px;
+
+      span {
+        padding: 5px 10px;
+        line-height: 20px;
+        margin: 5px;
+        color: #444444;
+        background-color: #f5f5f5;
+        border-radius: 30px/2;
+      }
+    }
+  }
+</style>

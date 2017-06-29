@@ -1,0 +1,168 @@
+<template>
+  <div class="search-text-view">
+    <!-- 搜索框 -->
+    <div class="search-box">
+      <i class="iconfont" @click="back">&#xe674;</i>
+      <div class="col">
+        <input type="search" v-model="search" placeholder="搜索内容">
+      </div>
+    </div>
+    <!-- Tab列表 -->
+    <tab :line-width="1" :active-color="activeColor" defaultColor="#999999" v-model="index">
+      <tab-item class="tab-item"><i class="iconfont">&#xe60a;</i>次日达</tab-item>
+      <tab-item class="tab-item"><i class="iconfont">&#xe61f;</i>即时送</tab-item>
+    </tab>
+    <!-- 相关内容 -->
+    <swiper :show-dots="false" :height="swiperHeight" v-model="index">
+      <swiper-item class="swiper-item">
+        <router-link to="/goodsDetail" tag="div" class="items-box" v-for="(item,index) in itemsBox" :key="index">
+          <img :src="item.img" width="30%" alt="">
+          <div class="col">
+            <p>景田百岁山350ml</p>
+            <p>次日价：¥1.5</p>
+            <p>即时价：¥2.0</p>
+          </div>
+          <i class="iconfont" :style="{color : activeColor}">&#xe613;</i>
+        </router-link>
+      </swiper-item>
+      <swiper-item class="swiper-item">
+        <router-link to="/goodsDetail" tag="div" class="items-box" v-for="(item,index) in itemsBox" :key="index">
+          <img :src="item.img" width="30%" alt="">
+          <div class="col">
+            <p>景田百岁山350ml</p>
+            <p>次日价：¥1.5</p>
+            <p>即时价：¥2.0</p>
+          </div>
+          <i class="iconfont" :style="{color : activeColor}">&#xe613;</i>
+        </router-link>
+      </swiper-item>
+    </swiper>
+  </div>
+</template>
+
+<script>
+  import {Tab, TabItem, Swiper, SwiperItem} from 'vux'
+
+  export default {
+    components: {Tab, TabItem, Swiper, SwiperItem},
+    data () {
+      return {
+        search: '',
+        index: 0,
+        itemsBox: [
+          {img: './static/goods_detail.png'},
+          {img: './static/goods_detail.png'},
+          {img: './static/goods_detail.png'},
+          {img: './static/goods_detail.png'},
+          {img: './static/goods_detail.png'}
+        ],
+        swiperHeight: '200px'
+      }
+    },
+    created () {
+      this.search = this.$route.query.search
+    },
+    computed: {
+      activeColor () {
+        return this.index ? '#07a4f6' : '#fc7070'
+      }
+    },
+    methods: {
+      back () {
+        this.$router.go(-1)
+      }
+    },
+    mounted () {
+      this.swiperHeight = this.$el.offsetHeight - 84 + 'px'
+    }
+  }
+</script>
+
+<style lang="less">
+  .search-text-view {
+    .search-box {
+      display: flex;
+      background-color: #ffffff;
+      padding: 5px;
+
+      .iconfont {
+        line-height: 30px;
+        vertical-align: middle;
+        width: 20px;
+        text-align: center;
+        color: #444444;
+      }
+
+      .col {
+        margin-left: 10px;
+        flex-grow: 1;
+        position: relative;
+
+        &:before {
+          content: '\e639';
+          color: #666666;
+          font-family: 'iconfont';
+          font-size: 12px;
+          line-height: 20px;
+          vertical-align: middle;
+          position: absolute;
+          top: 6px;
+          left: 10px;
+        }
+
+        input {
+          line-height: 20px;
+          padding: 5px 5px 5px 28px;
+          background-color: #f2f2f2;
+          outline: 0;
+          border: none;
+          border-radius: 15px;
+          width: 100%;
+          box-sizing: border-box;
+          color: #444444;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .tab-item .iconfont {
+      margin-right: 5px;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+
+    .swiper-item {
+      overflow-x: scroll;
+
+      .items-box {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #eeeeee;
+
+        .col {
+          flex-grow: 1;
+          padding: 10px;
+          font-size: 13px;
+          color: #333333;
+
+          p:nth-child(2) {
+            color: #999999;
+            font-size: 12px;
+          }
+
+          p:nth-child(3) {
+            color: #fc5000;
+            font-size: 12px;
+          }
+        }
+
+        .iconfont {
+          font-size: 24px;
+          line-height: normal;
+        }
+      }
+    }
+  }
+</style>

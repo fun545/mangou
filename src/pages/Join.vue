@@ -1,0 +1,40 @@
+<template>
+  <div class="join-view">
+    <!-- 页面头部 -->
+    <x-header :left-options="{backText:''}">加入我们</x-header>
+    <!-- 页面内容 -->
+    <div class="content-scroller">
+      <img src="../assets/jion.jpg" width="100%" alt="">
+    </div>
+  </div>
+</template>
+
+<script>
+  import { XHeader } from 'vux'
+
+  export default {
+    components: {
+      XHeader
+    }
+  }
+</script>
+
+<style lang="less">
+  .join-view .vux-header {
+    background: linear-gradient(#f17458, #eb4e3b);
+
+    .left-arrow:before {
+      border-width: 2px 0 0 2px;
+      border-color: #fff;
+    }
+  }
+
+  .join-view .content-scroller {
+    height: calc(~'100% - 46px');
+    overflow-y: scroll;
+
+    img {
+      vertical-align: middle;
+    }
+  }
+</style>

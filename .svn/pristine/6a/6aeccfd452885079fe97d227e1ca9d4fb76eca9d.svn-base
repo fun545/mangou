@@ -1,0 +1,335 @@
+<template>
+  <div class="this-view">
+    <!-- 页面头部 -->
+    <div class="head-box">
+      <!-- 显示页面主题 -->
+      <div class="is-cont" v-show="showCont">
+        <div class="flex-box">
+          <img src="../assets/light_top_userimg.png" width="80" alt="">
+          <div class="col">
+            <div class="title"><b>即时送</b><span>珠江花城店</span></div>
+            <p>7:30-23:00 | 满29元免配送费用</p>
+            <p><i class="iconfont">&#xe62a;</i>珠江花城扶水岸13栋109</p>
+            <p><i class="iconfont">&#xe624;</i>0731-66553322</p>
+          </div>
+        </div>
+        <div class="search-box"><input type="text" placeholder="搜索内容"></div>
+        <div class="link-box">
+          <router-link to="/zhuanqu">家庭主妇</router-link>
+          <router-link to="/zhuanqu">宅男</router-link>
+          <router-link to="/zhuanqu">萌妹专区</router-link>
+          <router-link to="/zhuanqu">大叔专享</router-link>
+          <router-link to="/zhuanqu">宅女</router-link>
+          <router-link to="/zhuanqu">萝莉</router-link>
+        </div>
+      </div>
+      <!-- 只显示搜索框 -->
+      <div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>
+    </div>
+    <!-- 商品列表 -->
+    <flexbox class="flex-box scroller" :gutter="0" :style="{height:flexboxHeight}">
+      <flexbox-item :span="4" class="flex-left">
+        <side-bar>
+          <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index">
+            <i class="iconfont" v-html="item.icon"></i><span v-html="item.name"></span>
+          </side-item>
+        </side-bar>
+      </flexbox-item>
+      <flexbox-item :span="8" class="flex-right">
+        <tabs>
+          <tabs-item v-for="(item,index) in tabsList" :key="index">{{item.name}}</tabs-item>
+        </tabs>
+        <div class="googs-list" v-scroll="onScroll">
+          <router-link to="/goods_detail" class="goods-item" v-for="(item,index) in goodsList" :key="index">
+            <img :src="item.img" width="30%" alt="">
+            <div class="col">
+              <p>景田百岁山348ml</p>
+              <p>即时价：¥2.0</p>
+              <p>次日价：¥1.5</p>
+            </div>
+            <div class="iconfont">&#xe613;</div>
+          </router-link>
+        </div>
+      </flexbox-item>
+    </flexbox>
+  </div>
+</template>
+
+<script>
+  import { Flexbox, FlexboxItem } from 'vux'
+  import SideBar from '../components/SideBar'
+  import SideItem from '../components/SideItem'
+  import Tabs from '../components/Tabs'
+  import TabsItem from '../components/TabsItem'
+
+  export default {
+    components: {
+      Flexbox,
+      FlexboxItem,
+      SideBar,
+      SideItem,
+      Tabs,
+      TabsItem
+    },
+    data () {
+      return {
+        showCont: true,
+        scrollTop: '',
+        flexboxHeight: ''
+      }
+    },
+    computed: {
+      sideList () {
+        return [
+          {icon: '&#xe61c;', name: '饮料乳品'},
+          {icon: '&#xe62d;', name: '酒水槟榔'},
+          {icon: '&#xe622;', name: '休闲食品'},
+          {icon: '&#xe623;', name: '冲调速饮'},
+          {icon: '&#xe619;', name: '粮油面食'},
+          {icon: '&#xe631;', name: '进口食品'},
+          {icon: '&#xe61a;', name: '文体用品'},
+          {icon: '&#xe623;', name: '个人护理'},
+          {icon: '&#xe637;', name: '针棉服饰'},
+          {icon: '&#xe636;', name: '代&emsp;&emsp;购'}
+        ]
+      },
+      tabsList () {
+        return [
+          {name: '火腿'},
+          {name: '面粉'},
+          {name: '调料'},
+          {name: '大米'},
+          {name: '方便面'}
+        ]
+      },
+      goodsList () {
+        return [
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'},
+          {img: './static/goods_img01.jpg'}
+        ]
+      }
+    },
+    methods: {
+      onScroll (e, pos) {
+        if (pos.scrollTop > this.scrollTop + 100 || pos.scrollTop < this.scrollTop - 100) {
+          this.scrollTop = pos.scrollTop
+        }
+
+        let clientHeight = e.target.clientHeight
+        let scrollHeight = e.target.scrollHeight
+        let scrollTop = pos.scrollTop
+
+        if (scrollTop + clientHeight >= scrollHeight) {
+          console.log('滚动到底部')
+        }
+      }
+    },
+    watch: {
+      scrollTop (val, oldVal) {
+        if (val > oldVal) {
+          this.showCont = false
+          this.flexboxHeight = 'calc(100% - 50px)'
+        } else {
+          this.showCont = true
+          this.flexboxHeight = 'calc(100% - 153px)'
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .this-view {
+    .is-cont {
+      padding: 5px 10px;
+      background: url("../assets/this_top_back.png") no-repeat center/cover;
+
+      .flex-box {
+        padding-left: 15px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+
+        .col {
+          flex-grow: 1;
+          margin-left: 10px;
+        }
+
+        :nth-child(2) {
+          color: #ffffff;
+          font-weight: normal;
+          font-size: 12px;
+
+          .title {
+            b {
+              font-size: 14px;
+              font-style: italic;
+              margin-right: 10px;
+            }
+
+            span {
+              padding: 2px 12px;
+              background-color: rgba(0, 0, 0, .1);
+              font-size: 12px;
+              line-height: 16px;
+              border-radius: 10px;
+              display: inline-block;
+            }
+          }
+
+          p:nth-child(2) {
+            opacity: .8;
+            line-height: 20px;
+          }
+        }
+
+        .iconfont {
+          margin-right: 5px;
+          font-size: inherit;
+        }
+      }
+
+      .search-box {
+        margin-top: 5px;
+        position: relative;
+
+        &:before {
+          content: '\e639';
+          font-family: 'iconfont';
+          color: #666666;
+          font-size: 12px;
+          position: absolute;
+          top: 6px;
+          left: 15px;
+        }
+
+        input {
+          padding: 5px 5px 5px 32px;
+          width: 100%;
+          box-sizing: border-box;
+          line-height: 20px;
+          outline: none;
+          border-radius: 15px;
+          background-color: #ffffff;
+          border: none;
+        }
+
+        ::-webkit-input-placeholder {
+          color: #666666;
+        }
+      }
+
+      .link-box {
+        line-height: 20px;
+        margin-top: 5px;
+
+        a {
+          color: #ffffff;
+          margin: 0 5px;
+          display: inline-block;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .is-search {
+      padding: 10px;
+      background-color: #089cf6;
+      position: relative;
+
+      &:before {
+        content: '\e639';
+        font-family: 'iconfont';
+        color: #ffffff;
+        font-size: 12px;
+        vertical-align: middle;
+        position: absolute;
+        top: 16px;
+        left: 25px;
+      }
+
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        line-height: 20px;
+        padding: 5px 5px 5px 30px;
+        border-radius: 15px;
+        border: none;
+        outline: none;
+        color: #ffffff;
+        font-weight: normal;
+        background-color: #53baf9;
+      }
+
+      ::-webkit-input-placeholder {
+        color: #ffffff;
+      }
+    }
+
+    .flex-box {
+      font-size: 12px;
+      display: flex;
+      align-items: flex-start;
+      height: calc(~'100% - 153px');
+      overflow: hidden;
+
+      .flex-left {
+        height: 100%;
+        width: calc(~"100vw/3");
+      }
+
+      .flex-right {
+        box-sizing: border-box;
+        height: 100%;
+        width: calc(~"100vw - 100vw/3");
+        padding-left: 10px;
+        background-color: #ffffff;
+      }
+    }
+
+    .googs-list {
+      height: calc(~"100% - 31px");
+      overflow-y: scroll;
+
+      .goods-item {
+        display: flex;
+        padding: 10px 10px 10px 0;
+        color: #444;
+        border-bottom: 1px solid #eee;
+        align-items: center;
+
+        .col {
+          flex-grow: 1;
+          margin: auto 10px;
+
+          p:nth-child(1) {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+          }
+
+          p:nth-child(2) {
+            color: #fd7e7e;
+          }
+
+          p:nth-child(3) {
+            color: #999999;
+          }
+        }
+
+        .iconfont {
+          font-size: 20px;
+          color: #03c3f6;
+        }
+      }
+    }
+  }
+
+</style>

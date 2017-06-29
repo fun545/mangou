@@ -1,0 +1,195 @@
+<template>
+  <div class="user-info-view">
+    <!-- 页面标题 -->
+    <x-header :left-options="{backText:''}">个人资料<span slot="right" @click="submit">提交</span></x-header>
+    <!-- 用户头像 -->
+    <div class="picture">
+      <img src="../assets/vux_logo.png" width="100%" alt="">
+    </div>
+    <!-- 用户信息 -->
+    <group class="group">
+      <x-input title="昵称" :show-clear="false" text-align="right" v-model="name"></x-input>
+
+      <cell title="手机号码" v-model="phone" @click.native="setPhone = !setPhone" is-link></cell>
+      <x-dialog v-model="setPhone" hide-on-blur>
+        <div class="dialog-hd">设置手机号</div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><i class="iconfont">&#xe643;</i></div>
+          <div class="weui-cell__bd">
+            <input type="tel" class="weui-input" maxlength="11" v-model="phoneCode" placeholder="请输入手机号">
+          </div>
+          <div class="weui-cell__ft"><span>获取验证码</span></div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><i class="iconfont">&#xe642;</i></div>
+          <div class="weui-cell__bd"><input type="text" class="weui-input" placeholder="请填写验证码"></div>
+        </div>
+        <div class="weui-cell dialog-ft">
+          <div class="mangou-btn">跳过</div>
+          <div class="mangou-btn mangou-btn-primary">绑定</div>
+        </div>
+      </x-dialog>
+
+      <cell title="性别" :arrow-direction="showSex ? 'down' : 'right'" @click.native="showSex = !showSex" is-link></cell>
+      <template v-if="showSex">
+        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item" v-model="sex">
+          <checker-item value="1">男</checker-item>
+          <checker-item value="2">女</checker-item>
+          <checker-item value="3">保密</checker-item>
+        </checker>
+      </template>
+
+      <cell title="年龄" :arrow-direction="showAge ? 'down' : 'right'" @click.native="showAge = !showAge" is-link></cell>
+      <template v-if="showAge">
+        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item" v-model="age">
+          <checker-item value="1">18-25</checker-item>
+          <checker-item value="2">26-35</checker-item>
+          <checker-item value="3">35-45</checker-item>
+          <checker-item value="4">45以上</checker-item>
+        </checker>
+      </template>
+    </group>
+  </div>
+</template>
+
+<script>
+  import { XDialog, Group, XHeader, XInput, Cell, Checker, CheckerItem } from 'vux'
+
+  export default {
+    components: {
+      XDialog,
+      XHeader,
+      Group,
+      XInput,
+      Cell,
+      Checker,
+      CheckerItem
+    },
+    data () {
+      return {
+        name: '加多宝',
+        setPhone: false,
+        phone: '18665431234',
+        phoneCode: '',
+        showSex: false,
+        sex: '1',
+        showAge: false,
+        age: '1'
+      }
+    },
+    methods: {
+      submit () {
+        this.$vux.alert.show({content: '提交信息成功'})
+      }
+    }
+  }
+</script>
+
+<style lang='less'>
+  .user-info-view {
+    & > div {
+      position: relative;
+    }
+
+    &:before {
+      content: '';
+      height: 166px;
+      background-color: #ff5500;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .vux-header [class^=vux-header-] {
+      color: #ffffff;
+    }
+
+    .picture {
+      height: 80px;
+      width: 80px;
+      box-sizing: border-box;
+      border: 2px solid #fff;
+      border-radius: 40px;
+      margin: 20px auto;
+      background-color: #eee;
+      overflow: hidden;
+    }
+
+    .group {
+      .weui-cells {
+        font-size: 14px;
+      }
+
+      .weui-label, .vux-label {
+        color: #666;
+      }
+
+      .weui-input {
+        color: #999;
+      }
+
+      .weui-dialog {
+        .dialog-hd {
+          padding: 10px;
+          text-align: center;
+          font-size: 18px;
+          line-height: 30px;
+          color: #ffffff;
+          background-color: #ff5500;
+        }
+
+        .dialog-ft {
+          justify-content: space-between;
+        }
+
+        .iconfont {
+          color: #ff5500;
+          padding-right: 10px;
+        }
+
+        .mangou-btn {
+          height: 30px;
+          box-sizing: border-box;
+          padding: 5px 30px;
+          line-height: 20px;
+          border-radius: 15px;
+          color: #ff5500;
+          border: 1px solid #ff5500;
+        }
+
+        .mangou-btn-primary {
+          color: #ffffff;
+          background-color: #ff5500;
+        }
+      }
+
+      .weui-cell:before {
+        left: 0;
+      }
+
+      .vux-checker-box {
+        justify-content: flex-end;
+      }
+
+      .checker-default-item {
+        margin-left: 10px;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 12px;
+        line-height: 20px;
+        color: #444444;
+        background-color: #ddd;
+      }
+
+      .checker-default-item:first-child {
+        margin-left: 0;
+      }
+
+      .checker-selected-item {
+        color: #fff;
+        background-color: #ff5500;
+      }
+    }
+  }
+</style>

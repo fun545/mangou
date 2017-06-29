@@ -1,0 +1,22 @@
+<template>
+  <div class="side-item" :class="{active:isActive}" @click="onItemClick">
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        isActive: false,
+        currentIndex: -1
+      }
+    },
+    methods: {
+      onItemClick () {
+        this.$parent.currentIndex = this.currentIndex
+        this.$emit('click')
+      }
+    }
+  }
+</script>

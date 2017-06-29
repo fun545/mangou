@@ -1,0 +1,28 @@
+<template>
+  <div class="tabs-item" :class="{active:isActive}" :style="{width:`${width}px`}" @click="onItemClick">
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: {
+      width: {
+        type: Number,
+        default: 60
+      }
+    },
+    data () {
+      return {
+        isActive: false,
+        currentIndex: -1
+      }
+    },
+    methods: {
+      onItemClick () {
+        this.$parent.currentIndex = this.currentIndex
+        this.$emit('click')
+      }
+    }
+  }
+</script>

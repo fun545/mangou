@@ -1,0 +1,268 @@
+{
+  "mapClassify": [
+    {
+      "classifyId": 1001,
+      "classifys": [
+        {
+          "classifyId": 50,
+          "classifyParentId": 1001,
+          "classifyName": "é¥®ç”¨æ°´"
+        },
+        {
+          "classifyId": 51,
+          "classifyParentId": 1001,
+          "classifyName": "èŒ¶é¥®æžœæ±"
+        },
+        {
+          "classifyId": 53,
+          "classifyParentId": 1001,
+          "classifyName": "ç¢³é…¸ç±»"
+        },
+        {
+          "classifyId": 52,
+          "classifyParentId": 1001,
+          "classifyName": "å¥¶é¥®åŠŸèƒ½"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "é¥®æ–™æžœæ±",
+      "classifyImgUrl": ""
+    },
+    {
+      "classifyId": 1002,
+      "classifys": [
+        {
+          "classifyId": 54,
+          "classifyParentId": 1002,
+          "classifyName": "é…¸å¥¶"
+        },
+        {
+          "classifyId": 55,
+          "classifyParentId": 1002,
+          "classifyName": "å¸¸æ¸©å¥¶"
+        },
+        {
+          "classifyId": 56,
+          "classifyParentId": 1002,
+          "classifyName": "å†°æ¿€å‡Œ"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "ç‰›å¥¶åˆ¶å“"
+    },
+    {
+      "classifyId": 1003,
+      "classifys": [
+        {
+          "classifyId": 57,
+          "classifyParentId": 1003,
+          "classifyName": "èœœé¥¯æ ¸æžœ"
+        },
+        {
+          "classifyId": 58,
+          "classifyParentId": 1003,
+          "classifyName": "é¥¼å¹²ç³•ç‚¹ "
+        },
+        {
+          "classifyId": 59,
+          "classifyParentId": 1003,
+          "classifyName": "ç†Ÿé£Ÿç±»"
+        },
+        {
+          "classifyId": 60,
+          "classifyParentId": 1003,
+          "classifyName": "è†¨åŒ–ç±»"
+        },
+        {
+          "classifyId": 61,
+          "classifyParentId": 1003,
+          "classifyName": "ç³–æžœç±»"
+        },
+        {
+          "classifyId": 62,
+          "classifyParentId": 1003,
+          "classifyName": "å†²è°ƒç±»"
+        },
+        {
+          "classifyId": 63,
+          "classifyParentId": 1003,
+          "classifyName": "å·§å…‹åŠ›"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "ä¼‘é—²é£Ÿå“"
+    },
+    {
+      "classifyId": 1004,
+      "classifys": [
+        {
+          "classifyId": 64,
+          "classifyParentId": 1004,
+          "classifyName": "ç™½é…’"
+        },
+        {
+          "classifyId": 65,
+          "classifyParentId": 1004,
+          "classifyName": "å•¤é…’"
+        },
+        {
+          "classifyId": 66,
+          "classifyParentId": 1004,
+          "classifyName": "å…¶ä»–é…’"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "é…’ç±»å•†å“"
+    },
+    {
+      "classifyId": 1005,
+      "classifys": [
+        {
+          "classifyId": 67,
+          "classifyParentId": 1005,
+          "classifyName": "ç±³æ²¹"
+        },
+        {
+          "classifyId": 68,
+          "classifyParentId": 1005,
+          "classifyName": "é¢æ¡"
+        },
+        {
+          "classifyId": 69,
+          "classifyParentId": 1005,
+          "classifyName": "é¢ç²‰"
+        },
+        {
+          "classifyId": 70,
+          "classifyParentId": 1005,
+          "classifyName": "æ–¹ä¾¿é¢"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "ç±³é¢ç²®æ²¹"
+    },
+    {
+      "classifyId": 1006,
+      "classifys": [
+        {
+          "classifyId": 71,
+          "classifyParentId": 1006,
+          "classifyName": "è°ƒå‘³å“"
+        },
+        {
+          "classifyId": 72,
+          "classifyParentId": 1006,
+          "classifyName": "å¹²è´§"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "å¹²è´§è°ƒå‘³"
+    },
+    {
+      "classifyId": 1007,
+      "classifys": [
+        {
+          "classifyId": 73,
+          "classifyParentId": 1007,
+          "classifyName": "çº¸å“"
+        },
+        {
+          "classifyId": 74,
+          "classifyParentId": 1007,
+          "classifyName": "ç‰™è†ç‰™åˆ·"
+        },
+        {
+          "classifyId": 75,
+          "classifyParentId": 1007,
+          "classifyName": "ä¸ªäººæ´—æŠ¤"
+        },
+        {
+          "classifyId": 76,
+          "classifyParentId": 1007,
+          "classifyName": "å…¶ä»–"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "ä¸ªäººæŠ¤ç†"
+    },
+    {
+      "classifyId": 1008,
+      "classifys": [
+        {
+          "classifyId": 77,
+          "classifyParentId": 1008,
+          "classifyName": "èšŠé¦™æ€è™«"
+        },
+        {
+          "classifyId": 78,
+          "classifyParentId": 1008,
+          "classifyName": "è¡£ç‰©æ¸…æ´"
+        },
+        {
+          "classifyId": 79,
+          "classifyParentId": 1008,
+          "classifyName": "å®¶ç”¨æ¸…æ´"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "å±…å®¶æ¸…æ´"
+    },
+    {
+      "classifyId": 1009,
+      "classifys": [
+        {
+          "classifyId": 80,
+          "classifyParentId": 1009,
+          "classifyName": "éž‹æœé’ˆç»µ"
+        },
+        {
+          "classifyId": 81,
+          "classifyParentId": 1009,
+          "classifyName": "é›¨å…·æ‹–éž‹"
+        },
+        {
+          "classifyId": 82,
+          "classifyParentId": 1009,
+          "classifyName": "ç”µå™¨äº”é‡‘"
+        },
+        {
+          "classifyId": 83,
+          "classifyParentId": 1009,
+          "classifyName": "æ–‡ä½“"
+        },
+        {
+          "classifyId": 84,
+          "classifyParentId": 1009,
+          "classifyName": "å°ç™¾è´§"
+        },
+        {
+          "classifyId": 85,
+          "classifyParentId": 1009,
+          "classifyName": "ä¸€æ¬¡ç”¨å“"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "å®¶å±…ç™¾è´§"
+    },
+    {
+      "classifyId": 1010,
+      "classifys": [],
+      "classifyParentId": 0,
+      "classifyName": "é¢„å”®å›¢è´­"
+    },
+    {
+      "classifyId": 1011,
+      "classifys": [
+        {
+          "classifyId": 86,
+          "classifyParentId": 1011,
+          "classifyName": "å…¨éƒ¨"
+        }
+      ],
+      "classifyParentId": 0,
+      "classifyName": "å…¶ä»–ç±»åˆ«"
+    }
+  ],
+  "code": 100,
+  "msg": "æˆåŠŸ"
+}

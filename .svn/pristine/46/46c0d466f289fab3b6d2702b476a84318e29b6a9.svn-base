@@ -1,0 +1,44 @@
+<template>
+  <div id="village-page">
+    <ul class="village">
+      <li v-for="item in villageList" :key="item" @click="chooseVillage(item)">{{item.villageName}}</li>
+    </ul>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        villageList: []
+      }
+    },
+    created () {
+      this.$http.post('/slowbuy/village/villageList', this.$route.query).then(res => {
+        const data = res.data
+        data.code === 100 ? this.villageList = data.villageList : this.villageList = []
+      })
+    },
+    methods: {
+      /**
+       * 选择小区
+       * @param village 小区对象属性
+       */
+      chooseVillage (village) {
+        console.log(village)
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .village {
+    background-color: #ffffff;
+
+    li {
+      line-height: 20px;
+      padding: 10px;
+      border-bottom: 1px solid #eeeeee;
+    }
+  }
+</style>

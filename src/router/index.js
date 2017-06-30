@@ -191,6 +191,11 @@ export default new Router({
       /* 意见反馈 */
       path: '/about',
       component: require('../pages/About')
+    },
+    {
+      /* 二级分类商品列表 */
+      path: '/list1',
+      component: require('../pages/nextSecondList1')
     }
   ]
 })

@@ -22,11 +22,8 @@
     components: {
       XDialog
     },
-    props: {
-      isDialog: {
-        type: Boolean,
-        dafault: false
-      }
+    data () {
+      return {isDialog: false}
     }
   }
 </script>
@@ -39,6 +36,7 @@
     color: #ffffff;
     font-size: 20px;
   }
+
   .instruction {
     .dialog-head {
       font-size: 13px;

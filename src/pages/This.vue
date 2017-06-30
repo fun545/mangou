@@ -1,5 +1,5 @@
 <template>
-  <div class="this-view">
+  <div class="this">
     <!-- 页面头部 -->
     <div class="head-box">
       <!-- 显示页面主题 -->
@@ -22,8 +22,8 @@
       <!--<div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>-->
     </div>
     <!-- 商品列表 -->
-    <flexbox class="flex-box scroller" :gutter="0" :style="{height:flexboxHeight}">
-      <flexbox-item :span="2.8" class="flex-left">
+    <div class="content">
+      <div class="menu-wrap" ref="menuWrap">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
                      @click.native="memuChange(item.classifyId,index)"
@@ -31,8 +31,8 @@
             <span v-html="item.classifyName"></span>
           </side-item>
         </side-bar>
-      </flexbox-item>
-      <flexbox-item :span="9.2" class="flex-right">
+      </div>
+      <div class="list-wrap">
         <div class="goods-sort">
           <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="sortSelectIndex=1">综合排序</div>
           <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
@@ -50,23 +50,26 @@
             </div>
           </div>
         </div>
-        <div class="googs-list" v-scroll="onScroll">
-          <router-link to="/goods_detail" class="goods-item" v-for="(item,index) in goodsList" :key="index">
-            <img :src="item.goodsImgUrl" alt="" class="pic">
-            <div class="col">
-              <p class="title">{{item.goodsName}}</p>
-              <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-              <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-            </div>
-            <div class="iconfont shop-car">&#xe613;</div>
-          </router-link>
+        <div class="goods-list-wrap" ref="goodsListWrap">
+          <div class="googs-list">
+            <router-link to="/goods_detail" class="goods-item" v-for="(item,index) in goodsList" :key="index">
+              <img :src="item.goodsImgUrl" alt="" class="pic">
+              <div class="col">
+                <p class="title">{{item.goodsName}}</p>
+                <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+              </div>
+              <div class="iconfont shop-car">&#xe613;</div>
+            </router-link>
+          </div>
         </div>
-      </flexbox-item>
-    </flexbox>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
   import {Flexbox, FlexboxItem} from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
@@ -75,6 +78,7 @@
 
   export default {
     components: {
+      BScroll,
       Flexbox,
       FlexboxItem,
       SideBar,
@@ -101,6 +105,9 @@
       this.post('/classify/firstClassifyList_new', {storeId: 2, villageId: 1, shopType: 2}).then((res) => {
         if (res.data.code === 100) {
           this.sideList = res.data.firstClassifyList
+          this.$nextTick(() => {
+            this._initScroll()
+          })
         }
       })
       this.post('/basic/getStoreMsg', {storeId: 2}).then((res) => {
@@ -163,6 +170,12 @@
           this.getGoods(this.firstClassifyId)
           this.saleSortFlag = false
         }
+      },
+      _initScroll () {
+        this.menuSroll = new BScroll(this.$refs.menuWrap, {
+          click: true
+        })
+        this.listSroll = new BScroll(this.$refs.goodsListWrap)
       }
     }
   }
@@ -172,7 +185,8 @@
   @import "../common/style/varlable";
   @import "../common/style/sum";
 
-  .this-view {
+  .this {
+    height: 100%;
     .strong {
       span {
         padding: 5px;
@@ -184,7 +198,11 @@
     .sort-icon-selected {
       color: @theme-color-blue !important;
     }
+    .head-box {
+      .h(190);
+    }
     .is-cont {
+      box-sizing: border-box;
       padding: 5px 10px;
       .pt(25);
       .pb(5);
@@ -323,29 +341,39 @@
       }
     }
 
-    .flex-box {
-      font-size: 12px;
-      display: flex;
-      align-items: flex-start;
-      height: calc(~'100% - 95px');
+    .content {
+      position: absolute;
+      .t(190);
+      left: 0;
+      right: 0;
+      bottom: 50px;
       overflow: hidden;
-
-      .flex-left {
+      .menu-wrap {
+        position: absolute;
+        left: 0;
+        top: 0;
+        .w(172);
         height: 100%;
-        width: calc(~"100vw/3");
+        overflow: hidden;
       }
-
-      .flex-right {
+      .list-wrap {
+        background: #fff;
+        position: absolute;
+        top: 0;
+        right: 0;
         box-sizing: border-box;
+        .w(578);
         height: 100%;
-        width: calc(~"100vw - 100vw/3");
-        padding-left: 10px;
-        background-color: #ffffff;
+        overflow: hidden;
         .goods-sort {
+          position: absolute;
+          z-index: 10;
+          background: #fff;
           box-sizing: border-box;
-          display: flex;
-          justify-content: space-around;
           color: #666;
+          top: 0;
+          right: 0;
+          .w(568);
           .h(91);
           .lh(91);
           .fs(24);
@@ -354,9 +382,9 @@
             color: #089cf6;
           }
           .sort-item {
+            display: inline-block;
             position: relative;
-            display: flex;
-            align-items: center;
+            .ml(70);
             .sort-icon {
               .w(12);
               .h(20);
@@ -379,75 +407,80 @@
         }
       }
     }
-
-    .googs-list {
-      height: 100%;
-      overflow-y: scroll;
-      .goods-item {
-        position: relative;
-        display: flex;
-        /*padding: 10px 10px 10px 0;*/
-        box-sizing: border-box;
-        .h(227);
-        color: #444;
-        border-bottom: 1px solid #eee;
-        align-items: center;
-        .pic {
-          .w(220);
-          .h(220);
-          .mr(18);
-        }
-        .col {
-          /*flex-grow: 1;*/
-          /*margin: auto 10px;*/
-          .ml(9);
-          align-self: flex-start;
-          .title {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            overflow: hidden;
-            color: #443d39;
-            .fs(26);
-            .lh(72);
-            .mb(40);
+    .goods-list-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      .t(91);
+      bottom: 0;
+      .googs-list {
+        .pl(10);
+        .goods-item {
+          position: relative;
+          display: flex;
+          /*padding: 10px 10px 10px 0;*/
+          box-sizing: border-box;
+          .h(227);
+          color: #444;
+          border-bottom: 1px solid #eee;
+          align-items: center;
+          .pic {
+            .w(220);
+            .h(220);
+            .mr(18);
           }
-          .this-price {
-            color: @theme-color;
-            .fs(22);
-            .lh(29);
-            .s1 {
-              .fs(20);
-            }
-            .number {
+          .col {
+            /*flex-grow: 1;*/
+            /*margin: auto 10px;*/
+            .ml(9);
+            align-self: flex-start;
+            .title {
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1;
+              overflow: hidden;
+              color: #443d39;
               .fs(26);
+              .lh(72);
+              .mb(40);
             }
-          }
+            .this-price {
+              color: @theme-color;
+              .fs(22);
+              .lh(29);
+              .s1 {
+                .fs(20);
+              }
+              .number {
+                .fs(26);
+              }
+            }
 
-          .next-price {
-            color: #888;
-            .fs(26);
-            .s1 {
+            .next-price {
+              color: #888;
               .fs(26);
-            }
-            .number {
-              .fs(30);
+              .s1 {
+                .fs(26);
+              }
+              .number {
+                .fs(30);
+              }
             }
           }
-        }
 
-        .iconfont.shop-car {
-          .fs(26);
-          color: #089cf6;
-          border: 1px solid #089cf6;
-          border-radius: 50%;
-          .pl(4);
-          .pr(4);
-          .pt(4);
-          .pb(4);
-          position: absolute;
-          .r(32);
-          .b(46);
+          .iconfont.shop-car {
+            .fs(26);
+            color: #089cf6;
+            border: 1px solid #089cf6;
+            border-radius: 50%;
+            .pl(4);
+            .pr(4);
+            .pt(4);
+            .pb(4);
+            position: absolute;
+            .r(32);
+            .b(46);
+          }
         }
       }
     }

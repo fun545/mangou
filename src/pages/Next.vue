@@ -4,7 +4,7 @@
       <!-- 搜索框 -->
       <div class="search-box">
         <next-search></next-search>
-        <instruction :isDialog="isDialog"></instruction>
+        <instruction></instruction>
       </div>
       <!-- 弹窗内容 -->
     </div>
@@ -20,19 +20,21 @@
       </div>
       <div class="list-wrap f-r" ref="listWrap">
         <div>
-          <div class="list-item" v-for="(firstClass,index) in AllFirstClassify" :key="index">
-            <div class="title" v-for="">
-              <i class="circle"></i>
-              <span>{{firstClass.classifyName}}</span>
-              <i class="iconfont icon">&#xe601;</i>
-            </div>
-            <div class="list clearfix">
-              <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index">
-                <img :src="item.classifyImgUrl" alt="" class="pic">
-                <p class="name t-c">{{item.classifyName}}</p>
+          <router-link to="/list1">
+            <div class="list-item" v-for="(firstClass,index) in AllFirstClassify" :key="index">
+              <div class="title">
+                <i class="circle"></i>
+                <span>{{firstClass.classifyName}}</span>
+                <i class="iconfont icon">&#xe601;</i>
+              </div>
+              <div class="list clearfix">
+                <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index">
+                  <img :src="item.classifyImgUrl" alt="" class="pic">
+                  <p class="name t-c">{{item.classifyName}}</p>
+                </div>
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -50,7 +52,6 @@
     components: {XDialog, instruction, nextSearch, SideBar, SideItem, BScroll},
     data () {
       return {
-        isDialog: false,
         search: '',
         typeIndex: 0,
         ind: '',
@@ -59,14 +60,15 @@
       }
     },
     created () {
-      var _this = this
       this.post('/classify/getClassifyAll', {}).then((res) => {
-        this.AllFirstClassify = res.data.mapClassify
-        console.log(_this.AllFirstClassify)
-        this.$nextTick(() => {
-          console.log(this.$refs.menuWrapper)
-          this._initScroll()
-        })
+        if (res.data.code === 100) {
+          this.AllFirstClassify = res.data.mapClassify
+          console.log(this.AllFirstClassify)
+          this.$nextTick(() => {
+            console.log(this.$refs.menuWrapper)
+            this._initScroll()
+          })
+        }
       })
     },
     methods: {
@@ -123,7 +125,7 @@
       right: 0;
       .t(100);
       overflow: hidden;
-      bottom: 50px;
+      bottom: 0;
       .menu-wrap {
         height: 100%;
         .w(172);

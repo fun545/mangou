@@ -5,6 +5,7 @@
 <style lang="less">
   @import "~vux/src/styles/reset.less";
   @import "common/style/index.less";
+  @import "common/style/sum";
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
@@ -14,7 +15,10 @@
     url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.ttf') format('truetype'),
     url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.svg#iconfont') format('svg');
   }
-
+  .weui-tab__panel{
+    overflow: hidden !important;
+    padding-bottom:0 !important;
+  }
   .iconfont {
     font: normal 16px/1.1 'iconfont';
     -webkit-font-smoothing: antialiased;

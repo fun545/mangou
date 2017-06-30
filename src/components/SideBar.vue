@@ -13,10 +13,6 @@
 
   .side-bar {
     background-color: #eeeeee;
-    height: 100%;
-    overflow-y: scroll;
-    position: relative;
-
     .side-item {
       box-sizing: border-box;
       text-align: center;

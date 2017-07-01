@@ -1,33 +1,34 @@
 <template>
-  <view-box>
-    <!-- 页面视图 -->
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
-    <!-- 底部标签 -->
-    <tabbar slot="bottom">
-      <tabbar-item link="home" active-class="item-active">
-        <div class="icon-home" slot="icon"/>
-        <div class="item-label" slot="label">首页</div>
-      </tabbar-item>
-      <tabbar-item link="this" active-class="item-active">
-        <div class="icon-this" slot="icon"/>
-        <div class="item-label" slot="label">即时达</div>
-      </tabbar-item>
-      <tabbar-item link="next" active-class="item-active" transition-class="transition-item">
-        <div class="iconfont" slot="icon">&#xe60a;</div>
-        <div class="item-label" slot="label">次日达</div>
-      </tabbar-item>
-      <tabbar-item link="cart" active-class="item-active" :badge="123">
-        <div class="icon-cart" slot="icon"/>
-        <div class="item-label" slot="label">购物车</div>
-      </tabbar-item>
-      <tabbar-item link="user" active-class="item-active">
-        <div class="icon-user" slot="icon"/>
-        <div class="item-label" slot="label">我的</div>
-      </tabbar-item>
-    </tabbar>
-  </view-box>
+  <div>
+      <!-- 页面视图 -->
+      <keep-alive>
+        <router-view>
+        </router-view>
+      </keep-alive>
+      <!-- 底部标签 -->
+      <tabbar slot="bottom">
+        <tabbar-item link="home" active-class="item-active">
+          <div class="icon-home" slot="icon"/>
+          <div class="item-label" slot="label">首页</div>
+        </tabbar-item>
+        <tabbar-item link="this" active-class="item-active">
+          <div class="icon-this" slot="icon"/>
+          <div class="item-label" slot="label">即时达</div>
+        </tabbar-item>
+        <tabbar-item link="next" active-class="item-active" transition-class="transition-item">
+          <div class="iconfont" slot="icon">&#xe60a;</div>
+          <div class="item-label" slot="label">次日达</div>
+        </tabbar-item>
+        <tabbar-item link="cart" active-class="item-active" :badge="123">
+          <div class="icon-cart" slot="icon"/>
+          <div class="item-label" slot="label">购物车</div>
+        </tabbar-item>
+        <tabbar-item link="user" active-class="item-active">
+          <div class="icon-user" slot="icon"/>
+          <div class="item-label" slot="label">我的</div>
+        </tabbar-item>
+      </tabbar>
+  </div>
 </template>
 
 <script>

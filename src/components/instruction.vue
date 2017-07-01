@@ -29,15 +29,19 @@
 </script>
 
 <style lang="less">
+  @import "../common/style/sum";
+
   .instr-icon {
     display: table;
     padding: 5px;
     line-height: 20px;
     color: #ffffff;
     font-size: 20px;
+    .lh(50);
   }
 
   .instruction {
+    .r(23);
     .dialog-head {
       font-size: 13px;
       padding: 10px 0;

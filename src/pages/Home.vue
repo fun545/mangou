@@ -1,72 +1,75 @@
 <template>
-  <div class="home-view">
-    <div class="location-search-box">
-      <router-link to="/location" class="location">{{villageName}}</router-link>
-      <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
-    </div>
-    <!-- 轮播 -->
-    <swiper :list="swiperList" :aspect-ratio="400/750" dots-position="center" auto loop></swiper>
-    <!-- 次日达/即时达 -->
-    <div class="link-box">
-      <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
-      <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
-    </div>
-    <!-- 源地直供 -->
-    <div class="source"><i class="iconfont">&#xe606;</i>源地直供</div>
-    <div class="scroller-box">
-      <router-link to="/goods_detail" class="scroller-item" v-for="(item,index) in sourceGoods" :key="index">
-        <img :src="item.img" width="100%" alt="">
-        <div style="color:#f95d43">次日价：¥2.3</div>
-        <div style="color:#999999">即时价：¥6.3</div>
-        <div class="cart-btn"><i class="iconfont">&#xe613;</i>购物车</div>
-      </router-link>
-    </div>
-    <!-- 优选精选 -->
-    <div class="fine"><i class="iconfont">&#xe614;</i>优选精选</div>
-    <div class="fine-box">
-      <router-link to="/goods_detail" class="fine-item" v-for="(item,index) in sourceGoods" :key="index">
-        <img :src="item.img" width="30%" alt="">
-        <div class="col">
-          <p>农夫茶12元/瓶促销</p>
-          <p class="color-f95d43">次日价:1.5元</p>
-          <p>即时价:1.5元</p>
+  <div class="home-view" ref="homeView">
+    <div class="wrapper">
+      <div class="location-search-box">
+        <router-link to="/location" class="location">{{villageName}}</router-link>
+        <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
+      </div>
+      <!-- 轮播 -->
+      <swiper :list="swiperList" :aspect-ratio="400/750" dots-position="center" auto loop></swiper>
+      <!-- 次日达/即时达 -->
+      <div class="link-box">
+        <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
+        <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+      </div>
+      <!-- 源地直供 -->
+      <div class="source"><i class="iconfont">&#xe606;</i>源地直供</div>
+      <div class="scroller-box">
+        <router-link to="/goods_detail" class="scroller-item" v-for="(item,index) in sourceGoods" :key="index">
+          <img :src="item.img" width="100%" alt="">
+          <div style="color:#f95d43">次日价：¥2.3</div>
+          <div style="color:#999999">即时价：¥6.3</div>
+          <div class="cart-btn"><i class="iconfont">&#xe613;</i>购物车</div>
+        </router-link>
+      </div>
+      <!-- 优选精选 -->
+      <div class="fine"><i class="iconfont">&#xe614;</i>优选精选</div>
+      <div class="fine-box">
+        <router-link to="/goods_detail" class="fine-item" v-for="(item,index) in sourceGoods" :key="index">
+          <img :src="item.img" width="30%" alt="">
+          <div class="col">
+            <p>农夫茶12元/瓶促销</p>
+            <p class="color-f95d43">次日价:1.5元</p>
+            <p>即时价:1.5元</p>
+            <i class="iconfont">&#xe613;</i>
+          </div>
+        </router-link>
+      </div>
+      <!-- 广告轮播图 -->
+      <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
+      <!-- 热门畅销 -->
+      <div class="hot"><i class="iconfont">&#xe612;</i>热门畅销</div>
+      <div class="hot-box">
+        <router-link to="/goods_detail" class="hot-item" v-for="(item,index) in sourceGoods" :key="index">
+          <img :src="item.img" width="100%" alt="">
+          <p>百草味和田红枣百草味和田红枣百草味和田红枣</p>
+          <p>次日价:¥26.00</p>
+          <p>即时价:¥36.00</p>
           <i class="iconfont">&#xe613;</i>
-        </div>
-      </router-link>
-    </div>
-    <!-- 广告轮播图 -->
-    <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
-    <!-- 热门畅销 -->
-    <div class="hot"><i class="iconfont">&#xe612;</i>热门畅销</div>
-    <div class="hot-box">
-      <router-link to="/goods_detail" class="hot-item" v-for="(item,index) in sourceGoods" :key="index">
-        <img :src="item.img" width="100%" alt="">
-        <p>百草味和田红枣百草味和田红枣百草味和田红枣</p>
-        <p>次日价:¥26.00</p>
-        <p>即时价:¥36.00</p>
-        <i class="iconfont">&#xe613;</i>
-      </router-link>
-    </div>
-    <!-- 新品上架 -->
-    <div class="new"><i class="iconfont">&#xe615;</i>新品上架</div>
-    <div class="new-box">
-      <router-link to="/goods_detail" class="new-item" v-for="item in sourceGoods" :key="item">
-        <img :src="item.img" width="100%" alt="">
-        <p>气凋盒装卤鸭脖320g武汉特产食品零食小吃气凋盒装卤鸭脖320g武汉特产食品零食小吃</p>
-        <p>次日价:¥26.00</p>
-        <p>即时价:¥36.00</p>
-        <i class="iconfont">&#xe613;</i>
-      </router-link>
+        </router-link>
+      </div>
+      <!-- 新品上架 -->
+      <div class="new"><i class="iconfont">&#xe615;</i>新品上架</div>
+      <div class="new-box">
+        <router-link to="/goods_detail" class="new-item" v-for="item in sourceGoods" :key="item">
+          <img :src="item.img" width="100%" alt="">
+          <p>气凋盒装卤鸭脖320g武汉特产食品零食小吃气凋盒装卤鸭脖320g武汉特产食品零食小吃</p>
+          <p>次日价:¥26.00</p>
+          <p>即时价:¥36.00</p>
+          <i class="iconfont">&#xe613;</i>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import { Swiper } from 'vux'
-
+  import BScroll from 'better-scroll'
   export default {
     components: {
-      Swiper
+      Swiper,
+      BScroll
     },
     data () {
       return {
@@ -74,7 +77,19 @@
       }
     },
     created () {
-      this.villageName = localStorage.getItem('m-villageName')
+//      this.villageName = localStorage.getItem('m-villageName')
+//      this.$nextTick(() => {
+//        console.log(333)
+//        console.log(this.$refs.homeView)
+//        console.log(2)
+//        this._initScroll()
+//      })
+    },
+    methods: {
+      _initScroll () {
+        console.log(this.$refs.homeView)
+        this.homeScroll = new BScroll(this.$refs.homeView, {click: true})
+      }
     },
     computed: {
       swiperList () {
@@ -226,6 +241,15 @@
   }
 
   .home-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 50px;
+    overflow-y: scroll;
+    .wrapper {
+
+    }
     .link-box {
       display: flex;
       padding: 5px;

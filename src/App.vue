@@ -33,16 +33,18 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
-
-  [class*=-view] {
-    position: relative;
-    height: 100%;
-    overflow-y: scroll;
+  li{
+    list-style: none;
   }
+  /*[class*=-view] {*/
+    /*position: relative;*/
+    /*height: 100%;*/
+    /*overflow-y: scroll;*/
+  /*}*/
 
-  [class*=scroll]::-webkit-scrollbar, [class*=-view]::-webkit-scrollbar {
-    display: none;
-  }
+  /*[class*=scroll]::-webkit-scrollbar, [class*=-view]::-webkit-scrollbar {*/
+    /*display: none;*/
+  /*}*/
 
   .input-checkbox {
     outline: none;

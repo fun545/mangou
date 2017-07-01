@@ -11,30 +11,29 @@
     <div class="content" ref="test">
       <div class="menu-wrap f-l" ref="menuWrapper">
         <side-bar>
-          <side-item ref="sideItem" v-for="(item,index) in AllFirstClassify" :key="index" :classifyId="item.classifyId"
-                     @click.native="memuChange(item.classifyId,index)"
-                     :class="{'active':index===ind}">
+          <side-item ref="sideItem" v-for="(item,index) in AllFirstClassify" :key="index"
+                     :classifyId="item.classifyId"
+                     @click.native="memuChange(item.classifyId,index,$event)" :class="{'active':index===currentIndex}">
             <span v-html="item.classifyName"></span>
           </side-item>
         </side-bar>
       </div>
       <div class="list-wrap f-r" ref="listWrap">
         <div>
-          <router-link to="/list1">
-            <div class="list-item" v-for="(firstClass,index) in AllFirstClassify" :key="index">
-              <div class="title">
-                <i class="circle"></i>
-                <span>{{firstClass.classifyName}}</span>
-                <i class="iconfont icon">&#xe601;</i>
-              </div>
-              <div class="list clearfix">
-                <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index">
-                  <img :src="item.classifyImgUrl" alt="" class="pic">
-                  <p class="name t-c">{{item.classifyName}}</p>
-                </div>
+          <div class="list-item" v-for="(firstClass,index) in AllFirstClassify" :key="index">
+            <div class="title">
+              <i class="circle"></i>
+              <span>{{firstClass.classifyName}}</span>
+              <i class="iconfont icon">&#xe601;</i>
+            </div>
+            <div class="list clearfix">
+              <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index"
+                   @click="goSecondList(item.classifyId)">
+                <img :src="item.classifyImgUrl" alt="" class="pic">
+                <p class="name t-c">{{item.classifyName}}</p>
               </div>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -43,45 +42,87 @@
 
 <script>
   import BScroll from 'better-scroll'
-  import {XDialog} from 'vux'
+  import {
+    XDialog
+  } from 'vux'
   import instruction from '../components/instruction.vue'
   import nextSearch from '../components/nextSearch.vue'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   export default {
-    components: {XDialog, instruction, nextSearch, SideBar, SideItem, BScroll},
+    components: {
+      XDialog,
+      instruction,
+      nextSearch,
+      SideBar,
+      SideItem,
+      BScroll
+    },
     data () {
       return {
         search: '',
         typeIndex: 0,
         ind: '',
         AllFirstClassify: [],
-        AllSecondClassify: []
+        AllSecondClassify: [],
+        listHeight: [],
+        scrollY: 0,
+        lists: {},
+        isLoad: true
       }
     },
     created () {
       this.post('/classify/getClassifyAll', {}).then((res) => {
-        if (res.data.code === 100) {
+        if (this.isLoad && (res.data.code === 100)) {
+          console.log('2222')
           this.AllFirstClassify = res.data.mapClassify
           console.log(this.AllFirstClassify)
           this.$nextTick(() => {
-            console.log(this.$refs.menuWrapper)
             this._initScroll()
+            this._calculateHeight()
+            this.isLoad = false
           })
         }
       })
     },
+    computed: {
+      currentIndex () {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height1 = this.listHeight[i]
+          let height2 = this.listHeight[i + 1]
+          if (!height2 || (this.scrollY < height2 && this.scrollY >= height1)) {
+            return i
+          }
+        }
+        return 0
+      }
+    },
     methods: {
       searchText () {
         if (!this.search) {
-          this.$vux.alert.show({content: '请输入搜索内容'})
+          this.$vux.alert.show({
+            content: '请输入搜索内容'
+          })
           return
         }
-        this.$router.push({path: '/searchText', query: {search: this.search}})
+        this.$router.push({
+          path: '/searchText',
+          query: {
+            search: this.search
+          }
+        })
       },
-      memuChange (id, index) {
-//        this.getGoods(id)
-        this.ind = index
+      goSecondList (id) {
+        this.$router.push({
+          path: '/list1',
+          query: {secondId: id}
+        })
+      },
+      memuChange (id, index, event) {
+        if (event._constructed) {
+          return
+        }
+        this.listSroll.scrollToElement(this.lists[index], 300)
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrapper, {
@@ -91,6 +132,18 @@
           click: true,
           probeType: 3
         })
+        this.listSroll.on('scroll', (pos) => {
+          this.scrollY = Math.abs(Math.round(pos.y))
+        })
+      },
+      _calculateHeight () {
+        this.lists = this.$refs.listWrap.getElementsByClassName('list-item')
+        let height = 0
+        this.listHeight.push(height)
+        for (let i = 0; i < this.lists.length; i++) {
+          height += this.lists[i].clientHeight
+          this.listHeight.push(height)
+        }
       }
     }
   }
@@ -107,14 +160,14 @@
       .h(100);
       background: @theme-color;
       .pl(22);
-      .pt(20);
+      .pt(10);
       .search-box {
         display: flex;
         position: relative;
         padding: 5px;
         .instruction {
           position: absolute;
-          .r(30);
+          .r(23);
         }
       }
     }
@@ -125,7 +178,7 @@
       right: 0;
       .t(100);
       overflow: hidden;
-      bottom: 0;
+      bottom: 50px;
       .menu-wrap {
         height: 100%;
         .w(172);

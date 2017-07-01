@@ -4,12 +4,14 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import App from './App'
 import Router from './router'
+import Vuex from 'vuex'
 import { AlertPlugin } from 'vux'
 import api from './util/api'
 import vueScroll from 'vue-scroll'
 import './common/style/index.less'
 Vue.use(AlertPlugin)
 Vue.use(vueScroll)
+Vue.use(Vuex)
 Vue.prototype.post = api.post
 FastClick.attach(document.body)
 

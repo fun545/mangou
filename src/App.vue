@@ -9,11 +9,11 @@
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.eot');
-    src: url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.woff') format('woff'),
-    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_zy66g5sxjeg3c8fr.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_xkziooeap157mn29.eot');
+    src: url('//at.alicdn.com/t/font_xkziooeap157mn29.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_xkziooeap157mn29.woff') format('woff'),
+    url('//at.alicdn.com/t/font_xkziooeap157mn29.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_xkziooeap157mn29.svg#iconfont') format('svg');
   }
   .weui-tab__panel{
     overflow: hidden !important;

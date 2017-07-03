@@ -201,6 +201,16 @@ export default new Router({
       /* 登陆 */
       path: '/login',
       component: require('../pages/login')
+    },
+    {
+      /* 协议 */
+      path: '/agreement',
+      component: require('../pages/Agreement')
+    },
+    {
+      /* 注册 */
+      path: '/register',
+      component: require('../pages/Register.vue')
     }
   ]
 })

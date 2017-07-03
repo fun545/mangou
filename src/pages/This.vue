@@ -89,9 +89,8 @@
     data () {
       return {
         scrollTop: '',
-        flexboxHeight: '',
-        sideList: '',
-        storeMsg: '',
+        sideList: [],
+        storeMsg: [],
         goodsList: '',
         firstClassifyId: 1,
         ind: '',

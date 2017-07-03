@@ -1,13 +1,66 @@
 <template>
   <div class="login-view">
-    <div class="header"></div>
+    <router-link to="/register">
+      <div class="register">
+        <span class="text">注册</span>
+        <div class="icon d-ib">
+          <i class="iconfont wrap">&#xe742;</i>
+          <i class="iconfont inner">&#xe8d0;</i>
+        </div>
+      </div>
+    </router-link>
+    <div class="header">
+    </div>
     <div class="middle">
       <form class="form">
-        <div class="input-box">
-          <tab :line-width="2" active-color="#f95d43" defaultColor="#777" bar-active-color="#f95d43" class="title">
-            <tab-item selected>正在正映</tab-item>
-            <tab-item>即将上映</tab-item>
+        <div class="input-box accountLogin fastLogin">
+          <tab :line-width="1" active-color="#f95d43" defaultColor="#777" bar-active-color="#f95d43" class="title">
+            <tab-item selected @on-item-click="changeLogin">账号密码登录</tab-item>
+            <tab-item @on-item-click="changeLogin">手机快速登录</tab-item>
           </tab>
+          <div v-if="loginMethodFlag">
+            <group gutter="0" class="group">
+              <x-input v-model="userAccount" placeholder="请输入账号">
+                <span slot="label" class="iconfont">&#xe63f;</span>
+              </x-input>
+            </group>
+            <group gutter="0" class="group pass-group">
+              <x-input v-model="userPassword" placeholder="请输入密码" type="password">
+                <span slot="label" class="iconfont">&#xe63e;</span>
+              </x-input>
+            </group>
+          </div>
+          <div v-if="!loginMethodFlag">
+            <group gutter="0" class="group">
+              <x-input v-model="userAccount" placeholder="手机号" type="tel">
+                <span slot="label" class="iconfont">&#xe618;</span>
+              </x-input>
+            </group>
+            <group gutter="0" class="group pass-group">
+              <x-input v-model="userPassword" placeholder="验证码" type="number">
+                <span slot="label" class="iconfont">&#xe64f;</span>
+                <x-button slot="right" mini class="get-code-bt" :class="{'has-send':hasSendFlag}"
+                          @click.native="getCode">
+                  <span class="get-code" v-if="!hasSendFlag">{{sendBtText}}</span>
+                  <span class="get-code" v-if="hasSendFlag">{{time}}S后重发</span>
+                </x-button>
+              </x-input>
+            </group>
+          </div>
+        </div>
+        <popover placement="top"  @on-show="" @on-hide="">
+          <div slot="content" class="popover-demo-content">
+           验证码错误
+          </div>
+          <x-button class="submit-bt">
+            登录
+          </x-button>
+        </popover>
+        <div class="agreement-box">
+          <check-icon type="plain" class="agree-icon" :value.sync="agreeFlag"></check-icon>
+          <router-link to="/agreement">
+            <a class="agreement-content">软件许可及服务协议</a>
+          </router-link>
         </div>
       </form>
     </div>
@@ -16,9 +69,45 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { Tab, TabItem, Sticky } from 'vux'
+  import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover } from 'vux'
   export default {
-    components: {Tab, TabItem, Sticky}
+    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover},
+    data () {
+      return {
+        userAccount: '',
+        userPassword: '',
+        sendBtText: '获取验证码',
+        hasSendFlag: false,
+        time: '60',
+        loginMethodFlag: true,
+        agreeFlag: true
+      }
+    },
+    methods: {
+      changeLogin (index) {
+        if (index === 0) {
+          this.loginMethodFlag = true
+        } else {
+          this.loginMethodFlag = false
+        }
+      },
+      getCode () {
+        if (!this.hasSendFlag) {
+          this.hasSendFlag = true
+          this.post('/user/getCode', {phone: 15258195623, type: 4}).then((res) => {
+            console.log(res.code)
+          })
+          this.timer = setInterval(() => {
+            this.time--
+            if (this.time === 0) {
+              this.hasSendFlag = false
+              this.time = 60
+              clearInterval(this.timer)
+            }
+          }, 1000)
+        }
+      }
+    }
   }
 </script>
 
@@ -28,14 +117,48 @@
   @import "../common/style/mlxin";
 
   .login-view {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     overflow: hidden;
     background-size: 100%;
     .bg-image('../../assets/BG');
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 100% 100%;
+    .register{
+      position: absolute;
+      .t(24);
+      .r(72);
+      .fs(30);
+      .text{
+        color: #fefefe;
+      }
+      .icon{
+        position: absolute;
+        top: 0;
+       .r(-12);
+        .t(3);
+        .iconfont{
+          .fs(36);
+          position: absolute;
+          top: 0;
+          left: 0;
+          &.wrap{
+            color: #887971;
+          }
+          &.inner{
+            color: #fff;
+            .t(2);
+            .fs(30);
+            .l(5);
+          }
+        }
+      }
+    }
     .header {
+      position: relative;
       .w(477);
       .h(288);
       .mt(86);
@@ -52,12 +175,83 @@
         .h(276);
         border-radius: 10px;
         background: #fff;
-      }
-      .title {
-        .h(77);
-        background: none;
-        .vux-tab-item{
-          .lh(77);
+        .input-box {
+          .title {
+            .h(77);
+            background: none;
+            .vux-tab-item {
+              .lh(77);
+            }
+          }
+          .group {
+            .weui-cells {
+              background: none !important;
+              .vux-x-input {
+                .pt(24) !important;
+                .pb(24) !important;
+              }
+              &:before {
+                border-top: none;
+              }
+              input {
+                text-indent: 12px;
+                .fs(25);
+                color: @font-color-m;
+              }
+            }
+            .iconfont {
+              color: #555;
+              .fs(30);
+            }
+          }
+          .pass-group {
+            .weui-cells {
+              &:after {
+                display: none;
+              }
+              .vux-x-input {
+                position: relative;
+              }
+            }
+            .get-code-bt {
+              .h(49);
+              .pl(14);
+              .pr(14);
+              background: @theme-color;
+              color: #fff;
+              position: absolute;
+              .r(32);
+              top: 50%;
+              .mt(-24.5);
+              .fs(22);
+              .lh(24);
+              &.has-send {
+                background: #d2d2d2;
+                color: #fefefe;
+              }
+            }
+          }
+        }
+        .submit-bt {
+          .h(98);
+          background: @theme-color;
+          color: #fff;
+          .mt(62);
+          .fs(28);
+        }
+        .agreement-box {
+          text-align: right;
+          .mt(20);
+          .agree-icon {
+            .weui-icon {
+              .fs(25);
+            }
+          }
+          .agreement-content {
+            color: #fefefe;
+            .fs(24);
+            text-decoration: underline;
+          }
         }
       }
     }

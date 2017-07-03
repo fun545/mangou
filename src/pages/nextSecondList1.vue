@@ -35,7 +35,7 @@
             </div>
             <div class="col f-l">
               <h3 class="title">{{item.goodsName}}</h3>
-              <p class="des">{{item.goodsDecribes}}</p>
+              <p class="des">{{item.guige}}</p>
               <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
               <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
             </div>

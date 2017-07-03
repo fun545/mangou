@@ -211,6 +211,11 @@ export default new Router({
       /* 注册 */
       path: '/register',
       component: require('../pages/Register.vue')
+    },
+    {
+      /* 忘记密码 */
+      path: '/forget',
+      component: require('../pages/Forget')
     }
   ]
 })

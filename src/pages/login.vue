@@ -48,14 +48,18 @@
             </group>
           </div>
         </div>
-        <popover placement="top"  @on-show="" @on-hide="">
-          <div slot="content" class="popover-demo-content">
-           验证码错误
+        <router-link to="/forget">
+          <div class="forget t-r">
+            <i class="iconfont icon">&#xe628;</i>
+            <span class="">
+            忘记密码
+          </span>
           </div>
-          <x-button class="submit-bt">
-            登录
-          </x-button>
-        </popover>
+        </router-link>
+        <x-button class="submit-bt">
+          登录
+        </x-button>
+
         <div class="agreement-box">
           <check-icon type="plain" class="agree-icon" :value.sync="agreeFlag"></check-icon>
           <router-link to="/agreement">
@@ -127,28 +131,28 @@
     .bg-image('../../assets/BG');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    .register{
+    .register {
       position: absolute;
       .t(24);
       .r(72);
       .fs(30);
-      .text{
+      .text {
         color: #fefefe;
       }
-      .icon{
+      .icon {
         position: absolute;
         top: 0;
-       .r(-12);
+        .r(-12);
         .t(3);
-        .iconfont{
+        .iconfont {
           .fs(36);
           position: absolute;
           top: 0;
           left: 0;
-          &.wrap{
+          &.wrap {
             color: #887971;
           }
-          &.inner{
+          &.inner {
             color: #fff;
             .t(2);
             .fs(30);
@@ -232,11 +236,20 @@
             }
           }
         }
+        .forget{
+          .h(70);
+          .lh(70);
+          color: #fff;
+          .fs(24);
+          .icon{
+            .fs(26);
+          }
+        }
         .submit-bt {
           .h(98);
           background: @theme-color;
           color: #fff;
-          .mt(62);
+          .mt(12);
           .fs(28);
         }
         .agreement-box {

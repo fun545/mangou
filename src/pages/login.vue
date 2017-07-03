@@ -24,11 +24,7 @@
                 <span slot="label" class="iconfont">&#xe63f;</span>
               </x-input>
             </group>
-            <group gutter="0" class="group pass-group">
-              <x-input v-model="userPassword" placeholder="请输入密码" type="password">
-                <span slot="label" class="iconfont">&#xe63e;</span>
-              </x-input>
-            </group>
+            <get-code :codeType="type"></get-code>
           </div>
           <div v-if="!loginMethodFlag">
             <group gutter="0" class="group">
@@ -74,17 +70,16 @@
 
 <script type="text/ecmascript-6">
   import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover } from 'vux'
+  import getCode from '../components/_getCode'
   export default {
-    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover},
+    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode},
     data () {
       return {
         userAccount: '',
         userPassword: '',
-        sendBtText: '获取验证码',
-        hasSendFlag: false,
-        time: '60',
         loginMethodFlag: true,
-        agreeFlag: true
+        agreeFlag: true,
+        type: 3
       }
     },
     methods: {
@@ -93,22 +88,6 @@
           this.loginMethodFlag = true
         } else {
           this.loginMethodFlag = false
-        }
-      },
-      getCode () {
-        if (!this.hasSendFlag) {
-          this.hasSendFlag = true
-          this.post('/user/getCode', {phone: 15258195623, type: 4}).then((res) => {
-            console.log(res.code)
-          })
-          this.timer = setInterval(() => {
-            this.time--
-            if (this.time === 0) {
-              this.hasSendFlag = false
-              this.time = 60
-              clearInterval(this.timer)
-            }
-          }, 1000)
         }
       }
     }
@@ -236,12 +215,12 @@
             }
           }
         }
-        .forget{
+        .forget {
           .h(70);
           .lh(70);
           color: #fff;
           .fs(24);
-          .icon{
+          .icon {
             .fs(26);
           }
         }

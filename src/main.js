@@ -24,3 +24,4 @@ new Vue({
   components: {App},
   router: Router
 })
+

@@ -8,24 +8,24 @@
     <div class="content">
       <div class="input-box">
         <group gutter="0" class="group">
-          <x-input v-model="userAccount" placeholder="手机号" type="tel">
+          <x-input v-model="tel" placeholder="手机号" type="tel">
             <span slot="label" class="iconfont">&#xe618;</span>
           </x-input>
         </group>
         <get-code :codeType="type"></get-code>
         <group gutter="0" class="group">
-          <x-input v-model="userAccount" placeholder="请设置密码" type="password">
-            <span slot="label" class="iconfont">&#xe618;</span>
+          <x-input v-model="password" placeholder="请设置密码" type="password">
+            <span slot="label" class="iconfont">&#xe63e;</span>
           </x-input>
         </group>
         <group gutter="0" class="group last-group">
-          <x-input v-model="userAccount" placeholder="请确认密码" type="password">
-            <span slot="label" class="iconfont">&#xe618;</span>
+          <x-input v-model="confirmPassword" placeholder="请确认密码" type="password">
+            <span slot="label" class="iconfont">&#xe63e;</span>
           </x-input>
         </group>
       </div>
       <div class="bt-box">
-        <x-button class="submit-bt">
+        <x-button class="submit-bt" @click.native="test">
           登录
         </x-button>
       </div>
@@ -40,11 +40,18 @@
     components: {XHeader, Group, XInput, XButton, getCode},
     data () {
       return {
-        type: 2
+        type: 1,
+        tel: '',
+        password: '',
+        confirmPassword: ''
       }
     },
     created () {},
-    methods: {}
+    methods: {
+      test () {
+        console.log(2222)
+      }
+    }
   }
 </script>
 
@@ -123,8 +130,8 @@
             }
           }
         }
-        .last-group{
-          .weui-cells{
+        .last-group {
+          .weui-cells {
             &:after {
               display: none;
             }

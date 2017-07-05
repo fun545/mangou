@@ -24,24 +24,19 @@
                 <span slot="label" class="iconfont">&#xe63f;</span>
               </x-input>
             </group>
-            <get-code :codeType="type"></get-code>
+            <group gutter="0" class="group">
+              <x-input v-model="userPassword" placeholder="请输入密码" type="password">
+                <span slot="label" class="iconfont">&#xe63e;</span>
+              </x-input>
+            </group>
           </div>
           <div v-if="!loginMethodFlag">
             <group gutter="0" class="group">
-              <x-input v-model="userAccount" placeholder="手机号" type="tel">
+              <x-input v-model="tel" placeholder="手机号" type="tel">
                 <span slot="label" class="iconfont">&#xe618;</span>
               </x-input>
             </group>
-            <group gutter="0" class="group pass-group">
-              <x-input v-model="userPassword" placeholder="验证码" type="number">
-                <span slot="label" class="iconfont">&#xe64f;</span>
-                <x-button slot="right" mini class="get-code-bt" :class="{'has-send':hasSendFlag}"
-                          @click.native="getCode">
-                  <span class="get-code" v-if="!hasSendFlag">{{sendBtText}}</span>
-                  <span class="get-code" v-if="hasSendFlag">{{time}}S后重发</span>
-                </x-button>
-              </x-input>
-            </group>
+            <get-code :codeType="type"></get-code>
           </div>
         </div>
         <router-link to="/forget">
@@ -77,6 +72,7 @@
       return {
         userAccount: '',
         userPassword: '',
+        tel: '',
         loginMethodFlag: true,
         agreeFlag: true,
         type: 3

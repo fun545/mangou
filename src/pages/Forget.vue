@@ -1,5 +1,5 @@
 <template>
-  <forget header="忘记密码" :type="type" :post="post"></forget>
+  <forget header="忘记密码" :type="type" @userMsg="userMsg"></forget>
 </template>
 
 <script>
@@ -8,13 +8,13 @@
     components: {forget},
     data () {
       return {
-        type: 2
+        type: 3
       }
     },
     created () {},
     methods: {
-      post () {
-        console.log('dfsads')
+      userMsg (res) {
+        console.log(res)
       }
     }
   }

@@ -24,6 +24,7 @@
           </x-input>
         </group>
       </div>
+      <check-icon :value.sync="defaultFlag">Do you agree? ({{ defaultFlag }})</check-icon>
       <div class="bt-box">
         <x-button class="submit-bt" @click.native="test">
           登录
@@ -34,16 +35,17 @@
 </template>
 
 <script>
-  import { XHeader, Group, XInput, XButton } from 'vux'
+  import { XHeader, Group, XInput, XButton, CheckIcon } from 'vux'
   import getCode from '../components/_getCode'
   export default {
-    components: {XHeader, Group, XInput, XButton, getCode},
+    components: {XHeader, Group, XInput, XButton, getCode, CheckIcon},
     data () {
       return {
         type: 1,
         tel: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        defaultFlag: false
       }
     },
     created () {},

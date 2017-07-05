@@ -14,12 +14,12 @@
         </group>
         <get-code :codeType="type"></get-code>
         <group gutter="0" class="group">
-          <x-input v-model="set" placeholder="请设置密码" type="password">
+          <x-input v-model="setPassword" placeholder="请设置密码" type="password">
             <span slot="label" class="iconfont">&#xe63e;</span>
           </x-input>
         </group>
         <group gutter="0" class="group last-group">
-          <x-input v-model="confirm" placeholder="请确认密码" type="password">
+          <x-input v-model="confirmPassword" placeholder="请确认密码" type="password">
             <span slot="label" class="iconfont">&#xe63e;</span>
           </x-input>
         </group>
@@ -41,8 +41,8 @@
     data () {
       return {
         userAccount: '',
-        set: '',
-        confirm: ''
+        setPassword: '',
+        confirmPassword: ''
       }
     },
     props: {
@@ -52,7 +52,7 @@
     },
     methods: {
       btClick () {
-        this.post()
+        this.$emit('userMsg', {userAccount: this.userAccount, setPassword: this.setPassword})
       }
     }
   }

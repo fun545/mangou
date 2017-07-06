@@ -36,7 +36,7 @@
                 <span slot="label" class="iconfont">&#xe618;</span>
               </x-input>
             </group>
-            <get-code :codeType="type"></get-code>
+            <get-code :codeType="type" @getCode="receiveCode"></get-code>
           </div>
         </div>
         <router-link to="/forget">
@@ -47,10 +47,9 @@
           </span>
           </div>
         </router-link>
-        <x-button class="submit-bt">
+        <x-button class="submit-bt" @click.native="login">
           登录
         </x-button>
-
         <div class="agreement-box">
           <check-icon type="plain" class="agree-icon" :value.sync="agreeFlag"></check-icon>
           <router-link to="/agreement">
@@ -59,15 +58,16 @@
         </div>
       </form>
     </div>
-    <div class="bt"></div>
+    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
+           :text="text" width="10em" class="toast"></toast>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover } from 'vux'
+  import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, md5, Toast } from 'vux'
   import getCode from '../components/_getCode'
   export default {
-    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode},
+    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5, Toast},
     data () {
       return {
         userAccount: '',
@@ -75,7 +75,11 @@
         tel: '',
         loginMethodFlag: true,
         agreeFlag: true,
-        type: 3
+        type: 3,
+        code: '',
+        showPositionValue: false,
+        position: 'middle',
+        text: '验证码错误'
       }
     },
     methods: {
@@ -85,6 +89,31 @@
         } else {
           this.loginMethodFlag = false
         }
+      },
+      receiveCode (code) {
+        this.code = code
+      },
+      login () {
+        if (!/^1\d{10}$/.test(this.tel)) {
+          this.text = '手机号码错误'
+          this.showPositionValue = true
+          return
+        }
+        this.post('/user/login', {
+          phone: this.tel,
+          userPwd: md5(this.code),
+          loginType: 2,
+          villageId: 1,
+          cityId: 1,
+          areaId: 1
+        }).then((res) => {
+          if (res.data.code === 100) {
+            localStorage.setItem('token', res.data.userInfo.token)
+          }
+          if (res.data.code === 101) {
+            this.showPositionValue = true
+          }
+        })
       }
     }
   }
@@ -241,6 +270,11 @@
             text-decoration: underline;
           }
         }
+      }
+    }
+    .toast {
+      .weui-toast__content {
+        text-indent: 0 !important;
       }
     }
   }

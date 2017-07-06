@@ -50,9 +50,7 @@
     },
     created () {},
     methods: {
-      test () {
-        console.log(2222)
-      }
+      test () {}
     }
   }
 </script>

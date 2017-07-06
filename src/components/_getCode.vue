@@ -1,9 +1,9 @@
 <template>
   <group gutter="0" class="group pass-group">
-    <x-input v-model="userPassword" placeholder="验证码" type="number">
+    <x-input v-model="userPassword" placeholder="验证码" type="text" @change.native="onInput" max="4">
       <span slot="label" class="iconfont">&#xe64f;</span>
       <x-button slot="right" mini class="get-code-bt" :class="{'has-send':hasSendFlag}"
-                @click.native="getCode">
+                @click.native="getCodeBt">
         <span class="get-code" v-if="!hasSendFlag">{{sendBtText}}</span>
         <span class="get-code" v-if="hasSendFlag">{{time}}S后重发</span>
       </x-button>
@@ -23,11 +23,12 @@
         userPassword: '',
         sendBtText: '获取验证码',
         hasSendFlag: false,
-        time: '60'
+        time: '60',
+        code: ''
       }
     },
     methods: {
-      getCode () {
+      getCodeBt () {
         if (!this.hasSendFlag) {
           this.hasSendFlag = true
           this.post('/user/getCode', {phone: 15258195623, type: this.codeType}).then((res) => {
@@ -41,6 +42,11 @@
               clearInterval(this.timer)
             }
           }, 1000)
+        }
+      },
+      onInput () {
+        if (this.userPassword.trim()) {
+          this.$emit('getCode', this.userPassword)
         }
       }
     }

@@ -108,7 +108,8 @@
           areaId: 1
         }).then((res) => {
           if (res.data.code === 100) {
-            localStorage.setItem('token', res.data.userInfo.token)
+            localStorage.setItem('m-token', res.data.userInfo.token)
+            console.log(res.data)
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

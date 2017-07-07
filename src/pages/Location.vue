@@ -55,8 +55,8 @@
           source: 2
         }).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             this.villageList = res.data.villageList
+            console.log(this.villageList)
           }
         })
       }
@@ -64,6 +64,8 @@
     methods: {
       curVillage (data) {
         this.village = data.villageName
+        localStorage.setItem('m-cityId', data.cityId)
+        localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
         this.$router.push({path: '/tabbar/home'})

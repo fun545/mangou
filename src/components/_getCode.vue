@@ -1,6 +1,6 @@
 <template>
   <group gutter="0" class="group pass-group">
-    <x-input v-model="userPassword" placeholder="验证码" type="text" @change.native="onInput" max="4">
+    <x-input v-model="userPassword" placeholder="验证码" type="text" @change.native="onInput">
       <span slot="label" class="iconfont">&#xe64f;</span>
       <x-button slot="right" mini class="get-code-bt" :class="{'has-send':hasSendFlag}"
                 @click.native="getCodeBt">

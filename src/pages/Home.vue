@@ -6,21 +6,29 @@
         <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
       </div>
       <!-- 轮播 -->
-      <swiper :list="swiperList" :aspect-ratio="400/750" dots-position="center" auto loop></swiper>
+      <swiper :aspect-ratio="320/750" dots-position="center" auto loop class="banner">
+        <swiper-item class="swiper-img" v-for="(item, index) in swiperList" :key="index">
+          <img :src="item">
+        </swiper-item>
+      </swiper>
       <!-- 次日达/即时达 -->
       <div class="link-box">
         <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
         <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
       </div>
-      <!-- 源地直供 -->
-      <div class="source"><i class="iconfont">&#xe606;</i>源地直供</div>
-      <div class="scroller-box">
-        <router-link to="/goods_detail" class="scroller-item" v-for="(item,index) in sourceGoods" :key="index">
-          <img :src="item.img" width="100%" alt="">
-          <div style="color:#f95d43">次日价：¥2.3</div>
-          <div style="color:#999999">即时价：¥6.3</div>
-          <div class="cart-btn"><i class="iconfont">&#xe613;</i>购物车</div>
-        </router-link>
+      <!-- 预售团购 -->
+      <div class="group-buy">
+        <home-title :title="mapTitleTips[0].name">
+          <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+        </home-title>
+        <div class="scroller-box content">
+          <router-link to="/goods_detail" class="scroller-item" v-for="(item,index) in sourceGoods" :key="index">
+            <img :src="item.img" width="100%" alt="">
+            <div style="color:#f95d43">次日价：¥2.3</div>
+            <div style="color:#999999">即时价：¥6.3</div>
+            <div class="cart-btn"><i class="iconfont">&#xe613;</i>购物车</div>
+          </router-link>
+        </div>
       </div>
       <!-- 优选精选 -->
       <div class="fine"><i class="iconfont">&#xe614;</i>优选精选</div>
@@ -64,43 +72,60 @@
 </template>
 
 <script>
-  import { Swiper } from 'vux'
-  import BScroll from 'better-scroll'
+  import { Swiper, SwiperItem } from 'vux'
+  import homeTitle from '../components/homeTitle'
   export default {
     components: {
       Swiper,
-      BScroll
+      SwiperItem,
+      homeTitle
     },
     data () {
       return {
-        villageName: ''
+        villageName: '',
+        swiperList: [],
+        cityId: localStorage.getItem('m-cityId'),
+        areaId: localStorage.getItem('m-areaId'),
+        villageId: localStorage.getItem('m-villageId'),
+        token: localStorage.getItem('m-token'),
+        mapTitleTips: [],
+        ystgWords: []
       }
     },
     created () {
-//      this.villageName = localStorage.getItem('m-villageName')
-//      this.$nextTick(() => {
-//        console.log(333)
-//        console.log(this.$refs.homeView)
-//        console.log(2)
-//        this._initScroll()
-//      })
-    },
-    methods: {
-      _initScroll () {
-        console.log(this.$refs.homeView)
-        this.homeScroll = new BScroll(this.$refs.homeView, {click: true})
+      if (!localStorage.getItem('m-villageName')) {
+        this.$router.push({path: '/locatio'})
+      } else {
+        this.villageName = localStorage.getItem('m-villageName')
       }
+      /* 轮播图数据 */
+      this.post('/first/getFirst', {
+        cityId: this.cityId,
+        areaId: this.areaId,
+        villageId: this.villageId,
+        token: this.token,
+        source: 1
+      }).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
+          const imgList = res.data.firstInfo.imgList
+          for (let i = 0; i < imgList.length; i++) {
+            console.log(imgList[i].imageUrl)
+            this.swiperList.push(imgList[i].imageUrl)
+          }
+        }
+      })
+      /* 轮播图数据 */
+      this.post('/first/getFirstGoods', {storeId: 1, villageId: this.villageId}).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
+          this.mapTitleTips = res.data.goodsList.mapTitleTips
+          this.ystgWords = res.data.goodsList.ystgWords
+        }
+      })
     },
+    methods: {},
     computed: {
-      swiperList () {
-        return [
-          {img: './static/banner-first.png'},
-          {img: './static/banner-kuaisheng.jpg'},
-          {img: './static/banner-qingliang.jpg'},
-          {img: './static/banner-shequ.jpg'},
-          {img: './static/banner-tuihuanhuo.jpg'}
-        ]
-      },
       sourceGoods () {
         return [
           {img: './static/goods_img.jpg'},
@@ -122,6 +147,9 @@
 </script>
 
 <style lang="less">
+  @import "../common/style/varlable";
+  @import "../common/style/sum";
+
   .home-view .location-search-box {
     padding: 5px 10px;
     display: flex;
@@ -204,6 +232,13 @@
     }
   }
 
+  .banner {
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   .home-view .scroller-box {
     overflow-x: scroll;
     display: flex;
@@ -252,8 +287,8 @@
     }
     .link-box {
       display: flex;
-      padding: 5px;
-
+      .pt(5);
+      .pb(5);
       a {
         margin: 5px;
       }

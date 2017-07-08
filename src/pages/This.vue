@@ -52,14 +52,14 @@
         </div>
         <div class="goods-list-wrap" ref="goodsListWrap">
           <div class="googs-list">
-            <router-link to="/goods_detail" class="goods-item" v-for="(item,index) in goodsList" :key="index">
+            <router-link to="/goods_detail" class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
               <img :src="item.goodsImgUrl" alt="" class="pic">
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                <div class="iconfont shop-car">&#xe613;</div>
               </div>
-              <div class="iconfont shop-car">&#xe613;</div>
             </router-link>
           </div>
         </div>
@@ -70,7 +70,7 @@
 
 <script>
   import BScroll from 'better-scroll'
-  import {Flexbox, FlexboxItem} from 'vux'
+  import { Flexbox, FlexboxItem } from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   import Tabs from '../components/Tabs'
@@ -183,7 +183,6 @@
 <style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
-
   .this {
     height: 100%;
     .strong {
@@ -305,7 +304,6 @@
         }
       }
     }
-
     .is-search {
       padding: 10px;
       background-color: #089cf6;
@@ -416,23 +414,23 @@
         .pl(10);
         .goods-item {
           position: relative;
-          display: flex;
-          /*padding: 10px 10px 10px 0;*/
           box-sizing: border-box;
           .h(227);
           color: #444;
           border-bottom: 1px solid #eee;
-          align-items: center;
           .pic {
             .w(220);
             .h(220);
-            .mr(18);
+            float: left;
           }
           .col {
-            /*flex-grow: 1;*/
-            /*margin: auto 10px;*/
-            .ml(9);
-            align-self: flex-start;
+            p {
+              text-indent: 0;
+            }
+            .ml(18);
+            .w(330);
+            .h(227);
+            float: left;
             .title {
               display: -webkit-box;
               -webkit-box-orient: vertical;
@@ -465,20 +463,19 @@
                 .fs(30);
               }
             }
-          }
-
-          .iconfont.shop-car {
-            .fs(26);
-            color: #089cf6;
-            border: 1px solid #089cf6;
-            border-radius: 50%;
-            .pl(4);
-            .pr(4);
-            .pt(4);
-            .pb(4);
-            position: absolute;
-            .r(32);
-            .b(46);
+            .iconfont.shop-car {
+              .fs(26);
+              color: #089cf6;
+              border: 1px solid #089cf6;
+              border-radius: 50%;
+              .pl(4);
+              .pr(4);
+              .pt(4);
+              .pb(4);
+              position: absolute;
+              .r(32);
+              .b(46);
+            }
           }
         }
       }

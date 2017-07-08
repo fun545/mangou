@@ -149,7 +149,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
 

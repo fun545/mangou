@@ -356,7 +356,7 @@
   export default {}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   p {
     text-indent: 2em;
   }

@@ -16,56 +16,80 @@
         <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
         <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
       </div>
-      <!-- 预售团购 -->
-      <div class="group-buy">
-        <home-title :title="mapTitleTips[0].name">
-          <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
-        </home-title>
-        <div class="scroller-box content">
-          <router-link to="/goods_detail" class="scroller-item" v-for="(item,index) in sourceGoods" :key="index">
-            <img :src="item.img" width="100%" alt="">
-            <div style="color:#f95d43">次日价：¥2.3</div>
-            <div style="color:#999999">即时价：¥6.3</div>
-            <div class="cart-btn"><i class="iconfont">&#xe613;</i>购物车</div>
-          </router-link>
-        </div>
-      </div>
-      <!-- 优选精选 -->
-      <div class="fine"><i class="iconfont">&#xe614;</i>优选精选</div>
-      <div class="fine-box">
-        <router-link to="/goods_detail" class="fine-item" v-for="(item,index) in sourceGoods" :key="index">
-          <img :src="item.img" width="30%" alt="">
-          <div class="col">
-            <p>农夫茶12元/瓶促销</p>
-            <p class="color-f95d43">次日价:1.5元</p>
-            <p>即时价:1.5元</p>
-            <i class="iconfont">&#xe613;</i>
+      <div class="active-box">
+        <!-- 预售团购 -->
+        <div class="group-buy" v-if="mapTitleTips[0]">
+          <home-title :title="mapTitleTips[0].name">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+          </home-title>
+          <div class="content clearfix">
+            <router-link to="" v-for="(item,index) in ystgWords" :key="index">
+              <div class="item">
+                <img :src="item.keyword" alt="" width="100%" height="100%">
+              </div>
+            </router-link>
           </div>
-        </router-link>
-      </div>
-      <!-- 广告轮播图 -->
-      <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
-      <!-- 热门畅销 -->
-      <div class="hot"><i class="iconfont">&#xe612;</i>热门畅销</div>
-      <div class="hot-box">
-        <router-link to="/goods_detail" class="hot-item" v-for="(item,index) in sourceGoods" :key="index">
-          <img :src="item.img" width="100%" alt="">
-          <p>百草味和田红枣百草味和田红枣百草味和田红枣</p>
-          <p>次日价:¥26.00</p>
-          <p>即时价:¥36.00</p>
-          <i class="iconfont">&#xe613;</i>
-        </router-link>
-      </div>
-      <!-- 新品上架 -->
-      <div class="new"><i class="iconfont">&#xe615;</i>新品上架</div>
-      <div class="new-box">
-        <router-link to="/goods_detail" class="new-item" v-for="item in sourceGoods" :key="item">
-          <img :src="item.img" width="100%" alt="">
-          <p>气凋盒装卤鸭脖320g武汉特产食品零食小吃气凋盒装卤鸭脖320g武汉特产食品零食小吃</p>
-          <p>次日价:¥26.00</p>
-          <p>即时价:¥36.00</p>
-          <i class="iconfont">&#xe613;</i>
-        </router-link>
+        </div>
+        <!-- 原地直供 -->
+        <div class="origin-directly" v-if="mapTitleTips[1]">
+          <home-title :title="mapTitleTips[1].name">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+          </home-title>
+          <div class="content">
+            <div class="left f-l">
+              <img :src="serchKey.keyword" alt="" width="100%" height="100%">
+            </div>
+            <div class="right f-l">
+              <div class="item">
+                <div class="des f-l">
+                  <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
+                  <p class="this-price">即时价：<span class="s1">¥</span><span
+                    class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
+                  <p class="next-price">次日价：<span class="s1">¥</span><span
+                    class="number">{{specialPriceGoodsList[0].price}}</span></p>
+                </div>
+                <div class="pic f-l">
+                  <img :src="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
+                </div>
+              </div>
+              <div class="item">
+                <div class="des f-l">
+                  <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
+                  <p class="this-price">即时价：<span class="s1">¥</span><span
+                    class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
+                  <p class="next-price">次日价：<span class="s1">¥</span><span
+                    class="number">{{specialPriceGoodsList[1].price}}</span></p>
+                </div>
+                <div class="pic f-l">
+                  <img :src="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 优品精品 -->
+        <div class="recommend">
+          <home-title :title="mapTitleTips[2].name">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
+          </home-title>
+          <div class="content clearfix">
+            <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
+              <div class="pic">
+                <img :src="item.goodsImgUrl" alt="">
+              </div>
+              <div class="des">
+                <h3 class="title">{{item.goodsName}}</h3>
+                <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+                <div class="iconfont shop-car">&#xe613;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 广告轮播图 -->
+        <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
+        <!-- 热门畅销 -->
+        <!-- 新品上架 -->
       </div>
     </div>
   </div>
@@ -89,7 +113,10 @@
         villageId: localStorage.getItem('m-villageId'),
         token: localStorage.getItem('m-token'),
         mapTitleTips: [],
-        ystgWords: []
+        ystgWords: [],
+        serchKey: '',
+        specialPriceGoodsList: [],
+        tuijianGoodsList: []
       }
     },
     created () {
@@ -108,23 +135,42 @@
       }).then((res) => {
         if (res.data.code === 100) {
           console.log(res.data)
-          const imgList = res.data.firstInfo.imgList
-          for (let i = 0; i < imgList.length; i++) {
-            console.log(imgList[i].imageUrl)
-            this.swiperList.push(imgList[i].imageUrl)
-          }
+          this.imgList = res.data.firstInfo.imgList
+          this.getBannerUrl()
         }
       })
-      /* 轮播图数据 */
+      /* 首页数据数据 */
       this.post('/first/getFirstGoods', {storeId: 1, villageId: this.villageId}).then((res) => {
         if (res.data.code === 100) {
           console.log(res.data)
           this.mapTitleTips = res.data.goodsList.mapTitleTips
           this.ystgWords = res.data.goodsList.ystgWords
+          this.serchKey = res.data.goodsList.serchKey
+          this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
+          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsList
+        }
+      })
+      /* 无限加载 */
+      this.post('/first/unlimitedLoading', {storeId: 1, villageId: this.villageId}).then((res) => {
+        if (res.data.code === 100) {
+//          console.log(res.data)
+        }
+      })
+      /* 标签商品 */
+      this.post('/goods/getLabelGoods', {}).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
         }
       })
     },
-    methods: {},
+    methods: {
+      getBannerUrl () {
+        for (let i = 0; i < this.imgList.length; i++) {
+          console.log(this.imgList[i].imageUrl)
+          this.swiperList.push(this.imgList[i].imageUrl)
+        }
+      }
+    },
     computed: {
       sourceGoods () {
         return [
@@ -159,7 +205,6 @@
     top: 0;
     right: 0;
     left: 0;
-
     .location {
       width: calc(~'(100% - 10px)/2');
       margin-right: 5px;
@@ -173,7 +218,6 @@
       font-size: 12px;
       position: relative;
     }
-
     .location:before {
       content: '\e610';
       font: 12px/1 'iconfont';
@@ -182,7 +226,6 @@
       top: 50%;
       transform: translateY(-45%);
     }
-
     .location:after {
       content: '';
       width: 5px;
@@ -195,7 +238,6 @@
       right: 0;
       transform: translate(-20%, -80%) rotate(45deg);
     }
-
     .search {
       margin-left: 5px;
       padding: 5px 10px;
@@ -207,7 +249,6 @@
       background-color: rgba(255, 255, 255, .3);
       position: relative;
     }
-
     .search:before {
       content: '\e639';
       color: #fff;
@@ -216,7 +257,6 @@
       top: 10px;
       left: 15px;
     }
-
     .search input {
       padding-left: 20px;
       width: 100%;
@@ -226,7 +266,6 @@
       -webkit-appearance: none;
       outline: none;
     }
-
     .search input::placeholder {
       color: #fff;
     }
@@ -239,42 +278,6 @@
     }
   }
 
-  .home-view .scroller-box {
-    overflow-x: scroll;
-    display: flex;
-    align-items: center;
-    position: relative;
-
-    .scroller-item {
-      width: calc(~'100vw/3.8');
-      padding-bottom: 10px;
-      border: 1px solid #ddd;
-      border-left: none;
-      background-color: #fff;
-      font: 12px/1.5 'Microsoft Yahei';
-      display: table;
-      position: relative;
-    }
-
-    .scroller-item:last-child {
-      border-right: none;
-    }
-
-    .iconfont {
-      font-size: inherit;
-      margin-right: 3px;
-    }
-
-    .cart-btn {
-      display: table;
-      margin: 5px auto 0px auto;
-      padding: 0 10px;
-      color: #fff;
-      background-color: #f95d43;
-      border-radius: 100px;
-    }
-  }
-
   .home-view {
     position: absolute;
     top: 0;
@@ -282,9 +285,7 @@
     right: 0;
     bottom: 50px;
     overflow-y: scroll;
-    .wrapper {
 
-    }
     .link-box {
       display: flex;
       .pt(5);
@@ -293,211 +294,159 @@
         margin: 5px;
       }
     }
-
-    .source {
-      box-sizing: border-box;
-      height: 40px;
-      padding: 10px;
-      line-height: 20px;
-      color: #ee524d;
-      background-color: #ffffff;
-      font-style: italic;
-
-      .iconfont {
-        margin-right: 5px;
+    .group-buy {
+      .content {
+        box-shadow: 0 0 0 #f8f8f8;
+        .item {
+          width: 33.33%;
+          .h(292);
+          float: left;
+        }
       }
     }
-
-    .fine {
-      text-align: center;
-      color: #ff01a2;
-      background-color: #ffffff;
-      margin-top: 10px;
-      line-height: 20px;
-      padding: 10px;
-      height: 40px;
-      box-sizing: border-box;
-
-      .iconfont {
-        color: #ff01a2;
-        margin-right: 5px;
-      }
-    }
-
-    .fine-box {
-      display: flex;
-      flex-wrap: wrap;
-      border-top: 1px solid #eeeeee;
-      margin-bottom: 10px;
-
-      .fine-item {
-        width: calc(~'100vw / 2');
-        display: flex;
-        align-items: center;
-        background-color: #ffffff;
-        box-sizing: border-box;
-        font-size: 12px;
-        border-bottom: 1px solid #eeeeee;
-        border-right: 1px solid #eeeeee;
-
-        .col {
-          flex-grow: 1;
-          margin: 5px;
-          position: relative;
-
-          p {
-            line-height: normal;
-          }
-
-          p:nth-child(1) {
-            color: #333333;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            overflow: hidden;
-          }
-
-          p:nth-child(2) {
-            color: #fc5050;
-          }
-
-          p:nth-child(3) {
-            color: #aaaaaa;
-          }
-
-          .iconfont {
-            line-height: normal;
-            color: #fc5050;
-            font-size: 20px;
-            position: absolute;
-            right: 0;
-            bottom: 0;
+    .origin-directly {
+      background: #fff;
+      .content {
+        .h(356);
+        border: 1px solid #eee;
+        .left {
+          box-sizing: border-box;
+          .w(356);
+          .h(356);
+          border-bottom: 1px solid #eee;
+        }
+        .right {
+          box-sizing: border-box;
+          .w(390);
+          .h(356);
+          border-left: 1px solid #eee;
+          .item {
+            box-sizing: border-box;
+            .h(178);
+            border-bottom: 1px solid #eee;
+            .des {
+              box-sizing: border-box;
+              .pt(14);
+              .pl(14);
+              .w(203);
+              .h(178);
+              .title {
+                overflow: hidden;
+                color: #443d39;
+                .fs(28);
+                .h(80);
+                .lh(36);
+              }
+              .this-price {
+                color: @theme-color;
+                .fs(22);
+                .lh(29);
+                .s1 {
+                  .fs(20);
+                }
+                .number {
+                  .fs(26);
+                }
+              }
+              .next-price {
+                color: #888;
+                .fs(26);
+                .s1 {
+                  .fs(26);
+                }
+                .number {
+                  .fs(30);
+                }
+              }
+            }
+            .pic {
+              .mt(7);
+              .w(164);
+              .h(164);
+            }
           }
         }
       }
     }
-
-    .hot {
-      margin-top: 10px;
-      line-height: 20px;
-      color: #ff3d01;
-      background-color: #ffffff;
-      text-align: center;
-      padding: 10px;
-      height: 40px;
-      box-sizing: border-box;
-
-      .iconfont {
-        margin-right: 5px;
-        color: #ff3d01;
-      }
-    }
-
-    .hot-box {
-      display: flex;
-      flex-wrap: wrap;
-      border-top: 1px solid #eeeeee;
-
-      .hot-item {
-        width: calc(~'100vw / 3');
-        box-sizing: border-box;
-        padding: 5px;
-        background-color: #ffffff;
-        text-align: center;
-        border-right: 1px solid #eeeeee;
-        border-bottom: 1px solid #eeeeee;
-
-        p:nth-child(2) {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          color: #333333;
-          font-size: 13px;
-          line-height: normal;
-          margin: 5px 0;
-        }
-
-        p:nth-child(3) {
-          font-size: 12px;
-          color: #fc5050;
-          line-height: normal;
-        }
-
-        p:nth-child(4) {
-          font-size: 12px;
-          color: #aaaaaa;
-          line-height: normal;
-        }
-
-        .iconfont {
-          color: #fc5050;
-          font-size: 20px;
-        }
-      }
-    }
-
-    .new {
-      color: #ff8401;
-      text-align: center;
-      margin: 10px 0;
-      line-height: normal;
-
-      .iconfont {
-        margin-right: 5px;
-      }
-    }
-
-    .new-box {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 0 5px 5px 5px;
-      margin-top: -5px;
-
-      .new-item {
-        box-sizing: border-box;
-        width: calc(~'100vw / 2 - 15px');
-        background-color: #ffffff;
-        border-radius: 5px;
-        box-shadow: #dddddd 2px 2px 2px;
-        margin: 5px;
-        overflow: hidden;
-        position: relative;
-
-        p:nth-child(2) {
-          font-size: 13px;
-          margin: 5px;
-          line-height: normal;
-          color: #444444;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-        }
-
-        p:nth-child(3) {
-          line-height: normal;
-          color: #fc5050;
-          font-size: 12px;
-          border-top: 1px dashed #eeeeee;
-          padding-top: 5px;
-          padding-left: 5px;
-        }
-
-        p:nth-child(4) {
-          line-height: normal;
-          color: #aaaaaa;
-          font-size: 12px;
-          padding-bottom: 5px;
-          padding-left: 5px;
-        }
-
-        .iconfont {
-          font-size: 22px;
-          line-height: normal;
-          color: #fc5050;
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
+    .recommend {
+      .content {
+        margin-top: 2px;
+        .item {
+          background: #fff;
+          box-sizing: border-box;
+          width: 33.15%;
+          .h(490);
+          margin-right: 1px;
+          margin-bottom: 1px;
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+          .pic {
+            box-sizing: border-box;
+            .h(256);
+            .pt(30);
+            img {
+              margin: 0 auto;
+              .w(226);
+              .h(226);
+            }
+          }
+          .des {
+            .h(200);
+            .mt(26);
+            .pl(18);
+            position: relative;
+            .title {
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1;
+              overflow: hidden;
+              overflow: hidden;
+              color: #443d39;
+              .fs(28);
+              .lh(39);
+              .mb(10);
+            }
+            .this-price {
+              color: @theme-color;
+              .fs(22);
+              .lh(29);
+              .s1 {
+                .fs(20);
+              }
+              .number {
+                .fs(26);
+              }
+            }
+            .next-price {
+              color: #888;
+              .fs(26);
+              .s1 {
+                .fs(26);
+              }
+              .number {
+                .fs(30);
+              }
+            }
+            .iconfont.shop-car {
+              .w(48);
+              .h(48);
+              .lh(48);
+              .fs(38);
+              text-align: center;
+              color: @theme-color;
+              border: 1px solid @theme-color;
+              border-radius: 50%;
+              .pl(4);
+              .pr(4);
+              .pt(4);
+              .pb(4);
+              position: absolute;
+              left:50%;
+              .ml(-25);
+              .b(10);
+            }
+          }
         }
       }
     }

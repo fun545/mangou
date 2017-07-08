@@ -36,16 +36,11 @@
   li{
     list-style: none;
   }
-  /*[class*=-view] {*/
-    /*position: relative;*/
-    /*height: 100%;*/
-    /*overflow-y: scroll;*/
-  /*}*/
 
-  /*[class*=scroll]::-webkit-scrollbar, [class*=-view]::-webkit-scrollbar {*/
-    /*display: none;*/
-  /*}*/
-
+  img{
+    display: block;
+    border: none;
+  }
   .input-checkbox {
     outline: none;
     -webkit-appearance: textarea;

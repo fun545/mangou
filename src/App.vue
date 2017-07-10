@@ -15,10 +15,12 @@
     url('//at.alicdn.com/t/font_u3lejiytuiduc8fr.ttf') format('truetype'),
     url('//at.alicdn.com/t/font_u3lejiytuiduc8fr.svg#iconfont') format('svg');
   }
-  .weui-tab__panel{
+
+  .weui-tab__panel {
     overflow: hidden !important;
-    padding-bottom:0 !important;
+    padding-bottom: 0 !important;
   }
+
   .iconfont {
     font: normal 16px/1.1 'iconfont';
     -webkit-font-smoothing: antialiased;
@@ -33,14 +35,20 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
-  li{
+
+  h3, h4 {
+    font-weight: normal;
+  }
+
+  li {
     list-style: none;
   }
 
-  img{
+  img {
     display: block;
     border: none;
   }
+
   .input-checkbox {
     outline: none;
     -webkit-appearance: textarea;

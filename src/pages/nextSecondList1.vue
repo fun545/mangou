@@ -134,7 +134,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
 
@@ -249,9 +249,6 @@
         left: 0;
         right: 0;
         bottom: 0;
-        .two-cl {
-          background: #f6f6f6;
-        }
         .item {
           .h(253);
           box-sizing: border-box;
@@ -330,6 +327,9 @@
             .r(30);
             .b(40);
           }
+        }
+        .two-cl {
+          background: #f6f6f6;
         }
       }
     }

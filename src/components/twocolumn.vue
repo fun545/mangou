@@ -1,12 +1,12 @@
 <template>
-  <ul class="goods-detail-wrap">
+  <ul class="goods-detail-wrap clearfix">
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
         <img :src="item.goodsImgUrl" width="100%" alt="">
       </div>
-      <div class="top t-c">
-        <h3 class="title ui-ellipsis">{{item.goodsName}}</h3>
-        <p class="des">{{item.guige}}</p>
+      <div class="top">
+        <h3 class="title">{{item.goodsName}}</h3>
+        <!--<p class="des">{{item.guige}}</p>-->
       </div>
       <div class="bt">
         <div>
@@ -47,12 +47,14 @@
       background: #fff;
       box-shadow: #ddd 2px 2px 2px;
       .pic {
-        width: 100%;
-        .h(302);
+        .w(300);
+        .h(300);
+        margin:  auto;
+        .mt(3);
         text-align: center;
         img {
-          .w(326);
-          .h(292);
+          width: 100%;
+          height: 100%;
           border: none;
         }
       }
@@ -60,21 +62,22 @@
         box-sizing: border-box;
         .h(91);
         border-bottom: 1px dashed @input-border;
+        .pl(16);
         .title {
           .fs(28);
           .l(50);
           color: #443d39;
         }
-        .des {
+       /* .des {
           color: #888;
           .fs(24);
           .lh(30);
-        }
+        }*/
       }
       .bt {
         position: relative;
         .h(119);
-        .pl(81);
+        .pl(26);
         display: flex;
         align-items: center;
         .next-price {

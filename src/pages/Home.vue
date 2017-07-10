@@ -67,8 +67,10 @@
             </div>
           </div>
         </div>
+        <!-- 广告轮播图 -->
+        <!--<swiper :list="adverList" :aspect-ratio="216/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>-->
         <!-- 优品精品 -->
-        <div class="recommend">
+        <div class="recommend" v-if="mapTitleTips[2]">
           <home-title :title="mapTitleTips[2].name">
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
           </home-title>
@@ -87,9 +89,22 @@
           </div>
         </div>
         <!-- 广告轮播图 -->
-        <swiper :list="adverList" :aspect-ratio="120/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>
-        <!-- 热门畅销 -->
+        <!--<swiper :list="adverList" :aspect-ratio="216/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>-->
         <!-- 新品上架 -->
+        <div class="new-goods">
+          <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
+          </home-title>
+          <new-goods :goodsList="newGoodsList"></new-goods>
+        </div>
+        <!-- 广告轮播图 -->
+        <!-- 热销产品 -->
+        <div class="sale">
+          <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
+          </home-title>
+          <sale :goodsList="saleGoods"></sale>
+        </div>
       </div>
     </div>
   </div>
@@ -98,11 +113,15 @@
 <script>
   import { Swiper, SwiperItem } from 'vux'
   import homeTitle from '../components/homeTitle'
+  import newGoods from '../components/oneColumn'
+  import sale from '../components/twocolumn'
   export default {
     components: {
       Swiper,
       SwiperItem,
-      homeTitle
+      homeTitle,
+      newGoods,
+      sale
     },
     data () {
       return {
@@ -116,7 +135,12 @@
         ystgWords: [],
         serchKey: '',
         specialPriceGoodsList: [],
-        tuijianGoodsList: []
+        tuijianGoodsList: [],
+        adverList: [],
+        newGoodsList: [],
+        saleGoods: [],
+        pageIndex: 1,
+        pageSize: 10
       }
     },
     created () {
@@ -148,12 +172,17 @@
           this.serchKey = res.data.goodsList.serchKey
           this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
           this.tuijianGoodsList = res.data.goodsList.tuijianGoodsList
+//          this.adverList = [res.data.goodsList.newGoodsInfo.newImageList[0].imageUrl]
+//          console.log(this.adverList)
+          this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
+          this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
+          //          this.adverList = [res.data.goodsList.saleGoodsInfo.saleImagelist[0].imageUrl]
         }
       })
       /* 无限加载 */
       this.post('/first/unlimitedLoading', {storeId: 1, villageId: this.villageId}).then((res) => {
         if (res.data.code === 100) {
-//          console.log(res.data)
+          console.log(res.data)
         }
       })
       /* 标签商品 */
@@ -180,12 +209,6 @@
           {img: './static/goods_img.jpg'},
           {img: './static/goods_img.jpg'},
           {img: './static/goods_img.jpg'}
-        ]
-      },
-      adverList () {
-        return [
-          {img: './static/adver.png'},
-          {img: './static/adver.png'}
         ]
       }
     }
@@ -442,12 +465,69 @@
               .pt(4);
               .pb(4);
               position: absolute;
-              left:50%;
+              left: 50%;
               .ml(-25);
               .b(10);
             }
           }
         }
+      }
+    }
+    .new-goods {
+      ul {
+        border-top: 2px solid #f1f1f1;
+        .item {
+          box-sizing: border-box;
+          .h(299);
+          .pl(16);
+          .pt(18);
+          background: #fff;
+          border-bottom: 2px solid #f1f1f1;
+          .pic {
+            .w(268);
+            .h(268);
+          }
+          .col {
+            .w(436);
+            .title {
+              .fs(32);
+            }
+            .des {
+              .fs(28);
+              .mb(60);
+            }
+            .next-price {
+              .fs(30);
+              .s1 {
+                .fs(26);
+              }
+              .s2 {
+                .fs(32);
+              }
+            }
+            .this-price {
+              .fs(30);
+              .lh(40);
+              .s1 {
+                .fs(26);
+              }
+              .s2 {
+                .fs(32);
+              }
+            }
+          }
+          .iconfont.shop-car {
+            .r(70);
+            .b(37);
+            color: @theme-color;
+            border: 1px solid @theme-color;
+          }
+        }
+      }
+    }
+    .sale {
+      ul {
+        .mt(12);
       }
     }
   }

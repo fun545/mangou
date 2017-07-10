@@ -23,6 +23,7 @@
           {{city}}
         </div>
       </div>
+      <alert v-model="alertShow" :title="alertTitle" :content="alertContent"></alert>
     </div>
     <div class="location-footer t-c">
       我要开店
@@ -31,9 +32,9 @@
 </template>
 
 <script>
-  import { XHeader, Group, Cell } from 'vux'
+  import { XHeader, Group, Cell, Alert } from 'vux'
   export default {
-    components: {XHeader, Group, Cell},
+    components: {XHeader, Group, Cell, Alert},
     data () {
       return {
         search: '',
@@ -41,11 +42,15 @@
         area: '开福区',
         villageList: '',
         village: '',
-        isOk: false
+        isOk: false,
+        alertShow: false,
+        alertTitle: '定位失败',
+        alertContent: '请手动搜索'
       }
     },
     created () {
-      var curPosition = JSON.parse(localStorage.getItem('CurrentPosition'))
+      var curPosition = JSON.parse(localStorage.getItem('m-CurrentPosition'))
+      console.log(curPosition)
       if (curPosition) {
         this.post('/village/villageList', {
           cityId: 1,
@@ -59,6 +64,8 @@
             console.log(this.villageList)
           }
         })
+      } else {
+        this.alertShow = true
       }
     },
     methods: {

@@ -2,7 +2,7 @@
   <ul>
     <li class="item" v-for="(item,index) in goodsList" :key="index">
       <div class="pic f-l">
-        <img :src="item.goodsImgUrl" alt="">
+        <img v-lazy="item.goodsImgUrl" alt="">
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>

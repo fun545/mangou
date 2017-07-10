@@ -29,7 +29,7 @@
             <div class="list clearfix">
               <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index"
                    @click="goSecondList(item.classifyId)">
-                <img :src="item.classifyImgUrl" alt="" class="pic">
+                <img v-lazy="item.classifyImgUrl" alt="" class="pic">
                 <p class="name t-c">{{item.classifyName}}</p>
               </div>
             </div>

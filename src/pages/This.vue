@@ -5,7 +5,7 @@
       <!-- 显示页面主题 -->
       <div class="is-cont">
         <div class="flex-box">
-          <img :src="storeMsg.storeImgurl" width="80" alt="">
+          <img v-lazy="storeMsg.storeImgurl" width="80" alt="">
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
             <p>{{storeMsg.shopHours}} | 满29元免配送费用</p>
@@ -53,7 +53,7 @@
         <div class="goods-list-wrap" ref="goodsListWrap">
           <div class="googs-list">
             <router-link to="/goods_detail" class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
-              <img :src="item.goodsImgUrl" alt="" class="pic">
+              <img v-lazy="item.goodsImgUrl" alt="" class="pic">
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>

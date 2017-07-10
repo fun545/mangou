@@ -6,10 +6,16 @@
         <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
       </div>
       <!-- 轮播 -->
-      <swiper :aspect-ratio="320/750" dots-position="center" auto loop class="banner">
-        <swiper-item class="swiper-img" v-for="(item, index) in swiperList" :key="index">
-          <img :src="item">
-        </swiper-item>
+      <!--<swiper :aspect-ratio="320/750" dots-position="center" auto loop class="banner">-->
+      <!--<swiper-item class="swiper-img" v-for="(item, index) in swiperList" :key="index">-->
+      <!--<img :src="item.imageUrl">-->
+      <!--</swiper-item>-->
+      <!--</swiper>-->
+      <swiper :options="swiperOption" ref="mySwiper" class="banner">
+        <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
+          <img :src="item.imageUrl">
+        </swiper-slide>
+        <div class="swiper-pagination" slot="pagination"></div>
       </swiper>
       <!-- 次日达/即时达 -->
       <div class="link-box">
@@ -25,7 +31,7 @@
           <div class="content clearfix">
             <router-link to="" v-for="(item,index) in ystgWords" :key="index">
               <div class="item">
-                <img :src="item.keyword" alt="" width="100%" height="100%">
+                <img v-lazy="item.keyword" alt="" width="100%" height="100%">
               </div>
             </router-link>
           </div>
@@ -37,7 +43,7 @@
           </home-title>
           <div class="content">
             <div class="left f-l">
-              <img :src="serchKey.keyword" alt="" width="100%" height="100%">
+              <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
             </div>
             <div class="right f-l">
               <div class="item">
@@ -49,7 +55,7 @@
                     class="number">{{specialPriceGoodsList[0].price}}</span></p>
                 </div>
                 <div class="pic f-l">
-                  <img :src="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
+                  <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
                 </div>
               </div>
               <div class="item">
@@ -61,7 +67,7 @@
                     class="number">{{specialPriceGoodsList[1].price}}</span></p>
                 </div>
                 <div class="pic f-l">
-                  <img :src="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
+                  <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
                 </div>
               </div>
             </div>
@@ -77,7 +83,7 @@
           <div class="content clearfix">
             <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
               <div class="pic">
-                <img :src="item.goodsImgUrl" alt="">
+                <img v-lazy="item.goodsImgUrl" alt="">
               </div>
               <div class="des">
                 <h3 class="title">{{item.goodsName}}</h3>
@@ -111,20 +117,25 @@
 </template>
 
 <script>
-  import { Swiper, SwiperItem } from 'vux'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import homeTitle from '../components/homeTitle'
   import newGoods from '../components/oneColumn'
   import sale from '../components/twocolumn'
   export default {
     components: {
-      Swiper,
-      SwiperItem,
+      swiper,
+      swiperSlide,
       homeTitle,
       newGoods,
       sale
     },
     data () {
       return {
+        swiperOption: {
+          notNextTick: true,
+          autoplay: 3000,
+          pagination: '.swiper-pagination'
+        },
         villageName: '',
         swiperList: [],
         cityId: localStorage.getItem('m-cityId'),
@@ -145,7 +156,7 @@
     },
     created () {
       if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/locatio'})
+        this.$router.push({path: '/location'})
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
@@ -159,8 +170,7 @@
       }).then((res) => {
         if (res.data.code === 100) {
           console.log(res.data)
-          this.imgList = res.data.firstInfo.imgList
-          this.getBannerUrl()
+          this.swiperList = res.data.firstInfo.imgList
         }
       })
       /* 首页数据数据 */
@@ -192,14 +202,7 @@
         }
       })
     },
-    methods: {
-      getBannerUrl () {
-        for (let i = 0; i < this.imgList.length; i++) {
-          console.log(this.imgList[i].imageUrl)
-          this.swiperList.push(this.imgList[i].imageUrl)
-        }
-      }
-    },
+    methods: {},
     computed: {
       sourceGoods () {
         return [
@@ -295,9 +298,11 @@
   }
 
   .banner {
+    .swiper-img {
+      width: 100%;
+    }
     img {
       width: 100%;
-      height: 100%;
     }
   }
 

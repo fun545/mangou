@@ -2,7 +2,7 @@
   <ul class="goods-detail-wrap clearfix">
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
-        <img :src="item.goodsImgUrl" width="100%" alt="">
+        <img v-lazy="item.goodsImgUrl" width="100%" alt="">
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>

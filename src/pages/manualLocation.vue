@@ -29,7 +29,7 @@
               <div class="letter">
                 A
               </div>
-              <div class="item" v-for="(item,index) in villageList">
+              <div class="item" v-for="(item,index) in villageList" @click="curVillage(item)">
                 {{item.villageName}}
               </div>
             </div>
@@ -96,6 +96,14 @@
       })
     },
     methods: {
+      curVillage (data) {
+        this.village = data.villageName
+        localStorage.setItem('m-cityId', data.cityId)
+        localStorage.setItem('m-areaId', data.areaId)
+        localStorage.setItem('m-villageId', data.villageId)
+        localStorage.setItem('m-villageName', data.villageName)
+        this.$router.push({path: '/tabbar/home'})
+      },
       search (word) {
         this.post('/village/villageList', {
           cityId: 1,

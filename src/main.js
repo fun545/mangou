@@ -8,9 +8,18 @@ import Vuex from 'vuex'
 import { AlertPlugin } from 'vux'
 import api from './util/api'
 import vueScroll from 'vue-scroll'
+import VueLazyload from 'vue-lazyload'
 import './common/style/index.less'
 Vue.use(AlertPlugin)
 Vue.use(vueScroll)
+Vue.use(VueLazyload)
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'assets/home_GoodsDefaultImg@2x.png',
+  loading: 'assets/home_GoodsDefaultImg@2x.png',
+  attempt: 1,
+  listenEvents: ['scroll']
+})
 Vue.use(Vuex)
 Vue.prototype.post = api.post
 FastClick.attach(document.body)

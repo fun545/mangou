@@ -131,11 +131,6 @@
     },
     data () {
       return {
-        swiperOption: {
-          notNextTick: true,
-          autoplay: 3000,
-          pagination: '.swiper-pagination'
-        },
         villageName: '',
         swiperList: [],
         cityId: localStorage.getItem('m-cityId'),
@@ -151,15 +146,15 @@
         newGoodsList: [],
         saleGoods: [],
         pageIndex: 1,
-        pageSize: 10
+        pageSize: 10,
+        swiperOption: {
+          notNextTick: true,
+          autoplay: 3000,
+          pagination: '.swiper-pagination'
+        }
       }
     },
     created () {
-      if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/location'})
-      } else {
-        this.villageName = localStorage.getItem('m-villageName')
-      }
       /* 轮播图数据 */
       this.post('/first/getFirst', {
         cityId: this.cityId,
@@ -173,6 +168,11 @@
           this.swiperList = res.data.firstInfo.imgList
         }
       })
+      if (!localStorage.getItem('m-villageName')) {
+        this.$router.push({path: '/location'})
+      } else {
+        this.villageName = localStorage.getItem('m-villageName')
+      }
       /* 首页数据数据 */
       this.post('/first/getFirstGoods', {storeId: 1, villageId: this.villageId}).then((res) => {
         if (res.data.code === 100) {
@@ -182,6 +182,7 @@
           this.serchKey = res.data.goodsList.serchKey
           this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
           this.tuijianGoodsList = res.data.goodsList.tuijianGoodsList
+          console.log(this.tuijianGoodsList)
 //          this.adverList = [res.data.goodsList.newGoodsInfo.newImageList[0].imageUrl]
 //          console.log(this.adverList)
           this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
@@ -300,6 +301,7 @@
   .banner {
     .swiper-img {
       width: 100%;
+      .h(320);
     }
     img {
       width: 100%;
@@ -398,6 +400,7 @@
     }
     .recommend {
       .content {
+        width: 100%;
         margin-top: 2px;
         .item {
           background: #fff;

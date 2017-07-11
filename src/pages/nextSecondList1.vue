@@ -6,7 +6,7 @@
         <next-search></next-search>
         <instruction></instruction>
       </div>
-      <span class="back iconfont" @click="goBack()">&#xe600;</span>
+      <span class="back iconfont" @click="$router.back(-1)">&#xe600;</span>
       <span class="change iconfont" @click="change()">&#xe633;</span>
     </div>
     <div class="content" :class="{'listChange':!listFlag}">
@@ -71,9 +71,6 @@
       this.getGoods(this.secondId)
     },
     methods: {
-      goBack () {
-        this.$router.back(-1)
-      },
       change () {
         if (this.listFlag) {
           this.listFlag = false

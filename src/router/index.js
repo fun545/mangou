@@ -216,6 +216,11 @@ export default new Router({
       /* 忘记密码 */
       path: '/forget',
       component: require('../pages/Forget')
+    },
+    {
+      /* 活动页面 */
+      path: '/active',
+      component: require('../pages/active')
     }
   ]
 })

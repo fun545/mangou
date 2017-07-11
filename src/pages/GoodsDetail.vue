@@ -1,52 +1,68 @@
 <template>
-  <div class="goods-detail-page">
-    <!-- 商品轮播图 -->
-    <swiper :list="swiperList" :aspect-ratio="639/748" dots-position="center" auto loop></swiper>
-    <div class="title-box">
-      <div class="title">
-        <h4>康利蜂蜜新西兰进口蜂蜜500g</h4>
-        <p>¥125.00<span>即时价:¥170.00</span></p>
+  <div class="detail-wrap">
+    <m-header :title="title">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
+    <div class="content">
+      <div>
+        <swiper :aspect-ratio="632/750" dots-position="center" auto loop :list="swiperList"></swiper>
+        <div class="des">
+          <h3 class="title">{{goodsDetail.goodsName}}</h3>
+          <div class="price-wrap">
+            <p class="next-price d-ib">次日价：<span class="s1">¥</span><span class="number">{{goodsDetail.price}}</span>
+            </p>
+            <p class="this-price d-ib">即时价：<span class="s1">¥</span><span
+              class="number">{{goodsDetail.canKaoPrice}}</span></p>
+          </div>
+          <div class="size-des">
+            <p class="size">商品规格：{{goodsDetail.guige}}</p>
+            <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
+          </div>
+          <div class="collet-wrap">
+            <div class="iconfont collect" v-if="!collectFlag" @click="collectGoods">&#xe65d;</div>
+            <div class="iconfont collect" v-if="collectFlag" @click="cancleCollect">&#xe641;</div>
+          </div>
+        </div>
+        <div class="guess">
+          <div class="title"></div>
+          <div class="d-content">
+            <guess-list :goodsList="goodsList"></guess-list>
+          </div>
+        </div>
       </div>
-      <i class="iconfont">&#xe612;</i>
     </div>
-    <div class="spec">
-      <p>商品规格：500g</p>
-      <p>商品编号：6912100268222624</p>
-    </div>
-    <!-- 猜你喜欢 -->
-    <div class="like"><i class="iconfont">&#xe612;</i>猜你喜欢</div>
-    <div class="like-box">
-      <div class="like-item" v-for="(item,index) in sourceGoods" :key="index">
-        <img :src="item.img" width="100%" alt="">
-        <p>气凋盒装卤鸭脖320g，武汉特产食品零食小吃</p>
-        <p>次日价：¥26.00</p>
-        <p>即时价：¥26.00</p>
-        <i class="iconfont">&#xe613;</i>
+    <div class="bt-shop-car">
+      <div class="left">
+        <div class="shop-car">
+
+        </div>
       </div>
-    </div>
-    <!-- 结算 -->
-    <div class="total-box">
-      <div class="cart">
-        <i class="iconfont">&#xe609;</i>
-        <span>88</span>
+      <div class="right">
+
       </div>
-      <p>合计：<span>88.8</span></p>
-      <div class="total-btn">去结算</div>
     </div>
   </div>
 </template>
 
 <script>
-  import { Swiper, SwiperItem } from 'vux'
+  import { Swiper } from 'vux'
+  import mHeader from '../components/header'
+  import guessList from '../components/twocolumn'
   export default {
-    components: {Swiper, SwiperItem},
+    components: {Swiper, mHeader, guessList},
+    data () {
+      return {
+        token: localStorage.getItem('m-token'),
+        villageId: localStorage.getItem('m-villageId'),
+        swiperList: [],
+        title: '商品详情',
+        goodsDetail: '',
+        goodsList: [],
+        collectFlag: false,
+        collectId: ''
+      }
+    },
     computed: {
-      swiperList () {
-        return [
-          {img: './static/goods_detail.png'},
-          {img: './static/goods_detail.png'}
-        ]
-      },
       sourceGoods () {
         return [
           {img: './static/goods_img.jpg'},
@@ -59,210 +75,157 @@
       }
     },
     created () {
-      console.log(2)
-      this.post('/village/areaList', {cityId: 1}).then(function (res) {
-        console.log(res.data)
+      this.post('/goods/goodsDetail', {
+        goodsId: this.$route.query.goodsId,
+        token: this.token,
+        villageId: this.villageId
+      }).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
+          this.goodsDetail = res.data.goodsDetail
+          this.goodsList = res.data.listGoods
+          console.log(this.goodsList)
+          this.getImgList(res.data.goodsDetail.imagesList)
+        }
       })
+    },
+    methods: {
+      getImgList (urlList) {
+        for (let i = 0; i < urlList.length; i++) {
+          const urlObj = {}
+          urlObj.img = urlList[i]
+          this.swiperList.push(urlObj)
+        }
+        console.log(this.swiperList)
+      },
+      collectGoods () {
+        this.post('/collect/insertCollect', {
+          goodsId: this.$route.query.goodsId,
+          storeId: this.goodsDetail.storeId,
+          token: this.token,
+          status: 1,
+          shopType: this.goodsDetail.shopType
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 101) {
+            console.log(res.data)
+            this.collectId = res.data.collectId
+            this.collectFlag = true
+          }
+        })
+      },
+      cancleCollect () {
+//        this.post('/collect/insertCollect', {
+//          goodsId: this.$route.query.goodsId,
+//          storeId: this.goodsDetail.storeId,
+//          token: this.token,
+//          status: 2,
+//          shopType: this.goodsDetail.shopType,
+//          collectId: this.collectId
+//        })
+      }
     }
   }
 </script>
 
-<style lang="less">
-  .goods-detail-page {
-    padding-bottom: 50px;
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+  @import "../common/style/property";
+  @import "../common/style/mlxin";
 
-    .title-box {
-      display: flex;
-      align-items: center;
-      padding: 5px 10px;
-      background-color: #ffffff;
-
-      .title {
-        flex-grow: 1;
-        line-height: normal;
-
-        p {
-          margin-top: 5px;
-          color: #fc5050;
-
-          span {
-            margin-left: 50px;
-            color: #aaaaaa;
-            font-size: 12px;
+  .detail-wrap {
+    .cp-header {
+      color: #fff;
+      background: @theme-color;
+      .back {
+        color: #fff;
+      }
+    }
+    .content {
+      position: absolute;
+      .t(92);
+      left: 0;
+      right: 0;
+      .b(100);
+      z-index: 101;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      .des {
+        position: relative;
+        box-sizing: border-box;
+        .h(332);
+        .pt(15);
+        background: #fff;
+        .title {
+          .pl(26);
+          .h(54);
+          .lh(54);
+          .fs(36);
+          color: #2a2a2a;
+        }
+        .price-wrap {
+          .pl(26);
+          .mt(54);
+          .h(84);
+          .lh(84);
+          border-bottom: 1px solid #dfdedc;
+          .this-price {
+            color: #888;
+            .fs(28);
+            .lh(54);
+            .s1 {
+              .fs(20);
+            }
+            .number {
+              .fs(28);
+            }
+          }
+          .next-price {
+            color: @theme-color;
+            .fs(36);
+            .lh(33);
+            font-weight: bold;
+            .s1 {
+              .fs(26);
+              .ml(20);
+            }
+            .number {
+              .fs(36);
+              .mr(52);
+            }
           }
         }
-      }
-
-      .iconfont {
-        color: #fc5050;
-        font-size: 22px;
-      }
-    }
-
-    .spec {
-      line-height: 20px;
-      padding: 5px;
-      font-size: 12px;
-      color: #666666;
-      background-color: #ffffff;
-      border-top: 1px solid #eeeeee;
-    }
-
-    .like {
-      color: #fc5050;
-      line-height: normal;
-      display: table;
-      margin: 10px auto;
-      position: relative;
-
-      &:before {
-        content: '';
-        display: table;
-        height: 1px;
-        width: 30px;
-        background-color: #fc5050;
-        position: absolute;
-        left: -10px;
-        top: 50%;
-        transform: translate(-100%, -50%);
-      }
-
-      &:after {
-        content: '';
-        display: table;
-        height: 1px;
-        width: 30px;
-        background-color: #fc5050;
-        position: absolute;
-        right: -10px;
-        top: 50%;
-        transform: translate(100%, -50%);
-      }
-
-      .iconfont {
-        margin-right: 5px;
-        font-size: 14px;
-      }
-    }
-
-    .like-box {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 0 5px 5px 5px;
-      margin-top: -5px;
-
-      .like-item {
-        background-color: #ffffff;
-        width: calc(~'100vw / 2 - 15px');
-        margin: 5px;
-        overflow: hidden;
-        border-radius: 5px;
-        box-shadow: #dddddd 2px 2px 2px;
-        font-size: 12px;
-        position: relative;
-
-        p:nth-child(2) {
-          line-height: normal;
-          margin: 5px;
-          color: #444444;
+        .size-des {
+          .pt(9);
+          .pl(26);
+          color: #666;
+          .fs(26);
+          .size {
+            .h(56);
+            .lh(56);
+          }
         }
-
-        p:nth-child(3) {
-          color: #fc5050;
-          line-height: normal;
-          padding-top: 5px;
-          padding-left: 5px;
-          border-top: 1px dashed #eeeeee;
-        }
-
-        p:nth-child(4) {
-          line-height: normal;
-          color: #aaaaaa;
-          padding-bottom: 5px;
-          padding-left: 5px;
-        }
-
-        .iconfont {
-          color: #fc5050;
-          line-height: normal;
-          font-size: 22px;
+        .collect {
           position: absolute;
-          right: 10px;
-          bottom: 10px;
-          z-index: 3;
+          .r(42);
+          .t(24);
+          .fs(41);
+          color: @theme-color;
         }
       }
-    }
-
-    .total-box {
-      display: flex;
-      align-items: center;
-      box-shadow: #bbbbbb 0 0 1px;
-      background-color: #ffffff;
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 9;
-
-      .cart {
-        margin: 5px 10px;
-        position: relative;
-
-        .iconfont {
-          color: #eb7e4c;
-          font-size: 30px;
-          width: 40px;
-          text-align: center;
-          height: 40px;
-          line-height: 40px;
-          display: block;
+      .guess {
+        .title {
+          .h(84);
+          .bg-image('../../assets/detail_recommend');
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-color: #f7f7f7;
+          background-size: 43% 39%;
         }
+        .d-content {
 
-        & > span {
-          text-align: center;
-          width: 15px;
-          line-height: 15px;
-          height: 15px;
-          font-size: 12px;
-          border: 1px solid #ffffff;
-          border-radius: 15px/2;
-          color: #ffffff;
-          background-color: #eb7e4c;
-          position: absolute;
-          top: 0;
-          right: 0;
         }
-      }
-
-      p {
-        flex-grow: 1;
-        line-height: normal;
-        padding: 0 10px;
-        position: relative;
-
-        &:before {
-          content: '';
-          width: 1px;
-          height: 20px;
-          background-color: #eb7e4c;
-          position: absolute;
-          top: 50%;
-          left: 0;
-          transform: translateY(-50%);
-        }
-
-        span {
-          color: #eb7e4c;
-        }
-      }
-
-      .total-btn {
-        align-self: stretch;
-        line-height: 50px;
-        color: #ffffff;
-        background-color: #eb7e4c;
-        padding: 0 30px;
       }
     }
   }

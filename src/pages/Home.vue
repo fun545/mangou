@@ -29,11 +29,9 @@
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
           </home-title>
           <div class="content clearfix">
-            <router-link to="" v-for="(item,index) in ystgWords" :key="index">
-              <div class="item">
-                <img v-lazy="item.keyword" alt="" width="100%" height="100%">
-              </div>
-            </router-link>
+            <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item.keyId)">
+              <img v-lazy="item.keyword" alt="" width="100%" height="100%">
+            </div>
           </div>
         </div>
         <!-- 原地直供 -->
@@ -46,7 +44,7 @@
               <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
             </div>
             <div class="right f-l">
-              <div class="item">
+              <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
                 <div class="des f-l">
                   <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
                   <p class="this-price">即时价：<span class="s1">¥</span><span
@@ -58,7 +56,7 @@
                   <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
                 </div>
               </div>
-              <div class="item">
+              <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
                 <div class="des f-l">
                   <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
                   <p class="this-price">即时价：<span class="s1">¥</span><span
@@ -81,7 +79,7 @@
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
           </home-title>
           <div class="content clearfix">
-            <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
+            <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index" @click="goDetail(item.goodsId)">
               <div class="pic">
                 <img v-lazy="item.goodsImgUrl" alt="">
               </div>
@@ -182,7 +180,7 @@
           this.serchKey = res.data.goodsList.serchKey
           this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
           this.tuijianGoodsList = res.data.goodsList.tuijianGoodsList
-          console.log(this.tuijianGoodsList)
+//          console.log(this.tuijianGoodsList)
 //          this.adverList = [res.data.goodsList.newGoodsInfo.newImageList[0].imageUrl]
 //          console.log(this.adverList)
           this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
@@ -203,7 +201,25 @@
         }
       })
     },
-    methods: {},
+    methods: {
+      goActive (id) {
+        this.$router.push({
+          path: '/active',
+          query: {keyId: id}
+        })
+      },
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
+//        this.post('/goods/goodsDetail', {goodsId: id, token: this.token, villageId: this.villageId}).then((res) => {
+//          if (res.data.code === 100) {
+//            console.log(res.data)
+//          }
+//        })
+      }
+    },
     computed: {
       sourceGoods () {
         return [
@@ -341,13 +357,13 @@
         border: 1px solid #eee;
         .left {
           box-sizing: border-box;
-          .w(356);
+          width: 47.5%;
           .h(356);
           border-bottom: 1px solid #eee;
         }
         .right {
           box-sizing: border-box;
-          .w(390);
+          width: 52.5%;
           .h(356);
           border-left: 1px solid #eee;
           .item {
@@ -405,10 +421,10 @@
         .item {
           background: #fff;
           box-sizing: border-box;
-          width: 33.15%;
+          width: 33.23%;
           .h(490);
-          margin-right: 1px;
-          margin-bottom: 1px;
+          .mr(1);
+          .mb(1);
           &:nth-child(3n) {
             margin-right: 0;
           }

@@ -1,6 +1,6 @@
 <template>
   <ul class="goods-detail-wrap clearfix">
-    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
+    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
       <div class="pic">
         <img v-lazy="item.goodsImgUrl" width="100%" alt="">
       </div>
@@ -17,7 +17,6 @@
           </div>
         </div>
       </div>
-
     </li>
   </ul>
 </template>
@@ -26,6 +25,14 @@
   export default {
     props: {
       goodsList: Array
+    },
+    methods: {
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
+      }
     }
   }
 </script>

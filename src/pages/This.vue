@@ -175,6 +175,12 @@
           click: true
         })
         this.listSroll = new BScroll(this.$refs.goodsListWrap)
+      },
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
       }
     }
   }

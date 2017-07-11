@@ -1,6 +1,6 @@
 <template>
   <ul>
-    <li class="item" v-for="(item,index) in goodsList" :key="index">
+    <li class="item" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
       <div class="pic f-l">
         <img v-lazy="item.goodsImgUrl" alt="">
       </div>
@@ -20,6 +20,14 @@
   export default {
     props: {
       goodsList: Array
+    },
+    methods: {
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
+      }
     }
   }
 </script>
@@ -27,6 +35,7 @@
 <style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
+
   .item {
     .h(253);
     box-sizing: border-box;

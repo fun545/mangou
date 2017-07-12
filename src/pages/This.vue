@@ -52,7 +52,7 @@
         </div>
         <div class="goods-list-wrap" ref="goodsListWrap">
           <div class="googs-list">
-            <router-link to="/goods_detail" class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
+            <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
               <img v-lazy="item.goodsImgUrl" alt="" class="pic">
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
@@ -60,7 +60,7 @@
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
                 <div class="iconfont shop-car">&#xe613;</div>
               </div>
-            </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -189,6 +189,7 @@
 <style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
+
   .this {
     height: 100%;
     .strong {

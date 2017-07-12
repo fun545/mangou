@@ -1,15 +1,11 @@
 <template>
   <div>
-    <!--<div class="header t-c">-->
-    <!--<span class="back iconfont" @click="$router.back(-1)">&#xe600;</span>-->
-    <!--预售团购-->
-    <!--</div>-->
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
-    <div class="scroll">
+    <div class="scroll" v-if="isActive">
       <div class="activePic">
-
+        <img v-lazy="keyBanleImages" alt="">
       </div>
       <div class="content">
         <div class="item" v-for="(item ,index) in goodsList" :key="index">
@@ -24,24 +20,32 @@
         </div>
       </div>
     </div>
+    <!--<div v-bind:class="{ nonePic: isActive }" class="none"></div>-->
+    <no-page :isActive="isActive"></no-page>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
+  import noPage from '../components/noPage'
   export default {
-    components: {mHeader},
+    components: {mHeader, noPage},
     data () {
       return {
         goodsList: [],
-        title: '预售团购'
+        title: this.$route.query.remarks,
+        isActive: true,
+        keyBanleImages: this.$route.query.keyBanleImages
       }
     },
     created () {
       this.post('/goods/getLabelGoods', {keyWordId: this.$route.query.keyId}).then((res) => {
         if (res.data.code === 100) {
           this.goodsList = res.data.goodsList
-          console.log(res.data)
+          if (this.goodsList.length === 0) {
+            this.isActive = false
+            console.log(this.isActive)
+          }
         }
       })
     }
@@ -82,10 +86,10 @@
     z-index: 101;
     .activePic {
       .h(314);
-      .mt(24);
       img {
         width: 100%;
         height: 100%;
+        border: none;
       }
     }
     .content {
@@ -95,7 +99,7 @@
         .w(700);
         .h(292);
         margin: 0 auto;
-        border: 2px solid #2c92ab;
+        border: 1px solid #2c92ab;
         background: #fff;
         .mt(18);
         .pic {
@@ -103,7 +107,6 @@
           .ml(28);
           .w(268);
           .h(268);
-          background: red;
           img {
             width: 100%;
             height: 100%;
@@ -152,5 +155,4 @@
       }
     }
   }
-
 </style>

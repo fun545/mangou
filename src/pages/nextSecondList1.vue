@@ -1,50 +1,54 @@
 <template>
-  <div class="next-second-list1">
-    <div class="header">
-      <!-- 搜索框 -->
-      <div class="search-box">
-        <next-search></next-search>
-        <instruction></instruction>
+  <div>
+    <div class="next-second-list1">
+      <div class="header">
+        <!-- 搜索框 -->
+        <div class="search-box">
+          <next-search></next-search>
+          <instruction></instruction>
+        </div>
+        <span class="back iconfont" @click="$router.back(-1)">&#xe600;</span>
+        <span class="change iconfont" @click="change()">&#xe633;</span>
       </div>
-      <span class="back iconfont" @click="$router.back(-1)">&#xe600;</span>
-      <span class="change iconfont" @click="change()">&#xe633;</span>
-    </div>
-    <div class="content" :class="{'listChange':!listFlag}">
-      <div class="goods-sort" :class="{'listChange':!listFlag}">
-        <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="mix()">综合排序</div>
-        <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
-          按价格
-          <div class="sort-icon d-ib">
-            <span class="iconfont up" :class="{'sort-icon-selected':!priceSortFlag}">&#xe617;</span>
-            <span class="iconfont down" :class="{'sort-icon-selected':priceSortFlag}">&#xe632;</span>
+      <div class="content" :class="{'listChange':!listFlag}" v-if="isActive">
+        <div class="goods-sort" :class="{'listChange':!listFlag}">
+          <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="mix()">综合排序</div>
+          <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
+            按价格
+            <div class="sort-icon d-ib">
+              <span class="iconfont up" :class="{'sort-icon-selected':!priceSortFlag}">&#xe617;</span>
+              <span class="iconfont down" :class="{'sort-icon-selected':priceSortFlag}">&#xe632;</span>
+            </div>
+          </div>
+          <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
+            按销量
+            <div class="sort-icon d-ib">
+              <span class="iconfont up" :class="{'sort-icon-selected':saleSortFlag}">&#xe617;</span>
+              <span class="iconfont down" :class="{'sort-icon-selected':!saleSortFlag}">&#xe632;</span>
+            </div>
           </div>
         </div>
-        <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
-          按销量
-          <div class="sort-icon d-ib">
-            <span class="iconfont up" :class="{'sort-icon-selected':saleSortFlag}">&#xe617;</span>
-            <span class="iconfont down" :class="{'sort-icon-selected':!saleSortFlag}">&#xe632;</span>
-          </div>
+        <div class="list-wrap" ref="listWrap">
+          <ul v-if="listFlag">
+            <li class="item" v-for="(item,index) in list" :key="index">
+              <div class="pic f-l">
+                <img v-lazy="item.goodsImgUrl" alt="">
+              </div>
+              <div class="col f-l">
+                <h3 class="title">{{item.goodsName}}</h3>
+                <p class="des">{{item.guige}}</p>
+                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+              </div>
+              <div class="iconfont shop-car t-c">&#xe613;</div>
+            </li>
+          </ul>
+          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
         </div>
       </div>
-      <div class="list-wrap" ref="listWrap">
-        <ul v-if="listFlag">
-          <li class="item" v-for="(item,index) in list" :key="index">
-            <div class="pic f-l">
-              <img v-lazy="item.goodsImgUrl" alt="">
-            </div>
-            <div class="col f-l">
-              <h3 class="title">{{item.goodsName}}</h3>
-              <p class="des">{{item.guige}}</p>
-              <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-              <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-            </div>
-            <div class="iconfont shop-car t-c">&#xe613;</div>
-          </li>
-        </ul>
-        <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
-      </div>
+      <no-page :isActive="isActive"></no-page>
     </div>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -53,8 +57,10 @@
   import instruction from '../components/instruction.vue'
   import nextSearch from '../components/nextSearch.vue'
   import twoColumn from '../components/twocolumn.vue'
+  import noPage from '../components/noPage'
+  import loading from '../components/loading'
   export default {
-    components: {instruction, nextSearch, BScroll, twoColumn},
+    components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading},
     data () {
       return {
         list: [],
@@ -63,7 +69,9 @@
         priceSortFlag: false,
         saleSortFlag: false,
         secondId: '',
-        listFlag: false
+        listFlag: false,
+        isActive: true,
+        loadingFlag: true
       }
     },
     created () {
@@ -91,10 +99,14 @@
           softType: this.softType
         }).then((res) => {
           if (res.data.code === 100) {
+            if (res.data.goodsList.length === 0) {
+              this.isActive = false
+            }
             this.list = res.data.goodsList
             this.$nextTick(() => {
               this._initScroll()
             })
+            this.loadingFlag = false
           }
         })
       },

@@ -5,12 +5,6 @@
         <router-link to="/location" class="location">{{villageName}}</router-link>
         <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
       </div>
-      <!-- 轮播 -->
-      <!--<swiper :aspect-ratio="320/750" dots-position="center" auto loop class="banner">-->
-      <!--<swiper-item class="swiper-img" v-for="(item, index) in swiperList" :key="index">-->
-      <!--<img :src="item.imageUrl">-->
-      <!--</swiper-item>-->
-      <!--</swiper>-->
       <swiper :options="swiperOption" ref="mySwiper" class="banner">
         <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
           <img :src="item.imageUrl">
@@ -29,7 +23,7 @@
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
           </home-title>
           <div class="content clearfix">
-            <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item.keyId)">
+            <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
               <img v-lazy="item.keyword" alt="" width="100%" height="100%">
             </div>
           </div>
@@ -41,7 +35,7 @@
           </home-title>
           <div class="content">
             <div class="left f-l">
-              <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
+              <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%" @click="goSerchKey(serchKey)">
             </div>
             <div class="right f-l">
               <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
@@ -73,6 +67,12 @@
         </div>
         <!-- 广告轮播图 -->
         <!--<swiper :list="adverList" :aspect-ratio="216/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>-->
+        <swiper :options="swiperOption" ref="mySwiper" class="recommendSwiper">
+          <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
+            <img :src="item.imageUrl">
+          </swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
         <!-- 优品精品 -->
         <div class="recommend" v-if="mapTitleTips[2]">
           <home-title :title="mapTitleTips[2].name">
@@ -140,6 +140,7 @@
         serchKey: '',
         specialPriceGoodsList: [],
         tuijianGoodsList: [],
+        tuijianImagesList: [],
         adverList: [],
         newGoodsList: [],
         saleGoods: [],
@@ -158,11 +159,10 @@
         cityId: this.cityId,
         areaId: this.areaId,
         villageId: this.villageId,
-        token: this.token,
         source: 1
       }).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
+//          console.log(res.data)
           this.swiperList = res.data.firstInfo.imgList
         }
       })
@@ -174,13 +174,14 @@
       /* 首页数据数据 */
       this.post('/first/getFirstGoods', {storeId: 1, villageId: this.villageId}).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
+//          console.log(res.data)
           this.mapTitleTips = res.data.goodsList.mapTitleTips
           this.ystgWords = res.data.goodsList.ystgWords
           this.serchKey = res.data.goodsList.serchKey
           this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
-          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsList
-//          console.log(this.tuijianGoodsList)
+          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
+          this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
+          console.log(res.data)
 //          this.adverList = [res.data.goodsList.newGoodsInfo.newImageList[0].imageUrl]
 //          console.log(this.adverList)
           this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
@@ -191,21 +192,21 @@
       /* 无限加载 */
       this.post('/first/unlimitedLoading', {storeId: 1, villageId: this.villageId}).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
+//          console.log(res.data)
         }
       })
       /* 标签商品 */
       this.post('/goods/getLabelGoods', {}).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
+//          console.log(res.data)
         }
       })
     },
     methods: {
-      goActive (id) {
+      goActive (item) {
         this.$router.push({
           path: '/active',
-          query: {keyId: id}
+          query: {keyId: item.keyId, remarks: item.remarks, keyBanleImages: item.keyBanleImages}
         })
       },
       goDetail (id) {
@@ -218,6 +219,12 @@
 //            console.log(res.data)
 //          }
 //        })
+      },
+      goSerchKey (item) {
+        this.$router.push({
+          path: '/originActive',
+          query: {goodsId: item.keyId, remarks: item.remarks}
+        })
       }
     },
     computed: {
@@ -321,6 +328,7 @@
     }
     img {
       width: 100%;
+      height: 100%;
     }
   }
 
@@ -412,6 +420,11 @@
             }
           }
         }
+      }
+    }
+    .recommendSwiper{
+      img{
+        .h(271);
       }
     }
     .recommend {

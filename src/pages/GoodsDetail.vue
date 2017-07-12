@@ -18,9 +18,9 @@
             <p class="size">商品规格：{{goodsDetail.guige}}</p>
             <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
           </div>
-          <div class="collet-wrap">
-            <div class="iconfont collect" v-if="!collectFlag" @click="collectGoods">&#xe65d;</div>
-            <div class="iconfont collect" v-if="collectFlag" @click="cancleCollect">&#xe641;</div>
+          <div class="collet-wrap" @click="collectGoods">
+            <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
+            <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
           </div>
         </div>
         <div class="guess">
@@ -58,20 +58,8 @@
         title: '商品详情',
         goodsDetail: '',
         goodsList: [],
-        collectFlag: false,
-        collectId: ''
-      }
-    },
-    computed: {
-      sourceGoods () {
-        return [
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'}
-        ]
+        collectId: '',
+        collectFlag: ''
       }
     },
     created () {
@@ -84,45 +72,76 @@
           console.log(res.data)
           this.goodsDetail = res.data.goodsDetail
           this.goodsList = res.data.listGoods
-          console.log(this.goodsList)
           this.getImgList(res.data.goodsDetail.imagesList)
+          if (res.data.goodsDetail.isCollect === 1) {
+            this.collectFlag = true
+          } else {
+            this.collectFlag = false
+          }
+        }
+        if (res.data.code === 102) {
+          this.$router.push({
+            path: '/login'
+          })
         }
       })
     },
     methods: {
+      getDetail () {
+        this.post('/goods/goodsDetail', {
+          goodsId: this.$route.query.goodsId,
+          token: this.token,
+          villageId: this.villageId
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.goodsDetail = res.data.goodsDetail
+            if (res.data.goodsDetail.isCollect === 1) {
+              this.collectFlag = true
+            } else {
+              this.collectFlag = false
+            }
+          }
+          if (res.data.code === 102) {
+            this.$router.push({
+              path: '/login'
+            })
+          }
+        })
+      },
       getImgList (urlList) {
         for (let i = 0; i < urlList.length; i++) {
           const urlObj = {}
           urlObj.img = urlList[i]
           this.swiperList.push(urlObj)
         }
-        console.log(this.swiperList)
       },
       collectGoods () {
-        this.post('/collect/insertCollect', {
-          goodsId: this.$route.query.goodsId,
-          storeId: this.goodsDetail.storeId,
-          token: this.token,
-          status: 1,
-          shopType: this.goodsDetail.shopType
-        }).then((res) => {
-          console.log(res.data)
-          if (res.data.code === 101) {
-            console.log(res.data)
-            this.collectId = res.data.collectId
-            this.collectFlag = true
-          }
-        })
-      },
-      cancleCollect () {
-//        this.post('/collect/insertCollect', {
-//          goodsId: this.$route.query.goodsId,
-//          storeId: this.goodsDetail.storeId,
-//          token: this.token,
-//          status: 2,
-//          shopType: this.goodsDetail.shopType,
-//          collectId: this.collectId
-//        })
+        this.getDetail()
+        if (this.goodsDetail.isCollect === 0) {
+          this.post('/collect/insertCollect', {
+            goodsId: this.$route.query.goodsId,
+            storeId: this.goodsDetail.storeId,
+            token: this.token,
+            status: 1,
+            shopType: this.goodsDetail.shopType
+          }).then((res) => {
+            if (res.data.code === 100) {
+              this.collectId = res.data.collectId
+              this.collectFlag = true
+            }
+          })
+        } else {
+          this.post('/collect/insertCollect', {
+            goodsId: this.$route.query.goodsId,
+            storeId: this.goodsDetail.storeId,
+            token: this.token,
+            status: 0,
+            shopType: this.goodsDetail.shopType,
+            collectId: this.goodsDetail.collectId
+          }).then((res) => {
+            this.collectFlag = false
+          })
+        }
       }
     }
   }

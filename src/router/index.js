@@ -221,6 +221,11 @@ export default new Router({
       /* 活动页面 */
       path: '/active',
       component: require('../pages/active')
+    },
+    {
+      /* 原地直供活动页面 */
+      path: '/originActive',
+      component: require('../pages/originActive')
     }
   ]
 })

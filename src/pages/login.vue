@@ -110,6 +110,7 @@
           if (res.data.code === 100) {
             localStorage.setItem('m-token', res.data.userInfo.token)
             console.log(res.data)
+            this.$router.push({path: '/tabbar/user'})
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

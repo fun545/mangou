@@ -1,55 +1,64 @@
 <template>
-  <div class="detail-wrap">
-    <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-    </m-header>
-    <div class="content">
-      <div>
-        <swiper :aspect-ratio="632/750" dots-position="center" auto loop :list="swiperList"></swiper>
-        <div class="des">
-          <h3 class="title">{{goodsDetail.goodsName}}</h3>
-          <div class="price-wrap">
-            <p class="next-price d-ib">次日价：<span class="s1">¥</span><span class="number">{{goodsDetail.price}}</span>
-            </p>
-            <p class="this-price d-ib">即时价：<span class="s1">¥</span><span
-              class="number">{{goodsDetail.canKaoPrice}}</span></p>
+  <div>
+    <div class="detail-wrap">
+      <m-header :title="title">
+        <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      </m-header>
+      <div class="content">
+        <div>
+          <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
+            <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
+              <img :src="item">
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+          <div class="des">
+            <h3 class="title">{{goodsDetail.goodsName}}</h3>
+            <div class="price-wrap">
+              <p class="next-price d-ib">次日价：<span class="s1">¥</span><span class="number">{{goodsDetail.price}}</span>
+              </p>
+              <p class="this-price d-ib">即时价：<span class="s1">¥</span><span
+                class="number">{{goodsDetail.canKaoPrice}}</span></p>
+            </div>
+            <div class="size-des">
+              <p class="size">商品规格：{{goodsDetail.guige}}</p>
+              <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
+            </div>
+            <div class="collet-wrap" @click="collectGoods">
+              <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
+              <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
+            </div>
           </div>
-          <div class="size-des">
-            <p class="size">商品规格：{{goodsDetail.guige}}</p>
-            <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
-          </div>
-          <div class="collet-wrap" @click="collectGoods">
-            <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
-            <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
-          </div>
-        </div>
-        <div class="guess">
-          <div class="title"></div>
-          <div class="d-content">
-            <guess-list :goodsList="goodsList"></guess-list>
+          <div class="guess">
+            <div class="title"></div>
+            <div class="d-content">
+              <guess-list :goodsList="goodsList"></guess-list>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="bt-shop-car">
-      <div class="left">
-        <div class="shop-car">
+      <div class="bt-shop-car">
+        <div class="left">
+          <div class="shop-car">
+
+          </div>
+        </div>
+        <div class="right">
 
         </div>
       </div>
-      <div class="right">
-
-      </div>
     </div>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
 <script>
-  import { Swiper } from 'vux'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import mHeader from '../components/header'
   import guessList from '../components/twocolumn'
+  import loading from '../components/loading'
   export default {
-    components: {Swiper, mHeader, guessList},
+    components: {swiper, swiperSlide, mHeader, guessList, loading},
     data () {
       return {
         token: localStorage.getItem('m-token'),
@@ -59,7 +68,13 @@
         goodsDetail: '',
         goodsList: [],
         collectId: '',
-        collectFlag: ''
+        collectFlag: '',
+        loadingFlag: true,
+        swiperOption: {
+          notNextTick: true,
+          autoplay: 3000,
+          pagination: '.swiper-pagination'
+        }
       }
     },
     created () {
@@ -72,13 +87,15 @@
           console.log(res.data)
           this.goodsDetail = res.data.goodsDetail
           this.goodsList = res.data.listGoods
-          this.getImgList(res.data.goodsDetail.imagesList)
+          this.swiperList = res.data.goodsDetail.imagesList
+          this.computedSwiperLength()
           if (res.data.goodsDetail.isCollect === 1) {
             this.collectFlag = true
           } else {
             this.collectFlag = false
           }
         }
+        this.loadingFlag = false
         if (res.data.code === 102) {
           this.$router.push({
             path: '/login'
@@ -108,13 +125,6 @@
           }
         })
       },
-      getImgList (urlList) {
-        for (let i = 0; i < urlList.length; i++) {
-          const urlObj = {}
-          urlObj.img = urlList[i]
-          this.swiperList.push(urlObj)
-        }
-      },
       collectGoods () {
         this.getDetail()
         if (this.goodsDetail.isCollect === 0) {
@@ -142,6 +152,11 @@
             this.collectFlag = false
           })
         }
+      },
+      computedSwiperLength () {
+        if (this.swiperList.length <= 1) {
+          this.$refs.DetailSwiper.swiper.paginationContainer[0].style.display = 'none'
+        }
       }
     }
   }
@@ -162,6 +177,12 @@
       }
     }
     .content {
+      .DetailSwiper {
+        img {
+          width: 100%;
+          .h(632);
+        }
+      }
       position: absolute;
       .t(92);
       left: 0;

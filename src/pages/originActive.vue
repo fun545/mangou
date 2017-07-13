@@ -1,34 +1,39 @@
 <template>
-  <div class="origin-active">
-    <div class="top">
-      <m-header :title="title">
-        <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      </m-header>
-      <div class="title t-c">
-        <span class="text" :class="{'active':index===1}" @click="sort(2,1)">综合</span><i
-        class="iconfont icon">&#xe646;</i>
-        <span class="text" :class="{'active':index===2}" @click="sort(3,2)">销量</span><i
-        class="iconfont icon">&#xe646;</i>
-        <span class="text" :class="{'active':index===3}" @click="sort(1,3)">价格</span>
+  <div>
+    <div class="origin-active">
+      <div class="top">
+        <m-header :title="title">
+          <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+        </m-header>
+        <div class="title t-c">
+          <span class="text" :class="{'active':index===1}" @click="sort(2,1)">综合</span><i
+          class="iconfont icon">&#xe646;</i>
+          <span class="text" :class="{'active':index===2}" @click="sort(3,2)">销量</span><i
+          class="iconfont icon">&#xe646;</i>
+          <span class="text" :class="{'active':index===3}" @click="sort(1,3)">价格</span>
+        </div>
+      </div>
+      <div class="content">
+        <origin-list :goodsList="goodsList"></origin-list>
       </div>
     </div>
-    <div class="content">
-      <origin-list :goodsList="goodsList"></origin-list>
-    </div>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
   import originList from '../components/twocolumn'
+  import loading from '../components/loading'
   export default {
-    components: {mHeader, originList},
+    components: {mHeader, originList, loading},
     data () {
       return {
         title: this.$route.query.remarks,
         goodsList: [],
         softType: 2,
-        index: 1
+        index: 1,
+        loadingFlag: true
       }
     },
     created () {
@@ -40,6 +45,7 @@
         this.post('/goods/getLabelGoods', {keyWordId: this.$route.query.goodsId, softType: softType}).then((res) => {
           if (res.data.code === 100) {
             this.goodsList = res.data.goodsList
+            this.loadingFlag = false
           }
           console.log(res.data)
         })

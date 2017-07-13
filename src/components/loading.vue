@@ -1,6 +1,6 @@
 <template>
   <div class="loading t-c" v-if="loadingFlag">
-    正在加载中...
+    <span class="text">正在加载中...</span>
   </div>
 </template>
 
@@ -18,6 +18,7 @@
 
 <style lang="less">
   @import "../common/style/sum";
+  @import "../common/style/varlable";
 
   .loading {
     position: absolute;
@@ -26,8 +27,17 @@
     top: 0;
     bottom: 0;
     z-index: 10000;
-    .fs(36);
-    background: url("../assets/loading_02.png") no-repeat center;
-    background-size: 120px 180px;
+    .fs(30);
+    background: #eee url("../assets/loading_02.png") no-repeat center;
+    background-size: 1.6rem 2.4rem;
+    .text {
+      position: absolute;
+      text-align: center;
+      .w(200);
+      left: 50%;
+      bottom: 35%;
+      .ml(-90);
+      color: @font-color-m;
+    }
   }
 </style>

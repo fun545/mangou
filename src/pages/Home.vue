@@ -1,5 +1,5 @@
 <template>
-  <div class="home-view" ref="homeView">
+  <div class="home-view" ref="homeView" v-scroll="loadMore">
     <div class="wrapper">
       <div class="location-search-box">
         <router-link to="/location" class="location">{{villageName}}</router-link>
@@ -65,15 +65,13 @@
             </div>
           </div>
         </div>
-        <!-- 广告轮播图 -->
-        <!--<swiper :list="adverList" :aspect-ratio="216/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>-->
-        <swiper :options="swiperOption" ref="mySwiper" class="recommendSwiper">
+        <!-- 优品精品 -->
+        <swiper :options="swiperOption" ref="YouSwiper" class="activeSwiper">
           <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
             <img :src="item.imageUrl">
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
-        <!-- 优品精品 -->
         <div class="recommend" v-if="mapTitleTips[2]">
           <home-title :title="mapTitleTips[2].name">
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
@@ -92,22 +90,38 @@
             </div>
           </div>
         </div>
-        <!-- 广告轮播图 -->
-        <!--<swiper :list="adverList" :aspect-ratio="216/750" :show-dots="false" :show-desc-mask="false" auto loop></swiper>-->
-        <!-- 新品上架 -->
+        <!-- 热销 -->
+        <swiper :options="swiperOption" ref="SaleSwiper" class="activeSwiper">
+          <swiper-slide class="swiper-img" v-for="(item, index) in saleImagelist" :key="index">
+            <img :src="item.imageUrl">
+          </swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
         <div class="new-goods">
-          <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
-          </home-title>
-          <new-goods :goodsList="newGoodsList"></new-goods>
-        </div>
-        <!-- 广告轮播图 -->
-        <!-- 热销产品 -->
-        <div class="sale">
           <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
             <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
           </home-title>
-          <sale :goodsList="saleGoods"></sale>
+          <new-goods :goodsList="saleGoods"></new-goods>
+        </div>
+        <!-- 新品上架 -->
+        <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
+          <swiper-slide class="swiper-img" v-for="(item, index) in newImageList" :key="index">
+            <img :src="item.imageUrl">
+          </swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
+        <div class="sale">
+          <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
+          </home-title>
+          <two-column :goodsList="newGoodsList"></two-column>
+        </div>
+        <!-- 实时推荐 -->
+        <div class="moreRecommend">
+          <home-title :title="mapTitleTips[6].name" v-if="mapTitleTips[6]">
+            <img class="icon iconfont" slot="icon" :src="mapTitleTips[6].other">
+          </home-title>
+          <two-column :goodsList="moreRecommendList"></two-column>
         </div>
       </div>
     </div>
@@ -118,14 +132,14 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import homeTitle from '../components/homeTitle'
   import newGoods from '../components/oneColumn'
-  import sale from '../components/twocolumn'
+  import twoColumn from '../components/twocolumn'
   export default {
     components: {
       swiper,
       swiperSlide,
       homeTitle,
       newGoods,
-      sale
+      twoColumn
     },
     data () {
       return {
@@ -134,6 +148,7 @@
         cityId: localStorage.getItem('m-cityId'),
         areaId: localStorage.getItem('m-areaId'),
         villageId: localStorage.getItem('m-villageId'),
+        storeList: [],
         token: localStorage.getItem('m-token'),
         mapTitleTips: [],
         ystgWords: [],
@@ -143,9 +158,14 @@
         tuijianImagesList: [],
         adverList: [],
         newGoodsList: [],
+        newImageList: [],
         saleGoods: [],
+        saleImagelist: [],
+        moreRecommendList: [],
         pageIndex: 1,
         pageSize: 10,
+        loading: false,
+        scrollDisable: false,
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -154,7 +174,6 @@
       }
     },
     created () {
-      /* 轮播图数据 */
       this.post('/first/getFirst', {
         cityId: this.cityId,
         areaId: this.areaId,
@@ -162,8 +181,44 @@
         source: 1
       }).then((res) => {
         if (res.data.code === 100) {
-//          console.log(res.data)
+          /* 轮播图数据 */
           this.swiperList = res.data.firstInfo.imgList
+          /* 店铺数据 */
+          this.storeList = res.data.firstInfo.storeList
+          /* 首页数据数据 */
+          this.post('/first/getFirstGoods', {
+            storeId: this.storeList[0].storeId,
+            villageId: this.villageId
+          }).then((res) => {
+            if (res.data.code === 100) {
+              console.log(this.storeList)
+              this.mapTitleTips = res.data.goodsList.mapTitleTips
+              this.ystgWords = res.data.goodsList.ystgWords
+              this.serchKey = res.data.goodsList.serchKey
+              this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
+              this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
+              this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
+              console.log(res.data)
+              this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
+              this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
+              this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
+              this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
+              this.computedSwiperLength()
+            }
+          })
+          /* 无限加载 */
+          this.post('/first/unlimitedLoading', {
+            storeId: this.storeList[0].storeId,
+            villageId: this.villageId,
+            pageIndex: 1,
+            pageSize: 10
+          }).then((res) => {
+            if (res.data.code === 100) {
+//          console.log(res.data)
+              this.moreRecommendList = res.data.goodsList
+              console.log(this.moreRecommendList)
+            }
+          })
         }
       })
       if (!localStorage.getItem('m-villageName')) {
@@ -171,36 +226,28 @@
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
-      /* 首页数据数据 */
-      this.post('/first/getFirstGoods', {storeId: 1, villageId: this.villageId}).then((res) => {
-        if (res.data.code === 100) {
-//          console.log(res.data)
-          this.mapTitleTips = res.data.goodsList.mapTitleTips
-          this.ystgWords = res.data.goodsList.ystgWords
-          this.serchKey = res.data.goodsList.serchKey
-          this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
-          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
-          this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
-          console.log(res.data)
-//          this.adverList = [res.data.goodsList.newGoodsInfo.newImageList[0].imageUrl]
-//          console.log(this.adverList)
-          this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
-          this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
-          //          this.adverList = [res.data.goodsList.saleGoodsInfo.saleImagelist[0].imageUrl]
-        }
-      })
-      /* 无限加载 */
-      this.post('/first/unlimitedLoading', {storeId: 1, villageId: this.villageId}).then((res) => {
-        if (res.data.code === 100) {
-//          console.log(res.data)
-        }
-      })
       /* 标签商品 */
       this.post('/goods/getLabelGoods', {}).then((res) => {
         if (res.data.code === 100) {
 //          console.log(res.data)
         }
       })
+    },
+    directives: {
+      scroll: {
+        bind (el, binding) {
+          const homeView = el
+          homeView.addEventListener('scroll', () => {
+            let scrollTop = homeView.scrollTop
+            let homeViewHeight = homeView.offsetHeight
+            let wrapperHeight = el.children[0].clientHeight
+            if (scrollTop + homeViewHeight >= wrapperHeight) {
+              let fnc = binding.value
+              fnc()
+            }
+          })
+        }
+      }
     },
     methods: {
       goActive (item) {
@@ -214,29 +261,48 @@
           path: '/goods_detail',
           query: {goodsId: id}
         })
-//        this.post('/goods/goodsDetail', {goodsId: id, token: this.token, villageId: this.villageId}).then((res) => {
-//          if (res.data.code === 100) {
-//            console.log(res.data)
-//          }
-//        })
       },
       goSerchKey (item) {
         this.$router.push({
           path: '/originActive',
           query: {goodsId: item.keyId, remarks: item.remarks}
         })
-      }
-    },
-    computed: {
-      sourceGoods () {
-        return [
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'},
-          {img: './static/goods_img.jpg'}
-        ]
+      },
+      computedSwiperLength () {
+        if (this.tuijianImagesList.length <= 1) {
+          this.$refs.YouSwiper.swiper.paginationContainer[0].style.display = 'none'
+        }
+        if (this.saleImagelist.length <= 1) {
+          this.$refs.SaleSwiper.swiper.paginationContainer[0].style.display = 'none'
+        }
+        if (this.newImageList.length <= 1) {
+          this.$refs.NewSwiper.swiper.paginationContainer[0].style.display = 'none'
+        }
+//        console.log(this.swiperOptionNew.pagination)
+      },
+      /* 无限加载 */
+      loadMore () {
+        if (!this.scrollDisable) {
+          this.scrollDisable = true
+          this.pageIndex += 1
+          this.post('/first/unlimitedLoading', {
+            storeId: this.storeList[0].storeId,
+            villageId: this.villageId,
+            pageIndex: this.pageIndex,
+            pageSize: 10
+          }).then((res) => {
+            if (res.data.code === 100) {
+//          console.log(res.data)
+              let newList = res.data.goodsList
+              console.log(newList)
+              for (let i = 0; i < newList.length; i++) {
+                this.moreRecommendList.push(newList[i])
+              }
+              this.scrollDisable = false
+            }
+          })
+        }
+        console.log('到底了moere')
       }
     }
   }
@@ -332,6 +398,16 @@
     }
   }
 
+  .activeSwiper {
+    img {
+      .h(271);
+    }
+  }
+
+  .no-pagination {
+    display: none;
+  }
+
   .home-view {
     position: absolute;
     top: 0;
@@ -420,11 +496,6 @@
             }
           }
         }
-      }
-    }
-    .recommendSwiper{
-      img{
-        .h(271);
       }
     }
     .recommend {

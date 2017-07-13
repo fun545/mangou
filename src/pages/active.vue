@@ -1,41 +1,46 @@
 <template>
+
   <div>
-    <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-    </m-header>
-    <div class="scroll" v-if="isActive">
-      <div class="activePic">
-        <img v-lazy="keyBanleImages" alt="">
-      </div>
-      <div class="content">
-        <div class="item" v-for="(item ,index) in goodsList" :key="index">
-          <div class="pic f-l">
-            <img v-lazy="item.goodsImgUrl" alt="">
-          </div>
-          <div class="des f-l">
-            <h3 class="name">{{item.goodsName}}</h3>
-            <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-            <div class="iconfont shop-car t-c">&#xe613;</div>
+    <div>
+      <m-header :title="title">
+        <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      </m-header>
+      <div class="scroll" v-if="isActive">
+        <div class="activePic">
+          <img v-lazy="keyBanleImages" alt="">
+        </div>
+        <div class="content">
+          <div class="item" v-for="(item ,index) in goodsList" :key="index">
+            <div class="pic f-l">
+              <img v-lazy="item.goodsImgUrl" alt="">
+            </div>
+            <div class="des f-l">
+              <h3 class="name">{{item.goodsName}}</h3>
+              <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+              <div class="iconfont shop-car t-c">&#xe613;</div>
+            </div>
           </div>
         </div>
       </div>
+      <no-page :isActive="isActive"></no-page>
     </div>
-    <!--<div v-bind:class="{ nonePic: isActive }" class="none"></div>-->
-    <no-page :isActive="isActive"></no-page>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
   import noPage from '../components/noPage'
+  import loading from '../components/loading'
   export default {
-    components: {mHeader, noPage},
+    components: {mHeader, noPage, loading},
     data () {
       return {
         goodsList: [],
         title: this.$route.query.remarks,
         isActive: true,
-        keyBanleImages: this.$route.query.keyBanleImages
+        keyBanleImages: this.$route.query.keyBanleImages,
+        loadingFlag: true
       }
     },
     created () {
@@ -46,6 +51,7 @@
             this.isActive = false
             console.log(this.isActive)
           }
+          this.loadingFlag = false
         }
       })
     }

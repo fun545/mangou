@@ -85,9 +85,9 @@
         } else {
           this.listFlag = true
         }
-        this.$nextTick(() => {
-          this._initScroll()
-        })
+//        this.$nextTick(() => {
+//          this._initScroll()
+//        })
       },
       _initScroll () {
         this.listScroll = new BScroll(this.$refs.listWrap, {click: true})
@@ -103,9 +103,11 @@
               this.isActive = false
             }
             this.list = res.data.goodsList
-            this.$nextTick(() => {
-              this._initScroll()
-            })
+            if (this.list.length !== 0) {
+              this.$nextTick(() => {
+                this._initScroll()
+              })
+            }
             this.loadingFlag = false
           }
         })

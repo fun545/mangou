@@ -12,13 +12,13 @@
     <div class="header">
     </div>
     <div class="middle">
-      <form class="form">
+      <div class="form">
         <div class="input-box accountLogin fastLogin">
           <tab :line-width="1" active-color="#f95d43" defaultColor="#777" bar-active-color="#f95d43" class="title">
-            <tab-item selected @on-item-click="changeLogin">账号密码登录</tab-item>
-            <tab-item @on-item-click="changeLogin">手机快速登录</tab-item>
+            <tab-item selected @on-item-click="changeLogin">手机快速登录</tab-item>
+            <tab-item @on-item-click="changeLogin">账号密码登录</tab-item>
           </tab>
-          <div v-if="loginMethodFlag">
+          <div v-if="!loginMethodFlag">
             <group gutter="0" class="group">
               <x-input v-model="userAccount" placeholder="请输入账号">
                 <span slot="label" class="iconfont">&#xe63f;</span>
@@ -30,7 +30,7 @@
               </x-input>
             </group>
           </div>
-          <div v-if="!loginMethodFlag">
+          <div v-if="loginMethodFlag">
             <group gutter="0" class="group">
               <x-input v-model="tel" placeholder="手机号" type="tel">
                 <span slot="label" class="iconfont">&#xe618;</span>
@@ -56,7 +56,7 @@
             <a class="agreement-content">软件许可及服务协议</a>
           </router-link>
         </div>
-      </form>
+      </div>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
            :text="text" width="10em" class="toast"></toast>

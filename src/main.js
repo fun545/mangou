@@ -4,7 +4,7 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import App from './App'
 import Router from './router'
-import Vuex from 'vuex'
+import Store from './vuex/'
 import { AlertPlugin } from 'vux'
 import api from './util/api'
 import vueScroll from 'vue-scroll'
@@ -19,7 +19,7 @@ Vue.use(VueLazyload, {
   attempt: 1,
   listenEvents: ['scroll', 'mousewheel']
 })
-Vue.use(Vuex)
+
 Vue.prototype.post = api.post
 FastClick.attach(document.body)
 
@@ -30,6 +30,7 @@ new Vue({
   el: '#app-box',
   template: '<App/>',
   components: {App},
-  router: Router
+  router: Router,
+  Store
 })
 

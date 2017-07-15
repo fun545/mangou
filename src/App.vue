@@ -1,11 +1,23 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <transition name="router-fade" mode="out-in">
+      <router-view></router-view>
+    </transition>
+  </div>
 </template>
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
   @import "common/style/index.less";
   @import "common/style/sum";
+
+  .router-fade-enter-active, .router-fade-leave-active {
+    transition: opacity .3s;
+  }
+
+  .router-fade-enter, .router-fade-leave-active {
+    opacity: 0;
+  }
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */

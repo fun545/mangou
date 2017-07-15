@@ -102,14 +102,17 @@
       <label for="all" class="label-checkbox flex-col">全选</label>
       <div class="remove-all">删除</div>
     </div>
+    <m-footer></m-footer>
   </div>
 </template>
 
 <script>
   import { XHeader, Checker, CheckerItem } from 'vux'
+  import mFooter from '../components/footer'
 
   export default {
     components: {
+      mFooter,
       XHeader,
       Checker,
       CheckerItem

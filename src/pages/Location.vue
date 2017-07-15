@@ -75,7 +75,7 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-        this.$router.push({path: '/tabbar/home'})
+        this.$router.push({path: '/home'})
       },
       searchLocation () {
         if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})

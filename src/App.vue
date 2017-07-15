@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="app">
     <transition name="router-fade" mode="out-in">
-      <router-view></router-view>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </transition>
   </div>
 </template>
@@ -48,6 +50,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  .app {
+    height: 100%;
+  }
+
   h3, h4 {
     font-weight: normal;
   }
@@ -59,19 +65,21 @@
   img {
     display: block;
     border: none;
-    transition:all 0.5s;
+    transition: all 0.5s;
   }
 
-  img[lazy=loading]{
+  img[lazy=loading] {
   }
-  img[lazy=loaded]{
-    animation:fade 0.5s;
+
+  img[lazy=loaded] {
+    animation: fade 0.5s;
   }
+
   @keyframes fade {
-    0%{
+    0% {
       opacity: 0;
     }
-    100%{
+    100% {
       opacity: 1;
     }
   }

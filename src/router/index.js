@@ -6,41 +6,34 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      /* 宣传广告页面 */
+      /* 默认 */
       path: '/',
-      component: require('../pages/Star')
+      component: require('../pages/Home')
     },
     {
-      /* Tabbar页面 */
-      path: '/tabbar',
-      component: require('../pages/Tabbar'),
-      children: [
-        {
-          /* 首页 */
-          path: 'home',
-          component: require('../pages/Home')
-        },
-        {
-          /* 即时达 */
-          path: 'this',
-          component: require('../pages/This')
-        },
-        {
-          /* 次日达 */
-          path: 'next',
-          component: require('../pages/Next')
-        },
-        {
-          /* 购物车 */
-          path: 'cart',
-          component: require('../pages/Cart')
-        },
-        {
-          /* 我的 */
-          path: 'user',
-          component: require('../pages/User')
-        }
-      ]
+      /* 首页 */
+      path: '/home',
+      component: require('../pages/Home')
+    },
+    {
+      /* 即时达 */
+      path: '/this',
+      component: require('../pages/This')
+    },
+    {
+      /* 次日达 */
+      path: '/next',
+      component: require('../pages/Next')
+    },
+    {
+      /* 购物车 */
+      path: '/cart',
+      component: require('../pages/Cart')
+    },
+    {
+      /* 我的 */
+      path: '/user',
+      component: require('../pages/User')
     },
     {
       /* 定位页面 */

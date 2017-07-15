@@ -120,8 +120,15 @@
         </router-link>
       </div>
     </div>
+    <m-footer></m-footer>
   </div>
 </template>
+<script>
+  import mFooter from '../components/footer'
+  export default {
+    components: {mFooter}
+  }
+</script>
 
 <style lang='less'>
   .user-view {

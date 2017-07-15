@@ -1,5 +1,5 @@
 <template>
-  <div class="this">
+  <div class="this" @touchmove.prevent>
     <!-- 页面头部 -->
     <div class="head-box">
       <!-- 显示页面主题 -->
@@ -23,7 +23,7 @@
     </div>
     <!-- 商品列表 -->
     <div class="content">
-      <div class="menu-wrap" ref="menuWrap">
+      <div class="menu-wrap f-l" ref="menuWrap">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
                      @click.native="memuChange(item.classifyId,index)"
@@ -32,7 +32,7 @@
           </side-item>
         </side-bar>
       </div>
-      <div class="list-wrap">
+      <div class="right f-l">
         <div class="goods-sort">
           <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="sortSelectIndex=1">综合排序</div>
           <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
@@ -50,9 +50,10 @@
             </div>
           </div>
         </div>
-        <div class="goods-list-wrap" ref="goodsListWrap">
-          <div class="googs-list">
-            <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
+        <div class="googs-list" ref="goodsListWrap">
+          <div>
+            <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index"
+                 @click="goDetail(item.goodsId)">
               <img v-lazy="item.goodsImgUrl" alt="" class="pic">
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
@@ -65,11 +66,13 @@
         </div>
       </div>
     </div>
+    <m-footer></m-footer>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
+  import mFooter from '../components/footer'
   import { Flexbox, FlexboxItem } from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
@@ -78,6 +81,7 @@
 
   export default {
     components: {
+      mFooter,
       BScroll,
       Flexbox,
       FlexboxItem,
@@ -174,7 +178,9 @@
         this.menuSroll = new BScroll(this.$refs.menuWrap, {
           click: true
         })
-        this.listSroll = new BScroll(this.$refs.goodsListWrap)
+        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
+          click: true
+        })
       },
       goDetail (id) {
         this.$router.push({
@@ -191,7 +197,7 @@
   @import "../common/style/sum";
 
   .this {
-    height: 100%;
+    /*height: 300%;*/
     .strong {
       span {
         padding: 5px;
@@ -208,20 +214,20 @@
     }
     .is-cont {
       box-sizing: border-box;
-      padding: 5px 10px;
+      .pl(15);
+      .pr(5);
       .pt(25);
       .pb(5);
       background: url("../assets/this_top_back.png") no-repeat center/cover;
-
       .flex-box {
-        padding-left: 15px;
+        .pl(15);
         box-sizing: border-box;
         display: flex;
         align-items: center;
         position: relative;
         .col {
           flex-grow: 1;
-          margin-left: 10px;
+          .ml(20);
         }
         .search-icon {
           position: absolute;
@@ -350,143 +356,130 @@
       .t(190);
       left: 0;
       right: 0;
-      bottom: 50px;
+      .b(100);
       overflow: hidden;
       .menu-wrap {
-        position: absolute;
-        left: 0;
-        top: 0;
         .w(172);
         height: 100%;
         overflow: hidden;
       }
-      .list-wrap {
-        background: #fff;
-        position: absolute;
-        top: 0;
-        right: 0;
-        box-sizing: border-box;
+      .right {
         .w(578);
         height: 100%;
-        overflow: hidden;
-        .goods-sort {
-          position: absolute;
-          z-index: 10;
-          background: #fff;
-          box-sizing: border-box;
-          color: #666;
-          top: 0;
-          right: 0;
-          .w(568);
-          .h(91);
-          .lh(91);
-          .fs(24);
-          border-bottom: 1px solid #eee;
-          .active {
-            color: #089cf6;
-          }
-          .sort-item {
-            display: inline-block;
+      }
+      .goods-sort {
+        background: #fff;
+        box-sizing: border-box;
+        color: #666;
+        .w(568);
+        .h(91);
+        .lh(91);
+        .fs(24);
+        border-bottom: 1px solid #eee;
+        .active {
+          color: #089cf6;
+        }
+        .sort-item {
+          display: inline-block;
+          position: relative;
+          .ml(70);
+          .sort-icon {
+            .w(12);
+            .h(20);
             position: relative;
-            .ml(70);
-            .sort-icon {
-              .w(12);
-              .h(20);
-              position: relative;
-              right: 0;
-              .iconfont {
-                position: absolute;
-                .fs(15);
-                .l(6);
-                color: #666;
-                &.up {
-                  .t(-5);
-                }
-                &.down {
-                  .t(7)
-                }
+            right: 0;
+            .iconfont {
+              position: absolute;
+              .fs(15);
+              .l(6);
+              color: #666;
+              &.up {
+                .t(-5);
+              }
+              &.down {
+                .t(7)
               }
             }
           }
         }
       }
     }
-    .goods-list-wrap {
+    .googs-list {
       position: absolute;
-      left: 0;
-      right: 0;
       .t(91);
       bottom: 0;
-      .googs-list {
-        .pl(10);
-        .goods-item {
-          position: relative;
-          box-sizing: border-box;
-          .h(227);
-          color: #444;
-          border-bottom: 1px solid #eee;
-          .pic {
-            .w(220);
-            .h(220);
-            float: left;
+      background: #fff;
+      .w(578);
+      overflow: hidden;
+      .pl(10);
+      .goods-item {
+        position: relative;
+        box-sizing: border-box;
+        .h(227);
+        color: #444;
+        border-bottom: 1px solid #eee;
+        .pic {
+          .w(220);
+          .h(220);
+          float: left;
+        }
+        .col {
+          p {
+            text-indent: 0;
           }
-          .col {
-            p {
-              text-indent: 0;
+          .ml(18);
+          .w(330);
+          .h(227);
+          float: left;
+          .title {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            color: #443d39;
+            .fs(26);
+            .lh(72);
+            .mb(40);
+          }
+          .this-price {
+            color: @theme-color;
+            .fs(22);
+            .lh(29);
+            .s1 {
+              .fs(20);
             }
-            .ml(18);
-            .w(330);
-            .h(227);
-            float: left;
-            .title {
-              display: -webkit-box;
-              -webkit-box-orient: vertical;
-              -webkit-line-clamp: 1;
-              overflow: hidden;
-              color: #443d39;
+            .number {
               .fs(26);
-              .lh(72);
-              .mb(40);
             }
-            .this-price {
-              color: @theme-color;
-              .fs(22);
-              .lh(29);
-              .s1 {
-                .fs(20);
-              }
-              .number {
-                .fs(26);
-              }
-            }
+          }
 
-            .next-price {
-              color: #888;
+          .next-price {
+            color: #888;
+            .fs(26);
+            .s1 {
               .fs(26);
-              .s1 {
-                .fs(26);
-              }
-              .number {
-                .fs(30);
-              }
             }
-            .iconfont.shop-car {
-              .fs(26);
-              color: #089cf6;
-              border: 1px solid #089cf6;
-              border-radius: 50%;
-              .pl(4);
-              .pr(4);
-              .pt(4);
-              .pb(4);
-              position: absolute;
-              .r(32);
-              .b(46);
+            .number {
+              .fs(30);
             }
+          }
+          .iconfont.shop-car {
+            .fs(26);
+            color: #089cf6;
+            border: 1px solid #089cf6;
+            border-radius: 50%;
+            .pl(4);
+            .pr(4);
+            .pt(4);
+            .pb(4);
+            position: absolute;
+            .r(32);
+            .b(46);
           }
         }
       }
     }
+
   }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="next">
+  <div class="next" @touchmove.prevent>
     <div class="header">
       <!-- 搜索框 -->
       <div class="search-box">
@@ -37,11 +37,14 @@
         </div>
       </div>
     </div>
+    <m-footer></m-footer>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
+  import mFooter from '../components/footer'
+
   import {
     XDialog
   } from 'vux'
@@ -51,6 +54,7 @@
   import SideItem from '../components/SideItem'
   export default {
     components: {
+      mFooter,
       XDialog,
       instruction,
       nextSearch,

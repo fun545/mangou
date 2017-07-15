@@ -1,135 +1,142 @@
 <template>
-  <div class="home-view" ref="homeView" v-scroll="loadMore">
-    <div class="wrapper">
-      <div class="location-search-box">
-        <router-link to="/location" class="location">{{villageName}}</router-link>
-        <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
-      </div>
-      <swiper :options="swiperOption" ref="mySwiper" class="banner">
-        <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
-          <img :src="item.imageUrl">
-        </swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
-      </swiper>
-      <!-- 次日达/即时达 -->
-      <div class="link-box">
-        <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
-        <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
-      </div>
-      <div class="active-box">
-        <!-- 预售团购 -->
-        <div class="group-buy" v-if="mapTitleTips[0]">
-          <home-title :title="mapTitleTips[0].name">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
-          </home-title>
-          <div class="content clearfix">
-            <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
-              <img v-lazy="item.keyword" alt="" width="100%" height="100%">
-            </div>
-          </div>
+  <div class="home-wrap" @touchmove.prevent>
+    <div class="home-view" ref="homeView" v-scroll="loadMore">
+      <div class="wrap">
+        <div class="location-search-box">
+          <router-link to="/location" class="location">{{villageName}}</router-link>
+          <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
         </div>
-        <!-- 原地直供 -->
-        <div class="origin-directly" v-if="mapTitleTips[1]">
-          <home-title :title="mapTitleTips[1].name">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
-          </home-title>
-          <div class="content">
-            <div class="left f-l">
-              <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%" @click="goSerchKey(serchKey)">
-            </div>
-            <div class="right f-l">
-              <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
-                <div class="des f-l">
-                  <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
-                  <p class="this-price">即时价：<span class="s1">¥</span><span
-                    class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
-                  <p class="next-price">次日价：<span class="s1">¥</span><span
-                    class="number">{{specialPriceGoodsList[0].price}}</span></p>
-                </div>
-                <div class="pic f-l">
-                  <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
-                </div>
-              </div>
-              <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
-                <div class="des f-l">
-                  <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
-                  <p class="this-price">即时价：<span class="s1">¥</span><span
-                    class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
-                  <p class="next-price">次日价：<span class="s1">¥</span><span
-                    class="number">{{specialPriceGoodsList[1].price}}</span></p>
-                </div>
-                <div class="pic f-l">
-                  <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 优品精品 -->
-        <swiper :options="swiperOption" ref="YouSwiper" class="activeSwiper">
-          <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
+        <swiper :options="swiperOption" ref="mySwiper" class="banner">
+          <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
             <img :src="item.imageUrl">
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
-        <div class="recommend" v-if="mapTitleTips[2]">
-          <home-title :title="mapTitleTips[2].name">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
-          </home-title>
-          <div class="content clearfix">
-            <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index" @click="goDetail(item.goodsId)">
-              <div class="pic">
-                <img v-lazy="item.goodsImgUrl" alt="">
-              </div>
-              <div class="des">
-                <h3 class="title">{{item.goodsName}}</h3>
-                <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-                <div class="iconfont shop-car">&#xe613;</div>
+        <!-- 次日达/即时达 -->
+        <div class="link-box">
+          <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
+          <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+        </div>
+        <div class="active-box">
+          <!-- 预售团购 -->
+          <div class="group-buy" v-if="mapTitleTips[0]">
+            <home-title :title="mapTitleTips[0].name">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+            </home-title>
+            <div class="content clearfix">
+              <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
+                <img v-lazy="item.keyword" alt="" width="100%" height="100%">
               </div>
             </div>
           </div>
-        </div>
-        <!-- 热销 -->
-        <swiper :options="swiperOption" ref="SaleSwiper" class="activeSwiper">
-          <swiper-slide class="swiper-img" v-for="(item, index) in saleImagelist" :key="index">
-            <img :src="item.imageUrl">
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
-        <div class="new-goods">
-          <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
-          </home-title>
-          <new-goods :goodsList="saleGoods"></new-goods>
-        </div>
-        <!-- 新品上架 -->
-        <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
-          <swiper-slide class="swiper-img" v-for="(item, index) in newImageList" :key="index">
-            <img :src="item.imageUrl">
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
-        <div class="sale">
-          <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
-          </home-title>
-          <two-column :goodsList="newGoodsList"></two-column>
-        </div>
-        <!-- 实时推荐 -->
-        <div class="moreRecommend">
-          <home-title :title="mapTitleTips[6].name" v-if="mapTitleTips[6]">
-            <img class="icon iconfont" slot="icon" :src="mapTitleTips[6].other">
-          </home-title>
-          <two-column :goodsList="moreRecommendList"></two-column>
+          <!-- 原地直供 -->
+          <div class="origin-directly" v-if="mapTitleTips[1]">
+            <home-title :title="mapTitleTips[1].name">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+            </home-title>
+            <div class="content">
+              <div class="left f-l">
+                <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%" @click="goSerchKey(serchKey)">
+              </div>
+              <div class="right f-l">
+                <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
+                  <div class="des f-l">
+                    <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
+                    <p class="this-price">即时价：<span class="s1">¥</span><span
+                      class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
+                    <p class="next-price">次日价：<span class="s1">¥</span><span
+                      class="number">{{specialPriceGoodsList[0].price}}</span></p>
+                  </div>
+                  <div class="pic f-l">
+                    <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
+                  </div>
+                </div>
+                <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
+                  <div class="des f-l">
+                    <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
+                    <p class="this-price">即时价：<span class="s1">¥</span><span
+                      class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
+                    <p class="next-price">次日价：<span class="s1">¥</span><span
+                      class="number">{{specialPriceGoodsList[1].price}}</span></p>
+                  </div>
+                  <div class="pic f-l">
+                    <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 优品精品 -->
+          <swiper :options="swiperOption" ref="YouSwiper" class="activeSwiper">
+            <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
+              <img :src="item.imageUrl">
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+          <div class="recommend" v-if="mapTitleTips[2]">
+            <home-title :title="mapTitleTips[2].name">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
+            </home-title>
+            <div class="content clearfix">
+              <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index"
+                   @click="goDetail(item.goodsId)">
+                <div class="pic">
+                  <img v-lazy="item.goodsImgUrl" alt="">
+                </div>
+                <div class="des">
+                  <h3 class="title">{{item.goodsName}}</h3>
+                  <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                  <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span>
+                  </p>
+                  <div class="iconfont shop-car">&#xe613;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 热销 -->
+          <swiper :options="swiperOption" ref="SaleSwiper" class="activeSwiper">
+            <swiper-slide class="swiper-img" v-for="(item, index) in saleImagelist" :key="index">
+              <img :src="item.imageUrl">
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+          <div class="new-goods">
+            <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
+            </home-title>
+            <new-goods :goodsList="saleGoods"></new-goods>
+          </div>
+          <!-- 新品上架 -->
+          <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
+            <swiper-slide class="swiper-img" v-for="(item, index) in newImageList" :key="index">
+              <img :src="item.imageUrl">
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+          <div class="sale">
+            <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
+            </home-title>
+            <two-column :goodsList="newGoodsList"></two-column>
+          </div>
+          <!-- 实时推荐 -->
+          <div class="moreRecommend">
+            <home-title :title="mapTitleTips[6].name" v-if="mapTitleTips[6]">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[6].other">
+            </home-title>
+            <two-column :goodsList="moreRecommendList"></two-column>
+          </div>
         </div>
       </div>
     </div>
+    <m-footer></m-footer>
   </div>
 </template>
 
 <script>
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
+  import BScroll from 'better-scroll'
+  import mFooter from '../components/footer'
   import homeTitle from '../components/homeTitle'
   import newGoods from '../components/oneColumn'
   import twoColumn from '../components/twocolumn'
@@ -137,6 +144,8 @@
     components: {
       swiper,
       swiperSlide,
+      BScroll,
+      mFooter,
       homeTitle,
       newGoods,
       twoColumn
@@ -166,6 +175,7 @@
         pageSize: 10,
         loading: false,
         scrollDisable: false,
+        scrollTop: '',
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -204,6 +214,9 @@
               this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
               this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
               this.computedSwiperLength()
+              this.$nextTick(() => {
+                this._initScroll()
+              })
             }
           })
           /* 无限加载 */
@@ -232,22 +245,6 @@
 //          console.log(res.data)
         }
       })
-    },
-    directives: {
-      scroll: {
-        bind (el, binding) {
-          const homeView = el
-          homeView.addEventListener('scroll', () => {
-            let scrollTop = homeView.scrollTop
-            let homeViewHeight = homeView.offsetHeight
-            let wrapperHeight = el.children[0].clientHeight
-            if (scrollTop + homeViewHeight >= wrapperHeight) {
-              let fnc = binding.value
-              fnc()
-            }
-          })
-        }
-      }
     },
     methods: {
       goActive (item) {
@@ -298,11 +295,44 @@
               for (let i = 0; i < newList.length; i++) {
                 this.moreRecommendList.push(newList[i])
               }
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.homeSroll.refresh()
+                }, 0)
+              }
               this.scrollDisable = false
             }
           })
         }
         console.log('到底了moere')
+      },
+      _initScroll () {
+        //          const homeView = el
+//          let scrollTop = this.scrollY
+//          console.log(scrollTop)
+//          let homeViewHeight = homeView.offsetHeight
+//          let wrapperHeight = el.children[0].clientHeight
+//          if (scrollTop + homeViewHeight >= wrapperHeight) {
+//            let fnc = binding.value
+//            fnc()
+//          }
+        const homeView = this.$refs.homeView
+        this.homeSroll = new BScroll(homeView, {
+          click: true,
+          probeType: 3
+        })
+        this.homeSroll.on('scroll', (pos) => {
+          let scrollTop = Math.abs(Math.round(pos.y))
+          const homeView = this.$refs.homeView
+          let homeViewHeight = homeView.offsetHeight
+          console.log(homeViewHeight)
+          let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
+          console.log(wrapperHeight)
+          console.log(scrollTop)
+          if (scrollTop + homeViewHeight >= wrapperHeight) {
+            this.loadMore()
+          }
+        })
       }
     }
   }
@@ -311,6 +341,10 @@
 <style lang="less">
   @import "../common/style/varlable";
   @import "../common/style/sum";
+
+  .home-wrap {
+    height: 100%;
+  }
 
   .home-view .location-search-box {
     padding: 5px 10px;
@@ -413,9 +447,8 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 50px;
-    overflow-y: scroll;
-
+    .b(100);
+    overflow: hidden;
     .link-box {
       display: flex;
       .pt(5);

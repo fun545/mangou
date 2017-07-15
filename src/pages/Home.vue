@@ -235,7 +235,7 @@
         }
       })
       if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/location'})
+        this.$router.push({path: '/locati on'})
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
@@ -275,7 +275,6 @@
         if (this.newImageList.length <= 1) {
           this.$refs.NewSwiper.swiper.paginationContainer[0].style.display = 'none'
         }
-//        console.log(this.swiperOptionNew.pagination)
       },
       /* 无限加载 */
       loadMore () {
@@ -289,7 +288,6 @@
             pageSize: 10
           }).then((res) => {
             if (res.data.code === 100) {
-//          console.log(res.data)
               let newList = res.data.goodsList
               console.log(newList)
               for (let i = 0; i < newList.length; i++) {
@@ -307,15 +305,6 @@
         console.log('到底了moere')
       },
       _initScroll () {
-        //          const homeView = el
-//          let scrollTop = this.scrollY
-//          console.log(scrollTop)
-//          let homeViewHeight = homeView.offsetHeight
-//          let wrapperHeight = el.children[0].clientHeight
-//          if (scrollTop + homeViewHeight >= wrapperHeight) {
-//            let fnc = binding.value
-//            fnc()
-//          }
         const homeView = this.$refs.homeView
         this.homeSroll = new BScroll(homeView, {
           click: true,
@@ -325,10 +314,7 @@
           let scrollTop = Math.abs(Math.round(pos.y))
           const homeView = this.$refs.homeView
           let homeViewHeight = homeView.offsetHeight
-          console.log(homeViewHeight)
           let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
-          console.log(wrapperHeight)
-          console.log(scrollTop)
           if (scrollTop + homeViewHeight >= wrapperHeight) {
             this.loadMore()
           }

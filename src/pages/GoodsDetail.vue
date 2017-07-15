@@ -78,30 +78,11 @@
       }
     },
     created () {
-      this.post('/goods/goodsDetail', {
-        goodsId: this.$route.query.goodsId,
-        token: this.token,
-        villageId: this.villageId
-      }).then((res) => {
-        if (res.data.code === 100) {
-          console.log(res.data)
-          this.goodsDetail = res.data.goodsDetail
-          this.goodsList = res.data.listGoods
-          this.swiperList = res.data.goodsDetail.imagesList
-          this.computedSwiperLength()
-          if (res.data.goodsDetail.isCollect === 1) {
-            this.collectFlag = true
-          } else {
-            this.collectFlag = false
-          }
-        }
-        this.loadingFlag = false
-        if (res.data.code === 102) {
-          this.$router.push({
-            path: '/login'
-          })
-        }
-      })
+      if (!this.token) {
+        this.noToken()
+      } else {
+        this.hasToken()
+      }
     },
     methods: {
       getDetail () {
@@ -118,6 +99,56 @@
               this.collectFlag = false
             }
           }
+          if (res.data.code === 102) {
+            this.$router.push({
+              path: '/login'
+            })
+          }
+        })
+      },
+      hasToken () {
+        this.post('/goods/goodsDetail', {
+          goodsId: this.$route.query.goodsId,
+          token: this.token,
+          villageId: this.villageId
+        }).then((res) => {
+          if (res.data.code === 100) {
+            console.log(res.data)
+            this.goodsDetail = res.data.goodsDetail
+            this.goodsList = res.data.listGoods
+            this.swiperList = res.data.goodsDetail.imagesList
+            this.computedSwiperLength()
+            if (res.data.goodsDetail.isCollect === 1) {
+              this.collectFlag = true
+            } else {
+              this.collectFlag = false
+            }
+          }
+          this.loadingFlag = false
+          if (res.data.code === 102) {
+            this.$router.push({
+              path: '/login'
+            })
+          }
+        })
+      },
+      noToken () {
+        this.post('/goods/goodsDetail', {
+          goodsId: this.$route.query.goodsId,
+          villageId: this.villageId
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.goodsDetail = res.data.goodsDetail
+            this.goodsList = res.data.listGoods
+            this.swiperList = res.data.goodsDetail.imagesList
+            this.computedSwiperLength()
+            if (res.data.goodsDetail.isCollect === 1) {
+              this.collectFlag = true
+            } else {
+              this.collectFlag = false
+            }
+          }
+          this.loadingFlag = false
           if (res.data.code === 102) {
             this.$router.push({
               path: '/login'

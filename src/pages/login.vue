@@ -109,9 +109,11 @@
         }).then((res) => {
           if (res.data.code === 100) {
             localStorage.setItem('m-token', res.data.userInfo.token)
-            console.log(res.data)
+            this.$store.state.token = localStorage.getItem('m-token')
+            this.$store.state.login = true
             this.$router.push({path: '/user'})
             this.$store.state.login = true
+            window.location.reload()
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

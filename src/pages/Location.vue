@@ -53,13 +53,12 @@
       console.log(curPosition)
       if (curPosition) {
         this.post('/village/villageList', {
-          cityId: 1,
-          areaId: 1,
           longitude: curPosition.lng.toFixed(6),
           latitude: curPosition.lat.toFixed(6),
-          source: 2
+          source: 1
         }).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data)
             this.villageList = res.data.villageList
             console.log(this.villageList)
           }
@@ -75,7 +74,9 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-        this.$router.push({path: '/home'})
+//        this.$router.push({path: '/home'})
+        this.$router.replace('/home')
+        window.location.reload()
       },
       searchLocation () {
         if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})

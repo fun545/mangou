@@ -1,10 +1,10 @@
 <template>
   <div class="home-wrap" @touchmove.prevent>
-    <div class="home-view" ref="homeView" v-scroll="loadMore">
+    <div class="home-view" ref="homeView">
       <div class="wrap">
         <div class="location-search-box">
           <router-link to="/location" class="location">{{villageName}}</router-link>
-          <router-link to="/search" class="search"><input type="search" placeholder="搜索商品" readonly></router-link>
+          <a class="search" @click="goSearch"><input type="search" placeholder="搜索商品" readonly></a>
         </div>
         <swiper :options="swiperOption" ref="mySwiper" class="banner">
           <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
@@ -126,6 +126,11 @@
             </home-title>
             <two-column :goodsList="moreRecommendList"></two-column>
           </div>
+          <load-more
+            :tip="loadText"
+            :show-loading="moreIconFlag"
+            background-color="#f7f7f7"
+            class="load-more"></load-more>
         </div>
       </div>
     </div>
@@ -134,6 +139,7 @@
 </template>
 
 <script>
+  import { LoadMore } from 'vux'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
@@ -148,7 +154,8 @@
       mFooter,
       homeTitle,
       newGoods,
-      twoColumn
+      twoColumn,
+      LoadMore
     },
     data () {
       return {
@@ -176,6 +183,9 @@
         loading: false,
         scrollDisable: false,
         scrollTop: '',
+        loadText: '正在加载',
+        loadMoreFlag: false,
+        moreIconFlag: true,
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -195,6 +205,8 @@
           this.swiperList = res.data.firstInfo.imgList
           /* 店铺数据 */
           this.storeList = res.data.firstInfo.storeList
+          localStorage.setItem('m-depotId', this.storeList[0].storeId)
+          localStorage.setItem('m-shopId', this.storeList[1].storeId)
           /* 首页数据数据 */
           this.post('/first/getFirstGoods', {
             storeId: this.storeList[0].storeId,
@@ -235,7 +247,7 @@
         }
       })
       if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/locati on'})
+        this.$router.push({path: '/location'})
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
@@ -247,6 +259,9 @@
       })
     },
     methods: {
+      goSearch () {
+        this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
+      },
       goActive (item) {
         this.$router.push({
           path: '/active',
@@ -297,12 +312,16 @@
                 setTimeout(() => {
                   this.homeSroll.refresh()
                 }, 0)
+              } else {
+                this.loadText = '到底啦~'
+                this.moreIconFlag = false
               }
               this.scrollDisable = false
             }
           })
         }
         console.log('到底了moere')
+        this.loadMoreFlag = true
       },
       _initScroll () {
         const homeView = this.$refs.homeView
@@ -656,6 +675,9 @@
       ul {
         .mt(12);
       }
+    }
+    .load-more {
+      color: @font-color-m;
     }
   }
 </style>

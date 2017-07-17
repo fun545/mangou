@@ -4,7 +4,7 @@
     <div class="head-box">
       <!-- 显示页面主题 -->
       <div class="is-cont">
-        <div class="flex-box">
+        <div class="flex-box" v-if="storeMsg">
           <img v-lazy="storeMsg.storeImgurl" width="80" alt="">
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
@@ -12,7 +12,7 @@
             <p><i class="iconfont">&#xe62a;</i>{{storeMsg.address}}</p>
             <p><i class="iconfont">&#xe624;</i>{{storeMsg.tel}}</p>
           </div>
-          <div class="search-icon t-c">
+          <div class="search-icon t-c" @click="goSearch">
             <i class="iconfont">&#xe639;</i>
           </div>
         </div>
@@ -113,7 +113,16 @@
           })
         }
       })
-      this.post('/basic/getStoreMsg', {storeId: 2}).then((res) => {
+      this.post('/village/cityList', {}).then((res) => {
+        console.log(res.data)
+      })
+      console.log(this.$store.state.shopId)
+      this.post('/basic/getStoreMsg', {
+        cityId: localStorage.getItem('m-cityId'),
+        areaId: localStorage.getItem('m-areaId'),
+        storeId: localStorage.getItem('m-shopId')
+      }).then((res) => {
+        console.log(res.data)
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
         }
@@ -122,18 +131,8 @@
       this.getGoods(1)
     },
     methods: {
-      onScroll (e, pos) {
-        if (pos.scrollTop > this.scrollTop + 100 || pos.scrollTop < this.scrollTop - 100) {
-          this.scrollTop = pos.scrollTop
-        }
-
-        let clientHeight = e.target.clientHeight
-        let scrollHeight = e.target.scrollHeight
-        let scrollTop = pos.scrollTop
-
-        if (scrollTop + clientHeight >= scrollHeight) {
-          console.log('滚动到底部')
-        }
+      goSearch () {
+        this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
       getGoods (id) {
         this.firstClassifyId = id

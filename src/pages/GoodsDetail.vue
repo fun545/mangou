@@ -48,7 +48,6 @@
         </div>
       </div>
     </div>
-    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -56,9 +55,8 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import mHeader from '../components/header'
   import guessList from '../components/twocolumn'
-  import loading from '../components/loading'
   export default {
-    components: {swiper, swiperSlide, mHeader, guessList, loading},
+    components: {swiper, swiperSlide, mHeader, guessList},
     data () {
       return {
         token: localStorage.getItem('m-token'),
@@ -69,7 +67,6 @@
         goodsList: [],
         collectId: '',
         collectFlag: '',
-        loadingFlag: true,
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -78,10 +75,10 @@
       }
     },
     created () {
-      if (!this.token) {
-        this.noToken()
+      if (!this.$store.state.login) {
+        this.noLogin()
       } else {
-        this.hasToken()
+        this.hasLogin()
       }
     },
     methods: {
@@ -106,7 +103,7 @@
           }
         })
       },
-      hasToken () {
+      hasLogin () {
         this.post('/goods/goodsDetail', {
           goodsId: this.$route.query.goodsId,
           token: this.token,
@@ -124,7 +121,6 @@
               this.collectFlag = false
             }
           }
-          this.loadingFlag = false
           if (res.data.code === 102) {
             this.$router.push({
               path: '/login'
@@ -132,7 +128,7 @@
           }
         })
       },
-      noToken () {
+      noLogin () {
         this.post('/goods/goodsDetail', {
           goodsId: this.$route.query.goodsId,
           villageId: this.villageId

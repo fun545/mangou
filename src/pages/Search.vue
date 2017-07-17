@@ -11,15 +11,18 @@
     <!-- 热门搜索 -->
     <div class="title-box">热门搜索</div>
     <div class="word-flex">
-      <div class="word-item" v-for="value in hotList" @click="search = value" v-html="value"/>
+      <div class="word-item" v-for="(value,index) in KeyWords" @click="hotSearch(value)" :key="index">
+        {{value.keyword}}
+      </div>
     </div>
-    <div class="title-box">
+    <!-- 历史记录 -->
+    <!--<div class="title-box">
       <div class="flex-col">历史搜索</div>
       <div class="iconfont font-small" @click="delHistory = true">&#xe673;</div>
-    </div>
-    <div class="word-flex">
-      <div class="word-item" v-for="value in historyList" @click="search = value" v-html="value"/>
-    </div>
+    </div>-->
+    <!--<div class="word-flex">-->
+    <!--<div class="word-item" v-for="value in historyList" @click="search = value" v-html="value"/>-->
+    <!--</div>-->
   </div>
 </template>
 
@@ -28,26 +31,32 @@
     data () {
       return {
         search: '',
-        delHistory: false
+        delHistory: false,
+        KeyWords: []
       }
     },
-    computed: {
-      hotList () {
-        return ['清风纸巾促销装', '汤达人酸辣面', '毛毛鱼', '百事可乐', '健力宝运动饮料']
-      },
-      historyList () {
-        return !this.delHistory ? ['清风纸巾促销装', '汤达人酸辣面', '毛毛鱼', '百事可乐', '健力宝运动饮料'] : []
-      }
+    activated () {
+      this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
+        if (res.data.code) {
+          console.log(res.data)
+          this.KeyWords = res.data.KeyWords
+        }
+      })
     },
     methods: {
       searchWord () {
-        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
-
-        const searchQuery = {
-          search: this.search
+        if (!this.search) {
+          return this.$vux.alert.show({content: '搜索内容不能为空'})
         }
-
+        const searchQuery = {
+          search: this.search,
+          shopType: this.$route.query.shopType,
+          storeId: this.$route.query.storeId
+        }
         this.$router.push({path: 'search_text', query: searchQuery})
+      },
+      hotSearch (value) {
+        this.search = value.keyword
       }
     }
   }

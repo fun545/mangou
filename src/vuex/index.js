@@ -13,9 +13,12 @@ const state = {
   userInfo: null, // 用户信息
   storeId: null, // 商铺id
   orderDetail: null, // 订单详情
-  login: true, // 是否登录
+  login: false, // 是否登录
   removeAddress: [], // 移除地址
-  addAddress: ''// 新增地址
+  addAddress: '', // 新增地址
+  token: '', // token
+  depotId: '',
+  shopId: ''
 }
 
 export default new Vuex.Store({

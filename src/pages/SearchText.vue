@@ -9,56 +9,45 @@
       <div class="search-right" @click="searchWord">搜索</div>
     </div>
     <!-- Tab列表 -->
-    <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index">
-      <tab-item><i class="iconfont">&#xe60a;</i>次日达</tab-item>
+    <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index" v-if="selected">
+      <tab-item selected><i class="iconfont">&#xe60a;</i>次日达</tab-item>
       <tab-item><i class="iconfont">&#xe61f;</i>即时送</tab-item>
     </tab>
+    <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index" v-if="!selected">
+      <tab-item><i class="iconfont">&#xe60a;</i>次日达</tab-item>
+      <tab-item selected><i class="iconfont">&#xe61f;</i>即时送</tab-item>
+    </tab>
     <!-- 相关内容 -->
-    <swiper :show-dots="false" height="100%" v-model="index">
-      <swiper-item>
-        <router-link to="/goods_detail" tag="div" class="goods-item" v-for="(item,index) in 5" :key="index">
-          <img src="../assets/goods_img.jpg" width="30%" alt="">
-          <div class="flex-col">
-            <p>景田百岁山350ml</p>
-            <p style="color:#444;font-size:12px;">次日价：¥1.5</p>
-            <p :style="{color:activeColor,fontSize:'12px'}">即时价：¥2.0</p>
-          </div>
-          <div class="cart-icon" :style="{backgroundColor:activeColor}">&#xe613;</div>
-        </router-link>
-      </swiper-item>
-      <swiper-item>
-        <router-link to="/goods_detail" tag="div" class="goods-item" v-for="(item,index) in 5" :key="index">
-          <img src="../assets/goods_img.jpg" width="30%" alt="">
-          <div class="flex-col">
-            <p>景田百岁山350ml</p>
-            <p style="color:#444;font-size:12px;">次日价：¥1.5</p>
-            <p :style="{color:activeColor,fontSize:'12px'}">即时价：¥2.0</p>
-          </div>
-          <div class="cart-icon" :style="{backgroundColor:activeColor}">&#xe613;</div>
-        </router-link>
-      </swiper-item>
-    </swiper>
+    <one-column :goodsList="goodsList"></one-column>
   </div>
 </template>
 
 <script>
-  import { Tab, TabItem, Swiper, SwiperItem } from 'vux'
-
+  import { Tab, TabItem } from 'vux'
+  import oneColumn from '../components/oneColumn'
   export default {
     components: {
       Tab,
       TabItem,
-      Swiper,
-      SwiperItem
+      oneColumn
     },
     data () {
       return {
         search: '',
-        index: 0
+        index: 0,
+        selected: '',
+        goodsList: []
       }
     },
-    created () {
+    activated () {
+      this.goodsList = []
+      if (this.$route.query.shopType === '2') {
+        this.selected = false
+      } else {
+        this.selected = true
+      }
       this.search = this.$route.query.search
+      this.searchWord(this.$route.query.shopType)
     },
     computed: {
       activeColor () {
@@ -66,11 +55,36 @@
       }
     },
     methods: {
-      searchWord () {
-        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
-
-        this.$vux.alert.show({content: `您的搜索内容为${this.search}`})
+      searchWord (shopType) {
+        console.log(511)
+        if (!this.search) {
+          return this.$vux.alert.show({content: '搜索内容不能为空'})
+        }
+        this.post('/goods/searchGoods', {
+          storeId: this.$route.query.storeId,
+          shopType: shopType,
+          keyName: this.search
+        }).then((res) => {
+          if (res.data.code === 100) {
+            console.log(res.data)
+            if (this.goodsList) {}
+            this.goodsList = res.data.goodsInfo.goodsList
+          }
+        })
       }
+//      searchWord () {
+//        console.log(2333)
+//        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
+//        this.post('/goods/searchGoods', {
+//          storeId: this.$route.query.storeId,
+//          shopType: this.$route.query,
+//          keyName: this.searchWord,
+//          pageSize: 10,
+//          pageIndex: 1
+//        }).then((res) => {
+//          console.log(res.data)
+//        })
+//      }
     }
   }
 </script>

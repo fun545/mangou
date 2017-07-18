@@ -79,17 +79,19 @@
             </home-title>
             <div class="content clearfix">
               <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index"
-                   @click="goDetail(item.goodsId)">
-                <div class="pic">
-                  <img v-lazy="item.goodsImgUrl" alt="">
+                   @click="goDetail(item.goodsId,$event)">
+                <div class="top">
+                  <div class="pic">
+                    <img v-lazy="item.goodsImgUrl" alt="">
+                  </div>
+                  <div class="des">
+                    <h3 class="title">{{item.goodsName}}</h3>
+                    <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                    <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span>
+                    </p>
+                  </div>
                 </div>
-                <div class="des">
-                  <h3 class="title">{{item.goodsName}}</h3>
-                  <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                  <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span>
-                  </p>
-                  <div class="iconfont shop-car">&#xe613;</div>
-                </div>
+                <buy-car-button :goods="item"></buy-car-button>
               </div>
             </div>
           </div>
@@ -146,6 +148,7 @@
   import homeTitle from '../components/homeTitle'
   import newGoods from '../components/oneColumn'
   import twoColumn from '../components/twocolumn'
+  import buyCarButton from '../components/buyCarButton'
   export default {
     components: {
       swiper,
@@ -155,7 +158,8 @@
       homeTitle,
       newGoods,
       twoColumn,
-      LoadMore
+      LoadMore,
+      buyCarButton
     },
     data () {
       return {
@@ -215,6 +219,7 @@
             if (res.data.code === 100) {
               console.log(this.storeList)
               this.mapTitleTips = res.data.goodsList.mapTitleTips
+              console.log(this.mapTitleTips)
               this.ystgWords = res.data.goodsList.ystgWords
               this.serchKey = res.data.goodsList.serchKey
               this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
@@ -268,11 +273,13 @@
           query: {keyId: item.keyId, remarks: item.remarks, keyBanleImages: item.keyBanleImages}
         })
       },
-      goDetail (id) {
-        this.$router.push({
-          path: '/goods_detail',
-          query: {goodsId: id}
-        })
+      goDetail (id, e) {
+        if (e.target.tagName.toLowerCase() !== 'i') {
+          this.$router.push({
+            path: '/goods_detail',
+            query: {goodsId: id}
+          })
+        }
       },
       goSerchKey (item) {
         this.$router.push({
@@ -541,6 +548,7 @@
         width: 100%;
         margin-top: 2px;
         .item {
+          position: relative;
           background: #fff;
           box-sizing: border-box;
           width: 33.23%;
@@ -561,7 +569,7 @@
             }
           }
           .des {
-            .h(200);
+            .h(120);
             .mt(26);
             .pl(18);
             position: relative;
@@ -597,24 +605,24 @@
                 .fs(30);
               }
             }
-            .iconfont.shop-car {
-              .w(48);
-              .h(48);
-              .lh(48);
-              .fs(38);
-              text-align: center;
-              color: @theme-color;
-              border: 1px solid @theme-color;
-              border-radius: 50%;
-              .pl(4);
-              .pr(4);
-              .pt(4);
-              .pb(4);
-              position: absolute;
-              left: 50%;
-              .ml(-25);
-              .b(10);
-            }
+          }
+          .iconfont.shop-car {
+            .w(48);
+            .h(48);
+            .lh(48);
+            .fs(38);
+            text-align: center;
+            color: @theme-color;
+            border: 1px solid @theme-color;
+            border-radius: 50%;
+            .pl(4);
+            .pr(4);
+            .pt(4);
+            .pb(4);
+            position: absolute;
+            left: 50%;
+            .ml(-25);
+            .b(10);
           }
         }
       }

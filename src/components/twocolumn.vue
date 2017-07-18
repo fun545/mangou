@@ -1,6 +1,7 @@
 <template>
   <ul class="goods-detail-wrap clearfix">
-    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
+    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index"
+        @click="goDetail(item.goodsId,$event)">
       <div class="pic">
         <img v-lazy="item.goodsImgUrl" width="100%" alt="">
       </div>
@@ -12,9 +13,7 @@
         <div>
           <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
           <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-          <div class="shop-car-col t-c">
-            <i class="iconfont icon-col">&#xe613;</i>
-          </div>
+            <buy-car-button :goods="item"></buy-car-button>
         </div>
       </div>
     </li>
@@ -22,16 +21,22 @@
 </template>
 
 <script>
+  import buyCarButton from '../components/buyCarButton'
   export default {
     props: {
       goodsList: Array
     },
+    components: {
+      buyCarButton
+    },
     methods: {
-      goDetail (id) {
-        this.$router.push({
-          path: '/goods_detail',
-          query: {goodsId: id}
-        })
+      goDetail (id, e) {
+        if (e.target.tagName.toLowerCase() !== 'i') {
+          this.$router.push({
+            path: '/goods_detail',
+            query: {goodsId: id}
+          })
+        }
       }
     }
   }
@@ -56,7 +61,7 @@
       .pic {
         .w(300);
         .h(300);
-        margin:  auto;
+        margin: auto;
         .mt(3);
         text-align: center;
         img {
@@ -75,11 +80,11 @@
           .l(50);
           color: #443d39;
         }
-       /* .des {
-          color: #888;
-          .fs(24);
-          .lh(30);
-        }*/
+        /* .des {
+           color: #888;
+           .fs(24);
+           .lh(30);
+         }*/
       }
       .bt {
         position: relative;
@@ -93,7 +98,7 @@
         .this-price {
 
         }
-        .shop-car-col {
+        .shop-car {
           position: absolute;
           .w(51);
           .h(51);

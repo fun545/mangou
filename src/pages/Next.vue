@@ -124,6 +124,7 @@
           path: '/list1',
           query: {secondId: id}
         })
+        this.$router.go(0)
       },
       memuChange (id, index, event) {
         if (event._constructed) {

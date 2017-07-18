@@ -108,12 +108,14 @@
           areaId: 1
         }).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data)
             localStorage.setItem('m-token', res.data.userInfo.token)
             this.$store.state.token = localStorage.getItem('m-token')
+            console.log(localStorage.getItem('m-token'))
             this.$store.state.login = true
             this.$router.push({path: '/user'})
             this.$store.state.login = true
-            window.location.reload()
+//            window.location.reload()
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

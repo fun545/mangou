@@ -1,6 +1,6 @@
 <template>
   <ul>
-    <li class="item" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId)">
+    <li class="item" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId,$event)">
       <div class="pic f-l">
         <img v-lazy="item.goodsImgUrl" alt="">
       </div>
@@ -10,23 +10,26 @@
         <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
         <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
       </div>
-      <div class="iconfont shop-car t-c">&#xe613;</div>
+      <buyCarButton :goods="item"></buyCarButton>
     </li>
   </ul>
 </template>
 
 <script>
-
+  import buyCarButton from '../components/buyCarButton'
   export default {
     props: {
       goodsList: Array
     },
+    components: {buyCarButton},
     methods: {
-      goDetail (id) {
-        this.$router.push({
-          path: '/goods_detail',
-          query: {goodsId: id}
-        })
+      goDetail (id, e) {
+        if (e.target.tagName.toLowerCase() !== 'i') {
+          this.$router.push({
+            path: '/goods_detail',
+            query: {goodsId: id}
+          })
+        }
       }
     }
   }
@@ -54,8 +57,6 @@
       }
     }
     .col {
-      /*flex-grow: 1;*/
-      /*margin: auto 10px;*/
       .w(461);
       .ml(30);
       align-self: flex-start;

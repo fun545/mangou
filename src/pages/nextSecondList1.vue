@@ -98,11 +98,13 @@
           storeId: 1,
           softType: this.softType
         }).then((res) => {
+          console.log(res.data)
           if (res.data.code === 100) {
             if (res.data.goodsList.length === 0) {
               this.isActive = false
             }
             this.list = res.data.goodsList
+            console.log(this.list)
             if (this.list.length !== 0) {
               this.$nextTick(() => {
                 this._initScroll()

@@ -1,13 +1,7 @@
 <template>
   <div class="search-text-view">
     <!-- 搜索框 -->
-    <div class="top-search-box">
-      <div class="search-left" @click="$router.go(-1)">&#xe600;</div>
-      <div class="search-box">
-        <input type="search" placeholder="搜索内容" @keyup.enter="searchWord" v-model.trim="search">
-      </div>
-      <div class="search-right" @click="searchWord">搜索</div>
-    </div>
+    <search-hearder :searchWord="searchWord" :search="search" @click.native="goSearch"></search-hearder>
     <!-- Tab列表 -->
     <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index" v-if="selected">
       <tab-item selected><i class="iconfont">&#xe60a;</i>次日达</tab-item>
@@ -18,18 +12,23 @@
       <tab-item selected><i class="iconfont">&#xe61f;</i>即时送</tab-item>
     </tab>
     <!-- 相关内容 -->
-    <one-column :goodsList="goodsList"></one-column>
+    <one-column :goodsList="goodsList" class="content"></one-column>
+    <div class="footer">
+
+    </div>
   </div>
 </template>
 
 <script>
   import { Tab, TabItem } from 'vux'
   import oneColumn from '../components/oneColumn'
+  import searchHearder from '../components/searchHeader'
   export default {
     components: {
       Tab,
       TabItem,
-      oneColumn
+      oneColumn,
+      searchHearder
     },
     data () {
       return {
@@ -55,14 +54,13 @@
       }
     },
     methods: {
-      searchWord (shopType) {
-        console.log(511)
+      searchWord () {
         if (!this.search) {
           return this.$vux.alert.show({content: '搜索内容不能为空'})
         }
         this.post('/goods/searchGoods', {
           storeId: this.$route.query.storeId,
-          shopType: shopType,
+          shopType: this.$route.query.shopType,
           keyName: this.search
         }).then((res) => {
           if (res.data.code === 100) {
@@ -71,72 +69,21 @@
             this.goodsList = res.data.goodsInfo.goodsList
           }
         })
+      },
+      goSearch () {
+        this.$router.push({path: 'search'})
       }
-//      searchWord () {
-//        console.log(2333)
-//        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
-//        this.post('/goods/searchGoods', {
-//          storeId: this.$route.query.storeId,
-//          shopType: this.$route.query,
-//          keyName: this.searchWord,
-//          pageSize: 10,
-//          pageIndex: 1
-//        }).then((res) => {
-//          console.log(res.data)
-//        })
-//      }
     }
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+  @import "../common/style/sum";
+
   .search-text-view .top-search-box {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    padding: 5px 0;
-
-    .search-left {
-      padding-left: 10px;
-      font: 16px/1 'iconfont';
-    }
-
-    .search-box {
-      margin: auto 10px;
-      padding: 5px 10px;
-      flex-grow: 1;
-      height: 20px;
-      line-height: 20px;
-      background-color: #f2f2f2;
-      border-radius: 100px;
-      position: relative;
-    }
-
-    .search-box:before {
-      content: '\e639';
-      color: #666;
-      font: 12px/1 'iconfont';
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-
-    input {
-      width: 100%;
-      line-height: 20px;
-      padding-left: 16px;
-      color: #666;
-      font-size: 12px;
-      border: none;
-      background-color: transparent;
-      outline: none;
-      -webkit-appearance: none;
-    }
-
     .search-right {
-      padding-right: 10px;
-      color: #666;
-      font-size: 12px;
+      .pr(36);
+      display: none;
     }
   }
 
@@ -182,5 +129,8 @@
       color: #fff;
       background-color: #999;
     }
+  }
+  .content{
+    background: #fff;
   }
 </style>

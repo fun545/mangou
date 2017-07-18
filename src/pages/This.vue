@@ -53,13 +53,13 @@
         <div class="googs-list" ref="goodsListWrap">
           <div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index"
-                 @click="goDetail(item.goodsId)">
+                 @click="goDetail(item.goodsId,$event)">
               <img v-lazy="item.goodsImgUrl" alt="" class="pic">
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <div class="iconfont shop-car">&#xe613;</div>
+                <shop-car-button :goods="item"></shop-car-button>
               </div>
             </div>
           </div>
@@ -78,6 +78,7 @@
   import SideItem from '../components/SideItem'
   import Tabs from '../components/Tabs'
   import TabsItem from '../components/TabsItem'
+  import shopCarButton from '../components/buyCarButton'
 
   export default {
     components: {
@@ -88,7 +89,8 @@
       SideBar,
       SideItem,
       Tabs,
-      TabsItem
+      TabsItem,
+      shopCarButton
     },
     data () {
       return {
@@ -116,7 +118,6 @@
       this.post('/village/cityList', {}).then((res) => {
         console.log(res.data)
       })
-      console.log(this.$store.state.shopId)
       this.post('/basic/getStoreMsg', {
         cityId: localStorage.getItem('m-cityId'),
         areaId: localStorage.getItem('m-areaId'),
@@ -181,11 +182,14 @@
           click: true
         })
       },
-      goDetail (id) {
-        this.$router.push({
-          path: '/goods_detail',
-          query: {goodsId: id}
-        })
+      goDetail (id, e) {
+        console.log(e.target.tagName.toLowerCase() !== 'i')
+        if (e.target.tagName.toLowerCase() !== 'i') {
+          this.$router.push({
+            path: '/goods_detail',
+            query: {goodsId: id}
+          })
+        }
       }
     }
   }

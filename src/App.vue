@@ -1,8 +1,8 @@
 <template>
   <div class="app">
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -10,7 +10,6 @@
   @import "~vux/src/styles/reset.less";
   @import "common/style/index.less";
   @import "common/style/sum";
-  
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
@@ -148,4 +147,42 @@
   .font-mind {
     font-size: 12px;
   }
+
+  .hide {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+
+  //定位全屏
+  .allcover {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  //定位上下左右居中
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  //定位上下居中
+  .ct {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  //定位上下居中
+  .cl {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
 </style>

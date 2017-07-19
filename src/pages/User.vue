@@ -1,8 +1,7 @@
 <template>
   <div class="user-view">
     <!-- 设置图标 -->
-    <router-link to="/setting" class="setting">&#xe627;</router-link>
-
+    <span class="setting" @click="go">&#xe627;</span>
     <!-- 用户头像卡片 -->
     <div class="picture-card">
       <router-link to="/user_info"><img src="../assets/vux_logo.png" class="picture" alt=""></router-link>
@@ -126,7 +125,13 @@
 <script>
   import mFooter from '../components/footer'
   export default {
-    components: {mFooter}
+    components: {mFooter},
+    methods: {
+      go () {
+        this.$router.push({path: '/setting'})
+        this.$router.go(0)
+      }
+    }
   }
 </script>
 

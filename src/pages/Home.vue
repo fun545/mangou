@@ -39,7 +39,7 @@
                 <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%" @click="goSerchKey(serchKey)">
               </div>
               <div class="right f-l">
-                <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
+                <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
                   <div class="des f-l">
                     <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
                     <p class="this-price">即时价：<span class="s1">¥</span><span
@@ -51,7 +51,7 @@
                     <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
                   </div>
                 </div>
-                <div class="item" @click="goDetail(specialPriceGoodsList[0].goodsId)">
+                <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
                   <div class="des f-l">
                     <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
                     <p class="this-price">即时价：<span class="s1">¥</span><span
@@ -280,6 +280,12 @@
             query: {goodsId: id}
           })
         }
+      },
+      goOriginDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
       },
       goSerchKey (item) {
         this.$router.push({

@@ -72,7 +72,6 @@
     .mb(20);
     .pb(10);
     position: relative;
-
     &:after {
       content: '';
       height: 1px;

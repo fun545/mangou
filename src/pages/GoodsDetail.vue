@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="detail-wrap">
-      <m-header :title="title">
+      <m-header :title="title" ref="header">
         <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
       </m-header>
-      <div class="content">
+      <div class="content" ref="content">
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
@@ -55,8 +55,9 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import mHeader from '../components/header'
   import guessList from '../components/twocolumn'
+  import BScroll from 'better-scroll'
   export default {
-    components: {swiper, swiperSlide, mHeader, guessList},
+    components: {swiper, swiperSlide, mHeader, guessList, BScroll},
     data () {
       return {
         token: localStorage.getItem('m-token'),
@@ -75,12 +76,14 @@
       }
     },
     created () {
-      if (!this.$store.state.login) {
+      console.log(localStorage.getItem('m-token'))
+      if (!localStorage.getItem('m-token')) {
         this.noLogin()
       } else {
         this.hasLogin()
       }
     },
+    activated () {},
     methods: {
       getDetail () {
         this.post('/goods/goodsDetail', {
@@ -120,6 +123,9 @@
             } else {
               this.collectFlag = false
             }
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           }
           if (res.data.code === 102) {
             this.$router.push({
@@ -143,13 +149,16 @@
             } else {
               this.collectFlag = false
             }
-          }
-          this.loadingFlag = false
-          if (res.data.code === 102) {
-            this.$router.push({
-              path: '/login'
+            this.$nextTick(() => {
+              this._initScroll()
             })
           }
+          this.loadingFlag = false
+//          if (res.data.code === 102) {
+//            this.$router.push({
+//              path: '/login'
+//            })
+//          }
         })
       },
       collectGoods () {
@@ -184,6 +193,16 @@
         if (this.swiperList.length <= 1) {
           this.$refs.DetailSwiper.swiper.paginationContainer[0].style.display = 'none'
         }
+      },
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          probeType: 3
+        })
+        this.contentScroll.on('scroll', (pos) => {
+          let scrollTop = Math.abs(Math.round(pos.y))
+          console.log(scrollTop)
+        })
       }
     }
   }
@@ -197,27 +216,27 @@
 
   .detail-wrap {
     .cp-header {
-      color: #fff;
-      background: @theme-color;
+      color: @font-color-m;
+      z-index: 103;
+      opacity: .5;
       .back {
-        color: #fff;
+        color: @font-color-m;
       }
     }
     .content {
       .DetailSwiper {
         img {
           width: 100%;
-          .h(632);
+          .h(750);
         }
       }
       position: absolute;
-      .t(92);
+      top: 0;
       left: 0;
       right: 0;
       .b(100);
       z-index: 101;
-      overflow-y: scroll;
-      overflow-x: hidden;
+      overflow: hidden;
       .des {
         position: relative;
         box-sizing: border-box;
@@ -233,7 +252,7 @@
         }
         .price-wrap {
           .pl(26);
-          .mt(54);
+          .mt(24);
           .h(84);
           .lh(84);
           border-bottom: 1px solid #dfdedc;

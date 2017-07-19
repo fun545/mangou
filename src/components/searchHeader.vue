@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索框 -->
   <div class="top-search-box">
-    <div class="search-left" @click="$router.go(-1)">&#xe600;</div>
+    <div class="search-left" @click="$router.back()">&#xe600;</div>
     <div class="search-box">
       <input type="search" placeholder="搜索内容" @keyup.enter="searchWord" v-model.trim="search">
     </div>
@@ -14,7 +14,8 @@
   export default {
     props: {
       searchWord: Function,
-      search: String
+      search: String,
+      url: String
     }
   }
 </script>

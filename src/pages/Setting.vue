@@ -5,10 +5,11 @@
     <!-- logo -->
     <div class="logo-box">
       <img src="../assets/logo.png" width="80" alt="">
+      <p class="number">版本号：{{number}}</p>
     </div>
     <!-- 退出登录 -->
-    <div class="sign-out">
-      <div class="btn" @click="signOut">退出登录</div>
+    <div class="sign-out" @click="go">
+      <div class="btn">{{text}}</div>
     </div>
   </div>
 </template>
@@ -19,14 +20,57 @@
     components: {
       XHeader
     },
+    data () {
+      return {
+        number: '',
+        text: '',
+        path: ''
+      }
+    },
+    created () {
+      this.post('/basic/getVersion', {}).then((res) => {
+        if (res.data.code === 100) {
+          this.number = res.data.versionInfo.number
+        }
+      })
+      this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          localStorage.removeItem('m-token')
+        }
+      })
+      this.hasLogin()
+    },
     methods: {
-      signOut () {
-        this.$vux.alert.show({content: '退出登录成功'})
+      go () {
+        if (localStorage.getItem('m-token')) {
+          this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
+            console.log(res.data)
+            if (res.data.code === 100) {
+              localStorage.removeItem('m-token')
+            }
+          })
+        }
+        this.$router.push(this.path)
+      },
+      hasLogin () {
+        console.log()
+        if (!localStorage.getItem('m-token')) {
+          console.log('noLogin')
+          this.text = '登录'
+          this.path = {path: 'login'}
+        } else {
+          this.text = '退出登录'
+          this.path = {path: 'user'}
+        }
       }
     }
   }
 </script>
 <style lang="less">
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+
   .setting-view .vux-header {
     background-color: #fff;
 
@@ -42,25 +86,37 @@
 
   .setting-view .logo-box {
     text-align: center;
-    padding: 20px 0;
+    /*padding: 20px 0;*/
+    .pt(40);
+    .pb(40);
     border-top: 1px solid #eee;
     background-color: #fff;
-    margin-bottom: 10px;
+    .mb(20);
+    img {
+      margin: 0 auto;
+    }
+    .number {
+      .mt(25);
+      .fs(32);
+      color: @font-color-m;
+    }
   }
 
   .setting-view .sign-out {
     box-sizing: border-box;
     height: calc(~'100% - 183px');
-    padding: 30px 50px;
-    background-color: #fff;
-
+    .pt(60);
+    .pb(60);
+    .pl(100);
+    .pr(100);
     .btn {
       display: block;
       margin: 0 auto;
       color: #fff;
       background-color: #f95d43;
-      line-height: 20px;
-      padding: 10px 0;
+      .lh(40);
+      .pt(20);
+      .pb(20);
       text-align: center;
       border-radius: 5px;
     }

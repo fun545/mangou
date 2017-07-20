@@ -1,106 +1,117 @@
 <template>
-  <div class="cart-view">
-    <!-- 页面标题 -->
-    <x-header class="cart-header" :left-options="{showBack:false}">购物车<span slot="right" @click="isEdit = !isEdit">编辑</span>
-    </x-header>
-    <!-- 页面中心 -->
-    <div class="content-view-scroller">
-      <!-- 即时送 -->
-      <div class="flex-box this">
-        <div class="flex-item">
-          <input type="checkbox" id="isThis" class="input-checkbox" v-model="isThis">
-          <label for="isThis" class="label-checkbox">全选</label>
-        </div>
-        <div class="flex-col">
-          <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
-        </div>
-      </div>
-      <div class="flex-box this-goods" v-for="(item,index) in goodsCount" :key="index">
-        <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
-        <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
-        <img src="../assets/goods_img.jpg" width="20%" alt="">
-        <div class="flex-col">
-          <div class="goods-title">卫龙香辣卤藕袋装80g</div>
+  <div class="cart-view" @touchmove.prevent>
+    <div class="header t-c">
+      购物车
+      <span class="edit f-r">编辑</span>
+    </div>
+    <div v-if="login">
+      <!-- 页面中心 -->
+      <div class="content-view-scroller" ref="content">
+        <div>
+          <!-- 即时送 -->
+          <div class="flex-box this">
+            <div class="flex-item">
+              <input type="checkbox" id="isThis" class="input-checkbox" v-model="isThis">
+              <label for="isThis" class="label-checkbox">全选</label>
+            </div>
+            <div class="flex-col">
+              <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
+            </div>
+          </div>
+          <div class="flex-box this-goods" v-for="(item,index) in NextGoodsList" :key="index">
+            <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
+            <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
+            <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
+            <div class="flex-col">
+              <div class="goods-title">{{item.goodsName}}</div>
+              <div class="flex-box">
+                <div class="flex-col font-normal color-0493ed">{{item.canKaoPrice}}</div>
+                <div class="remove" @click="count(item,2)"/>
+                <input type="tel" class="val-box" v-model="item.buyCount"/>
+                <div class="added" @click="count(item,1)"/>
+              </div>
+            </div>
+          </div>
+          <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
+          <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
           <div class="flex-box">
-            <div class="flex-col font-normal color-0493ed">¥8.8</div>
-            <div class="remove" @click="itemVal -= 1"/>
-            <input type="tel" class="val-box" v-model="itemVal"/>
-            <div class="added" @click="itemVal += 1"/>
+            <div class="flex-item">共18件商品</div>
+            <div class="flex-col text-right font-mind">小记：<span class="color-0493ed">¥188.8</span></div>
+          </div>
+          <div class="flex-box">
+            <div class="flex-item">送货上门</div>
+            <div class="flex-col text-right font-mind color-666">配送费¥3</div>
+          </div>
+          <!-- 次日达 -->
+          <div class="flex-box next">
+            <div class="flex-item">
+              <input type="checkbox" id="isNext" class="input-checkbox" v-model="isNext">
+              <label for="isNext" class="label-checkbox">全选</label>
+            </div>
+            <div class="flex-item flex-col">
+              <div class="block-title color-fc766d"><i class="iconfont">&#xe60a;</i>次日达</div>
+            </div>
+            <div class="flex-item">
+              <p class="font-mind">还差<span class="color-fc766d">8</span>元起送</p>
+              <router-link to="next" tag="p" class="font-mind color-fc766d">去凑单 ></router-link>
+            </div>
+          </div>
+          <div class="flex-box next-goods" v-for="(item,index) in goodsCount" :key="index">
+            <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
+            <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
+            <img src="../assets/goods_img.jpg" width="20%" alt="">
+            <div class="flex-col">
+              <div class="goods-title">卫龙香辣卤藕袋装80g</div>
+              <div class="flex-box">
+                <div class="flex-col font-normal color-0493ed">¥8.8</div>
+                <div class="remove" @click="thisTemVal -= 1"/>
+                <input type="tel" class="val-box" v-model="thisTemVal"/>
+                <div class="added" @click="thisTemVal += 1"/>
+              </div>
+            </div>
+          </div>
+          <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
+          <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
+          <div class="flex-box">
+            <div class="flex-item">共18件商品</div>
+            <div class="flex-col font-mind text-right">小记：<span class="color-fc766d">¥188.8</span></div>
+          </div>
+          <div class="flex-box">
+            <div class="flex-item">配送方式</div>
+            <checker class="flex-col text-right" default-item-class="default-checker"
+                     selected-item-class="selected-checker">
+              <checker-item value="1">客户自取</checker-item>
+              <checker-item value="2">送货上门</checker-item>
+            </checker>
+          </div>
+
+          <div class="flex-box">
+            <div class="flex-item">取货地址</div>
+            <div class="flex-col font-mind text-right color-666">珠江花城扶水岸13栋109</div>
           </div>
         </div>
       </div>
-      <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
-      <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
-      <div class="flex-box">
-        <div class="flex-item">共18件商品</div>
-        <div class="flex-col text-right font-mind">小记：<span class="color-0493ed">¥188.8</span></div>
-      </div>
-      <div class="flex-box">
-        <div class="flex-item">送货上门</div>
-        <div class="flex-col text-right font-mind color-666">配送费¥3</div>
-      </div>
-      <!-- 次日达 -->
-      <div class="flex-box next">
-        <div class="flex-item">
-          <input type="checkbox" id="isNext" class="input-checkbox" v-model="isNext">
-          <label for="isNext" class="label-checkbox">全选</label>
+      <!-- 页面底部 -->
+      <div class="count-box" v-if="!isEdit">
+        <input type="checkbox" id="isAll" class="input-checkbox" v-model="isAll">
+        <label for="isAll" class="label-checkbox">全选</label>
+        <div class="col">
+          <p>合计：<span>¥188.00</span></p>
+          <p class="font-mind">优惠金额：¥23.1</p>
         </div>
-        <div class="flex-item flex-col">
-          <div class="block-title color-fc766d"><i class="iconfont">&#xe60a;</i>次日达</div>
-        </div>
-        <div class="flex-item">
-          <p class="font-mind">还差<span class="color-fc766d">8</span>元起送</p>
-          <router-link to="next" tag="p" class="font-mind color-fc766d">去凑单 ></router-link>
-        </div>
-      </div>
-      <div class="flex-box next-goods" v-for="(item,index) in goodsCount" :key="index">
-        <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
-        <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
-        <img src="../assets/goods_img.jpg" width="20%" alt="">
-        <div class="flex-col">
-          <div class="goods-title">卫龙香辣卤藕袋装80g</div>
-          <div class="flex-box">
-            <div class="flex-col font-normal color-0493ed">¥8.8</div>
-            <div class="remove" @click="itemVal -= 1"/>
-            <input type="tel" class="val-box" v-model="itemVal"/>
-            <div class="added" @click="itemVal += 1"/>
-          </div>
-        </div>
-      </div>
-      <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
-      <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
-      <div class="flex-box">
-        <div class="flex-item">共18件商品</div>
-        <div class="flex-col font-mind text-right">小记：<span class="color-fc766d">¥188.8</span></div>
-      </div>
-      <div class="flex-box">
-        <div class="flex-item">配送方式</div>
-        <checker class="flex-col text-right" default-item-class="default-checker" selected-item-class="selected-checker">
-          <checker-item value="1">客户自取</checker-item>
-          <checker-item value="2">送货上门</checker-item>
-        </checker>
+        <div class="count" @click="count">结算</div>
       </div>
 
-      <div class="flex-box">
-        <div class="flex-item">取货地址</div>
-        <div class="flex-col font-mind text-right color-666">珠江花城扶水岸13栋109</div>
+      <div class="edit-box" v-if="isEdit">
+        <input type="checkbox" id="all" class="input-checkbox">
+        <label for="all" class="label-checkbox flex-col">全选</label>
+        <div class="remove-all">删除</div>
       </div>
     </div>
-    <!-- 页面底部 -->
-    <div class="count-box" v-if="!isEdit">
-      <input type="checkbox" id="isAll" class="input-checkbox" v-model="isAll">
-      <label for="isAll" class="label-checkbox">全选</label>
-      <div class="col">
-        <p>合计：<span>¥188.00</span></p>
-        <p class="font-mind">优惠金额：¥23.1</p>
+    <div v-if="!login" class="car-noLogin">
+      <div class="login-bt" @click="$router.push({path:'/login'})">
+        立即登录
       </div>
-      <div class="count" @click="count">结算</div>
-    </div>
-
-    <div class="edit-box" v-if="isEdit">
-      <input type="checkbox" id="all" class="input-checkbox">
-      <label for="all" class="label-checkbox flex-col">全选</label>
-      <div class="remove-all">删除</div>
     </div>
     <m-footer></m-footer>
   </div>
@@ -109,13 +120,16 @@
 <script>
   import { XHeader, Checker, CheckerItem } from 'vux'
   import mFooter from '../components/footer'
+  import BScroll from 'better-scroll'
 
   export default {
+    name: 'cart',
     components: {
       mFooter,
       XHeader,
       Checker,
-      CheckerItem
+      CheckerItem,
+      BScroll
     },
     data () {
       return {
@@ -123,19 +137,114 @@
         isAll: false,
         isThis: false,
         isNext: false,
-
-        itemVal: 888,
+        thisTemVal: '',
         goodsCount: 3,
-        showMore: true
+        showMore: true,
+        login: true,
+        thisGoodsList: [],
+        NextGoodsList: []
       }
+    },
+    created () {
+      if (!localStorage.getItem('m-token')) {
+        this.login = false
+      }
+      this.post('/car/getUserCar', {
+        token: localStorage.getItem('m-token'),
+        villageId: localStorage.getItem('m-villageId')
+      }).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+          this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+        }
+      })
+      this.$nextTick(() => {
+        this._initScroll()
+      })
     },
     methods: {
       setCount () {
         this.showMore ? this.goodsCount = 5 : this.goodsCount = 3
         this.showMore = !this.showMore
       },
-      count () {
-        this.$router.push({path: '/order_enter'})
+      count (item, type) {
+//        this.$router.push({path: '/order_enter'})
+        if (type === 1) {
+          this.post('/car/addCar', {
+            token: localStorage.getItem('m-token'),
+            goodsId: item.goodsId,
+            buyCount: 1,
+            storeId: item.storeId,
+            shopType: item.shopType,
+            type: 1,
+            villageId: localStorage.getItem('m-villageId')
+          }).then((res) => {
+            if (res.data.code === 100) {
+              item.buyCount = res.data.buyCount
+            }
+            if (res.data.code === 101) {
+              // 提示失败信息
+              return
+            }
+            if (res.data.code === 102) {
+              // 跳转重载页面
+              return
+            }
+//            item.buyCount += 1
+            console.log(res.data)
+          })
+          return
+        }
+        if (type === 2) {
+          // 删除购物车
+          if (item.buyCount <= 0) {
+            this.post('/car/deleteCar', {
+              token: localStorage.getItem('m-token'),
+              goodsId: item.goodsId,
+              carId: item.carId
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.code === 100) {
+                return
+              }
+              if (res.data.code === 101) {
+                // 提示失败信息
+                return
+              }
+              if (res.data.code === 102) {
+                // 跳转重载页面
+                return
+              }
+            })
+            return
+          }
+          this.post('/car/addCar', {
+            token: localStorage.getItem('m-token'),
+            goodsId: item.goodsId,
+            buyCount: 1,
+            storeId: item.storeId,
+            shopType: item.shopType,
+            type: 2,
+            villageId: localStorage.getItem('m-villageId')
+          }).then((res) => {
+            if (res.data.code === 100) {
+              item.buyCount = res.data.buyCount
+            }
+            if (res.data.code === 101) {
+              // 提示失败信息
+              return
+            }
+            if (res.data.code === 102) {
+              // 跳转重载页面
+              return
+            }
+          })
+          return
+        }
+      },
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {click: true})
       }
     },
     watch: {
@@ -149,13 +258,60 @@
   }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+
+  .header {
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    top: 0;
+    .h(92);
+    .lh(92);
+    .fs(38);
+    color: #fff;
+    background: @theme-color;
+    .edit {
+      position: absolute;
+      .r(30);
+      .w(75);
+      .h(92);
+      .lh(92);
+      .fs(28);
+    }
+  }
+
+  .car-noLogin {
+    position: absolute;
+    .t(92);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("../assets/buyCarNoLogin.png") no-repeat center 30%;
+    background-size: 50%;
+    .login-bt {
+      .w(200);
+      .h(70);
+      .lh(70);
+      .fs(36);
+      background: @theme-color;
+      color: #fff;
+      margin: 100% auto 0 auto;
+      border-radius: 5px;
+      text-align: center;
+    }
+  }
+
   .cart-view {
-    font: 13px/1 'Microsoft Yahei';
+    .fs(26);
+    height: 100%;
+
   }
 
   .cart-view .cart-header {
-    background: linear-gradient(#f08956, #ea513d);
+    background: @theme-color;
 
     [class^=vux-header-] {
       color: #fff;
@@ -163,16 +319,23 @@
   }
 
   .cart-view .content-view-scroller {
-    overflow-y: scroll;
-    height: calc(~'100% - 96px');
-    padding-bottom: 10px;
     box-sizing: border-box;
-
+    position: absolute;
+    .t(92);
+    left: 0;
+    right: 0;
+    .b(200);
+    /* .pb(20);*/
+    overflow: hidden;
     .flex-box {
       align-items: center;
       padding: 10px;
       background-color: #fff;
       border-bottom: 1px solid #ddd;
+      img {
+        .w(140);
+        .h(140);
+      }
     }
 
     .block-title {
@@ -366,6 +529,10 @@
   }
 
   .cart-view .count-box {
+    position: fixed;
+    left: 0;
+    right: 0;
+    .b(100);
     display: flex;
     padding-left: 10px;
     font-size: 14px;

@@ -8,6 +8,7 @@ Vue.use(Vuex)
 const state = {
   latitude: '', // 当前位置纬度
   longitude: '', // 当前位置经度
+  totalBuyCount: '',
   cartList: {}, // 加入购物车的商品列表
   shopDetail: null, // 店铺详情信息
   userInfo: null, // 用户信息

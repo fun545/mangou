@@ -205,6 +205,9 @@
         source: 1
       }).then((res) => {
         if (res.data.code === 100) {
+          console.log(res.data)
+          this.$store.state.totalBuyCount = res.data.firstInfo.totalBuyCount
+          console.log(this.$store.state.totalBuyCount)
           /* 轮播图数据 */
           this.swiperList = res.data.firstInfo.imgList
           /* 店铺数据 */
@@ -217,15 +220,12 @@
             villageId: this.villageId
           }).then((res) => {
             if (res.data.code === 100) {
-              console.log(this.storeList)
               this.mapTitleTips = res.data.goodsList.mapTitleTips
-              console.log(this.mapTitleTips)
               this.ystgWords = res.data.goodsList.ystgWords
               this.serchKey = res.data.goodsList.serchKey
               this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
               this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
               this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
-              console.log(res.data)
               this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
               this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
               this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
@@ -244,9 +244,7 @@
             pageSize: 10
           }).then((res) => {
             if (res.data.code === 100) {
-//          console.log(res.data)
               this.moreRecommendList = res.data.goodsList
-              console.log(this.moreRecommendList)
             }
           })
         }
@@ -259,7 +257,6 @@
       /* 标签商品 */
       this.post('/goods/getLabelGoods', {}).then((res) => {
         if (res.data.code === 100) {
-//          console.log(res.data)
         }
       })
     },
@@ -317,7 +314,6 @@
           }).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsList
-              console.log(newList)
               for (let i = 0; i < newList.length; i++) {
                 this.moreRecommendList.push(newList[i])
               }
@@ -333,7 +329,6 @@
             }
           })
         }
-        console.log('到底了moere')
         this.loadMoreFlag = true
       },
       _initScroll () {
@@ -557,10 +552,10 @@
           position: relative;
           background: #fff;
           box-sizing: border-box;
-          width: 33.23%;
+          width: calc(100% / 3);
           .h(490);
-          .mr(1);
-          .mb(1);
+          border-right: 1px solid #f7f7f7;
+          margin-bottom: 1px;
           &:nth-child(3n) {
             margin-right: 0;
           }

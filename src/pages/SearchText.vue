@@ -43,9 +43,10 @@
   import oneColumn from '../components/oneColumn'
   import searchHearder from '../components/searchHeader'
   import BScroll from 'better-scroll'
-  import noLoginFooter from '../components/noLogin'
+  import noLoginFooter from '../components/noLoginBuyFooter'
   import noPage from '../components/noPage'
   export default {
+    name: 'searchText',
     components: {
       Tab,
       TabItem,
@@ -66,7 +67,7 @@
         login: true
       }
     },
-    activated () {
+    created () {
       this.goodsList = []
       if (this.$route.query.shopType === '2') {
         this.selected = false
@@ -89,8 +90,7 @@
         this.post('/goods/searchGoods', {
           storeId: this.$route.query.storeId,
           shopType: this.$route.query.shopType,
-          keyName: this.search,
-          token: localStorage.getItem('m-token')
+          keyName: this.search
         }).then((res) => {
           if (res.data.code === 100) {
             console.log(res.data)

@@ -17,6 +17,7 @@
   import { XHeader } from 'vux'
 
   export default {
+    name: 'setting',
     components: {
       XHeader
     },

@@ -125,6 +125,7 @@
 <script>
   import mFooter from '../components/footer'
   export default {
+    name: 'user',
     components: {mFooter},
     methods: {
       go () {

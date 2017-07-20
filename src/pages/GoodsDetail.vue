@@ -37,16 +37,26 @@
           </div>
         </div>
       </div>
-      <div class="bt-shop-car">
-        <div class="left">
-          <div class="shop-car">
-
+      <div class="footer" v-if="login">
+        <div class="buy-car">
+          <div class="icon d-ib">
+            <i class="iconfont center">&#xe613;</i>
+            <div class="badge">
+              <badge text="13"></badge>
+            </div>
+          </div>
+          <div class="text d-ib">
+            合计：<span>￥50.55</span>
           </div>
         </div>
-        <div class="right">
-
+        <div class="button t-c">
+          加入购物车
+        </div>
+        <div class="button t-c buy">
+          立即购买
         </div>
       </div>
+      <no-login-footer v-if="!login"></no-login-footer>
     </div>
   </div>
 </template>
@@ -56,11 +66,13 @@
   import mHeader from '../components/header'
   import guessList from '../components/twocolumn'
   import BScroll from 'better-scroll'
+  import { Badge } from 'vux'
+  import noLoginFooter from '../components/noLoginBuyFooter'
   export default {
-    components: {swiper, swiperSlide, mHeader, guessList, BScroll},
+    name: 'detail',
+    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter},
     data () {
       return {
-        token: localStorage.getItem('m-token'),
         villageId: localStorage.getItem('m-villageId'),
         swiperList: [],
         title: '商品详情',
@@ -68,6 +80,8 @@
         goodsList: [],
         collectId: '',
         collectFlag: '',
+        opcity: 0,
+        login: true,
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -76,19 +90,21 @@
       }
     },
     created () {
-      console.log(localStorage.getItem('m-token'))
       if (!localStorage.getItem('m-token')) {
         this.noLogin()
       } else {
         this.hasLogin()
       }
     },
-    activated () {},
     methods: {
       getDetail () {
+        if (!localStorage.getItem('m-token')) {
+          this.$router.push({path: 'login'})
+          return
+        }
         this.post('/goods/goodsDetail', {
           goodsId: this.$route.query.goodsId,
-          token: this.token,
+          token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
           if (res.data.code === 100) {
@@ -109,11 +125,10 @@
       hasLogin () {
         this.post('/goods/goodsDetail', {
           goodsId: this.$route.query.goodsId,
-          token: this.token,
+          token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             this.goodsDetail = res.data.goodsDetail
             this.goodsList = res.data.listGoods
             this.swiperList = res.data.goodsDetail.imagesList
@@ -154,11 +169,7 @@
             })
           }
           this.loadingFlag = false
-//          if (res.data.code === 102) {
-//            this.$router.push({
-//              path: '/login'
-//            })
-//          }
+          this.login = false
         })
       },
       collectGoods () {
@@ -167,7 +178,7 @@
           this.post('/collect/insertCollect', {
             goodsId: this.$route.query.goodsId,
             storeId: this.goodsDetail.storeId,
-            token: this.token,
+            token: localStorage.getItem('m-token'),
             status: 1,
             shopType: this.goodsDetail.shopType
           }).then((res) => {
@@ -180,7 +191,7 @@
           this.post('/collect/insertCollect', {
             goodsId: this.$route.query.goodsId,
             storeId: this.goodsDetail.storeId,
-            token: this.token,
+            token: localStorage.getItem('m-token'),
             status: 0,
             shopType: this.goodsDetail.shopType,
             collectId: this.goodsDetail.collectId
@@ -200,8 +211,8 @@
           probeType: 3
         })
         this.contentScroll.on('scroll', (pos) => {
-          let scrollTop = Math.abs(Math.round(pos.y))
-          console.log(scrollTop)
+          let scrollTop = -Math.round(pos.y)
+          this.$refs.header.$el.style.opacity = scrollTop / 300
         })
       }
     }
@@ -295,7 +306,7 @@
         .collect {
           position: absolute;
           .r(42);
-          .t(24);
+          .t(94);
           .fs(41);
           color: @theme-color;
         }
@@ -312,6 +323,73 @@
         .d-content {
 
         }
+      }
+    }
+    .footer {
+      box-sizing: border-box;
+      border-top: 1px solid #eee;
+      background: #f8f8f8;
+      .h(100);
+      .lh(100);
+      .buy-car {
+        float: left;
+        .h(100);
+        .ml(20);
+        color: @theme-color;
+        .icon {
+          position: relative;
+          float: left;
+          .t(16);
+          background: #fc5050;
+          .w(68);
+          .h(68);
+          border-radius: 50%;
+          .iconfont {
+            .fs(38);
+            color: #fff;
+          }
+          .badge {
+            position: absolute;
+            .h(30);
+            .r(20);
+            .t(0);
+            .vux-badge {
+              position: absolute;
+              .fs(22);
+              .pl(4);
+              .pr(4);
+              .h(30);
+              .lh(30);
+              border: 1px solid #fff;
+            }
+          }
+        }
+        .text {
+          position: absolute;
+          .ml(20);
+          .h(100);
+          .lh(100);
+          .fs(30);
+          color: @font-color-m;
+          span {
+            color: @theme-color;
+            .fs(33);
+          }
+        }
+      }
+      .button {
+        position: absolute;
+        right: 0;
+        .w(185);
+        .h(100);
+        .lh(100);
+        background: #fc5050;
+        color: #fff;
+        .fs(32);
+      }
+      .buy {
+        .r(185);
+        background: #ffae00;
       }
     }
   }

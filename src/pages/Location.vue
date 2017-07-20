@@ -34,6 +34,7 @@
 <script>
   import { XHeader, Group, Cell, Alert } from 'vux'
   export default {
+    name: 'location',
     components: {XHeader, Group, Cell, Alert},
     data () {
       return {

@@ -1,7 +1,7 @@
 <template>
   <div class="search-view">
     <!-- 搜索框 -->
-    <search-hearder :searchWord="searchWord" :search="search"></search-hearder>
+    <search-hearder :searchWord="searchWord" :search="search" ref="searchHeader"></search-hearder>
     <!-- 热门搜索 -->
     <div class="title-box">热门搜索</div>
     <div class="word-flex">
@@ -23,6 +23,7 @@
 <script>
   import searchHearder from '../components/searchHeader'
   export default{
+    name: 'search',
     components: {
       searchHearder
     },
@@ -33,9 +34,9 @@
         KeyWords: []
       }
     },
-    activated () {
+    created () {
       this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
-        if (res.data.code) {
+        if (res.data.code === 100) {
           console.log(res.data)
           this.KeyWords = res.data.KeyWords
         }
@@ -52,7 +53,6 @@
           storeId: this.$route.query.storeId
         }
         this.$router.push({path: 'search_text', query: searchQuery})
-        this.$router.go(0)
       },
       hotSearch (value) {
         this.search = value.keyword

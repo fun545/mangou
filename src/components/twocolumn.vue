@@ -36,7 +36,7 @@
             path: '/goods_detail',
             query: {goodsId: id}
           })
-//          this.$router.go(0)
+          this.$router.go(0)
         }
       }
     }

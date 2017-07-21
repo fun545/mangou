@@ -107,7 +107,11 @@
       }
     },
     created () {
-      this.post('/classify/firstClassifyList_new', {storeId: 2, villageId: 1, shopType: 2}).then((res) => {
+      this.post('/classify/firstClassifyList_new', {
+        storeId: localStorage.getItem('m-shopId'),
+        villageId: localStorage.getItem('m-villageId'),
+        shopType: 2
+      }).then((res) => {
         if (res.data.code === 100) {
           this.sideList = res.data.firstClassifyList
           this.$nextTick(() => {
@@ -115,15 +119,11 @@
           })
         }
       })
-      this.post('/village/cityList', {}).then((res) => {
-        console.log(res.data)
-      })
       this.post('/basic/getStoreMsg', {
         cityId: localStorage.getItem('m-cityId'),
         areaId: localStorage.getItem('m-areaId'),
         storeId: localStorage.getItem('m-shopId')
       }).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
         }
@@ -139,9 +139,9 @@
         this.firstClassifyId = id
         this.post('/goods/goodsList', {
           firstClassifyId: id,
-          storeId: 2,
+          storeId: localStorage.getItem('m-shopId'),
           softType: this.softType,
-          villageId: 1
+          villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
           this.goodsList = res.data.goodsList
         })
@@ -181,6 +181,8 @@
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
           click: true
         })
+        this.menuSroll.refresh()
+        this.listSroll.refresh()
       },
       goDetail (id, e) {
         console.log(e.target.tagName.toLowerCase() !== 'i')

@@ -10,13 +10,19 @@
     },
     methods: {
       add (item) {
+        if (item.shopType === 1) {
+          this.storeId = localStorage.getItem('m-depotId')
+        } else {
+          this.storeId = localStorage.getItem('m-shopId')
+        }
         this.post('/car/addCar', {
           token: localStorage.getItem('m-token'),
           goodsId: item.goodsId,
           buyCount: 1,
           shopType: item.shopType,
           type: 1,
-          villageId: localStorage.getItem('m-villageId')
+          villageId: localStorage.getItem('m-villageId'),
+          storeId: this.storeId
         }).then((res) => {
           if (res.data.code === 102) {
             this.$router.push({path: 'login'})

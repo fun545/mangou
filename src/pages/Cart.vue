@@ -9,88 +9,91 @@
       <div class="content-view-scroller" ref="content">
         <div>
           <!-- 即时送 -->
-          <div class="flex-box this">
-            <div class="flex-item">
-              <input type="checkbox" id="isThis" class="input-checkbox" v-model="isThis">
-              <label for="isThis" class="label-checkbox">全选</label>
-            </div>
-            <div class="flex-col">
-              <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
-            </div>
-          </div>
-          <div class="flex-box this-goods" v-for="(item,index) in NextGoodsList" :key="index">
-            <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
-            <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
-            <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
-            <div class="flex-col">
-              <div class="goods-title">{{item.goodsName}}</div>
-              <div class="flex-box">
-                <div class="flex-col font-normal color-0493ed">{{item.canKaoPrice}}</div>
-                <div class="remove" @click="count(item,2)"/>
-                <input type="tel" class="val-box" v-model="item.buyCount"/>
-                <div class="added" @click="count(item,1)"/>
+          <div class="this-wrap">
+            <div class="flex-box this">
+              <div class="flex-item">
+                <input type="checkbox" id="isThis" class="input-checkbox" v-model="isThis">
+                <label for="isThis" class="label-checkbox">全选</label>
+              </div>
+              <div class="flex-col">
+                <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
               </div>
             </div>
-          </div>
-          <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
-          <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
-          <div class="flex-box">
-            <div class="flex-item">共18件商品</div>
-            <div class="flex-col text-right font-mind">小记：<span class="color-0493ed">¥188.8</span></div>
-          </div>
-          <div class="flex-box">
-            <div class="flex-item">送货上门</div>
-            <div class="flex-col text-right font-mind color-666">配送费¥3</div>
+            <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
+              <input type="checkbox" class="input-checkbox">
+              <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
+              <div class="flex-col">
+                <div class="goods-title">{{item.goodsName}}</div>
+                <div class="flex-box">
+                  <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
+                  <div class="remove" @click="count(item,2,index,filterListThis)"/>
+                  <input type="tel" class="val-box" v-model="item.buyCount"/>
+                  <div class="added" @click="count(item,1)"/>
+                </div>
+              </div>
+            </div>
+            <div class="more-btn" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
+            <div class="more-btn" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
+            <div class="flex-box count">
+              <div class="flex-item total-count">共18件商品</div>
+              <div class="flex-col text-right font-mind count-price">小记：<span class="theme-color">¥188.8</span></div>
+            </div>
+            <div class="flex-box send">
+              <div class="flex-item">送货上门</div>
+              <div class="flex-col text-right font-mind color-666">配送费¥3</div>
+            </div>
           </div>
           <!-- 次日达 -->
-          <div class="flex-box next">
-            <div class="flex-item">
-              <input type="checkbox" id="isNext" class="input-checkbox" v-model="isNext">
-              <label for="isNext" class="label-checkbox">全选</label>
-            </div>
-            <div class="flex-item flex-col">
-              <div class="block-title color-fc766d"><i class="iconfont">&#xe60a;</i>次日达</div>
-            </div>
-            <div class="flex-item">
-              <p class="font-mind">还差<span class="color-fc766d">8</span>元起送</p>
-              <router-link to="next" tag="p" class="font-mind color-fc766d">去凑单 ></router-link>
-            </div>
-          </div>
-          <div class="flex-box next-goods" v-for="(item,index) in goodsCount" :key="index">
-            <input type="checkbox" class="input-checkbox" v-if="(index + 1) % 2 !== 0">
-            <div class="input-disabel" v-if="(index + 1) % 2 === 0">已售馨</div>
-            <img src="../assets/goods_img.jpg" width="20%" alt="">
-            <div class="flex-col">
-              <div class="goods-title">卫龙香辣卤藕袋装80g</div>
-              <div class="flex-box">
-                <div class="flex-col font-normal color-0493ed">¥8.8</div>
-                <div class="remove" @click="thisTemVal -= 1"/>
-                <input type="tel" class="val-box" v-model="thisTemVal"/>
-                <div class="added" @click="thisTemVal += 1"/>
+          &#xe60a;
+          <div class="next-wrap">
+            <div class="flex-box this">
+              <div class="flex-item">
+                <input type="checkbox" id="" class="input-checkbox" v-model="isThis">
+                <label for="isThis" class="label-checkbox">全选</label>
+              </div>
+              <div class="flex-col">
+                <div class="block-title color-0493ed"><i class="iconfont">&#xe60a;</i>次日达</div>
               </div>
             </div>
-          </div>
-          <div class="more-btn" @click="setCount" v-if="showMore">显示更多商品</div>
-          <div class="more-btn" @click="setCount" v-if="!showMore">隐藏更多商品</div>
-          <div class="flex-box">
-            <div class="flex-item">共18件商品</div>
-            <div class="flex-col font-mind text-right">小记：<span class="color-fc766d">¥188.8</span></div>
-          </div>
-          <div class="flex-box">
-            <div class="flex-item">配送方式</div>
-            <checker class="flex-col text-right" default-item-class="default-checker"
-                     selected-item-class="selected-checker">
-              <checker-item value="1">客户自取</checker-item>
-              <checker-item value="2">送货上门</checker-item>
-            </checker>
-          </div>
-
-          <div class="flex-box">
-            <div class="flex-item">取货地址</div>
-            <div class="flex-col font-mind text-right color-666">珠江花城扶水岸13栋109</div>
+            <div class="flex-box this-goods" v-for="(item,index) in filterListNext" :key="index">
+              <input type="checkbox" class="input-checkbox">
+              <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
+              <div class="flex-col">
+                <div class="goods-title">{{item.goodsName}}</div>
+                <div class="flex-box">
+                  <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
+                  <div class="remove" @click="count(item,2)"/>
+                  <input type="tel" class="val-box" v-model="item.buyCount"/>
+                  <div class="added" @click="count(item,1)"/>
+                </div>
+              </div>
+            </div>
+            <div class="more-btn" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
+            <div class="more-btn" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
+            <div class="flex-box count">
+              <div class="flex-item total-count">共18件商品</div>
+              <div class="flex-col text-right font-mind count-price">小记：<span class="theme-color">¥188.8</span></div>
+            </div>
+            <div class="flex-box send-way-wrap">
+              <div class="flex-item send-way">配送方式</div>
+              <checker class="flex-col text-right select-way-wrap" default-item-class="default-checker"
+                       selected-item-class="selected-checker" v-model="demo11">
+                <checker-item :value="item" v-for="(item, index) in items1" :key="index">{{item.value}}</checker-item>
+              </checker>
+            </div>
+            <div class="flex-box get-address">
+              <div class="flex-item">取货地址</div>
+              <div class="flex-col font-mind text-right color-666 address">珠江花城扶水岸13栋109</div>
+            </div>
           </div>
         </div>
       </div>
+      <confirm v-model="showComfirm"
+               title="提示"
+               @on-cancel="onCancel"
+               @on-confirm="onConfirm">
+        <p style="text-align:center;">你确定要删除该商品么？</p>
+      </confirm>
       <!-- 页面底部 -->
       <div class="count-box" v-if="!isEdit">
         <input type="checkbox" id="isAll" class="input-checkbox" v-model="isAll">
@@ -118,7 +121,7 @@
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem } from 'vux'
+  import { XHeader, Checker, CheckerItem, Confirm } from 'vux'
   import mFooter from '../components/footer'
   import BScroll from 'better-scroll'
 
@@ -129,7 +132,8 @@
       XHeader,
       Checker,
       CheckerItem,
-      BScroll
+      BScroll,
+      Confirm
     },
     data () {
       return {
@@ -139,10 +143,19 @@
         isNext: false,
         thisTemVal: '',
         goodsCount: 3,
-        showMore: true,
+        showMoreThis: true,
+        showMoreNext: true,
         login: true,
         thisGoodsList: [],
-        NextGoodsList: []
+        NextGoodsList: [],
+        limitNumberThis: 2,
+        limitNumberNext: 2,
+        items1: [{key: '1', value: '客户自取'}, {key: '2', value: '送货上门'}],
+        demo11: {key: '1', value: '客户自取'},
+        showComfirm: false,
+        comfirmGoods: '',
+        comfirmGoodsIndex: '',
+        comfirmGoodsList: ''
       }
     },
     created () {
@@ -157,6 +170,9 @@
         if (res.data.code === 100) {
           this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
           this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+          this.$nextTick(() => {
+            this.contentScroll.refresh()
+          })
         }
       })
       this.$nextTick(() => {
@@ -164,11 +180,29 @@
       })
     },
     methods: {
-      setCount () {
-        this.showMore ? this.goodsCount = 5 : this.goodsCount = 3
-        this.showMore = !this.showMore
+      setCountThis () {
+        if (!this.showMoreThis) {
+          this.limitNumberThis = 2
+        } else {
+          this.limitNumberThis = this.thisGoodsList.length
+        }
+        this.showMoreThis = !this.showMoreThis
+        this.$nextTick(() => {
+          this.contentScroll.refresh()
+        })
       },
-      count (item, type) {
+      setCountNext () {
+        if (!this.showMoreNext) {
+          this.limitNumberNext = 2
+        } else {
+          this.limitNumberNext = this.NextGoodsList.length
+        }
+        this.showMoreNext = !this.showMoreNext
+        this.$nextTick(() => {
+          this.contentScroll.refresh()
+        })
+      },
+      count (item, type, index) {
 //        this.$router.push({path: '/order_enter'})
         if (type === 1) {
           this.post('/car/addCar', {
@@ -198,25 +232,10 @@
         }
         if (type === 2) {
           // 删除购物车
-          if (item.buyCount <= 0) {
-            this.post('/car/deleteCar', {
-              token: localStorage.getItem('m-token'),
-              goodsId: item.goodsId,
-              carId: item.carId
-            }).then((res) => {
-              console.log(res.data)
-              if (res.data.code === 100) {
-                return
-              }
-              if (res.data.code === 101) {
-                // 提示失败信息
-                return
-              }
-              if (res.data.code === 102) {
-                // 跳转重载页面
-                return
-              }
-            })
+          if (item.buyCount <= 1) {
+            this.showComfirm = true
+            this.comfirmGoods = item
+            this.comfirmGoodsIndex = index
             return
           }
           this.post('/car/addCar', {
@@ -244,7 +263,42 @@
         }
       },
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {click: true})
+        this.contentScroll = new BScroll(this.$refs.content, {click: true, probeType: 3})
+      },
+      // 提示框取消回调
+      onCancel () {
+        console.log('取消')
+      },
+      // 提示框确认回调
+      onConfirm () {
+        this.post('/car/deleteCar', {
+          token: localStorage.getItem('m-token'),
+          goodsId: this.comfirmGoods.goodsId,
+          carId: this.comfirmGoods.carId
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            console.log(res.data)
+            return
+          }
+          if (res.data.code === 101) {
+            // 提示失败信息
+            return
+          }
+          if (res.data.code === 102) {
+            // 跳转重载页面
+            return
+          }
+        })
+        console.log('确认')
+      }
+    },
+    computed: {
+      filterListThis () {
+        return this.thisGoodsList.slice(0, this.limitNumberThis)
+      },
+      filterListNext () {
+        return this.NextGoodsList.slice(0, this.limitNumberNext)
       }
     },
     watch: {
@@ -261,6 +315,10 @@
 <style lang='less' scoped>
   @import "../common/style/sum";
   @import "../common/style/varlable";
+
+  .theme-color {
+    color: @theme-color;
+  }
 
   .header {
     position: fixed;
@@ -304,6 +362,81 @@
     }
   }
 
+  .input-checkbox {
+    &:before {
+      .fs(32);
+      color: #666;
+    }
+  }
+
+  .label-checkbox {
+    .fs(31);
+    color: @font-color-m;
+  }
+
+  .goods-title {
+    .fs(33);
+    color: @font-color-m;
+  }
+
+  .price {
+    color: @theme-color;
+    .fs(36);
+  }
+
+  .count {
+    .fs(30);
+  }
+
+  .total-count {
+    color: #666 !important;
+  }
+
+  .count-price {
+    .fs(30);
+    color: #666;
+  }
+
+  .send {
+    .fs(30);
+    color: #666;
+    .flex-col {
+      .fs(26);
+    }
+  }
+
+  .send-way-wrap {
+    box-sizing: border-box;
+    .h(92);
+  }
+
+  .send-way {
+    .fs(30);
+    color: #666;
+  }
+
+  .select-way-wrap {
+    .item {
+      .fs(28) !important;
+    }
+  }
+
+  .get-address {
+    box-sizing: border-box;
+    .h(92);
+    .fs(30);
+    color: #666;
+    .address {
+      .fs(25);
+    }
+  }
+
+  .vux-x-dialog {
+    .weui-mask {
+
+    }
+  }
+
   .cart-view {
     .fs(26);
     height: 100%;
@@ -329,7 +462,11 @@
     overflow: hidden;
     .flex-box {
       align-items: center;
-      padding: 10px;
+      /*padding: 10px;*/
+      .pl(25);
+      .pr(25);
+      .pt(23);
+      .pb(23);
       background-color: #fff;
       border-bottom: 1px solid #ddd;
       img {
@@ -341,18 +478,20 @@
     .block-title {
       margin-left: 50px;
       font: italic bold 16px/1 'Microsoft Yahei';
+      .fs(38);
       vertical-align: middle;
-    }
-
-    .block-title .iconfont {
-      margin-right: 5px;
-      display: inline-block;
-      border-radius: 100px;
-      width: 20px;
-      height: 20px;
-      text-align: center;
-      font: normal 12px/20px 'iconfont';
-      vertical-align: middle;
+      .iconfont {
+        .mr(10);
+        display: inline-block;
+        border-radius: 100px;
+        .w(50);
+        .h(50);
+        text-align: center;
+        font: normal 12px/20px 'iconfont';
+        .fs(26);
+        .lh(46);
+        vertical-align: middle;
+      }
     }
 
     .font-mind {
@@ -369,8 +508,7 @@
     }
 
     .next {
-      margin-top: 10px;
-      padding: 5px 10px;
+      .mt(60);
     }
 
     [class*=next] .input-checkbox:checked, .color-fc766d {
@@ -442,8 +580,8 @@
 
     .remove {
       box-sizing: border-box;
-      height: 24px;
-      width: 28px;
+      .h(55);
+      .w(60);
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -454,21 +592,22 @@
 
     .remove:before {
       content: '';
-      width: 16px;
+      .w(32);
       height: 1.2px;
       background-color: #444;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      color: @font-color-input;
     }
 
     .val-box {
       box-sizing: border-box;
-      width: 34px;
-      height: 24px;
+      .w(68);
+      .h(55);
+      .lh(50);
       text-align: center;
-      line-height: 24px;
       color: #666;
       outline: none;
       -webkit-appearance: none;
@@ -476,12 +615,13 @@
       border: 1px solid #ddd;
       border-left: none;
       border-right: none;
+      .fs(32);
     }
 
     .added {
       box-sizing: border-box;
-      height: 24px;
-      width: 28px;
+      .h(55);
+      .w(60);
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -515,12 +655,15 @@
     .more-btn {
       display: table;
       margin: 3px auto;
-      padding: 3px 10px;
+      .pl(16);
+      .pr(16);
+      .pt(8);
+      .pb(8);
       background-color: #e1e1e1;
       border-radius: 100px;
       vertical-align: middle;
       font: 12px/1.2 'Microsoft Yahei';
-
+      .fs(28);
       .iconfont {
         font-size: inherit;
         vertical-align: middle;
@@ -544,8 +687,8 @@
     }
 
     .label-checkbox {
-      margin-left: 3px;
-      margin-right: 10px;
+      .ml(6);
+      .mr(20);
     }
 
     .col {

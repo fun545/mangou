@@ -115,7 +115,6 @@
             this.$store.state.login = true
             this.$router.push({path: '/user'})
             this.$store.state.login = true
-//            window.location.reload()
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

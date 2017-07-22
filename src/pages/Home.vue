@@ -41,7 +41,7 @@
               <div class="right f-l">
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
                   <div class="des f-l">
-                    <h3 class="title">{{specialPriceGoodsList[0].goodsName}}</h3>
+                    <h3 class="title ui-ellipsis-clamp-2">{{specialPriceGoodsList[0].goodsName}}</h3>
                     <p class="this-price">即时价：<span class="s1">¥</span><span
                       class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
                     <p class="next-price">次日价：<span class="s1">¥</span><span
@@ -510,7 +510,8 @@
                 overflow: hidden;
                 color: #443d39;
                 .fs(28);
-                .h(80);
+                .h(70);
+                .mb(10);
                 .lh(36);
               }
               .this-price {

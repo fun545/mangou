@@ -34,21 +34,22 @@
           this.number = res.data.versionInfo.number
         }
       })
-      this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
-        console.log(res.data)
-        if (res.data.code === 100) {
-          localStorage.removeItem('m-token')
-        }
-      })
+      console.log(localStorage.getItem('m-token'))
       this.hasLogin()
     },
     methods: {
       go () {
+        console.log(localStorage.getItem('m-token'))
         if (localStorage.getItem('m-token')) {
           this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
-            console.log(res.data)
+            console.log('退出登录接口返回：')
+            console.log(res)
             if (res.data.code === 100) {
               localStorage.removeItem('m-token')
+              console.log(localStorage.getItem('m-token'))
+            }
+            if (res.data.code === 102) {
+              this.$router.push({path: 'login'})
             }
           })
         }

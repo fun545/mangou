@@ -9,31 +9,40 @@
       <div class="content-view-scroller" ref="content">
         <div>
           <!-- 即时送 -->
-          <div class="this-wrap">
+          <div class="this-wrap" v-if="thisGoodsList.length">
             <div class="flex-box this">
+              <!-- 全选按钮-->
               <div class="flex-item">
-                <input type="checkbox" id="isThis" class="input-checkbox" v-model="isThis">
-                <label for="isThis" class="label-checkbox">全选</label>
+                <div class="select-all-icon d-ib" @click="thisCheckAll(thisGoodsList)">
+                  <i class="iconfont selected-color" v-if="thisAllChecked">&#xe634;</i>
+                  <i class="iconfont" v-if="!thisAllChecked">&#xe635;</i>
+                </div>
+                <span class="label-checkbox">全选</span>
               </div>
               <div class="flex-col">
                 <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
               </div>
             </div>
             <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
-              <input type="checkbox" class="input-checkbox">
+              <div class="d-ib" @click="selectedGoods(item)">
+                <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
+                <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
+              </div>
               <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
               <div class="flex-col">
                 <div class="goods-title">{{item.goodsName}}</div>
                 <div class="flex-box">
                   <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
-                  <div class="remove" @click="count(item,2,index,filterListThis)"/>
+                  <div class="remove" @click="count(item,2,index,thisGoodsList)"/>
                   <input type="tel" class="val-box" v-model="item.buyCount"/>
                   <div class="added" @click="count(item,1)"/>
                 </div>
               </div>
             </div>
-            <div class="more-btn" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
-            <div class="more-btn" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
+            <div v-if="thisGoodsList.length>2">
+              <div class="more-btn" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
+              <div class="more-btn" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
+            </div>
             <div class="flex-box count">
               <div class="flex-item total-count">共18件商品</div>
               <div class="flex-col text-right font-mind count-price">小记：<span class="theme-color">¥188.8</span></div>
@@ -44,32 +53,39 @@
             </div>
           </div>
           <!-- 次日达 -->
-          &#xe60a;
-          <div class="next-wrap">
+          <div class="next-wrap" v-if="NextGoodsList.length">
             <div class="flex-box this">
               <div class="flex-item">
-                <input type="checkbox" id="" class="input-checkbox" v-model="isThis">
-                <label for="isThis" class="label-checkbox">全选</label>
+                <div class="select-all-icon d-ib" @click="nextCheckAll(NextGoodsList)">
+                  <i class="iconfont selected-color" v-if="nextAllChecked">&#xe634;</i>
+                  <i class="iconfont" v-if="!nextAllChecked">&#xe635;</i>
+                </div>
+                <span class="label-checkbox">全选</span>
               </div>
               <div class="flex-col">
-                <div class="block-title color-0493ed"><i class="iconfont">&#xe60a;</i>次日达</div>
+                <div class="block-title theme-color"><i class="iconfont next-icon">&#xe60a;</i>次日达</div>
               </div>
             </div>
             <div class="flex-box this-goods" v-for="(item,index) in filterListNext" :key="index">
-              <input type="checkbox" class="input-checkbox">
+              <div class="d-ib" @click="selectedGoods(item)">
+                <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
+                <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
+              </div>
               <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
               <div class="flex-col">
                 <div class="goods-title">{{item.goodsName}}</div>
                 <div class="flex-box">
                   <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
-                  <div class="remove" @click="count(item,2)"/>
+                  <div class="remove" @click="count(item,2,index,NextGoodsList)"/>
                   <input type="tel" class="val-box" v-model="item.buyCount"/>
                   <div class="added" @click="count(item,1)"/>
                 </div>
               </div>
             </div>
-            <div class="more-btn" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
-            <div class="more-btn" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
+            <div v-if="NextGoodsList.length>2">
+              <div class="more-btn" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
+              <div class="more-btn" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
+            </div>
             <div class="flex-box count">
               <div class="flex-item total-count">共18件商品</div>
               <div class="flex-col text-right font-mind count-price">小记：<span class="theme-color">¥188.8</span></div>
@@ -78,7 +94,8 @@
               <div class="flex-item send-way">配送方式</div>
               <checker class="flex-col text-right select-way-wrap" default-item-class="default-checker"
                        selected-item-class="selected-checker" v-model="demo11">
-                <checker-item :value="item" v-for="(item, index) in items1" :key="index">{{item.value}}</checker-item>
+                <checker-item :value="item" v-for="(item, index) in items1" :key="index" class="item">{{item.value}}
+                </checker-item>
               </checker>
             </div>
             <div class="flex-box get-address">
@@ -96,8 +113,8 @@
       </confirm>
       <!-- 页面底部 -->
       <div class="count-box" v-if="!isEdit">
-        <input type="checkbox" id="isAll" class="input-checkbox" v-model="isAll">
-        <label for="isAll" class="label-checkbox">全选</label>
+        <input type="checkbox" class="input-checkbox">
+        <span class="label-checkbox">全选</span>
         <div class="col">
           <p>合计：<span>¥188.00</span></p>
           <p class="font-mind">优惠金额：¥23.1</p>
@@ -105,23 +122,20 @@
         <div class="count" @click="count">结算</div>
       </div>
 
-      <div class="edit-box" v-if="isEdit">
-        <input type="checkbox" id="all" class="input-checkbox">
-        <label for="all" class="label-checkbox flex-col">全选</label>
-        <div class="remove-all">删除</div>
-      </div>
     </div>
     <div v-if="!login" class="car-noLogin">
       <div class="login-bt" @click="$router.push({path:'/login'})">
         立即登录
       </div>
     </div>
+    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
+           :text="toastText" width="10em" class="toast"></toast>
     <m-footer></m-footer>
   </div>
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem, Confirm } from 'vux'
+  import { XHeader, Checker, CheckerItem, Confirm, Toast } from 'vux'
   import mFooter from '../components/footer'
   import BScroll from 'better-scroll'
 
@@ -133,13 +147,15 @@
       Checker,
       CheckerItem,
       BScroll,
-      Confirm
+      Confirm,
+      Toast
     },
     data () {
       return {
         isEdit: false,
         isAll: false,
-        isThis: false,
+        thisAllChecked: false,
+        nextAllChecked: false,
         isNext: false,
         thisTemVal: '',
         goodsCount: 3,
@@ -155,12 +171,17 @@
         showComfirm: false,
         comfirmGoods: '',
         comfirmGoodsIndex: '',
-        comfirmGoodsList: ''
+        comfirmGoodsList: '',
+        itemFlag: true,
+        showPositionValue: false,
+        toastText: '我是101提示',
+        position: 'middle'
       }
     },
     created () {
       if (!localStorage.getItem('m-token')) {
         this.login = false
+        return
       }
       this.post('/car/getUserCar', {
         token: localStorage.getItem('m-token'),
@@ -173,6 +194,8 @@
           this.$nextTick(() => {
             this.contentScroll.refresh()
           })
+        } else {
+          this.$router.push({path: 'login'})
         }
       })
       this.$nextTick(() => {
@@ -202,7 +225,7 @@
           this.contentScroll.refresh()
         })
       },
-      count (item, type, index) {
+      count (item, type, index, list) {
 //        this.$router.push({path: '/order_enter'})
         if (type === 1) {
           this.post('/car/addCar', {
@@ -219,10 +242,13 @@
             }
             if (res.data.code === 101) {
               // 提示失败信息
+              this.toastText = res.data.msg
+              this.showPositionValue = true
               return
             }
             if (res.data.code === 102) {
-              // 跳转重载页面
+              // 请登录
+              this.$router.push({path: 'login'})
               return
             }
 //            item.buyCount += 1
@@ -233,9 +259,11 @@
         if (type === 2) {
           // 删除购物车
           if (item.buyCount <= 1) {
+            // 保存当前商品信息，以供删除时使用
             this.showComfirm = true
             this.comfirmGoods = item
             this.comfirmGoodsIndex = index
+            this.comfirmGoodsList = list
             return
           }
           this.post('/car/addCar', {
@@ -276,9 +304,11 @@
           goodsId: this.comfirmGoods.goodsId,
           carId: this.comfirmGoods.carId
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
-            console.log(res.data)
+            this.comfirmGoodsList.splice(this.comfirmGoodsIndex, 1)
+            this.$nextTick(() => {
+              this.contentScroll.refresh()
+            })
             return
           }
           if (res.data.code === 101) {
@@ -291,6 +321,34 @@
           }
         })
         console.log('确认')
+      },
+      // 选中商品
+      thisCheckAll (list) {
+        this.thisAllChecked = !this.thisAllChecked
+        list.forEach((item, index) => {
+          if (typeof item.checked === 'undefined') {
+            this.$set(item, 'checked', this.thisAllChecked)
+          } else {
+            item.checked = this.thisAllChecked
+          }
+        })
+      },
+      nextCheckAll (list) {
+        this.nextAllChecked = !this.nextAllChecked
+        list.forEach((item, index) => {
+          if (typeof item.checked === 'undefined') {
+            this.$set(item, 'checked', this.nextAllChecked)
+          } else {
+            item.checked = this.nextAllChecked
+          }
+        })
+      },
+      selectedGoods (item) {
+        if (typeof item.checked === 'undefined') {
+          this.$set(item, 'checked', true)
+        } else {
+          item.checked = !item.checked
+        }
       }
     },
     computed: {
@@ -299,14 +357,6 @@
       },
       filterListNext () {
         return this.NextGoodsList.slice(0, this.limitNumberNext)
-      }
-    },
-    watch: {
-      isAll (val) {
-        let changeVal = true
-        val ? changeVal = true : changeVal = false
-        this.isThis = changeVal
-        this.isNext = changeVal
       }
     }
   }
@@ -367,6 +417,31 @@
       .fs(32);
       color: #666;
     }
+  }
+
+  .select-all-icon, .circle {
+    color: #666;
+    .fs(32);
+  }
+
+  .circle {
+    .mr(35);
+  }
+
+  .checked {
+    .mr(35);
+  }
+
+  .select-all-icon {
+    .mr(10);
+  }
+
+  .selected-color {
+    color: #0493ed;
+  }
+
+  .next-icon {
+    background: @theme-color !important;
   }
 
   .label-checkbox {
@@ -475,8 +550,11 @@
       }
     }
 
+    .cart-view .content-view-scroller .default-checker {
+      .fs(50) !important;
+    }
     .block-title {
-      margin-left: 50px;
+      .ml(150);
       font: italic bold 16px/1 'Microsoft Yahei';
       .fs(38);
       vertical-align: middle;
@@ -711,25 +789,5 @@
     }
   }
 
-  .cart-view .edit-box {
-    display: flex;
-    padding-left: 10px;
-    background-color: #fff;
-    align-items: center;
 
-    .input-checkbox {
-      margin-right: 5px;
-    }
-
-    .input-checkbox:checked {
-      color: #ff5500;
-    }
-
-    .remove-all {
-      padding: 15px 30px;
-      line-height: 20px;
-      color: #fff;
-      background-color: #ff5500;
-    }
-  }
 </style>

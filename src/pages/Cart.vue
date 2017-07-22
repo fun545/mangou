@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
-              <div class="d-ib" @click="selectedGoods(item)">
+              <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)">
                 <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
                 <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
               </div>
@@ -45,11 +45,12 @@
             </div>
             <div class="flex-box count">
               <div class="flex-item total-count">共18件商品</div>
-              <div class="flex-col text-right font-mind count-price">小记：<span class="theme-color">¥188.8</span></div>
+              <div class="flex-col text-right font-mind count-price">小计：<span
+                class="theme-color">¥{{thisTotalPrice}}</span></div>
             </div>
             <div class="flex-box send">
-              <div class="flex-item">送货上门</div>
-              <div class="flex-col text-right font-mind color-666">配送费¥3</div>
+              <div class="flex-item">配送费用:</div>
+              <div class="flex-col text-right font-mind theme-color">{{CThisfreight}}</div>
             </div>
           </div>
           <!-- 次日达 -->
@@ -67,7 +68,7 @@
               </div>
             </div>
             <div class="flex-box this-goods" v-for="(item,index) in filterListNext" :key="index">
-              <div class="d-ib" @click="selectedGoods(item)">
+              <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)">
                 <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
                 <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
               </div>
@@ -175,7 +176,11 @@
         itemFlag: true,
         showPositionValue: false,
         toastText: '我是101提示',
-        position: 'middle'
+        position: 'middle',
+        Thisfreight: '',
+        Nextfreight: '',
+        thisShop: '',
+        nextShop: ''
       }
     },
     created () {
@@ -191,6 +196,10 @@
         if (res.data.code === 100) {
           this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
           this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+          this.Thisfreight = res.data.carList[0].storeShop.freight
+          this.Nextfreight = res.data.carList[1].shandianShop.freight
+          this.thisShop = res.data.carList[1].shandianShop
+          this.nextShop = res.data.carList[0].storeShop
           this.$nextTick(() => {
             this.contentScroll.refresh()
           })
@@ -357,6 +366,22 @@
       },
       filterListNext () {
         return this.NextGoodsList.slice(0, this.limitNumberNext)
+      },
+      thisTotalPrice () {
+        var total = 0
+        this.thisGoodsList.forEach((item, index) => {
+          if (item.checked) {
+            total += item.canKaoPrice * item.buyCount
+          }
+        })
+        return total.toFixed(2)
+      },
+      CThisfreight () {
+        if (this.thisTotalPrice > this.thisShop.startPrice) {
+          return '免运费'
+        } else {
+          return '￥' + this.Thisfreight.toFixed(2)
+        }
       }
     }
   }
@@ -506,11 +531,9 @@
     }
   }
 
-  .vux-x-dialog {
-    .weui-mask {
-
-    }
-  }
+  /* .checked-icon-wrap{
+     .ml(20);
+   }*/
 
   .cart-view {
     .fs(26);
@@ -615,7 +638,9 @@
       color: #fff;
       background-color: #f75439;
     }
-
+    .checked-icon-wrap {
+      .ml(8);
+    }
     .input-disabel {
       margin-left: -5px;
       margin-right: 5px;

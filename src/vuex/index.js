@@ -19,7 +19,17 @@ const state = {
   addAddress: '', // 新增地址
   token: '', // token
   depotId: '',
-  shopId: ''
+  shopId: '',
+  carOrderThisGoodsList: [], // 确认下单商品数组 即时送
+  carOrderNextGoodsList: [], // 确认下单商品数组 次日达
+  sendWay: '', // 次日达送货方式
+  Thisfreight: '', // 运费 及时送
+  Nextfreight: '', // 运费 次日达
+  shippingInfo: '', // 收货相关信息
+  selectedTotalCountThis: '', // 订单商品数 及时送
+  selectedTotalCountNext: '',  // 订单商品数 次日达
+  totalPriceThis: '',   // 确认订单商品总价 及时送
+  totalPriceNext: ''    // 确认订单商品总价 次日达
 }
 
 export default new Vuex.Store({

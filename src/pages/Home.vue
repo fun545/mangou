@@ -346,6 +346,7 @@
             this.loadMore()
           }
         })
+        this.homeSroll.refresh()
       }
     }
   }

@@ -32,6 +32,11 @@
                 </div>
                 <div class="go-single theme-color" @click="$router.push({path:'/this'})">去凑单></div>
               </div>
+              <!--商家打烊提示-->
+              <div class="flex-col closing" v-if="thisShop.shopStatus!==0">
+                <div class="difference" style="color:#f95d43;">店家已打烊</div>
+                <div class="go-single" style="color: #999">({{thisShop.shopHours}})</div>
+              </div>
             </div>
             <!-- 及时送购物车商品列表-->
             <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
@@ -150,7 +155,7 @@
             <!--配送费 次日达-->
             <div class="flex-box send" v-if="nextFreightShow">
               <div class="flex-item">配送费用:</div>
-              <div class="flex-col text-right font-mind theme-color">{{CNextfreight}}</div>
+              <div class="flex-col text-right font-mind">配送费:￥{{Nextfreight}}</div>
             </div>
             <div class="flex-box get-address" v-if="!nextFreightShow">
               <div class="flex-item">取货地址</div>
@@ -178,7 +183,7 @@
         </div>
       </alert>
       <!-- 页面底部 -->
-      <div class="count-box">
+      <div class="count-box" v-if="!(thisGoodsList.length===0&&NextGoodsList.length===0)">
         <!--<input type="checkbox" class="input-checkbox">-->
         <div class="select-all-icon d-ib" @click="selectAll()">
           <i class="iconfont selected-color" v-if="allChecked">&#xe634;</i>
@@ -200,6 +205,10 @@
       <div class="login-bt" @click="$router.push({path:'/login'})">
         立即登录
       </div>
+    </div>
+    <!--购物车无商品-->
+    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0">
+      <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
            :text="toastText" :width="toastWidth" class="toast"></toast>
@@ -229,8 +238,8 @@
         thisAllChecked: false, // 全选Flag 及时送
         nextAllChecked: false, // 全选Flag 次日达
         allChecked: false,      // 全选
-        showMoreThis: true,    // 显示更多FLag
-        showMoreNext: true,    // 显示更多FLag
+        showMoreThis: true,    // 显示更多FLag 及时送
+        showMoreNext: true,    // 显示更多FLag 次日达
         login: true,           // 是否登录FLag
         thisGoodsList: [],     // 购物车商品列表 及时送
         NextGoodsList: [],     // 购物车商品列表 次日达
@@ -239,7 +248,7 @@
         items1: [{key: '1', value: '客户自取'}, {key: '2', value: '送货上门'}],
         demo11: {key: '1', value: '客户自取'},
         showComfirm: false,    // 弹出提示框FLag (减号)
-        showComfirmDel: false,    // 弹出提示框FLag (减号)
+        showComfirmDel: false,    // 弹出提示框FLag (删除)
         comfirmText: '你确定要删除该商品么?',       // 弹出提示框文本
         showAlert: false,      // alert flag
         alertText: '',         // alert文本内容
@@ -275,12 +284,20 @@
       }).then((res) => {
         console.log(res.data)
         if (res.data.code === 100) {
+          // 商品列表 及时送
           this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+          // 商品列表 次日达
           this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-          this.Thisfreight = res.data.carList[0].storeShop.freight
-          this.Nextfreight = res.data.carList[1].shandianShop.freight
+          // 运费 次日达
+          this.Nextfreight = res.data.carList[0].storeShop.freight
+          // 运费 及时送
+          this.Thisfreight = res.data.carList[1].shandianShop.freight
+          // 及时送相关信息
           this.thisShop = res.data.carList[1].shandianShop
+          // 次日达相关信息
           this.nextShop = res.data.carList[0].storeShop
+          // 收货相关信息
+          this.$store.state.shippingInfo = res.data.shippingInfo
           // 判断店铺营业状态
           this.shopStatusMethods(this.thisShop.shopStatus)
           this.$nextTick(() => {
@@ -290,6 +307,8 @@
           this.$router.push({path: 'login'})
         }
       })
+      // 初始化默认配送方式
+      this.$store.state.sendWay = {key: '1', value: '客户自取'}
       this.$nextTick(() => {
         this._initScroll()
       })
@@ -300,12 +319,12 @@
         // 放假中
         if (status === 1) {
           this.alertText = '门店放假中'
-          this.showComfirm = true
+          this.showAlert = true
         }
         // 非营业时间
         if (status === 2) {
           this.alertText = '门店休息中'
-          this.showComfirm = true
+          this.showAlert = true
         }
       },
       // 点击显示更多与隐藏 togle 及时送
@@ -478,12 +497,67 @@
         console.log('确认')
       },
       // 提示框确认回调(删除一个或多个商品)
-      delConfirm () {
+      async delConfirm () {
         for (let i = 0; i < this.thisGoodsList.length; i++) {
-          var cur = this.thisGoodsList[i]
-          if (cur.checked === true) {
-            this.thisGoodsList.splice(i, 1)
-            i--
+          var curThis = this.thisGoodsList[i]
+          if (curThis.checked) {
+            await this.post('/car/deleteCar', {
+              token: localStorage.getItem('m-token'),
+              carId: curThis.carId
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.thisGoodsList.splice(i, 1)
+                i--
+              }
+              if (res.data.code === 102) {
+                this.$router.push({path: '/login'})
+              }
+            })
+          }
+          if (curThis.NoGoods) {
+            await this.post('/car/deleteCar', {
+              token: localStorage.getItem('m-token'),
+              carId: curThis.carId
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.thisGoodsList.splice(i, 1)
+                i--
+              }
+              if (res.data.code === 102) {
+                this.$router.push({path: '/login'})
+              }
+            })
+          }
+        }
+        for (let i = 0; i < this.NextGoodsList.length; i++) {
+          var curNext = this.NextGoodsList[i]
+          if (curNext.checked) {
+            await this.post('/car/deleteCar', {
+              token: localStorage.getItem('m-token'),
+              carId: curNext.carId
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.NextGoodsList.splice(i, 1)
+                i--
+              }
+              if (res.data.code === 102) {
+                this.$router.push({path: '/login'})
+              }
+            })
+          }
+          if (curNext.NoGoods) {
+            await this.post('/car/deleteCar', {
+              token: localStorage.getItem('m-token'),
+              carId: curNext.carId
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.NextGoodsList.splice(i, 1)
+                i--
+              }
+              if (res.data.code === 102) {
+                this.$router.push({path: '/login'})
+              }
+            })
           }
         }
       },
@@ -528,22 +602,7 @@
           }
         })
       },
-      // 选择商品 单选
-      selectedGoods (item) {
-        if (typeof item.checked === 'undefined') {
-          this.$set(item, 'checked', true)
-        } else {
-          item.checked = !item.checked
-        }
-      },
-      // 切换送货方式 运费与送货地址的显示切换
-      sendWayChange (val) {
-        if (val.key === '1') {
-          this.nextFreightShow = false
-        } else {
-          this.nextFreightShow = true
-        }
-      },
+      // 全选 及时送和次日达
       selectAll () {
         this.allChecked = !this.allChecked
         this.thisAllChecked = this.allChecked
@@ -551,14 +610,18 @@
         this.thisGoodsList.forEach((item, index) => {
           if (typeof item.checked === 'undefined') {
             this.$set(item, 'checked', this.allChecked)
-            if (item.status !== 1) {
-              item.checked = false
-            }
           } else {
             item.checked = this.allChecked
-            if (item.status !== 1) {
-              item.checked = false
+          }
+          // 失效或售罄商品
+          if (item.status !== 1) {
+            // NoGoods 失效或售罄商品选择标识
+            if (typeof item.NoGoods === 'undefined') {
+              this.$set(item, 'NoGoods', this.allChecked)
+            } else {
+              item.NoGoods = this.allChecked
             }
+            item.checked = false
           }
         })
         this.NextGoodsList.forEach((item, index) => {
@@ -575,6 +638,25 @@
           }
         })
       },
+      // 选择商品 单选
+      selectedGoods (item) {
+        if (typeof item.checked === 'undefined') {
+          this.$set(item, 'checked', true)
+        } else {
+          item.checked = !item.checked
+        }
+      },
+      // 切换送货方式 运费与送货地址的显示切换
+      sendWayChange (val) {
+        if (val.key === '1') {
+          this.nextFreightShow = false
+          this.$store.state.sendWay = val
+        } else {
+          this.nextFreightShow = true
+          this.$store.state.sendWay = val
+        }
+      },
+      // 编辑
       edit () {
         this.editShow = !this.editShow
         if (this.editShow) {
@@ -585,7 +667,42 @@
       },
       // 去结算 和删除商品
       toCount () {
-        if (this.editShow) {} else {
+        // 去结算
+        if (this.editShow) {
+          var thisGoodsList = []
+          var nextGoodsList = []
+          this.thisGoodsList.forEach((item, index) => {
+            if (item.checked === true) {
+              thisGoodsList.push(item)
+            }
+          })
+          this.NextGoodsList.forEach((item, index) => {
+            if (item.checked === true) {
+              nextGoodsList.push(item)
+            }
+          })
+          if (thisGoodsList.length === 0 && nextGoodsList.length === 0) {
+            this.toastWidth = '12em'
+            this.toastText = '请您先选择商品'
+            this.showPositionValue = true
+          } else {
+            // 确认订单所选商品 及时送
+            this.$store.state.carOrderThisGoodsList = thisGoodsList
+            // 确认订单所选商品 次日达
+            this.$store.state.carOrderNextGoodsList = nextGoodsList
+            // 确认订单商品总价 及时送
+            this.$store.state.totalPriceThis = parseFloat(this.thisTotalPrice).toFixed(1)
+            // 确认订单商品总价 次日达
+            this.$store.state.totalPriceNext = parseFloat(this.nextTotalPrice).toFixed(1)
+            // 配送费 及时送
+            this.$store.state.Thisfreight = parseInt(this.Thisfreight).toFixed(1)
+            // 配送费 次日达
+            this.$store.state.Nextfreight = parseInt(this.Nextfreight).toFixed(1)
+            // 跳转确认下单页面
+            this.$router.push({path: 'confirmOrder'})
+          }
+          // 删除商品
+        } else {
           var thisFlag = false
           var nextFlag = false
           this.thisGoodsList.forEach((item, index) => {
@@ -645,6 +762,7 @@
             count += item.buyCount
           }
         })
+        this.$store.state.selectedTotalCountThis = count
         return count
       },
       // 选中商品数量 次日达
@@ -655,28 +773,20 @@
             count += item.buyCount
           }
         })
+        this.$store.state.selectedTotalCountNext = count
         return count
       },
       // 运费计算 及时送
       CThisfreight () {
         if (this.thisTotalPrice > this.thisShop.startPrice) {
+          this.Thisfreight = 0
           return '免运费'
         }
         if (parseInt(this.thisTotalPrice) === 0) {
+          this.Thisfreight = 0
           return '￥' + 0
         } else {
           return '￥' + this.Thisfreight.toFixed(1)
-        }
-      },
-      // 运费计算 次日达
-      CNextfreight () {
-        if (this.nextTotalPrice > this.nextShop.startPrice) {
-          return '免运费'
-        }
-        if (parseInt(this.nextTotalPrice) === 0) {
-          return '￥' + 0
-        } else {
-          return '￥' + this.Nextfreight.toFixed(1)
         }
       },
       // 凑单差额 及时送 有小BUG
@@ -894,6 +1004,27 @@
     .mr(10);
   }
 
+  .car-no-goods {
+    position: absolute;
+    left: 0;
+    right: 0;
+    .t(92);
+    .b(100);
+    background: url("../assets/carNoGoods.png") no-repeat center 20%;
+    background-size: 53% 53%;
+    .bt {
+      position: absolute;
+      .w(212);
+      .h(68);
+      .lh(68);
+      .fs(34);
+      .t(600);
+      background: @theme-color;
+      color: #fff;
+      border-radius: 3px;
+    }
+  }
+
   .cart-view {
     .fs(26);
     height: 100%;
@@ -927,6 +1058,10 @@
       img {
         .w(140);
         .h(140);
+      }
+      &.this {
+        box-sizing: border-box;
+        .h(100);
       }
     }
 

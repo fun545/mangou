@@ -92,8 +92,8 @@ export default new Router({
     },
     {
       /* 确认订单 */
-      path: '/order_enter',
-      component: require('../pages/OrderEnter')
+      path: '/confirmOrder',
+      component: require('../pages/confirmOrder')
     },
     {
       /* 订单列表 */

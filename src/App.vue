@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <keep-alive exclude="detail,search,searchText,location,cart,setting,user">
+    <keep-alive exclude="detail,search,searchText,location,cart,setting,user,confirmOrder">
       <router-view></router-view>
     </keep-alive>
   </div>
@@ -178,7 +178,7 @@
     transform: translateY(-50%);
   }
 
-  //定位上下居中
+  //定位左右居中
   .cl {
     position: absolute;
     left: 50%;

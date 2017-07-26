@@ -8,7 +8,7 @@ Vue.use(Vuex)
 const state = {
   latitude: '', // 当前位置纬度
   longitude: '', // 当前位置经度
-  totalBuyCount: '',
+  totalBuyCount: '', // 购物车总数
   cartList: {}, // 加入购物车的商品列表
   shopDetail: null, // 店铺详情信息
   userInfo: null, // 用户信息
@@ -18,8 +18,10 @@ const state = {
   removeAddress: [], // 移除地址
   addAddress: '', // 新增地址
   token: '', // token
-  depotId: '',
-  shopId: '',
+  depotId: '', // 仓库storeId
+  shopId: '',  // 店铺storeId
+  thisShop: '', // 购物车及时送相关信息
+  nextShop: '', // 购物车次日达相关信息
   carOrderThisGoodsList: [], // 确认下单商品数组 即时送
   carOrderNextGoodsList: [], // 确认下单商品数组 次日达
   sendWay: '', // 次日达送货方式

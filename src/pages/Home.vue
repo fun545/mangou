@@ -260,6 +260,9 @@
         }
       })
     },
+//    activated () {
+//      this.homeSroll.refresh()
+//    },
     methods: {
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
@@ -352,7 +355,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
 

@@ -19,7 +19,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   .join-view .vux-header {
     background: linear-gradient(#f17458, #eb4e3b);
 

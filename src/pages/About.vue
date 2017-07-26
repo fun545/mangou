@@ -29,7 +29,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   .about-view .vux-header {
     background-color: #fff;
 

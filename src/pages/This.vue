@@ -131,6 +131,10 @@
       this.ind = 0
       this.getGoods(1)
     },
+//    activated () {
+//      this.menuSroll.refresh()
+//      this.listSroll.refresh()
+//    },
     methods: {
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
@@ -181,8 +185,6 @@
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
           click: true
         })
-        this.menuSroll.refresh()
-        this.listSroll.refresh()
       },
       goDetail (id, e) {
         console.log(e.target.tagName.toLowerCase() !== 'i')

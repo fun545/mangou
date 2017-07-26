@@ -33,7 +33,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .issue-view .vux-header {
     background-color: #f95d43;
   }

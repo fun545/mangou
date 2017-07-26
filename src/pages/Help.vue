@@ -48,7 +48,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   .help-view .vux-header {
     background-color: #fff;
 

@@ -207,7 +207,7 @@
       </div>
     </div>
     <!--购物车无商品-->
-    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0">
+    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0&&login">
       <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
@@ -296,6 +296,8 @@
           this.thisShop = res.data.carList[1].shandianShop
           // 次日达相关信息
           this.nextShop = res.data.carList[0].storeShop
+          this.$store.state.thisShop = res.data.carList[1].shandianShop
+          this.$store.state.nextShop = res.data.carList[0].storeShop
           // 收货相关信息
           this.$store.state.shippingInfo = res.data.shippingInfo
           // 判断店铺营业状态

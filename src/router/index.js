@@ -77,11 +77,6 @@ export default new Router({
     },
     {
       /* 收获地址 */
-      path: '/address',
-      component: require('../pages/Address')
-    },
-    {
-      /* 收获地址 */
       path: '/edit_address',
       component: require('../pages/EditAddress')
     },
@@ -219,6 +214,16 @@ export default new Router({
       /* 原地直供活动页面 */
       path: '/originActive',
       component: require('../pages/originActive')
+    },
+    {
+      /* 选择收货地址  确认订单 */
+      path: '/selecteAddress',
+      component: require('../pages/selectAddress')
+    },
+    {
+      /* 新增收货地址 */
+      path: '/selecteAddress',
+      component: require('../pages/addAddress')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

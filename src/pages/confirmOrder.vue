@@ -5,7 +5,7 @@
     </m-header>
     <div class="content" ref="content">
       <div>
-        <div class="order-list-wrap">
+        <div class="order-list-wrap" v-if="thisGoodsList.length>0">
           <!--标题 及时送-->
           <div class="title">
             <div class="left f-l">
@@ -15,16 +15,16 @@
               送货上门
             </div>
           </div>
-          <!--收货地址-->
-          <div class="adress">
+          <!--收货地址 及时送-->
+          <div class="adress" @click="$router.push({path:'/selecteAddress'})">
             <div class="iconfont icon f-l">&#xe638;</div>
             <div class="adress-info f-l">
               <div class="receiver-info">
-                <span class="color-444">取件人： </span>{{this.shippingInfo.shippingName}}
+                <span class="color-444">收货人： </span>{{this.shippingInfo.shippingName}}
                 <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
               </div>
               <div class="receiver-info">
-                <span class="color-444">取件地址： </span>
+                <span class="color-444">收货地址： </span>
                 {{this.shippingInfo.address}}
               </div>
             </div>
@@ -51,44 +51,39 @@
             </div>
           </div>
           <!--更多-->
-          <div class="more">
+          <div class="more" v-if="thisGoodsList.length>2">
             <div class="bt t-c" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
             <div class="bt t-c" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
           </div>
           <!-- 订单详情-->
-          <div class="order-info">
+          <div class="order-info this">
             <div class="left">
               <p>商品总价</p>
-              <p>优惠金额</p>
               <p>配送费</p>
             </div>
             <div class="right">
               <p class="s2">￥{{totalPriceThis}}</p>
-              <div class="s1">
-                <span>-</span>
-                <span class="price">￥0.0</span>
-              </div>
               <div class="s1">
                 <span>+</span>
                 <span class="price">￥{{Thisfreight}}</span>
               </div>
             </div>
           </div>
-          <!--留言与实际付款-->
+          <!--留言与实际付款 及时送-->
           <div style="background: #fff">
-            <!--留言-->
+            <!--留言 及时送-->
             <div class="leave-message">
               买家留言：
-              <input type="text" class="input" placeholder="请输入文字">
+              <input type="text" class="input" placeholder="请输入文字" v-model="leaveMsgThis">
             </div>
-            <!--实际付款-->
+            <!--实际付款 及时送-->
             <div class="pay-count">
               实际付款
               <span class="f-r count">￥{{parseFloat(totalPriceThis) + parseFloat(Thisfreight)}}</span>
             </div>
           </div>
         </div>
-        <div class="order-list-wrap">
+        <div class="order-list-wrap" v-if="NextGoodsList.length>0">
           <!--标题 次日达-->
           <div class="title">
             <div class="left f-l" style="color: #f95d43;">
@@ -97,6 +92,21 @@
             <div class="right f-r">
               {{sendWay.value}}
             </div>
+          </div>
+          <!--收货地址-->
+          <div class="adress">
+            <div class="iconfont icon f-l">&#xe638;</div>
+            <div class="adress-info f-l">
+              <div class="receiver-info">
+                <span class="color-444">取件人： </span>{{this.shippingInfo.shippingName}}
+                <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
+              </div>
+              <div class="receiver-info">
+                <span class="color-444">取件地址： </span>
+                {{this.shippingInfo.address}}
+              </div>
+            </div>
+            <div class="iconfont icon-right f-l">&#xe601;</div>
           </div>
           <!--列表标题 次日达-->
           <div class="goods-list-title">
@@ -119,7 +129,7 @@
             </div>
           </div>
           <!--更多 次日达-->
-          <div class="more">
+          <div class="more" v-if="NextGoodsList.length>2">
             <div class="bt t-c" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
             <div class="bt t-c" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
           </div>
@@ -145,17 +155,18 @@
               </div>
             </div>
           </div>
-          <!--留言与实际付款-->
+          <!--留言与实际付款 次日达-->
           <div style="background: #fff">
-            <!--留言-->
+            <!--留言 次日达-->
             <div class="leave-message">
               买家留言：
-              <input type="text" class="input" placeholder="请输入文字">
+              <input type="text" class="input" placeholder="请输入文字" v-model="leaveMsgNext">
             </div>
-            <!--实际付款-->
+            <!--实际付款 次日达-->
             <div class="pay-count">
               实际付款
-              <span class="f-r count">￥{{parseFloat(totalPriceNext) + parseFloat(Nextfreight)-parseFloat(discount)}}</span>
+              <span
+                class="f-r count">￥{{parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)}}</span>
             </div>
           </div>
         </div>
@@ -163,10 +174,10 @@
         <div class="pay-methods">
           <span>支付方式：</span>
           <div class="bt-wrap">
-            <div class="item t-c">
+            <div class="item t-c" @click="onPayChange(1)" :class="{'weixin-color':payFlag}">
               微信
             </div>
-            <div class="item t-c zhifubao-color">
+            <div class="item t-c" @click="onPayChange(2)" :class="{'zhifubao-color':!payFlag}">
               支付宝
             </div>
           </div>
@@ -174,7 +185,8 @@
       </div>
     </div>
     <div class="footer">
-      合计： <span class="theme-color">{{Thisfreight}}</span>
+      合计： <span
+      class="theme-color">{{parseFloat(totalPriceThis) + parseFloat(Thisfreight) + parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)}}</span>
       <div class="bt f-r t-c">
         确认下单
       </div>
@@ -199,7 +211,8 @@
         Thisfreight: this.$store.state.Thisfreight, // 运费 及时送
         Nextfreight: this.$store.state.Nextfreight, // 运费 次日达
         sendWay: this.$store.state.sendWay, // 配送方式
-        shippingInfo: this.$store.state.shippingInfo, // 收货相关信息
+        shippingInfo: this.$store.state.shippingInfo, // 收货相关信息 送货到家
+        pointInfo: this.$store.state.shippingInfo, // 收货相关信息 自取
         selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
         selectedTotalCountNext: this.$store.state.selectedTotalCountNext, // 商品数量 次日达
         totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
@@ -208,15 +221,22 @@
         showMoreNext: true,   // 显示更多FLag 次日达
         limitNumberThis: 2,    // 显示更多默认显示商品数量 及时送
         limitNumberNext: 2,   // 显示更多默认显示商品数量 次日达
-        discount: 0         // 优惠金额 次日达
+        discount: 0,         // 优惠金额 次日达
+        nextShop: this.$store.state.nextShop, // 购物车次日达相关信息
+        payFlag: true, // 支付方式Flag
+        leaveMsgThis: '', // 留言 及时送
+        leaveMsgNext: '' // 留言 次日达
       }
     },
     created () {
-//      this.thisGoodsList = this.$store.state.carOrderThisGoodsList
-//      this.nextGoodsList = this.$store.state.carOrderNextGoodsList
+      // 初始化Bscroll
       this.$nextTick(() => {
         this._initScroll()
       })
+    },
+    mounted () {
+      // 判断配送方式 切换次日达收货信息
+      this.getPointInfo()
     },
     methods: {
       _initScroll () {
@@ -245,6 +265,20 @@
         this.$nextTick(() => {
           this.contentScroll.refresh()
         })
+      },
+      // 判断配送方式 切换次日达收货信息
+      getPointInfo () {
+        if (this.sendWay.key === '1') {
+          this.pointInfo.address = this.nextShop.pointAddress
+        }
+      },
+      // 支付方式
+      onPayChange (type) {
+        if (type === 1) {
+          this.payFlag = true
+        } else {
+          this.payFlag = false
+        }
       }
     },
     computed: {
@@ -298,6 +332,7 @@
           .h(88);
           .lh(88);
           background-size: 100% 100%;
+          background-color: #fff;
           .left {
             font: italic bold 16px/1 'Microsoft Yahei';
             .fs(32);
@@ -420,6 +455,11 @@
           color: #666;
           .fs(28);
           border-bottom: 1px solid #eee;
+          &.this {
+            p {
+              .lh(58);
+            }
+          }
           .left {
             .h(107);
           }

@@ -222,8 +222,13 @@ export default new Router({
     },
     {
       /* 新增收货地址 */
-      path: '/selecteAddress',
+      path: '/addAddress',
       component: require('../pages/addAddress')
+    },
+    {
+      /* 我的进入收货地址 */
+      path: '/address',
+      component: require('../pages/address')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

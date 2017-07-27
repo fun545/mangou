@@ -43,10 +43,8 @@
         if (localStorage.getItem('m-token')) {
           this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
             console.log('退出登录接口返回：')
-            console.log(res)
             if (res.data.code === 100) {
               localStorage.removeItem('m-token')
-              console.log(localStorage.getItem('m-token'))
             }
             if (res.data.code === 102) {
               this.$router.push({path: 'login'})

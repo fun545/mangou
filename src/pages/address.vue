@@ -1,17 +1,30 @@
 <template>
-  <div class="selectAddress">
+  <div class="address">
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="address-list">
-      <div class="item" v-for="(item,index) in addressList" :key="index">
+      <div class="item">
         <div class="top">
           <div class="user-msg">
-            <span>{{item.shippingName}}</span>
-            <span class="tel">{{item.shippingPhone}}</span>
+            <span>小玉米</span>
+            <span class="tel">15258195623</span>
           </div>
           <div class="address">
-            {{item.address}}
+            收货地址是地方都是反倒是第
+          </div>
+        </div>
+        <div class="bt">
+          <div class="left f-l">
+            <div class="icon d-ib" @click="defaultFlag=!defaultFlag">
+              <i class="iconfont" v-if="!defaultFlag">&#xe635;</i>
+              <i class="iconfont selected" v-if="defaultFlag">&#xe634;</i>
+            </div>
+            <span :class="{'theme-color':defaultFlag}">设为默认</span>
+          </div>
+          <div class="right" @click="$router.push({path:'/edit_address'})">
+            <i class="iconfont">&#xe602;</i>
+            编辑
           </div>
         </div>
       </div>
@@ -19,57 +32,19 @@
     <div class="add-address t-c" @click="$router.push({path:'addAddress'})">
       新增收货地址
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-           :text="msg" width="10em" class="toast"></toast>
-  </div>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
-  import { Toast } from 'vux'
   export default {
     components: {
-      mHeader,
-      Toast
+      mHeader
     },
     data () {
       return {
         title: '收货地址',
-        defaultFlag: false,
-        addressList: [],
-        msg: '',
-        code: '',
-        showPositionValue: false
-      }
-    },
-    async created () {
-      await this.post('/shipping/getAddressList', {
-        token: localStorage.getItem('m-token')
-      }).then((res) => {
-        this.code = res.data.code
-        if (res.data.code === 100) {
-          this.addressList = res.data.shippingAddressList
-        }
-        if (res.data.code === 101) {
-          this.msg = res.data.msg
-          this.showPositionValue = true
-        }
-        if (res.data.code === 102) {
-          this.msg = '请重新登录'
-          this.showPositionValue = true
-        }
-      })
-      // 异常处理
-      if (this.code === 102 || this.code === 101) {
-        this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
-          if (res.data.code === 100) {
-            localStorage.removeItem('m-token')
-          }
-          if (res.data.code === 102) {
-            localStorage.removeItem('m-token')
-          }
-        })
+        defaultFlag: false
       }
     }
   }
@@ -83,7 +58,7 @@
     color: @theme-color;
   }
 
-  .selectAddress {
+  .address {
     .cp-header {
       color: #222;
       z-index: 103;

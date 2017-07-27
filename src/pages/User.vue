@@ -1,122 +1,126 @@
 <template>
   <div class="user-view">
-    <!-- 设置图标 -->
-    <span class="setting" @click="go">&#xe627;</span>
-    <!-- 用户头像卡片 -->
-    <div class="picture-card">
-      <router-link to="/user_info"><img src="../assets/vux_logo.png" class="picture" alt=""></router-link>
-      <div class="name">周涵羽</div>
-      <span class="address">珠江花城浮水岸</span>
-      <div class="line-bar">&nbsp;</div>
-      <div class="flex-box">
-        <div class="flex-item">
-          <p>30<span>天</span></p>
-          <p>您已注册</p>
+    <div class="content" ref="content">
+      <div class="top-wrap">
+        <div class="top"></div>
+        <!-- 设置图标 -->
+        <span class="setting" @click="go">&#xe627;</span>
+        <!-- 用户头像卡片 -->
+        <div class="picture-card">
+          <router-link to="/user_info"><img src="../assets/vux_logo.png" class="picture" alt=""></router-link>
+          <div class="name">周涵羽</div>
+          <span class="address">珠江花城浮水岸</span>
+          <div class="line-bar">&nbsp;</div>
+          <div class="flex-box">
+            <div class="flex-item">
+              <p>30<span>天</span></p>
+              <p>您已注册</p>
+            </div>
+            <div class="flex-item">
+              <p>188<span>元</span></p>
+              <p>为您节省</p>
+            </div>
+            <div class="flex-item">
+              <p>88</p>
+              <p>当前排行</p>
+            </div>
+          </div>
         </div>
-        <div class="flex-item">
-          <p>188<span>元</span></p>
-          <p>为您节省</p>
+      </div>
+      <!-- 我的订单卡片 -->
+      <div class="order-card">
+        <!-- 卡片标题 -->
+        <div class="title-box">
+          <div class="title">我的订单</div>
+          <router-link to="/order_list">查看更多订单</router-link>
         </div>
-        <div class="flex-item">
-          <p>88</p>
-          <p>当前排行</p>
+        <!-- 订单入口 -->
+        <div class="entry-flex">
+          <router-link to="/order_pay_list" class="entry-item">
+            <div class="icon">
+              <i class="iconfont">&#xe62c;</i>
+              <span>6</span>
+            </div>
+            <div class="text">待付款</div>
+          </router-link>
+          <router-link to="/order_send_list" class="entry-item">
+            <div class="icon">
+              <i class="iconfont">&#xe620;</i>
+            </div>
+            <div class="text">待发货</div>
+          </router-link>
+          <router-link to="/order_shipping_list" class="entry-item">
+            <div class="icon">
+              <i class="iconfont">&#xe60b;</i>
+              <span>15</span>
+            </div>
+            <div class="text">配送中</div>
+          </router-link>
+          <router-link to="/order_rater_list" class="entry-item">
+            <div class="icon">
+              <i class="iconfont">&#xe645;</i>
+              <span>2</span>
+            </div>
+            <div class="text">待评价</div>
+          </router-link>
+          <router-link to="/order_after_sale_list" class="entry-item">
+            <div class="icon">
+              <i class="iconfont">&#xe630;</i>
+            </div>
+            <div class="text">退款/售后</div>
+          </router-link>
         </div>
       </div>
-    </div>
 
-    <!-- 我的订单卡片 -->
-    <div class="order-card">
-      <!-- 卡片标题 -->
-      <div class="title-box">
-        <div class="title">我的订单</div>
-        <router-link to="/order_list">查看更多订单</router-link>
+      <!-- 我要分享卡片 -->
+      <div class="share-card">
+        <div class="title-box">
+          <div class="title">我要分享</div>
+          <router-link to="/share">推给好友</router-link>
+        </div>
       </div>
-      <!-- 订单入口 -->
-      <div class="entry-flex">
-        <router-link to="/order_pay_list" class="entry-item">
-          <div class="icon">
-            <i class="iconfont">&#xe62c;</i>
-            <span>6</span>
-          </div>
-          <div class="text">待付款</div>
-        </router-link>
-        <router-link to="/order_send_list" class="entry-item">
-          <div class="icon">
-            <i class="iconfont">&#xe620;</i>
-          </div>
-          <div class="text">待发货</div>
-        </router-link>
-        <router-link to="/order_shipping_list" class="entry-item">
-          <div class="icon">
-            <i class="iconfont">&#xe60b;</i>
-            <span>15</span>
-          </div>
-          <div class="text">配送中</div>
-        </router-link>
-        <router-link to="/order_rater_list" class="entry-item">
-          <div class="icon">
-            <i class="iconfont">&#xe645;</i>
-            <span>2</span>
-          </div>
-          <div class="text">待评价</div>
-        </router-link>
-        <router-link to="/order_after_sale_list" class="entry-item">
-          <div class="icon">
-            <i class="iconfont">&#xe630;</i>
-          </div>
-          <div class="text">退款/售后</div>
-        </router-link>
-      </div>
-    </div>
 
-    <!-- 我要分享卡片 -->
-    <div class="share-card">
-      <div class="title-box">
-        <div class="title">我要分享</div>
-        <router-link to="/share">推给好友</router-link>
-      </div>
-    </div>
-
-    <!-- 更多功能卡片 -->
-    <div class="more-card">
-      <!-- 卡片标题 -->
-      <div class="title-box">
-        <div class="title">更多功能</div>
-      </div>
-      <!-- 功能入口 -->
-      <div class="entry-flex">
-        <router-link to="/collection" class="entry-item">
-          <div class="iconfont">&#xe629;</div>
-          <div class="label">我的收藏</div>
-        </router-link>
-        <router-link to="/address" class="entry-item">
-          <div class="iconfont">&#xe621;</div>
-          <div class="label">收货地址</div>
-        </router-link>
-        <router-link to="/coupon" class="entry-item">
-          <div class="iconfont">&#xe62e;</div>
-          <div class="label">我的优惠券</div>
-        </router-link>
-        <router-link to="/help" class="entry-item">
-          <div class="iconfont">&#xe626;</div>
-          <div class="label">客服与帮助</div>
-        </router-link>
-        <router-link to="/join" class="entry-item">
-          <div class="iconfont">&#xe61d;</div>
-          <div class="label">加入我们</div>
-        </router-link>
-        <router-link to="/shop" class="entry-item">
-          <div class="iconfont">&#xe616;</div>
-          <div class="label">我要开店</div>
-        </router-link>
-        <router-link to="/issue" class="entry-item">
-          <div class="iconfont">&#xe625;</div>
-          <div class="label">意见反馈</div>
-        </router-link>
-        <router-link to="/about" class="entry-item">
-          <div class="iconfont">&#xe62f;</div>
-          <div class="label">关于我们</div>
-        </router-link>
+      <!-- 更多功能卡片 -->
+      <div class="more-card">
+        <!-- 卡片标题 -->
+        <div class="title-box">
+          <div class="title">更多功能</div>
+        </div>
+        <!-- 功能入口 -->
+        <div class="entry-flex">
+          <router-link to="/collection" class="entry-item">
+            <div class="iconfont">&#xe629;</div>
+            <div class="label">我的收藏</div>
+          </router-link>
+          <router-link to="/address" class="entry-item">
+            <div class="iconfont">&#xe621;</div>
+            <div class="label">收货地址</div>
+          </router-link>
+          <router-link to="/coupon" class="entry-item">
+            <div class="iconfont">&#xe62e;</div>
+            <div class="label">我的优惠券</div>
+          </router-link>
+          <router-link to="/help" class="entry-item">
+            <div class="iconfont">&#xe626;</div>
+            <div class="label">客服与帮助</div>
+          </router-link>
+          <router-link to="/join" class="entry-item">
+            <div class="iconfont">&#xe61d;</div>
+            <div class="label">加入我们</div>
+          </router-link>
+          <router-link to="/shop" class="entry-item">
+            <div class="iconfont">&#xe616;</div>
+            <div class="label">我要开店</div>
+          </router-link>
+          <router-link to="/issue" class="entry-item">
+            <div class="iconfont">&#xe625;</div>
+            <div class="label">意见反馈</div>
+          </router-link>
+          <router-link to="/about" class="entry-item">
+            <div class="iconfont">&#xe62f;</div>
+            <div class="label">关于我们</div>
+          </router-link>
+        </div>
       </div>
     </div>
     <m-footer></m-footer>
@@ -124,22 +128,32 @@
 </template>
 <script>
   import mFooter from '../components/footer'
+  import BScroll from 'better-scroll'
   export default {
     name: 'user',
-    components: {mFooter},
+    components: {mFooter, BScroll},
+    created () {
+//      this.$nextTick(() => {
+//        this._initScroll()
+//      })
+    },
     methods: {
       go () {
         this.$router.push({path: '/setting'})
         this.$router.go(0)
+      },
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {click: true})
       }
     }
   }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
+  @import "../common/style/sum";
+
   .user-view {
-    &:before {
-      content: '';
+    .top {
       height: 100px;
       background: linear-gradient(#f46f4b, #fa9f5a);
       position: absolute;
@@ -148,21 +162,38 @@
       left: 0;
       z-index: 1;
     }
-
+    .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      .b(100);
+      overflow: hidden;
+      .top-wrap{
+       /* .h(442);*/
+        position: relative;
+      }
+    }
     .setting {
       color: #ffffff;
       line-height: normal;
-      font-size: 18px;
+      .fs(36);
       font-family: 'iconfont';
       position: absolute;
-      top: 10px;
-      right: 10px;
+      .t(20);
+      .r(20);
       z-index: 2;
     }
 
     [class*=-card] {
-      margin: 10px;
-      padding: 10px;
+      .mr(20);
+      .ml(20);
+      .mt(20);
+      .mb(20);
+      .pl(20);
+      .pr(20);
+      .pb(20);
+      .pt(20);
       border-radius: 2px;
       background-color: #ffffff;
       position: relative;
@@ -171,18 +202,17 @@
       .title-box {
         display: flex;
         line-height: normal;
-        font-size: 13px;
+        .fs(26);
 
         .title {
           flex-grow: 1;
-          margin-left: -10px;
-
+          .ml(-20);
           &:before {
             content: '';
             display: inline-block;
-            margin-right: 10px;
-            width: 4px;
-            height: 10px;
+            .mr(20);
+            .w(8);
+            .h(20);
             background-color: #fc5050;
           }
         }
@@ -194,18 +224,18 @@
             content: '\e601';
             vertical-align: middle;
             font: 12px/1 'iconfont';
+            .fs(25);
           }
         }
       }
     }
 
     .picture-card {
-      margin-top: 60px;
-      padding-top: 40px;
-
+      .mt(120);
+      .pt(80);
       .picture {
         box-sizing: border-box;
-        width: 80px;
+        .w(160);
         border-radius: 80px/2;
         border: 2px solid #ffffff;
         box-shadow: #d4d400 0 0 2px;
@@ -217,18 +247,20 @@
       }
 
       .name {
-        line-height: 20px;
-        padding: 5px 0;
+        .lh(40);
+        .pt(10);
+        .pb(10);
         font-weight: bold;
         text-align: center;
       }
 
       .address {
         display: table;
-        padding: 0 10px;
+        .pl(20);
+        .pr(20);
         margin: 0 auto;
-        line-height: 20px;
-        font-size: 12px;
+        .lh(40);
+        .fs(25);
         color: #eba098;
         background-color: #fef7f5;
         border-radius: 10px;
@@ -236,6 +268,8 @@
 
       .line-bar {
         margin: 10px auto;
+        .mt(20);
+        .mb(20);
         height: 1px;
         background-color: #eeeeee;
       }
@@ -246,7 +280,8 @@
         .flex-item {
           width: calc(~'100vw/3');
           box-sizing: border-box;
-          padding: 0 10px;
+          .pl(20);
+          .pr(20);
           border-left: 1px solid #eeeeee;
           text-align: center;
 
@@ -255,13 +290,13 @@
           }
 
           p, span {
-            font-size: 12px;
+            .fs(25);
             line-height: normal;
           }
 
           p:first-child {
             color: #fb9082;
-            font-size: 18px;
+            .fs(36);
           }
         }
       }
@@ -270,9 +305,11 @@
     .order-card .entry-flex {
       display: flex;
       justify-content: space-between;
-      margin: 5px -5px -5px -5px;
-      font-size: 12px;
-
+      .mt(10);
+      .mr(-10);
+      .mb(-10);
+      .ml(-10);
+      .fs(25);
       .entry-item {
         width: calc(~'(100% - 20px)/5');
         box-sizing: border-box;
@@ -283,21 +320,22 @@
         .icon {
           display: table;
           margin: 10px auto 0 auto;
+          .mt(20);
           line-height: normal;
           position: relative;
 
           .iconfont {
             color: #c08556;
-            font-size: 22px;
+            .fs(44);
           }
 
           span {
-            width: 14px;
+            .w(28);
             text-align: center;
-            height: 14px;
-            line-height: 14px;
+            .h(28);
+            .lh(28);
             border-radius: 14px/2;
-            font-size: 12px;
+            .fs(25);
             color: #ffffff;
             background-color: red;
             transform: translate(65%, -15%);
@@ -309,7 +347,9 @@
 
         .text {
           margin: 5px auto;
-          line-height: 20px;
+          .mt(10);
+          .mb(10);
+          .lh(40);
           text-align: center;
         }
       }
@@ -322,17 +362,19 @@
       .entry-item {
         width: calc(~'100%/3');
         padding: 10px 0;
+        .pt(20);
+        .pb(20);
         text-align: center;
         border-bottom: 1px solid #e4e4e4;
 
         .iconfont {
           color: #f75439;
-          font-size: 28px;
+         .fs(56);
         }
 
         .label {
           color: #444444;
-          font-size: 12px;
+          .fs(25);
         }
       }
     }

@@ -109,12 +109,18 @@
         }).then((res) => {
           if (res.data.code === 100) {
             console.log(res.data)
+            // vuex存储 token
             localStorage.setItem('m-token', res.data.userInfo.token)
-            this.$store.state.token = localStorage.getItem('m-token')
-            console.log(localStorage.getItem('m-token'))
+            // 本地存储 token
+            this.$store.state.token = res.data.userInfo.token
+            // vuex存储 userInfo
+            this.$store.state.userInfo = res.data.userInfo
+            // 本地存储 userInfo
+            localStorage.setItem('m-userInfo', JSON.stringify(res.data.userInfo))
             this.$store.state.login = true
+            console.log(JSON.parse(localStorage.getItem('m-userInfo')))
+            // 登录成功跳转个人中心
             this.$router.push({path: '/user'})
-            this.$store.state.login = true
           }
           if (res.data.code === 101) {
             this.showPositionValue = true

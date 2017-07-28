@@ -229,6 +229,11 @@ export default new Router({
       /* 我的进入收货地址 */
       path: '/address',
       component: require('../pages/address')
+    },
+    {
+      /* 订单页面中的 去支付 */
+      path: '/goPay',
+      component: require('../pages/goPay')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

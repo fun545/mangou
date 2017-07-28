@@ -1,0 +1,339 @@
+<template>
+  <div>
+    <div class="order-item" v-for="(item,index) in orderList" :key="index">
+      <div class="content">
+        <!-- 订单类型 -->
+        <div class="bottom-line flex-box item-center">
+          <!--标题-->
+          <div class="flex-col title color-058bed" :class="{'theme-color':item.shopType===1}">{{item.shopType | title}}
+          </div>
+          <!--订单创建时间-->
+          <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
+        </div>
+        <!-- 订单商品 -->
+        <div class="scroller-box" @click="$router.push({path:'/order_info'})">
+          <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
+            <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
+          </div>
+        </div>
+        <!-- 订单状态 -->
+        <div class="bottom-line flex-box item-center">
+          <div class="flex-col order-state-box this-state" @click="$router.push({path:'/order_info'})">
+            <div class="state-item" :class="{'succes-item' : index >= 0}">
+              <div class="iconfont">&#xe602;</div>
+              <div class="label">已提交</div>
+            </div>
+            <div class="state-item" :class="{'succes-item' : index >= 1}">
+              <div class="iconfont">&#xe603;</div>
+              <div class="label">待支付</div>
+            </div>
+            <div class="state-item" :class="{'succes-item' : index >= 2}">
+              <div class="iconfont">&#xe60b;</div>
+              <div class="label">送货中</div>
+            </div>
+            <div class="state-item" :class="{'succes-item' : index >= 3}">
+              <div class="iconfont">&#xe607;</div>
+              <div class="label">已签收</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="font-small">合计：<span class="color-058bed">¥{{item.totalPrice}}</span></div>
+            <div class="font-mind color-999">({{item.sendType | sendType}})</div>
+          </div>
+        </div>
+        <!-- 订单操作 -->
+        <div class="text-right">
+          <span class="btn this-btn" @click="onBt(item,index)">{{item.status | btText}}</span>
+        </div>
+      </div>
+      <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
+             :text="toastText" width="10em" class="toast"></toast>
+    </div>
+    <confirm v-model="showComfirm"
+             title="提示"
+             @on-confirm="onConfirm">
+      <p style="text-align:center;">{{comfirmText}}</p>
+    </confirm>
+  </div>
+</template>
+
+<script>
+  import { Toast, Confirm } from 'vux'
+  export default {
+    components: {
+      Toast,
+      Confirm
+    },
+    props: {
+      orderList: Array
+    },
+    data () {
+      return {
+        showPositionValue: false,
+        toastText: '',
+        comfirmText: '',
+        delOrder: '', // 待删除订单
+        index: '', // 待删除订单index
+        showComfirm: false
+      }
+    },
+    methods: {
+      onBt (item, index) {
+        if (item.status === 1) { // 去支付
+          this.$router.push({path: '/goPay'})
+          return
+        }
+        if (item.status === 2) { // 提醒发货
+          this.post('/orders/promptShipment', {token: localStorage.getItem('m-token'), orderNum: item.orderNum})
+            .then((res) => {
+              if (res.data.code === 100) {
+                this.toastText = '提醒发货成功'
+                this.showPositionValue = true
+                return
+              }
+              if (res.data.code === 101) {
+                this.toastWidth = '10em'
+                this.toastText = res.data.msg
+                this.showPositionValue = true
+                return
+              }
+              if (res.data.code === 102) {
+                this.toastText = '请登录'
+                this.showPositionValue = true
+                return
+              }
+            })
+          return
+        }
+        if (item.status === 3) { // 联系店家
+          this.$vux.alert.show({title: '电话', content: item.tel})
+          return
+        }
+        if (item.status === 4) { // 联系客服
+          this.$vux.alert.show({title: '电话', content: item.tel})
+          return
+        }
+        // 其他状态都是删除订单
+        this.delOrder = item
+        // 是否确认删除提示
+        this.comfirmText = '删除后数据将无法恢复'
+        this.showComfirm = true
+        this.index = index
+//        event.preventDefault()
+      },
+      // 确认删除回调
+      onConfirm () {
+        // 删除订单
+        this.post('/orders/delOrUpOrders', {
+          token: localStorage.getItem('m-token'),
+          orderId: this.delOrder.orderId,
+          opts: 1
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.orderList.splice(this.index, 1)
+          }
+          if (res.data.code === 101) {
+            this.toastText = res.data.msg
+            this.showPositionValue = true
+          }
+          if (res.data.code === 102) {
+            this.toastText = '请登录'
+            this.showPositionValue = true
+          }
+        })
+      }
+    },
+    filters: {
+      // 标题名称
+      title (val) {
+        if (val === 1) {
+          return '次日送'
+        } else {
+          return '即时送'
+        }
+      },
+      // 配送方式
+      sendType (val) {
+        if (val === 1) {
+          return '客户自取'
+        } else {
+          return '送货上门'
+        }
+      },
+      // 按钮文字
+      btText (val) {
+        if (val === 1) { // 待支付
+          return '去支付'
+        }
+        if (val === 2) { // 待发货
+          return '提醒发货'
+        }
+        if (val === 3) { // 已发货
+          return '联系店家'
+        }
+        if (val === 4) { // 已发货
+          return '联系客服'
+        }
+        if (val === 5) { // 已取消
+          return '删除订单'
+        }
+        if (val === 6) { // 已完成
+          return '删除订单'
+        }
+        if (val === 7) { // 全部
+          return '删除订单'
+        }
+      }
+    }
+
+  }
+</script>
+
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+
+  .theme-color {
+    color: @theme-color !important;
+  }
+
+  .theme-color-blue {
+    color: @theme-color-blue;
+  }
+
+  .order-item {
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    font: 14px/1.3 'Microsoft Yahei';
+    color: #444;
+    background-color: #fff;
+  }
+
+  .order-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .color-058bed {
+    color: #058bed;
+  }
+
+  .color-fc766d {
+    color: #fc766d;
+  }
+
+  .color-999 {
+    color: #999;
+  }
+
+  .item-center {
+    align-items: center;
+  }
+
+  .title {
+    font: italic bold 16px/20px 'Microsoft Yahei';
+  }
+
+  .btn {
+    margin: 10px auto;
+    padding: 4px 12px;
+    display: inline-block;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 100px;
+    background: @theme-color;
+  }
+
+  .bottom-line {
+    padding: 10px 0;
+    position: relative;
+
+    &:after {
+      content: '';
+      height: 1px;
+      background-color: #ddd;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  .scroller-box {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    overflow-x: scroll;
+    .pic {
+      .w(200);
+      .h(200);
+    }
+    & + .bottom-line:before {
+      content: '';
+      height: 1px;
+      background-color: #ddd;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+  }
+
+  .order-state-box {
+    display: flex;
+
+    .state-item {
+      margin-left: 20px;
+      text-align: center;
+      color: #666;
+      position: relative;
+    }
+
+    .state-item:before {
+      content: '\e672';
+      font: 16px/1px 'iconfont';
+      position: absolute;
+      left: -2px;
+      top: 12px;
+      transform: translate(-100%, 50%);
+    }
+
+    .state-item:first-child {
+      margin-left: 0;
+    }
+
+    .state-item:first-child:before {
+      display: none;
+    }
+
+    .iconfont {
+      width: 24px;
+      height: 24px;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 12px;
+      line-height: 24px;
+      color: #666;
+      border: 1px solid #666;
+      border-radius: 100px;
+    }
+
+    .label {
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    &.this-state .succes-item {
+      color: @theme-color;
+
+      .iconfont {
+        color: #fff;
+        background-color: @theme-color;
+        border: none;
+      }
+    }
+  }
+</style>

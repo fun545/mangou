@@ -23,6 +23,21 @@ FastClick.attach(document.body)
 
 Vue.config.productionTip = false
 
+// 时间戳格式化过滤器
+Vue.filter('formatTime', (value) => {
+  function add0 (m) {
+    return m < 10 ? '0' + m : m
+  }
+  var time = new Date(parseInt(value))
+  var y = time.getFullYear()
+  var m = time.getMonth() + 1
+  var d = time.getDate()
+  var h = time.getHours()
+  var i = time.getMinutes()
+  var s = time.getSeconds()
+  return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(i) + ':' + add0(s)
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app-box',

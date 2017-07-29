@@ -1,41 +1,43 @@
 <template>
   <div class="order-rater-view">
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">订单评价</x-header>
-    <!-- 订单编号 -->
-    <div class="number">142853652136426</div>
-    <!-- 订单商品图片 -->
-    <div class="img-box">
-      <div class="scroller">
-        <img src="../assets/goods_img.jpg" width="25%" v-for="i in 7" alt="">
+    <m-header title="订单评分">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
+    <div class="content">
+      <!-- 订单编号 -->
+      <div class="number">142853652136426</div>
+      <!-- 订单商品图片 -->
+      <div class="img-box">
+        <div class="scroller">
+          <img src="../assets/goods_img.jpg" width="25%" v-for="i in 7" alt="">
+        </div>
       </div>
+      <!-- 分界线 -->
+      <div class="line-bar">请给我们打分</div>
+      <!-- 评论星星 -->
+      <div class="text-center">
+        <rater active-color="#eb900e" :margin="5" v-model="rater"></rater>
+      </div>
+      <!-- 评价标签 -->
+      <div class="rater-tabs-box">
+        <checker default-item-class="default-checker" selected-item-class="selected-checker" v-model="checker"
+                 type="checkbox" @on-change="raterSelect">
+          <checker-item :value="item" v-for="(item,index) in keyWords" :key="index">{{item.keyword}}</checker-item>
+        </checker>
+      </div>
+      <!-- 评论留言 -->
+      <div class="text-msg">
+        <textarea rows="3" placeholder="请输入评论内容" v-model="raterText" max="300"/>
+      </div>
+      <!-- 提交评价按钮 -->
+      <div class="submit-btn" @click="submit">提交评价</div>
     </div>
-    <!-- 分界线 -->
-    <div class="line-bar">请给我们打分</div>
-    <!-- 评论星星 -->
-    <div class="text-center">
-      <rater active-color="#eb900e" :margin="5" v-model="rater"></rater>
-    </div>
-    <!-- 评价标签 -->
-    <div class="rater-tabs-box">
-      <checker default-item-class="default-checker" selected-item-class="selected-checker" v-model="checker">
-        <checker-item :value="1">服务好</checker-item>
-        <checker-item :value="2">商品质量好</checker-item>
-        <checker-item :value="3">价格实惠</checker-item>
-        <checker-item :value="4">发货速度快</checker-item>
-        <checker-item :value="5">送货快</checker-item>
-      </checker>
-    </div>
-    <!-- 评论留言 -->
-    <div class="text-msg">
-      <textarea rows="4" placeholder="请输入评论内容"/>
-    </div>
-    <!-- 提交评价按钮 -->
-    <div class="submit-btn" @click="submit">提交评价</div>
   </div>
 </template>
 
 <script>
+  import mHeader from '../components/header'
   import { XHeader, Rater, Checker, CheckerItem } from 'vux'
 
   export default {
@@ -43,56 +45,103 @@
       XHeader,
       Rater,
       Checker,
-      CheckerItem
+      CheckerItem,
+      mHeader
     },
     data () {
       return {
         rater: 0,
-        checker: 0
+        checker: 0,
+        keyWords: '',
+        raterText: '',
+        reterList: []
       }
+    },
+    created () {
+      console.log(this.$route.query)
+      this.post('/goods/searchKeyWord', {statusType: 4}).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          this.keyWords = res.data.KeyWords
+        }
+      })
     },
     methods: {
       submit () {
-        this.$vux.alert.show({content: '提交评价成功'})
+//         拼接keyWordId
+        var keywordsId = []
+        this.reterList.forEach((item, index) => {
+          keywordsId.push(item.keyId)
+        })
+        keywordsId = keywordsId.join(',')
+        this.post('/orders/orderEvaluate', {
+          token: localStorage.getItem('m-token'),
+          orderNum: this.$route.query.orderNum,
+          evaluateContext: this.raterText,
+          keyWordId: keywordsId,
+          businessSrvicePoints: this.rater,
+          shopType: this.$route.query.shopType
+        }).then((res) => {
+          console.log(res.data)
+          this.$vux.alert.show({
+            content: '评论成功'
+          })
+          this.$router.go(-1)
+        })
+      },
+      // 选择的评论标签
+      raterSelect (val) {
+        this.reterList = val
       }
     }
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+
+  .cp-header {
+    color: @font-color-m;
+    position: inherit;
+    .back {
+      color: @font-color-m;
+    }
+  }
+
+  .content {
+  }
+
   .order-rater-view {
     background-color: #fff;
   }
 
-  .order-rater-view .vux-header {
-    background-color: transparent;
-
-    [class^=vux-header-] {
-      color: #444;
-    }
-
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #444;
-    }
-  }
-
   .order-rater-view .number {
     text-align: center;
-    height: 40px;
-    line-height: 20px;
+    .h(60);
+    .lh(20);
     color: #666;
-    padding: 10px 0;
+    .pt(20);
+    .pb(20);
     box-sizing: border-box;
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
   }
 
   .order-rater-view .img-box {
-    padding: 10px 0;
+    .pt(20);
+    .pb(20);
     border-bottom: 1px solid #eee;
 
     .scroller {
+      .pic {
+        .w(100);
+        .h(100);
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
       display: flex;
       align-items: center;
       overflow-y: scroll;
@@ -102,46 +151,59 @@
   .order-rater-view .line-bar {
     display: table;
     margin: 20px auto;
+    .mt(40);
+    .mb(40);
     color: #999;
-    line-height: 20px;
+    .lh(40);
     position: relative;
 
     &:before {
       content: '';
-      width: 80px;
+      .w(160);
       height: 1px;
       background-color: #999;
       position: absolute;
       top: 50%;
-      left: -10px;
+      .l(-20);
       transform: translate(-100%, -50%);
     }
 
     &:after {
       content: '';
-      width: 80px;
+      .w(160);
       height: 1px;
       background-color: #999;
       position: absolute;
       top: 50%;
-      right: -10px;
+      .r(-20);
       transform: translate(100%, -50%);
     }
   }
 
   .order-rater-view .rater-tabs-box {
     margin: 10px auto;
-    padding: 5px;
+    .mt(20);
+    .mb(20);
+    .pl(10);
+    .pr(10);
+    .pb(10);
+    .pt(10);
     text-align: center;
 
     .default-checker {
-      padding: 5px 12px;
+      .pt(10);
+      .pb(10);
+      .pl(24);
+      .pr(24);
       line-height: 1;
       color: #999;
-      font-size: 12px;
+      .fs(25);
       border-radius: 100px;
       border: 1px solid #999;
-      margin: 5px;
+      .ml(10);
+      .mr(10);
+      .mb(10);
+      .mt(10);
     }
 
     .selected-checker {
@@ -152,13 +214,16 @@
   }
 
   .order-rater-view .text-msg {
-    padding: 0 15px;
-
+    .pl(30);
+    .pr(30);
     textarea {
       display: block;
       width: 100%;
       box-sizing: border-box;
-      padding: 5px 10px;
+      .pt(10);
+      .pb(10);
+      .pl(20);
+      .pr(20);
       line-height: 1.5;
       background-color: #f1f1f1;
       border-style: none;
@@ -166,17 +231,22 @@
       -webkit-appearance: none;
       border-radius: 5px;
       resize: none;
-      text-align: center;
+      .fs(25);
     }
   }
 
   .order-rater-view .submit-btn {
-    margin: 30px 40px;
+    box-sizing: border-box;
+    width: 90%;
+    margin: 0 auto;
+    .h(80);
+    .lh(80);
+    .mt(60);
+    .mb(60);
     text-align: center;
-    padding: 10px 0;
-    line-height: 20px;
     color: #fff;
     background-color: #ff5500;
     border-radius: 5px;
+    .fs(30);
   }
 </style>

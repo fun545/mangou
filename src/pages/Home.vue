@@ -150,6 +150,7 @@
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
   export default {
+    name: 'home',
     components: {
       swiper,
       swiperSlide,
@@ -260,9 +261,6 @@
         }
       })
     },
-//    activated () {
-//      this.homeSroll.refresh()
-//    },
     methods: {
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
@@ -323,7 +321,7 @@
               if (newList.length > 0) {
                 setTimeout(() => {
                   this.homeSroll.refresh()
-                }, 0)
+                }, 50)
               } else {
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
@@ -349,7 +347,9 @@
             this.loadMore()
           }
         })
-        this.homeSroll.refresh()
+        setTimeout(() => {
+          this.contentScrll.refresh()
+        }, 100)
       }
     }
   }

@@ -53,6 +53,7 @@
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   export default {
+    name: 'next',
     components: {
       mFooter,
       XDialog,

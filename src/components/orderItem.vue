@@ -78,6 +78,7 @@
       }
     },
     methods: {
+      // 点击按钮事件
       onBt (item, index) {
         if (item.status === 1) { // 去支付
           this.$router.push({path: '/goPay'})
@@ -113,6 +114,10 @@
           this.$vux.alert.show({title: '电话', content: item.tel})
           return
         }
+        if (item.status === 6) { // 待评价
+          this.$router.push({path: '/order_rater', query: item})
+          return
+        }
         // 其他状态都是删除订单
         this.delOrder = item
         // 是否确认删除提示
@@ -141,7 +146,9 @@
             this.showPositionValue = true
           }
         })
-      }
+      },
+      // 前端订单状态展示
+      showStatus () {}
     },
     filters: {
       // 标题名称
@@ -178,7 +185,7 @@
           return '删除订单'
         }
         if (val === 6) { // 已完成
-          return '删除订单'
+          return '评价'
         }
         if (val === 7) { // 全部
           return '删除订单'

@@ -91,7 +91,7 @@ export default new Router({
       component: require('../pages/confirmOrder')
     },
     {
-      /* 订单列表 */
+      /* 所有订单列表 */
       path: '/order_list',
       component: require('../pages/OrderList')
     },

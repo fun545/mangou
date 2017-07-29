@@ -81,6 +81,7 @@
   import shopCarButton from '../components/buyCarButton'
 
   export default {
+    name: 'this',
     components: {
       mFooter,
       BScroll,

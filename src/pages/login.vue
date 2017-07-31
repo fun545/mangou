@@ -123,6 +123,7 @@
             this.$router.push({path: '/user'})
           }
           if (res.data.code === 101) {
+            this.text = res.data.msg
             this.showPositionValue = true
           }
         })

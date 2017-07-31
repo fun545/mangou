@@ -11,7 +11,7 @@
           <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
         </div>
         <!-- 订单商品 -->
-        <div class="scroller-box" @click="$router.push({path:'/order_info'})">
+        <div class="scroller-box" @click="goOrderInfo(item)">
           <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
             <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
           </div>
@@ -19,21 +19,122 @@
         <!-- 订单状态 -->
         <div class="bottom-line flex-box item-center">
           <div class="flex-col order-state-box this-state" @click="$router.push({path:'/order_info'})">
-            <div class="state-item" :class="{'succes-item' : index >= 0}">
-              <div class="iconfont">&#xe602;</div>
-              <div class="label">已提交</div>
+            <!--待付款 1-->
+            <div v-if="item.status===1">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe603;</div>
+                <div class="label">待支付</div>
+              </div>
+              <div class="state-item d-ib">
+                <div class="iconfont">&#xe60b;</div>
+                <div class="label">送货中</div>
+              </div>
+              <div class="state-item d-ib">
+                <div class="iconfont">&#xe607;</div>
+                <div class="label">已签收</div>
+              </div>
             </div>
-            <div class="state-item" :class="{'succes-item' : index >= 1}">
-              <div class="iconfont">&#xe603;</div>
-              <div class="label">待支付</div>
+            <!--已付款 待发货 2-->
+            <div v-if="item.status===2">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe603;</div>
+                <div class="label">已支付</div>
+              </div>
+              <div class="state-item d-ib">
+                <div class="iconfont">&#xe60b;</div>
+                <div class="label">配送中</div>
+              </div>
+              <div class="state-item d-ib">
+                <div class="iconfont">&#xe607;</div>
+                <div class="label">已签收</div>
+              </div>
             </div>
-            <div class="state-item" :class="{'succes-item' : index >= 2}">
-              <div class="iconfont">&#xe60b;</div>
-              <div class="label">送货中</div>
+            <!--已发货(配送中) 3-->
+            <div v-if="item.status===3">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe603;</div>
+                <div class="label">已支付</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe60b;</div>
+                <div class="label">配送中</div>
+              </div>
+              <div class="state-item d-ib">
+                <div class="iconfont">&#xe607;</div>
+                <div class="label">已签收</div>
+              </div>
             </div>
-            <div class="state-item" :class="{'succes-item' : index >= 3}">
-              <div class="iconfont">&#xe607;</div>
-              <div class="label">已签收</div>
+            <!--退款换货 1审核中-->
+            <div v-if="item.status===4&&item.refundStatus===1">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe647;</div>
+                <div class="label">审核中</div>
+              </div>
+              <div class="state-item d-ib ">
+                <div class="iconfont">&#xe6e5;</div>
+                <div class="label">退款成功</div>
+              </div>
+            </div>
+            <!--退款换货 2成功-->
+            <div v-if="item.status===4&&item.refundStatus===2">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe647;</div>
+                <div class="label">审核中</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe6e5;</div>
+                <div class="label">退款成功</div>
+              </div>
+            </div>
+            <!--已取消 5-->
+            <div v-if="item.status===5">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe61b;</div>
+                <div class="label">已取消</div>
+              </div>
+            </div>
+            <!--已完成 6、7-->
+            <div v-if="item.status===6||item.status===7">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe603;</div>
+                <div class="label">已支付</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe60b;</div>
+                <div class="label">配送中</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe607;</div>
+                <div class="label">已签收</div>
+              </div>
             </div>
           </div>
           <div class="text-center">
@@ -148,7 +249,10 @@
         })
       },
       // 前端订单状态展示
-      showStatus () {}
+      showStatus () {},
+      goOrderInfo (item) {
+        this.$router.push({path: '/order_info', query: item.orderId})
+      }
     },
     filters: {
       // 标题名称

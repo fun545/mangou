@@ -95,12 +95,14 @@
       <div class="bt">删除</div>
       <div class="bt">评价</div>
     </div>
+    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
+           :text="toastText" width="10em" class="toast"></toast>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
-  import { XHeader, Timeline, TimelineItem } from 'vux'
+  import { XHeader, Timeline, TimelineItem, Toast } from 'vux'
   import BScroll from 'better-scroll'
   export default{
     components: {
@@ -108,11 +110,35 @@
       Timeline,
       TimelineItem,
       mHeader,
-      BScroll
+      BScroll,
+      Toast
+    },
+    data () {
+      return {
+        toastText: '',
+        showPositionValue: false
+      }
     },
     created () {
       this.$nextTick(() => {
         this._initScrll()
+      })
+      this.post('/orders/getOrderDetail', {
+        token: localStorage.getItem('m-token'),
+        orderId: this.$route.query.orderId
+      }).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
+          return
+        }
+        if (res.data.code === 101) {
+          this.toastText = res.data.msg
+          this.showPositionValue = true
+        }
+        if (res.data.code === 102) {
+          this.toastText = res.data.msg
+          this.showPositionValue = true
+        }
       })
     },
     methods: {

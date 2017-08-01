@@ -47,6 +47,7 @@
   import { XHeader, Tab, TabItem, Swiper, SwiperItem } from 'vux'
 
   export default {
+    name: 'collection',
     components: {
       XHeader,
       Tab,

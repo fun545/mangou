@@ -670,6 +670,11 @@
       // 去结算 和删除商品
       toCount () {
         // 去结算
+        // 如果用户没有填收货信息，跳转收货地址
+        if (!this.$store.state.shippingInfo) {
+          this.$router.push({path: 'address'})
+          return
+        }
         if (this.editShow) {
           var thisGoodsList = []
           var nextGoodsList = []

@@ -5,6 +5,7 @@
 <script>
   import forget from '../components/registerForget'
   export default {
+    name: 'forget',
     components: {forget},
     data () {
       return {

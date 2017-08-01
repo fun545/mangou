@@ -41,6 +41,7 @@
   import { XHeader, Rater, Checker, CheckerItem } from 'vux'
 
   export default {
+    name: 'orderRater',
     components: {
       XHeader,
       Rater,

@@ -76,6 +76,7 @@
 <script>
   import { XHeader } from 'vux'
   export default {
+    name: 'manualLocation',
     components: {XHeader},
     data () {
       return {

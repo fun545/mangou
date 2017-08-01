@@ -30,6 +30,7 @@
   import { XHeader, Checker, CheckerItem } from 'vux'
 
   export default {
+    name: 'orderRefund',
     components: {
       XHeader,
       Checker,

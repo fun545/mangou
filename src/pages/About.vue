@@ -13,6 +13,7 @@
 <script>
   import { XHeader } from 'vux'
   export default{
+    name: 'about',
     components: {
       XHeader
     },

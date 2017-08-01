@@ -36,7 +36,7 @@
                 <span slot="label" class="iconfont">&#xe618;</span>
               </x-input>
             </group>
-            <get-code :codeType="type" @getCode="receiveCode"></get-code>
+            <get-code :codeType="type" @getCode="receiveCode" :tel="tel"></get-code>
           </div>
         </div>
         <router-link to="/forget">
@@ -67,6 +67,7 @@
   import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, md5, Toast } from 'vux'
   import getCode from '../components/_getCode'
   export default {
+    name: 'login',
     components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5, Toast},
     data () {
       return {

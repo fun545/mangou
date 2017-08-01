@@ -38,6 +38,7 @@
   import { XHeader, Group, XInput, XButton, CheckIcon } from 'vux'
   import getCode from '../components/_getCode'
   export default {
+    name: 'register',
     components: {XHeader, Group, XInput, XButton, getCode, CheckIcon},
     data () {
       return {

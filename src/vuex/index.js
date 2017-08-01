@@ -31,7 +31,8 @@ const state = {
   selectedTotalCountThis: '', // 订单商品数 及时送
   selectedTotalCountNext: '',  // 订单商品数 次日达
   totalPriceThis: '',   // 确认订单商品总价 及时送
-  totalPriceNext: ''    // 确认订单商品总价 次日达
+  totalPriceNext: '',    // 确认订单商品总价 次日达
+  orderId: '' // 订单Id
 }
 
 export default new Vuex.Store({

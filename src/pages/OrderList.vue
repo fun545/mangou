@@ -14,6 +14,7 @@
   import { XHeader } from 'vux'
   import orderList from '../components/orderItem.vue'
   export default{
+    name: 'order_List',
     components: {
       XHeader,
       orderList
@@ -24,12 +25,13 @@
       }
     },
     created () {
-      this.post('/orders/getOrderList', {token: localStorage.getItem('m-token')}).then((res) => {
+      this.post('/orders/getOrderList', {token: localStorage.getItem('m-token'), status: -1}).then((res) => {
         console.log(res.data)
         if (res.data.code === 100) {
           this.orderList = res.data.orderList
         }
       })
+      console.log(222)
     },
     methods: {}
   }

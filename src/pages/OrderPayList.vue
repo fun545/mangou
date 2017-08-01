@@ -106,6 +106,7 @@
   import { XHeader } from 'vux'
 
   export default {
+    name: 'orderPayList',
     components: {
       XHeader
     },

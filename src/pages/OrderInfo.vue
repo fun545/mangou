@@ -39,44 +39,57 @@
             <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
           </timeline-item>
         </timeline>
-        <!-- 收货人信息 -->
-        <div class="flex-box top-info-box">
+        <!-- 收货人信息 自取-->
+        <div class="flex-box top-info-box address" v-if="orderDetail.sendType===1">
           <div class="iconfont" style="color:#666;">&#xe638;</div>
           <div class="flex-col">
-            <p>&emsp;收货人：<span>加多宝</span></p>
-            <p>联系电话：<span>18612345678</span></p>
-            <p>收货地址：<span>珠江花城锦里3期13栋808</span></p>
-            <p>买家留言：<span>配送前电话通知</span></p>
+            <p>&emsp;收货人：<span>{{orderDetail.shippingName}}</span></p>
+            <p>联系电话：<span>{{orderDetail.shippingPhone}}</span></p>
+            <p>取件地址：<span>{{orderDetail.address}}</span></p>
+            <p>买家留言：<span>{{orderDetail.remarks | remarks}}</span></p>
           </div>
         </div>
-        <div class="flex-box title-box">
-          <div class="flex-col">商品详情</div>
-          <div class="flex-item">共<span style="color:#f78752;">12</span>件</div>
-        </div>
-        <div class="flex-box goods-item" v-for="i in 3">
-          <img src="../assets/goods_img.jpg" width="20%" alt="">
+        <!-- 收货人信息 送货到家-->
+        <div class="flex-box top-info-box address" v-if="orderDetail.sendType===2">
+          <div class="iconfont" style="color:#666;">&#xe638;</div>
           <div class="flex-col">
-            <p>熊孩子榴莲干零食</p>
-            <p style="color:#f78752;">¥9.9<span class="float-right" style="color:#666">x2</span></p>
+            <p>&emsp;收货人：<span>{{orderDetail.shippingName}}</span></p>
+            <p>联系电话：<span>{{orderDetail.shippingPhone}}</span></p>
+            <p>送货地址：<span>{{orderDetail.address}}</span></p>
+            <p>买家留言：<span>{{orderDetail.remarks | remarks}}</span></p>
           </div>
         </div>
-        <div class="more-btn">显示更多</div>
-        <div class="flex-box mind-flex">
-          <div class="flex-col">商品总价</div>
-          <div class="flex-item">¥188.1</div>
-        </div>
-        <div class="flex-box mind-flex">
-          <div class="flex-col">优惠金额</div>
-          <div class="flex-item">¥5.0</div>
-        </div>
-        <div class="flex-box mind-flex">
-          <div class="flex-col">配送费</div>
-          <div class="flex-item">¥3</div>
-        </div>
-        <div class="flex-box top-border-box">
-          <div class="flex-col">实际付款</div>
-          <div style="color:#ff5500;">¥183.1</div>
-        </div>
+
+        <!--<div class="flex-box title-box">-->
+          <!--<div class="flex-col">商品详情</div>-->
+          <!--<div class="flex-item">共<span style="color:#f78752;">12</span>件</div>-->
+        <!--</div>-->
+        <!--<div class="flex-box goods-item" v-for="i in 3">-->
+          <!--<img src="../assets/goods_img.jpg" width="20%" alt="">-->
+          <!--<div class="flex-col">-->
+            <!--<p>熊孩子榴莲干零食</p>-->
+            <!--<p style="color:#f78752;">¥9.9<span class="float-right" style="color:#666">x2</span></p>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="more-btn">显示更多</div>-->
+        <!--<div class="flex-box mind-flex">-->
+          <!--<div class="flex-col">商品总价</div>-->
+          <!--<div class="flex-item">¥188.1</div>-->
+        <!--</div>-->
+        <!--<div class="flex-box mind-flex">-->
+          <!--<div class="flex-col">优惠金额</div>-->
+          <!--<div class="flex-item">¥5.0</div>-->
+        <!--</div>-->
+        <!--<div class="flex-box mind-flex">-->
+          <!--<div class="flex-col">配送费</div>-->
+          <!--<div class="flex-item">¥3</div>-->
+        <!--</div>-->
+        <!--<div class="flex-box top-border-box">-->
+          <!--<div class="flex-col">实际付款</div>-->
+          <!--<div style="color:#ff5500;">¥183.1</div>-->
+        <!--</div>-->
+        <!--列表标题-->
+
         <div class="flex-box title-box">订单信息</div>
         <div class="time-info-box">
           <p>下单时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
@@ -105,6 +118,7 @@
   import { XHeader, Timeline, TimelineItem, Toast } from 'vux'
   import BScroll from 'better-scroll'
   export default{
+    name: 'orderInfo',
     components: {
       XHeader,
       Timeline,
@@ -116,7 +130,8 @@
     data () {
       return {
         toastText: '',
-        showPositionValue: false
+        showPositionValue: false, // 透明提示Flag
+        orderDetail: '' // 订单详情
       }
     },
     created () {
@@ -125,10 +140,11 @@
       })
       this.post('/orders/getOrderDetail', {
         token: localStorage.getItem('m-token'),
-        orderId: this.$route.query.orderId
+        orderId: this.$store.state.orderId
       }).then((res) => {
         if (res.data.code === 100) {
           console.log(res.data)
+          this.orderDetail = res.data.orderDetail
           return
         }
         if (res.data.code === 101) {
@@ -151,6 +167,14 @@
           this.contentScrll.refresh()
         }, 100)
       }
+    },
+    filters: {
+      remarks (val) {
+        if (!val) {
+          return '无'
+        }
+        return val
+      }
     }
   }
 </script>
@@ -165,6 +189,11 @@
     .back {
       color: @font-color-m;
     }
+  }
+
+  .address {
+    background: url("../assets/querenXD-xinfeng@2x.png") no-repeat;
+    background-size: 100% 100%;
   }
 
   .order-info-view .view-content {
@@ -183,6 +212,8 @@
   }
 
   .order-info-view .top-info-box {
+    box-sizing: border-box;
+    .h(198);
     .pt(25);
     .pb(25);
     .pl(35);

@@ -60,6 +60,7 @@
   import noPage from '../components/noPage'
   import loading from '../components/loading'
   export default {
+    name: 'nextList1',
     components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading},
     data () {
       return {

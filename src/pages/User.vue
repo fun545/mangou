@@ -38,7 +38,7 @@
           <!-- 卡片标题 -->
           <div class="title-box">
             <div class="title">我的订单</div>
-            <router-link to="/order_list">查看更多订单</router-link>
+            <div @click="$router.push({path:'/order_list'})">查看更多订单</div>
           </div>
           <!-- 订单入口 -->
           <div class="entry-flex">
@@ -173,7 +173,6 @@
     methods: {
       go () {
         this.$router.push({path: '/setting'})
-        this.$router.go(0)
       },
       _initScroll () {
         this.contentScroll = new BScroll(this.$refs.content, {click: true})
@@ -211,10 +210,10 @@
         .h(1296);
       }
       .top-wrap {
-        /*position: absolute;
+        position: absolute;
         top: 0;
         left: 0;
-        right: 0;*/
+        right: 0;
       }
     }
     .setting {

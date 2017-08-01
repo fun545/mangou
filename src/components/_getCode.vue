@@ -16,7 +16,8 @@
   export default {
     components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover},
     props: {
-      codeType: Number
+      codeType: Number,
+      tel: String
     },
     data () {
       return {
@@ -31,7 +32,7 @@
       getCodeBt () {
         if (!this.hasSendFlag) {
           this.hasSendFlag = true
-          this.post('/user/getCode', {phone: 15258195623, type: this.codeType}).then((res) => {
+          this.post('/user/getCode', {phone: this.tel, type: this.codeType}).then((res) => {
             console.log(res)
           })
           this.timer = setInterval(() => {

@@ -29,6 +29,7 @@
   import mHeader from '../components/header'
   import { Toast } from 'vux'
   export default {
+    name: 'selectAddress',
     components: {
       mHeader,
       Toast

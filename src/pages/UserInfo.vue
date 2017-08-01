@@ -29,7 +29,8 @@
 
       <cell title="性别" :arrow-direction="showSex ? 'down' : 'right'" @click.native="showSex = !showSex" is-link/>
       <template v-if="showSex">
-        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item" v-model="sex">
+        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item"
+                 v-model="sex">
           <checker-item value="1">男</checker-item>
           <checker-item value="2">女</checker-item>
           <checker-item value="3">保密</checker-item>
@@ -38,7 +39,8 @@
 
       <cell title="年龄" :arrow-direction="showAge ? 'down' : 'right'" @click.native="showAge = !showAge" is-link/>
       <template v-if="showAge">
-        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item" v-model="age">
+        <checker class="weui-cell" default-item-class="checker-default-item" selected-item-class="checker-selected-item"
+                 v-model="age">
           <checker-item value="1">18-25</checker-item>
           <checker-item value="2">26-35</checker-item>
           <checker-item value="3">35-45</checker-item>
@@ -53,6 +55,7 @@
   import { XDialog, Group, XHeader, XInput, Cell, Checker, CheckerItem } from 'vux'
 
   export default {
+    name: 'userInfo',
     components: {
       XDialog,
       XHeader,

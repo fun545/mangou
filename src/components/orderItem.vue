@@ -18,7 +18,7 @@
         </div>
         <!-- 订单状态 -->
         <div class="bottom-line flex-box item-center">
-          <div class="flex-col order-state-box this-state" @click="$router.push({path:'/order_info'})">
+          <div class="flex-col order-state-box this-state" @click="goOrderInfo(item)">
             <!--待付款 1-->
             <div v-if="item.status===1">
               <div class="state-item succes-item d-ib">
@@ -251,7 +251,8 @@
       // 前端订单状态展示
       showStatus () {},
       goOrderInfo (item) {
-        this.$router.push({path: '/order_info', query: item.orderId})
+        this.$store.state.orderId = item.orderId
+        this.$router.push({path: '/order_info'})
       }
     },
     filters: {

@@ -38,6 +38,7 @@
 <script>
   import mHeader from '../components/header'
   export default {
+    name: 'address',
     components: {
       mHeader
     },

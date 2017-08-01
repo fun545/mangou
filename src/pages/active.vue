@@ -33,6 +33,7 @@
   import noPage from '../components/noPage'
   import loading from '../components/loading'
   export default {
+    name: 'active',
     components: {mHeader, noPage, loading},
     data () {
       return {

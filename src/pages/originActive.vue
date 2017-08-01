@@ -27,6 +27,7 @@
   import loading from '../components/loading'
   export default {
     components: {mHeader, originList, loading},
+    name: 'originActive',
     data () {
       return {
         title: this.$route.query.remarks,

@@ -97,6 +97,7 @@
   import { XHeader } from 'vux'
 
   export default{
+    name: 'orderRaterList',
     components: {
       XHeader
     },

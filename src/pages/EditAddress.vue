@@ -24,6 +24,7 @@
   import mHeader from '../components/header'
   import { Group, XInput, XAddress, XTextarea, XSwitch, Cell } from 'vux'
   export default{
+    name: 'editAddress',
     components: {
       mHeader,
       Group,

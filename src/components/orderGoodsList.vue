@@ -1,74 +1,100 @@
 <template>
-  <!--列表标题-->
-  <div class="goods-list-title">
-    商品详情
-    <p class="right f-r">共<span class="theme-color">{{goodsTotalCount}}</span>件</p>
-  </div>
-  <!--商品列表-->
-  <div class="goods-list">
-    <div class="item" v-for="(item, index) in filterListThis" :key="index">
-      <div class="pic">
-        <img v-lazy="item.goodsImgUrl" alt="">
+  <div>
+    <!--列表标题-->
+    <div class="goods-list-title">
+      商品详情
+      <p class="right f-r">共<span class="theme-color">{{goodsTotalCount}}</span>件</p>
+    </div>
+    <!--商品列表-->
+    <div class="goods-list">
+      <div class="item" v-for="(item, index) in filterList" :key="index">
+        <div class="pic">
+          <img v-lazy="item.goodsImgUrl" alt="">
+        </div>
+        <div class="des">
+          <p class="name">{{item.goodsName}}</p>
+          <p class="price" v-if="shopType===2">￥{{item.canKaoPrice}}</p>
+          <p class="price" v-if="shopType===1">￥{{item.price}}</p>
+        </div>
+        <div class="count">
+          x{{item.buyCount}}
+        </div>
       </div>
-      <div class="des">
-        <p class="name">{{item.goodsName}}</p>
-        <p class="price">￥{{item.canKaoPrice}}</p>
+    </div>
+    <!--更多-->
+    <div class="more" v-if="goodsList.length>2">
+      <div class="bt t-c" @click="setCount()" v-if="!showMoreFlag">显示更多</div>
+      <div class="bt t-c" @click="setCount()" v-if="showMoreFlag">收起商品</div>
+    </div>
+    <!-- 订单详情-->
+    <div class="order-info" :class="{'this':shopType===2,'next':shopType===1}">
+      <div class="left">
+        <p>商品总价</p>
+        <p v-if="shopType===1">优惠金额</p>
+        <p>配送费</p>
       </div>
-      <div class="count">
-        x{{item.buyCount}}
+      <div class="right">
+        <p class="s2">￥{{goodsTotalPrice}}</p>
+        <div class="s1">
+          <span>-</span>
+          <!--优惠金额  -->
+          <span class="price">￥{{discount}}</span>
+        </div>
+        <div class="s1">
+          <span>+</span>
+          <span class="price">￥{{freight}}</span>
+        </div>
+      </div>
+    </div>
+    <!--留言与实际付款 及时送-->
+    <div style="background: #fff">
+      <slot name="leaveMessge"></slot>
+      <!--实际付款 及时送-->
+      <div class="pay-count">
+        实际付款
+        <span class="f-r count">￥{{parseFloat(totalPrice)}}</span>
       </div>
     </div>
   </div>
-  <!--更多-->
-  <div class="more" v-if="thisGoodsList.length>2">
-    <div class="bt t-c" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
-    <div class="bt t-c" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
-  </div>
-  <!-- 订单详情-->
-  <div class="order-info this">
-    <div class="left">
-      <p>商品总价</p>
-      <p>配送费</p>
-    </div>
-    <div class="right">
-      <p class="s2">￥{{totalPriceThis}}</p>
-      <div class="s1">
-        <span>+</span>
-        <span class="price">￥{{Thisfreight}}</span>
-      </div>
-    </div>
-  </div>
-  <!--留言与实际付款 及时送-->
-  <div style="background: #fff">
-    <slot name="leaveMessge"></slot>
-    <!--实际付款 及时送-->
-    <div class="pay-count">
-      实际付款
-      <span class="f-r count">￥{{parseFloat(totalPriceThis) + parseFloat(Thisfreight)}}</span>
-    </div>
-  </div>
+
 </template>
 
 <script>
-
   export default {
     props: {
-      goodsList: Array,
-      goodsTotalCount: Number // 商品总数
+      goodsList: Array, // 商品列表
+      goodsTotalCount: Number, // 商品总数
+      scrollObj: Function, // scroll实例
+      shopType: Number,
+      totalPrice: Number,
+      freight: Number,
+      discount: Number,
+      goodsTotalPrice: Number // 商品总价
     },
     data () {
       return {
-        selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
+        showMoreFlag: false,
+        limitNumber: 2
+      }
+    },
+    methods: {
+      // 点击显示更多与隐藏 togle 及时送
+      setCount () {
+        if (this.showMoreFlag) {
+          this.limitNumber = 2
+        } else {
+          this.limitNumber = this.goodsList.length
+        }
+        this.showMoreFlag = !this.showMoreFlag
+        this.$nextTick(() => {
+          this.scrollObj.refresh()
+        })
       }
     },
     computed: {
-      // 显示更多与隐藏商品及时送
-      filterListThis () {
-        return this.thisGoodsList.slice(0, this.limitNumberThis)
-      },
-      // 显示更多与隐藏商品  次日达
-      filterListNext () {
-        return this.NextGoodsList.slice(0, this.limitNumberNext)
+      // 显示更多与隐藏商品
+      filterList () {
+        return this.goodsList.slice(0, this.limitNumber)
       }
     }
   }

@@ -25,7 +25,7 @@
       }
     },
     created () {
-      this.post('/orders/getOrderList', {token: localStorage.getItem('m-token'), status: -1}).then((res) => {
+      this.post('/orders/getOrderList', {token: localStorage.getItem('m-token')}).then((res) => {
         console.log(res.data)
         if (res.data.code === 100) {
           this.orderList = res.data.orderList

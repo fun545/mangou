@@ -7,17 +7,69 @@
     <!-- 页面内容 -->
     <div class="view-content" ref="content">
       <div>
-        <!-- 订单状态 -->
+        <!-- 订单状态-->
         <div class="flex-box top-info-box">
-          <div class="flex-item" style="color:#f78752;">
+          <!--已签收-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===6">
             <div class="iconfont">&#xe607;</div>
             <div class="text-center">已签收</div>
           </div>
+          <!--待付款-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===1">
+            <div class="iconfont">&#xe603;</div>
+            <div class="text-center">待付款</div>
+          </div>
+          <!--待发货-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===2">
+            <div class="iconfont">&#xe620;</div>
+            <div class="text-center">待发货</div>
+          </div>
+          <!--已发货-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===3">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">已发货</div>
+          </div>
+          <!--退款审核中-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===1">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">退款审核中</div>
+          </div>
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===2">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">退款审成功</div>
+          </div>
+          <!--退款失败-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===3">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">退款失败</div>
+          </div>
+          <!--已取消-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===5">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">已取消</div>
+          </div>
           <div class="flex-col">
-            <p>订单类型：<span>即时送 - 送货上门</span></p>
-            <p>订单状态：<span>已签收</span></p>
-            <p>订单编号：<span>19840238402348</span></p>
-            <p>客服电话：<span>0731 - 8298301</span></p>
+            <p v-if="orderDetail.shopType===2">订单类型：<span>即时送 - 送货上门</span></p>
+            <p v-if="orderDetail.shopType===1&&orderDetail.sendType===1">订单类型：<span>次日达 - 客户自取</span></p>
+            <p v-if="orderDetail.shopType===1&&orderDetail.sendType===2">订单类型：<span>次日达 - 送货上门</span></p>
+            <p>订单状态：
+              <!--待付款-->
+              <span v-if="orderDetail.status===1">待付款</span>
+              <!--待付款-->
+              <span v-if="orderDetail.status===2">待发货</span>
+              <!--待付款-->
+              <span v-if="orderDetail.status===3">已发货</span>
+              <!--待付款-->
+              <span v-if="orderDetail.status===4&&orderDetail.refundStatus===1">退款审核中</span>
+              <span v-if="orderDetail.status===4&&orderDetail.refundStatus===2">退款成功</span>
+              <span v-if="orderDetail.status===4&&orderDetail.refundStatus===3">退款失败</span>
+              <!--待付款-->
+              <span v-if="orderDetail.status===5">已取消</span>
+              <!--待付款-->
+              <span v-if="orderDetail.status===6">已签收</span>
+            </p>
+            <p>订单编号：<span>{{orderDetail.orderNum}}</span></p>
+            <p>客服电话：<span>{{orderDetail.phone}}</span></p>
           </div>
         </div>
         <!-- 订单状态时间线 -->
@@ -59,37 +111,17 @@
             <p>买家留言：<span>{{orderDetail.remarks | remarks}}</span></p>
           </div>
         </div>
-
-        <!--<div class="flex-box title-box">-->
-          <!--<div class="flex-col">商品详情</div>-->
-          <!--<div class="flex-item">共<span style="color:#f78752;">12</span>件</div>-->
-        <!--</div>-->
-        <!--<div class="flex-box goods-item" v-for="i in 3">-->
-          <!--<img src="../assets/goods_img.jpg" width="20%" alt="">-->
-          <!--<div class="flex-col">-->
-            <!--<p>熊孩子榴莲干零食</p>-->
-            <!--<p style="color:#f78752;">¥9.9<span class="float-right" style="color:#666">x2</span></p>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="more-btn">显示更多</div>-->
-        <!--<div class="flex-box mind-flex">-->
-          <!--<div class="flex-col">商品总价</div>-->
-          <!--<div class="flex-item">¥188.1</div>-->
-        <!--</div>-->
-        <!--<div class="flex-box mind-flex">-->
-          <!--<div class="flex-col">优惠金额</div>-->
-          <!--<div class="flex-item">¥5.0</div>-->
-        <!--</div>-->
-        <!--<div class="flex-box mind-flex">-->
-          <!--<div class="flex-col">配送费</div>-->
-          <!--<div class="flex-item">¥3</div>-->
-        <!--</div>-->
-        <!--<div class="flex-box top-border-box">-->
-          <!--<div class="flex-col">实际付款</div>-->
-          <!--<div style="color:#ff5500;">¥183.1</div>-->
-        <!--</div>-->
         <!--列表标题-->
-
+        <OrderGoodsList
+          :goodsList="orderDetail.goodsList"
+          :goodsTotalCount="orderDetail.buyTotalCount"
+          :scrollObj="contentScrll"
+          :shopType="orderDetail.shopType"
+          :totalPrice="orderDetail.totalPrice"
+          :freight="freight"
+          :discount="discount"
+          :goodsTotalPrice="orderDetail.goodsTotalPrice"
+        ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
         <div class="time-info-box">
           <p>下单时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
@@ -117,6 +149,7 @@
   import mHeader from '../components/header'
   import { XHeader, Timeline, TimelineItem, Toast } from 'vux'
   import BScroll from 'better-scroll'
+  import OrderGoodsList from '../components/orderGoodsList'
   export default{
     name: 'orderInfo',
     components: {
@@ -125,13 +158,17 @@
       TimelineItem,
       mHeader,
       BScroll,
-      Toast
+      Toast,
+      OrderGoodsList
     },
     data () {
       return {
         toastText: '',
         showPositionValue: false, // 透明提示Flag
-        orderDetail: '' // 订单详情
+        orderDetail: '', // 订单详情
+        contentScrll: '',
+        freight: 3,
+        discount: 0 // 优惠金额
       }
     },
     created () {
@@ -145,6 +182,12 @@
         if (res.data.code === 100) {
           console.log(res.data)
           this.orderDetail = res.data.orderDetail
+          // 运费 如果是没传freight字段则代表运费为0
+          if (!this.orderDetail.freight) {
+            this.freight = 0
+          } else {
+            this.freight = this.orderDetail.freight
+          }
           return
         }
         if (res.data.code === 101) {

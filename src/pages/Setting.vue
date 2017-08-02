@@ -34,12 +34,12 @@
           this.number = res.data.versionInfo.number
         }
       })
-      console.log(localStorage.getItem('m-token'))
+//      console.log(localStorage.getItem('m-token'))
       this.hasLogin()
     },
     methods: {
       go () {
-        console.log(localStorage.getItem('m-token'))
+//        console.log(localStorage.getItem('m-token'))
         if (localStorage.getItem('m-token')) {
           this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
             console.log('退出登录接口返回：')
@@ -54,9 +54,8 @@
         this.$router.push(this.path)
       },
       hasLogin () {
-        console.log()
         if (!localStorage.getItem('m-token')) {
-          console.log('noLogin')
+//          console.log('noLogin')
           this.text = '登录'
           this.path = {path: 'login'}
         } else {

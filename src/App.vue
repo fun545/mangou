@@ -16,11 +16,11 @@ setting,userInfo">
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_t9y2lmfjutk2o6r.eot');
-    src: url('//at.alicdn.com/t/font_t9y2lmfjutk2o6r.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_t9y2lmfjutk2o6r.woff') format('woff'),
-    url('//at.alicdn.com/t/font_t9y2lmfjutk2o6r.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_t9y2lmfjutk2o6r.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_2as1z68b6oj0dx6r.eot');
+    src: url('//at.alicdn.com/t/font_2as1z68b6oj0dx6r.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_2as1z68b6oj0dx6r.woff') format('woff'),
+    url('//at.alicdn.com/t/font_2as1z68b6oj0dx6r.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_2as1z68b6oj0dx6r.svg#iconfont') format('svg');
   }
 
   .weui-tab__panel {

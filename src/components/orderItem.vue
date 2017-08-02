@@ -11,9 +11,11 @@
           <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
         </div>
         <!-- 订单商品 -->
-        <div class="scroller-box" @click="goOrderInfo(item)">
-          <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
-            <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
+        <div ref="goodsContent" class="goodsContentWrap">
+          <div class="scroller-box" @click="goOrderInfo(item)">
+            <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
+              <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
+            </div>
           </div>
         </div>
         <!-- 订单状态 -->
@@ -106,6 +108,36 @@
                 <div class="label">退款成功</div>
               </div>
             </div>
+            <!--退款换货 3退款失败-->
+            <div v-if="item.status===4&&item.refundStatus===3">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe647;</div>
+                <div class="label">审核中</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe648;</div>
+                <div class="label">退款失败</div>
+              </div>
+            </div>
+            <!--退款换货 4退款失败-->
+            <div v-if="item.status===4&&item.refundStatus===4">
+              <div class="state-item succes-item d-ib">
+                <div class="iconfont">&#xe602;</div>
+                <div class="label">已提交</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe647;</div>
+                <div class="label">审核中</div>
+              </div>
+              <div class="state-item d-ib succes-item">
+                <div class="iconfont">&#xe648;</div>
+                <div class="label">退款失败</div>
+              </div>
+            </div>
             <!--已取消 5-->
             <div v-if="item.status===5">
               <div class="state-item succes-item d-ib">
@@ -160,10 +192,12 @@
 
 <script>
   import { Toast, Confirm } from 'vux'
+  import BScroll from 'better-scroll'
   export default {
     components: {
       Toast,
-      Confirm
+      Confirm,
+      BScroll
     },
     props: {
       orderList: Array
@@ -295,6 +329,9 @@
         if (val === 7) { // 全部
           return '删除订单'
         }
+      },
+      _initScrll () {
+        this.goodsContentScroll = new BScroll(this.$refs.goodsContent, {click: true})
       }
     }
 
@@ -304,6 +341,12 @@
 <style lang="less" scoped>
   @import "../common/style/sum";
   @import "../common/style/varlable";
+
+  .goodsContentWrap {
+    box-sizing: border-box;
+    .w(710);
+    overflow: auto;
+  }
 
   .theme-color {
     color: @theme-color !important;
@@ -317,9 +360,11 @@
     display: table;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 10px;
-    padding: 0 10px;
+    .mb(20);
+    .pl(20);
+    .pr(20);
     font: 14px/1.3 'Microsoft Yahei';
+    .fs(28);
     color: #444;
     background-color: #fff;
   }
@@ -346,21 +391,30 @@
 
   .title {
     font: italic bold 16px/20px 'Microsoft Yahei';
+    .fs(32);
+    .lh(40);
   }
 
   .btn {
-    margin: 10px auto;
-    padding: 4px 12px;
+    margin-left: auto;
+    margin-right: auto;
+    .mt(20);
+    .mb(20);
+    .pt(8);
+    .pb(8);
+    .pl(24);
+    .pr(24);
     display: inline-block;
     color: #fff;
-    font-size: 12px;
+    .fs(25);
     line-height: 1;
     border-radius: 100px;
     background: @theme-color;
   }
 
   .bottom-line {
-    padding: 10px 0;
+    .pt(10);
+    .pb(10);
     position: relative;
 
     &:after {
@@ -377,8 +431,9 @@
   .scroller-box {
     display: flex;
     align-items: center;
-    padding: 10px 0;
-    overflow-x: scroll;
+    .pt(10);
+    .pb(10);
+    /*overflow: hidden;*/
     .pic {
       .w(200);
       .h(200);
@@ -398,7 +453,7 @@
     display: flex;
 
     .state-item {
-      margin-left: 20px;
+      .ml(40);
       text-align: center;
       color: #666;
       position: relative;
@@ -407,9 +462,10 @@
     .state-item:before {
       content: '\e672';
       font: 16px/1px 'iconfont';
+      .fs(32);
       position: absolute;
-      left: -2px;
-      top: 12px;
+      .l(-4);
+      .t(24);
       transform: translate(-100%, 50%);
     }
 
@@ -422,20 +478,20 @@
     }
 
     .iconfont {
-      width: 24px;
-      height: 24px;
+      .w(48);
+      .h(48);
       box-sizing: border-box;
       text-align: center;
-      font-size: 12px;
-      line-height: 24px;
+      .fs(25);
+      .lh(48);
       color: #666;
       border: 1px solid #666;
       border-radius: 100px;
     }
 
     .label {
-      font-size: 12px;
-      line-height: 20px;
+      .fs(25);
+      .lh(40);
     }
 
     &.this-state .succes-item {

@@ -58,7 +58,7 @@
         </div>
       </div>
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
+    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="text" width="10em" class="toast"></toast>
   </div>
 </template>
@@ -79,7 +79,6 @@
         type: 3,
         code: '',
         showPositionValue: false,
-        position: 'middle',
         text: '验证码错误'
       }
     },

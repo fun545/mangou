@@ -229,7 +229,6 @@
     .cp-header {
       color: @font-color-m;
       z-index: 103;
-      opacity: .5;
       .back {
         color: @font-color-m;
       }

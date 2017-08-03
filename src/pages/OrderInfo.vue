@@ -26,8 +26,8 @@
           </div>
           <!--已发货-->
           <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===3">
-            <div class="iconfont">&#xe607;</div>
-            <div class="text-center">已发货</div>
+            <div class="iconfont">&#xe604;</div>
+            <div class="text-center">配送中</div>
           </div>
           <!--退款审核中-->
           <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===1">
@@ -40,13 +40,23 @@
           </div>
           <!--退款失败-->
           <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===3">
-            <div class="iconfont">&#xe607;</div>
+            <div class="iconfont">&#xe64a;</div>
+            <div class="text-center">退款失败</div>
+          </div>
+          <!--退款失败-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===4&&orderDetail.refundStatus===4">
+            <div class="iconfont">&#xe64a;</div>
             <div class="text-center">退款失败</div>
           </div>
           <!--已取消-->
           <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===5">
             <div class="iconfont">&#xe607;</div>
             <div class="text-center">已取消</div>
+          </div>
+          <!--已评价-->
+          <div class="flex-item" style="color:#f78752;" v-if="orderDetail.status===7">
+            <div class="iconfont">&#xe607;</div>
+            <div class="text-center">已评价</div>
           </div>
           <div class="flex-col">
             <p v-if="orderDetail.shopType===2">订单类型：<span>即时送 - 送货上门</span></p>
@@ -55,42 +65,145 @@
             <p>订单状态：
               <!--待付款-->
               <span v-if="orderDetail.status===1">待付款</span>
-              <!--待付款-->
+              <!--待发货-->
               <span v-if="orderDetail.status===2">待发货</span>
-              <!--待付款-->
-              <span v-if="orderDetail.status===3">已发货</span>
-              <!--待付款-->
+              <!--配送中-->
+              <span v-if="orderDetail.status===3">配送中</span>
+              <!--退款-->
               <span v-if="orderDetail.status===4&&orderDetail.refundStatus===1">退款审核中</span>
               <span v-if="orderDetail.status===4&&orderDetail.refundStatus===2">退款成功</span>
               <span v-if="orderDetail.status===4&&orderDetail.refundStatus===3">退款失败</span>
-              <!--待付款-->
+              <span v-if="orderDetail.status===4&&orderDetail.refundStatus===4">退款失败</span>
+              <!--已取消-->
               <span v-if="orderDetail.status===5">已取消</span>
-              <!--待付款-->
+              <!--已签收，待评价-->
               <span v-if="orderDetail.status===6">已签收</span>
+              <!--已评价-->
+              <span v-if="orderDetail.status===7">已评价</span>
             </p>
             <p>订单编号：<span>{{orderDetail.orderNum}}</span></p>
-            <p>客服电话：<span>{{orderDetail.phone}}</span></p>
+            <p v-if="logist">客服电话：<span>{{logist.flowStr.keFuphone}}</span></p>
           </div>
         </div>
         <!-- 订单状态时间线 -->
-        <timeline>
-          <timeline-item>
-            <p class="font-mind">订单已完成，感谢您使用即时达，祝您生活愉快</p>
-            <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
-          </timeline-item>
-          <timeline-item>
-            <p class="font-mind">您的订单已有配送员：小乐乐配送，手机号码为：<a href="tel:18688556633">18688556633</a>，请耐心等待，保持电话畅通。</p>
-            <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
-          </timeline-item>
-          <timeline-item>
-            <p class="font-mind">店家已确认接单，正在拣货包装。</p>
-            <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
-          </timeline-item>
-          <timeline-item>
-            <p class="font-mind">您的订单已提交，等待店家确认。</p>
-            <p class="font-mind" style="color:#666;">2017-06-16 02:12:43</p>
-          </timeline-item>
-        </timeline>
+        <!--status===1 待支付-->
+        <div v-if="logist">
+          <timeline v-if="orderDetail.status===1">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待系统确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===2 待发货-->
+          <timeline v-if="orderDetail.status===2">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待店家确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===3 已发货 次日达-->
+          <timeline v-if="orderDetail.status===3&&orderDetail.shopType===1">
+            <!--自取-->
+            <timeline-item v-if="orderDetail.sendType===1">
+              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <!--送货上门-->
+            <timeline-item v-if="orderDetail.sendType===2">
+              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">商品已打包出库,配送中。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">仓库正在拣货中。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.printbianqianTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">已确认订单,等待备货,您的订单预计{{logist.timeStr.frueTime}}到达您手中</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.sureTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待系统确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===3 已发货 及时送-->
+          <timeline v-if="orderDetail.status===3&&orderDetail.shopType===2">
+            <timeline-item>
+              <p class="font-mind">店家已确认接单,正在拣货包装。{{logist.timeStr.frueTime}}</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.sureTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">您的订单已提交,等待店家确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===4 退换货 次日达-->
+          <timeline v-if="orderDetail.status===4&&orderDetail.shopType===1">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待系统确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===4 退换货 次日达-->
+          <timeline v-if="orderDetail.status===4&&orderDetail.shopType===2">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待店家确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===6 已完成（已签收) 次日达-->
+          <timeline v-if="(orderDetail.status===6||orderDetail.status===7)&&orderDetail.shopType===1">
+            <timeline-item v-if="orderDetail.sendType===1">
+              <p class="font-mind"> 订单已完成,感谢您在漫购购物,欢迎您再次光临。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.finishTime}}</p>
+            </timeline-item>
+            <!--自取-->
+            <timeline-item v-if="orderDetail.sendType===1">
+              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <!--送货上门-->
+            <timeline-item v-if="orderDetail.sendType===2">
+              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">商品已打包出库,配送中。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">仓库正在拣货中。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.printbianqianTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">已确认订单,等待备货,您的订单预计{{logist.timeStr.frueTime}}到达您手中</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.sureTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待系统确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===6 已完成（已签收) 及时送-->
+          <timeline v-if="orderDetail.status===6||orderDetail.status===7&&orderDetail.shopType===2">
+            <timeline-item>
+              <p class="font-mind">订单已完成,感谢您在漫购购物,欢迎您再次光临。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.finishTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">您的订单已由{{logist.storeStr.contacstName}}配送员配送,手机号码为:{{logist.storeStr.phone}},请耐心等待,保持电话畅通。{{logist.timeStr.frueTime}}</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.okFaHuoTime}}</p>
+            </timeline-item>
+            <timeline-item>
+              <p class="font-mind">您的订单已提交,等待店家确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+        </div>
         <!-- 收货人信息 自取-->
         <div class="flex-box top-info-box address" v-if="orderDetail.sendType===1">
           <div class="iconfont" style="color:#666;">&#xe638;</div>
@@ -123,11 +236,20 @@
           :goodsTotalPrice="orderDetail.goodsTotalPrice"
         ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
-        <div class="time-info-box">
-          <p>下单时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
-          <p>支付时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
-          <p>配送时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
-          <p>完成时间：<span style="color:#666;">2017-06-16 02:12:43</span></p>
+        <div v-if="logist">
+          <!--待付款 待发货-->
+          <div class="time-info-box" v-if="orderDetail.status===1||orderDetail.status===2">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+          </div>
+          <div class="time-info-box" v-if="orderDetail.status===3">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>配送时间：<span style="color:#666;">{{logist.timeStr.fahuoTime}}</span></p>
+          </div>
+          <!--退换货-->
+          <div class="time-info-box" v-if="orderDetail.status===4">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>退款时间：<span style="color:#666;">{{orderDetail.refundTime|formatTime}}</span></p>
+          </div>
         </div>
       </div>
     </div>
@@ -168,14 +290,12 @@
         orderDetail: '', // 订单详情
         contentScrll: '',
         freight: 3,
-        discount: 0 // 优惠金额
+        discount: 0, // 优惠金额
+        logist: '' // 物流信息
       }
     },
-    created () {
-      this.$nextTick(() => {
-        this._initScrll()
-      })
-      this.post('/orders/getOrderDetail', {
+    async created () {
+      await this.post('/orders/getOrderDetail', {
         token: localStorage.getItem('m-token'),
         orderId: this.$store.state.orderId
       }).then((res) => {
@@ -199,11 +319,29 @@
           this.showPositionValue = true
         }
       })
+      this.post('/orders/viewLogistics', {
+        token: localStorage.getItem('m-token'),
+        orderNum: this.orderDetail.orderNum,
+        shopType: this.orderDetail.shopType
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.logist = res.data
+          console.log(this.logist)
+        }
+        if (res.data.code === 101) {
+          this.toastText = res.data.msg
+          this.showPositionValue = true
+        }
+        if (res.data.code === 102) {
+          this.toastText = res.data.msg
+          this.showPositionValue = true
+        }
+      })
+      this.$nextTick(() => {
+        this._initScrll()
+      })
     },
     methods: {
-      remove () {
-        this.$vux.alert.show({content: '删除订单成功'})
-      },
       _initScrll () {
         this.contentScrll = new BScroll(this.$refs.content, {click: true})
         setTimeout(() => {
@@ -237,6 +375,7 @@
   .address {
     background: url("../assets/querenXD-xinfeng@2x.png") no-repeat;
     background-size: 100% 100%;
+    .h(220) !important;
   }
 
   .order-info-view .view-content {
@@ -286,10 +425,15 @@
     margin: 5px auto 10px;
     .mt(10);
     .mb(20);
+    .pt(10);
+    .pb(10);
+    .pl(40);
     background-color: #fff;
-    .vux-timeline-item-content {
-      padding-left: 1.8em;
-    }
+    /*ul li .vux-timeline-item {
+      .vux-timeline-item-content{
+        padding-left:0;
+      }
+    }*/
   }
 
   .order-info-view .title-box {

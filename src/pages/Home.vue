@@ -220,6 +220,7 @@
             storeId: this.storeList[0].storeId,
             villageId: this.villageId
           }).then((res) => {
+            console.log(res.data)
             if (res.data.code === 100) {
               this.mapTitleTips = res.data.goodsList.mapTitleTips
               this.ystgWords = res.data.goodsList.ystgWords
@@ -690,8 +691,7 @@
         .mt(12);
       }
     }
-    .load-more {
-      color: @font-color-m;
-    }
+
+
   }
 </style>

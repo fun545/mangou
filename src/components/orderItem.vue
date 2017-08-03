@@ -176,12 +176,13 @@
         </div>
         <!-- 订单操作 -->
         <div class="text-right">
-          <span class="btn this-btn" @click="onBt(item,index)">{{item.status | btText}}</span>
+          <span class="btn this-btn" @click="onBt(item,index)">{{item | btText}}</span>
         </div>
       </div>
       <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
              :text="toastText" width="10em" class="toast"></toast>
     </div>
+    <slot name="loadMore"></slot>
     <confirm v-model="showComfirm"
              title="提示"
              @on-confirm="onConfirm">
@@ -245,7 +246,7 @@
           this.$vux.alert.show({title: '电话', content: item.tel})
           return
         }
-        if (item.status === 4) { // 联系客服
+        if (item.status === 4 && item.refundStatus === 1) { // 联系客服
           this.$vux.alert.show({title: '电话', content: item.tel})
           return
         }
@@ -308,25 +309,28 @@
       },
       // 按钮文字
       btText (val) {
-        if (val === 1) { // 待支付
+        if (val.status === 1) { // 待支付
           return '去支付'
         }
-        if (val === 2) { // 待发货
+        if (val.status === 2) { // 待发货
           return '提醒发货'
         }
-        if (val === 3) { // 已发货
+        if (val.status === 3) { // 已发货
           return '联系店家'
         }
-        if (val === 4) { // 已发货
+        if (val.status === 4 && val.refundStatus === 1) { // 退款待审核
           return '联系客服'
         }
-        if (val === 5) { // 已取消
+        if (val.status === 4 && val.refundStatus !== 1) { // 退款待审核
           return '删除订单'
         }
-        if (val === 6) { // 已完成
+        if (val.status === 5) { // 已取消
+          return '删除订单'
+        }
+        if (val.status === 6) { // 已完成
           return '评价'
         }
-        if (val === 7) { // 全部
+        if (val.status === 7) { // 全部
           return '删除订单'
         }
       },

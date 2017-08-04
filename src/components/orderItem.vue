@@ -11,7 +11,7 @@
           <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
         </div>
         <!-- 订单商品 -->
-        <div ref="goodsContent" class="goodsContentWrap">
+        <div>
           <div class="scroller-box" @click="goOrderInfo(item)">
             <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
               <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
@@ -182,12 +182,6 @@
       <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
              :text="toastText" width="10em" class="toast"></toast>
     </div>
-    <slot name="loadMore"></slot>
-    <confirm v-model="showComfirm"
-             title="提示"
-             @on-confirm="onConfirm">
-      <p style="text-align:center;">{{comfirmText}}</p>
-    </confirm>
   </div>
 </template>
 
@@ -201,16 +195,15 @@
       BScroll
     },
     props: {
-      orderList: Array
+      orderList: Array,
+      _initScroll: Function
     },
     data () {
       return {
         showPositionValue: false,
         toastText: '',
-        comfirmText: '',
         delOrder: '', // 待删除订单
-        index: '', // 待删除订单index
-        showComfirm: false
+        index: '' // 待删除订单index
       }
     },
     methods: {
@@ -255,31 +248,37 @@
           return
         }
         // 其他状态都是删除订单
+        const _this = this
         this.delOrder = item
         // 是否确认删除提示
-        this.comfirmText = '删除后数据将无法恢复'
-        this.showComfirm = true
         this.index = index
-//        event.preventDefault()
-      },
-      // 确认删除回调
-      onConfirm () {
-        // 删除订单
-        this.post('/orders/delOrUpOrders', {
-          token: localStorage.getItem('m-token'),
-          orderId: this.delOrder.orderId,
-          opts: 1
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.orderList.splice(this.index, 1)
-          }
-          if (res.data.code === 101) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
-          }
-          if (res.data.code === 102) {
-            this.toastText = '请登录'
-            this.showPositionValue = true
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '删除后数据将无法恢复',
+          // 确认删除回调
+          onConfirm () {
+            // 删除订单
+            console.log()
+            _this.post('/orders/delOrUpOrders', {
+              token: localStorage.getItem('m-token'),
+              orderId: _this.delOrder.orderId,
+              opts: 1
+            }).then((res) => {
+              if (res.data.code === 100) {
+                _this.orderList.splice(this.index, 1)
+                _this.$nextTick(() => {
+                  _this._initScroll.refresh()
+                })
+              }
+              if (res.data.code === 101) {
+                _this.toastText = res.data.msg
+                _this.showPositionValue = true
+              }
+              if (res.data.code === 102) {
+                _this.toastText = '请登录'
+                _this.showPositionValue = true
+              }
+            })
           }
         })
       },
@@ -333,9 +332,6 @@
         if (val.status === 7) { // 全部
           return '删除订单'
         }
-      },
-      _initScrll () {
-        this.goodsContentScroll = new BScroll(this.$refs.goodsContent, {click: true})
       }
     }
 

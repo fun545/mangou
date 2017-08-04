@@ -1,77 +1,135 @@
 <template>
   <div class="order-refund-view">
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">退款</x-header>
+    <m-header title="退款">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- 页面内容 -->
     <div class="content-view-scroller">
       <!-- 退款金额 -->
       <div class="title-box">退款金额</div>
       <div class="flex-box font-mind white-box" style="color:#666;">
         <div class="flex-col">请核对退款金额</div>
-        <div style="color:#f95d43;">¥198.88</div>
+        <div style="color:#f95d43;">¥{{$route.query.totalPrice}}</div>
       </div>
       <!-- 退款原因 -->
       <div class="title-box">选择退款原因</div>
       <div class="flex-box white-box">
-        <checker default-item-class="default-checker" selected-item-class="selected-checker" v-model="checker">
-          <checker-item value="1">商品错发/漏发</checker-item>
-          <checker-item value="2">拍错了</checker-item>
-          <checker-item value="3">不想要了</checker-item>
-          <checker-item value="4">其他</checker-item>
+        <checker default-item-class="default-checker" selected-item-class="selected-checker">
+          <checker-item :value="item" v-for="(item, index) in items" :key="index" @on-item-click="selectReason">
+            {{item.value}}
+          </checker-item>
         </checker>
       </div>
     </div>
+    <group class="othters">
+      <x-textarea :max="200" placeholder="请输入退款说明" v-model="reason" v-if="reasonFlag"></x-textarea>
+    </group>
     <!-- 提交申请按钮 -->
     <div class="submit-btn" @click="refund">提交申请</div>
   </div>
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem } from 'vux'
+  import { XHeader, Checker, CheckerItem, XTextarea, Group, Toast } from 'vux'
+  import mHeader from '../components/header'
 
   export default {
     name: 'orderRefund',
     components: {
       XHeader,
       Checker,
-      CheckerItem
+      CheckerItem,
+      mHeader,
+      XTextarea,
+      Group,
+      Toast
     },
     data () {
       return {
-        checker: '1'
+        checker: '1',
+        items: [{
+          key: '1',
+          value: '商品错发/漏发'
+        }, {
+          key: '2',
+          value: '拍错了'
+        }, {
+          key: '3',
+          value: '不想要了'
+        }, {
+          key: '4',
+          value: '其他'
+        }],
+        reason: '',
+        reasonFlag: false,
+        toastText: '',
+        showPositionValue: false
       }
     },
     methods: {
       refund () {
+        this.post('/orders/refundOrders', {
+          token: localStorage.getItem('m-token'),
+          orderId: this.$route.query.orderId,
+          orderNum: this.$route.query.orderNum,
+          refundReason: this.reason,
+          storeId: this.$route.query.storeId,
+          refundAmount: this.$route.query.totalPrice
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.toastText = '正在审核中'
+            setTimeout(() => {
+              this.$router.push({path: '/user'})
+            }, 3000)
+            return
+          }
+          if (res.data.code === 101) {
+            this.toastText = res.data.msg
+            this.showPositionValue = true
+          }
+          if (res.data.code === 102) {
+            this.toastText = res.data.msg
+            this.showPositionValue = true
+          }
+        })
         this.$vux.alert.show({content: '退款成功'})
+      },
+      selectReason (val) {
+        if (val.key === '4') {
+          this.reasonFlag = true
+          return
+        }
+        this.reasonFlag = false
       }
     }
   }
 </script>
 
-<style lang="less">
-  .order-refund-view .vux-header {
-    background-color: #fff;
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
-    [class^=vux-header-] {
-      color: #444;
-    }
-
-    .left-arrow:before {
-      border-color: #444;
-      border-width: 2px 0 0 2px;
+  .cp-header {
+    color: @font-color-m;
+    position: inherit;
+    .back {
+      color: @font-color-m;
     }
   }
 
   .order-refund-view .content-view-scroller {
-    height: calc(~'100% - 106px');
-    overflow-y: scroll;
-
     .default-checker {
-      padding: 3px 14px;
-      margin: 5px;
+      .pt(6);
+      .pb(6);
+      .pl(28);
+      .pr(28);
+      .mt(10);
+      .mb(10);
+      .mr(10);
+      .ml(10);
       border-radius: 100px;
-      font-size: 12px;
+      .fs(25);
       line-height: 1.5;
       color: #666;
       background-color: #ddd;
@@ -84,26 +142,39 @@
   }
 
   .order-refund-view .title-box {
-    font-size: 13px;
+    .fs(27);
     color: #444;
-    line-height: 20px;
+    .h(45);
+    .lh(45);
     padding: 5px 10px;
+    .pt(20);
+    .pb(20);
+    .pl(20);
+    .pr(20);
   }
 
   .order-refund-view .white-box {
-    padding: 5px 10px;
+    .pt(20);
+    .pb(20);
+    .pl(20);
+    .pr(20);
     background-color: #fff;
-    line-height: 20px;
+    .lh(40);
+    .fs(27);
   }
 
   .order-refund-view .submit-btn {
     display: block;
-    line-height: 20px;
+    .lh(40);
     color: #fff;
     background-color: #f95d43;
-    margin: 10px 15px;
+    .mt(20);
+    .mb(20);
+    .ml(30);
+    .mr(30);
     border-radius: 5px;
-    padding: 10px 0;
+    .pt(20);
+    .pb(20);
     text-align: center;
   }
 </style>

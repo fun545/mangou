@@ -6,7 +6,7 @@
     </m-header>
     <div class="content-wrap" ref="content">
       <!-- 订单列表 及时送  -->
-      <order-list :orderList="orderList">
+      <order-list :orderList="orderList" :_initScroll="contentScroll">
         <load-more
           :tip="loadText"
           :show-loading="moreIconFlag"
@@ -41,7 +41,8 @@
         scrollDisable: false,
         pageIndex: 1,
         loadText: '正在加载更多数据',
-        moreIconFlag: true
+        moreIconFlag: true,
+        contentScroll: ''
       }
     },
     async created () {

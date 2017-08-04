@@ -155,20 +155,38 @@
               <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
             </timeline-item>
           </timeline>
+          <!--status===5 已取消 次日达-->
+          <timeline v-if="orderDetail.status===5&&orderDetail.shopType===1">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待系统确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
+          <!--status===5 已取消 及时送-->
+          <timeline v-if="orderDetail.status===5&&orderDetail.shopType===2">
+            <timeline-item>
+              <p class="font-mind">您的订单已提交，等待店家确认。</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.orderTime}}</p>
+            </timeline-item>
+          </timeline>
           <!--status===6 已完成（已签收) 次日达-->
           <timeline v-if="(orderDetail.status===6||orderDetail.status===7)&&orderDetail.shopType===1">
-            <timeline-item v-if="orderDetail.sendType===1">
+            <timeline-item>
               <p class="font-mind"> 订单已完成,感谢您在漫购购物,欢迎您再次光临。</p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.finishTime}}</p>
             </timeline-item>
             <!--自取-->
             <timeline-item v-if="orderDetail.sendType===1">
-              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。</p>
+              <p class="font-mind">您的商品已送达<span
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。
+              </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <!--送货上门-->
             <timeline-item v-if="orderDetail.sendType===2">
-              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。</p>
+              <p class="font-mind">您的商品已送达<span
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。
+              </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <timeline-item>
@@ -189,7 +207,7 @@
             </timeline-item>
           </timeline>
           <!--status===6 已完成（已签收) 及时送-->
-          <timeline v-if="orderDetail.status===6||orderDetail.status===7&&orderDetail.shopType===2">
+          <timeline v-if="(orderDetail.status===6||orderDetail.status===7)&&orderDetail.shopType===2">
             <timeline-item>
               <p class="font-mind">订单已完成,感谢您在漫购购物,欢迎您再次光临。</p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.finishTime}}</p>
@@ -237,30 +255,59 @@
         ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
         <div v-if="logist">
-          <!--待付款 待发货-->
+          <!--待付款 待发货status===1 status===2-->
           <div class="time-info-box" v-if="orderDetail.status===1||orderDetail.status===2">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
           </div>
+          <!--已发货status===3-->
           <div class="time-info-box" v-if="orderDetail.status===3">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
             <p>配送时间：<span style="color:#666;">{{logist.timeStr.fahuoTime}}</span></p>
           </div>
-          <!--退换货-->
+          <!--退换货status===4-->
           <div class="time-info-box" v-if="orderDetail.status===4">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
-            <p>退款时间：<span style="color:#666;">{{orderDetail.refundTime|formatTime}}</span></p>
+            <p>退款时间：<span style="color:#666;">{{orderDetail.refundTime | formatTime}}</span></p>
+          </div>
+          <!--已取消 status===5-->
+          <div class="time-info-box" v-if="orderDetail.status===5">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+          </div>
+          <!--已签收 已评价 status===6status===7-->
+          <div class="time-info-box" v-if="orderDetail.status===6||orderDetail.status===7">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>配送时间：<span style="color:#666;">{{logist.timeStr.okFaHuoTime}}</span></p>
+            <p>完成时间：<span style="color:#666;">{{logist.timeStr.finishTime}}</span></p>
           </div>
         </div>
       </div>
     </div>
     <!-- 底部按钮 -->
     <div class="view-footer">
-      <!--<router-link to="/order_refund" class="order-btn">申请退款</router-link>
-      <div class="order-btn" @click="remove">删除</div>
-      <router-link to="/order_rater" class="order-btn">评价</router-link>-->
-      <div class="bt">申请退款</div>
-      <div class="bt">删除</div>
-      <div class="bt">评价</div>
+      <!--申请退款 已付款 已收货待评价-->
+      <div class="bt" v-if="orderDetail.status===2||orderDetail.status===6"
+           @click="$router.push({path:'/order_refund',query:orderDetail})">申请退款
+      </div>
+      <!--提醒发货 已付款-->
+      <div class="bt theme-color" @click="remind(orderDetail)" v-if="orderDetail.status===2">提醒发货</div>
+      <!--删除订单 已取消 已收货待评价-->
+      <div class="bt" @click="deleteOrder(orderDetail)"
+           v-if="orderDetail.status===5||orderDetail.status===6||orderDetail.status===7">
+        删除订单
+      </div>
+      <!--去评价 已收货待评价-->
+      <div class="bt" @click="$router.push({path:'/order_rater',query:orderDetail})" v-if="orderDetail.status===6">去评价
+      </div>
+      <!--取消订单 待付款-->
+      <div class="bt" @click="cancleOrder(orderDetail)" v-if="orderDetail.status===1">取消订单</div>
+      <!--联系店家 已付款 已发货-->
+      <div class="bt" @click="contact" v-if="orderDetail.status===2||orderDetail.status===3">联系店家</div>
+      <!--联系客服 退换货-->
+      <div class="bt" @click="contact" v-if="orderDetail.status===4">联系客服</div>
+      <div class="bt theme-color" @click="$router.push({path:'/goPay',query:orderDetail})"
+           v-if="orderDetail.status===1">去支付
+      </div>
+      <!--申请退款 已付款-->
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="toastText" width="10em" class="toast"></toast>
@@ -342,6 +389,94 @@
       })
     },
     methods: {
+      // 提醒发货
+      remind (detail) {
+        this.post('/orders/promptShipment', {
+          token: localStorage.getItem('m-token'),
+          orderNum: detail.orderNum
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.toastText = '提醒发货成功'
+            this.showPositionValue = true
+          }
+          if (res.data.code === 101) {
+            this.toastText = res.data.msg
+            this.showPositionValue = true
+          }
+          if (res.data.code === 102) {
+            this.toastText = res.data.msg
+            this.showPositionValue = true
+          }
+        })
+      },
+      // 删除订单
+      deleteOrder (detail) {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '删除后数据将无法恢复',
+          onConfirm () {
+            _this.post('/orders/delOrUpOrders', {
+              token: localStorage.getItem('m-token'),
+              orderId: detail.orderId,
+              opts: 1
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.code === 100) {
+                _this.$router.push({path: '/order_list'})
+                return
+              }
+              if (res.data.code === 101) {
+                _this.toastText = res.data.msg
+                _this.showPositionValue = true
+              }
+              if (res.data.code === 102) {
+                _this.toastText = res.data.msg
+                _this.showPositionValue = true
+              }
+            })
+          }
+        })
+      },
+      // 取消订单
+      cancleOrder (detail) {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '确定要取消订单么',
+          onConfirm () {
+            _this.post('/orders/delOrUpOrders', {
+              token: localStorage.getItem('m-token'),
+              orderId: detail.orderId,
+              opts: 2
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.code === 100) {
+                _this.$router.push({path: '/order_list'})
+                return
+              }
+              if (res.data.code === 101) {
+                _this.toastText = res.data.msg
+                _this.showPositionValue = true
+              }
+              if (res.data.code === 102) {
+                _this.toastText = res.data.msg
+                _this.showPositionValue = true
+              }
+            })
+          }
+        })
+      },
+      // 联系店家 或客服
+      contact () {
+        var _this = this
+        // 联系店家
+        this.$vux.alert.show({
+          title: '电话',
+          content: _this.logist.flowStr.keFuphone
+        })
+      },
       _initScrll () {
         this.contentScrll = new BScroll(this.$refs.content, {click: true})
         setTimeout(() => {
@@ -376,6 +511,15 @@
     background: url("../assets/querenXD-xinfeng@2x.png") no-repeat;
     background-size: 100% 100%;
     .h(220) !important;
+  }
+
+  .theme-color {
+    border: 1px solid @theme-color !important;
+    color: @theme-color !important;
+  }
+
+  .theme-color-s1 {
+    color: @theme-color !important;
   }
 
   .order-info-view .view-content {

@@ -6,11 +6,13 @@
     </m-header>
     <div class="content">
       <!-- 订单编号 -->
-      <div class="number">142853652136426</div>
+      <div class="number">{{orderDetail.orderNum}}</div>
       <!-- 订单商品图片 -->
       <div class="img-box">
         <div class="scroller">
-          <img src="../assets/goods_img.jpg" width="25%" v-for="i in 7" alt="">
+          <div class="pic" v-for="(item,index) in orderDetail.goodsList" :key="index">
+            <img v-lazy="item.goodsImgUrl" alt="">
+          </div>
         </div>
       </div>
       <!-- 分界线 -->
@@ -55,10 +57,12 @@
         checker: 0,
         keyWords: '',
         raterText: '',
-        reterList: []
+        reterList: [],
+        orderDetail: ''
       }
     },
     created () {
+      this.orderDetail = this.$route.query
       console.log(this.$route.query)
       this.post('/goods/searchKeyWord', {statusType: 4}).then((res) => {
         console.log(res.data)
@@ -136,8 +140,8 @@
 
     .scroller {
       .pic {
-        .w(100);
-        .h(100);
+        .w(110);
+        .h(110);
         img {
           width: 100%;
           height: 100%;

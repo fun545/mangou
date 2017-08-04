@@ -20,12 +20,12 @@
             <div class="iconfont icon f-l">&#xe638;</div>
             <div class="adress-info f-l">
               <div class="receiver-info">
-                <span class="color-444">收货人： </span>{{this.shippingInfo.shippingName}}
-                <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
+                <span class="color-444">收货人： </span>{{shippingInfo.shippingName}}
+                <span class="tel">{{shippingInfo.shippingPhone}}</span>
               </div>
               <div class="receiver-info">
                 <span class="color-444">收货地址： </span>
-                {{this.shippingInfo.address}}
+                {{cartInfo.shippingInfo.address}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
@@ -94,7 +94,7 @@
             </div>
           </div>
           <!--收货地址-->
-          <div class="adress">
+          <div class="adress" v-if="sendWay.key==='1'">
             <div class="iconfont icon f-l">&#xe638;</div>
             <div class="adress-info f-l">
               <div class="receiver-info">
@@ -103,6 +103,20 @@
               </div>
               <div class="receiver-info">
                 <span class="color-444">取件地址： </span>
+                {{this.shippingInfo.address}}
+              </div>
+            </div>
+            <div class="iconfont icon-right f-l">&#xe601;</div>
+          </div>
+          <div class="adress" @click="$router.push({path:'/selecteAddress'})" v-if="sendWay.key==='2'">
+            <div class="iconfont icon f-l">&#xe638;</div>
+            <div class="adress-info f-l">
+              <div class="receiver-info">
+                <span class="color-444">收货人： </span>{{this.shippingInfo.shippingName}}
+                <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
+              </div>
+              <div class="receiver-info">
+                <span class="color-444">收货地址： </span>
                 {{this.shippingInfo.address}}
               </div>
             </div>
@@ -187,7 +201,7 @@
     <div class="footer">
       合计： <span
       class="theme-color">{{parseFloat(totalPriceThis) + parseFloat(Thisfreight) + parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)}}</span>
-      <div class="bt f-r t-c">
+      <div class="bt f-r t-c" @click="confirm">
         确认下单
       </div>
     </div>
@@ -225,11 +239,13 @@
         nextShop: this.$store.state.nextShop, // 购物车次日达相关信息
         payFlag: true, // 支付方式Flag
         leaveMsgThis: '', // 留言 及时送
-        leaveMsgNext: '' // 留言 次日达
+        leaveMsgNext: '', // 留言 次日达
+        cartInfo: this.$store.state.cartInfo
       }
     },
     created () {
       // 初始化Bscroll
+      console.log(this.cartInfo)
       this.$nextTick(() => {
         this._initScroll()
       })
@@ -279,6 +295,10 @@
         } else {
           this.payFlag = false
         }
+      },
+      confirm () {
+//        var goodsList = this.thisGoodsList.concat(this.NextGoodsList)
+//        this.post('/orders/submitOrders_new',{})
       }
     },
     computed: {
@@ -347,15 +367,14 @@
         }
         .adress {
           display: flex;
-          .h(140);
           .pl(31);
           .pr(31);
+          .pb(10);
           align-items: center;
           background: url("../assets/querenXD-xinfeng@2x.png") no-repeat;
-          background-size: 100%;
+          background-size: 100% 100%;
           .icon {
             .w(115);
-            .h(140);
             .lh(140);
             color: @theme-color;
             .fs(64);
@@ -363,7 +382,6 @@
           .adress-info {
             box-sizing: border-box;
             .w(574);
-            .h(140);
             .pt(29);
             .lh(47);
             .fs(26);

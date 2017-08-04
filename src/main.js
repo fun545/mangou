@@ -5,11 +5,13 @@ import FastClick from 'fastclick'
 import App from './App'
 import Router from './router'
 import store from './vuex/index'
-import { AlertPlugin } from 'vux'
+import { AlertPlugin, ToastPlugin, ConfirmPlugin } from 'vux'
+Vue.use(AlertPlugin)
+Vue.use(ToastPlugin)
+Vue.use(ConfirmPlugin)
 import api from './util/api'
 import VueLazyload from 'vue-lazyload'
 import './common/style/index.less'
-Vue.use(AlertPlugin)
 Vue.use(VueLazyload)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -28,6 +30,7 @@ Vue.filter('formatTime', (value) => {
   function add0 (m) {
     return m < 10 ? '0' + m : m
   }
+
   var time = new Date(parseInt(value))
   var y = time.getFullYear()
   var m = time.getMonth() + 1

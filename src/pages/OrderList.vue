@@ -7,12 +7,12 @@
     <div class="content-wrap" ref="content">
       <!-- 订单列表 及时送  -->
       <order-list :orderList="orderList" :_initScroll="contentScroll">
-        <load-more
-          :tip="loadText"
-          :show-loading="moreIconFlag"
-          background-color="#f7f7f7"
-          class="load-more" slot="loadMore"></load-more>
       </order-list>
+      <load-more
+        :tip="loadText"
+        :show-loading="moreIconFlag"
+        background-color="#f7f7f7"
+        class="load-more"></load-more>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="toastText" width="10em" class="toast"></toast>

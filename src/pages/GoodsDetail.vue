@@ -210,6 +210,7 @@
           click: true,
           probeType: 3
         })
+        // 下滑渐现动画
         this.contentScroll.on('scroll', (pos) => {
           let scrollTop = -Math.round(pos.y)
           this.$refs.header.$el.style.opacity = scrollTop / 300
@@ -227,6 +228,7 @@
 
   .detail-wrap {
     .cp-header {
+      opacity: 0;
       color: @font-color-m;
       z-index: 103;
       .back {

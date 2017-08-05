@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   .tabbar {
     display: flex;
     justify-content: space-between;

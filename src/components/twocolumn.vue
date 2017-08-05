@@ -91,6 +91,7 @@
         position: relative;
         .h(119);
         .pl(26);
+        .fs(26);
         display: flex;
         align-items: center;
         .next-price {

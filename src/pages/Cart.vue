@@ -17,8 +17,8 @@
               <!-- 全选按钮 及时送-->
               <div class="flex-item">
                 <div class="select-all-icon d-ib" @click="thisCheckAll(thisGoodsList)">
-                  <i class="iconfont selected-color" v-if="thisAllChecked">&#xe634;</i>
-                  <i class="iconfont" v-if="!thisAllChecked">&#xe635;</i>
+                  <i class="iconfont selected-color circle" v-if="thisAllChecked">&#xe634;</i>
+                  <i class="iconfont circle" v-if="!thisAllChecked">&#xe635;</i>
                 </div>
                 <span class="label-checkbox">全选</span>
               </div>
@@ -89,8 +89,8 @@
               <!-- 全选按钮 次日达-->
               <div class="flex-item">
                 <div class="select-all-icon d-ib" @click="nextCheckAll(NextGoodsList)">
-                  <i class="iconfont selected-color" v-if="nextAllChecked">&#xe634;</i>
-                  <i class="iconfont" v-if="!nextAllChecked">&#xe635;</i>
+                  <i class="iconfont selected-color circle" v-if="nextAllChecked">&#xe634;</i>
+                  <i class="iconfont circle" v-if="!nextAllChecked">&#xe635;</i>
                 </div>
                 <span class="label-checkbox">全选</span>
               </div>
@@ -186,8 +186,8 @@
       <div class="count-box" v-if="!(thisGoodsList.length===0&&NextGoodsList.length===0)">
         <!--<input type="checkbox" class="input-checkbox">-->
         <div class="select-all-icon d-ib" @click="selectAll()">
-          <i class="iconfont selected-color" v-if="allChecked">&#xe634;</i>
-          <i class="iconfont" v-if="!allChecked">&#xe635;</i>
+          <i class="iconfont selected-color circle" v-if="allChecked">&#xe634;</i>
+          <i class="iconfont circle" v-if="!allChecked">&#xe635;</i>
         </div>
         <span class="label-checkbox">全选</span>
         <div class="col">
@@ -673,7 +673,7 @@
         // 去结算
         // 如果用户没有填收货信息，跳转收货地址
         if (!this.$store.state.shippingInfo) {
-          this.$router.push({path: 'address'})
+          this.$router.push({path: '/address'})
           return
         }
         if (this.editShow) {
@@ -858,7 +858,9 @@
   .theme-color {
     color: @theme-color;
   }
-
+  .circle{
+    .fs(32) !important;
+  }
   .header {
     position: fixed;
     z-index: 2;
@@ -909,9 +911,9 @@
     }
   }
 
-  .select-all-icon, .circle {
+  .select-all-icon{
     color: #666;
-    .fs(32);
+    .fs(32) !important;
   }
 
   .circle {
@@ -931,10 +933,12 @@
 
   .checked {
     .mr(35);
+    .fs(32);
   }
 
   .select-all-icon {
     .mr(10);
+    .fs(32) !important;
   }
 
   .selected-color {
@@ -1096,7 +1100,7 @@
     }
 
     .font-mind {
-      line-height: 1.4;
+      .fs(26);
     }
 
     [class*=this] .input-checkbox:checked, .color-0493ed {
@@ -1127,11 +1131,14 @@
     }
 
     .default-checker {
-      font-size: 12px;
-      padding: 4px 14px;
+      .fs(25);
+      .pt(8);
+      .pb(8);
+      .pl(28);
+      .pr(28);
       color: #666;
       background-color: #ddd;
-      margin-left: 10px;
+      .ml(20);
       border-radius: 100px;
     }
 
@@ -1140,14 +1147,15 @@
       background-color: #f75439;
     }
     .input-disabel {
-      margin-left: -5px;
-      margin-right: 5px;
-      width: 45px;
+      .ml(-10);
+      .mr(10);
+      .w(90);
       text-align: center;
       white-space: nowrap;
-      padding: 2px 0;
+      .pt(4);
+      .pb(4);
       border-radius: 10px;
-      font-size: 12px;
+      .fs(25);
       line-height: 1;
       color: #fff;
       background-color: #bbb;
@@ -1165,18 +1173,18 @@
     }
 
     [class$=-goods] .input-checkbox {
-      width: 35px;
+      .w(70);
       text-align: center;
-      margin-right: 10px;
+      .mr(20);
     }
 
     [class$=-goods] > .flex-col {
-      margin-left: 10px;
+      .ml(20);
     }
 
     [class$=-goods] .goods-title {
-      line-height: 20px;
-      margin-bottom: 10px;
+      .lh(40);
+      .mb(20);
     }
 
     .remove {
@@ -1194,7 +1202,7 @@
     .remove:before {
       content: '';
       .w(32);
-      height: 1.2px;
+      .h(2.4);
       background-color: #444;
       position: absolute;
       top: 50%;
@@ -1233,8 +1241,8 @@
 
     .added:before {
       content: '';
-      width: 16px;
-      height: 1.2px;
+      .w(32);
+      .h(2.4);
       background-color: #444;
       position: absolute;
       top: 50%;
@@ -1244,8 +1252,8 @@
 
     .added:after {
       content: '';
-      height: 16px;
-      width: 1.2px;
+      .h(32);
+      .w(2.4);
       background-color: #444;
       position: absolute;
       top: 50%;
@@ -1255,7 +1263,10 @@
 
     .more-btn {
       display: table;
-      margin: 3px auto;
+      .mt(6);
+      .mb(6);
+      margin-left: auto;
+      margin-right: auto;
       .pl(16);
       .pr(16);
       .pt(8);
@@ -1279,8 +1290,8 @@
     .h(100);
     .b(100);
     display: flex;
-    padding-left: 10px;
-    font-size: 14px;
+    .pl(20);
+    .fs(28);
     background-color: #fff;
     align-items: center;
 
@@ -1294,7 +1305,8 @@
     }
 
     .col {
-      padding: 0 10px;
+      .pl(20);
+      .pr(20);
       flex-grow: 1;
       line-height: 1.2;
       border-left: 1px solid #ddd;
@@ -1303,6 +1315,7 @@
     .font-mind {
       color: #999;
       line-height: 1.5;
+      .fs(25);
     }
 
     .count {

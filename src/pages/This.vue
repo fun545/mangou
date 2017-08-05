@@ -5,7 +5,9 @@
       <!-- 显示页面主题 -->
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
-          <img v-lazy="storeMsg.storeImgurl" width="80" alt="">
+          <div class="pic">
+            <img v-lazy="storeMsg.storeImgurl" width="100%" height="100%" alt="">
+          </div>
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
             <p>{{storeMsg.shopHours}} | 满29元免配送费用</p>
@@ -132,10 +134,6 @@
       this.ind = 0
       this.getGoods(1)
     },
-//    activated () {
-//      this.menuSroll.refresh()
-//      this.listSroll.refresh()
-//    },
     methods: {
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
@@ -205,15 +203,17 @@
   @import "../common/style/sum";
 
   .this {
-    /*height: 300%;*/
-    .strong {
+    /*.strong {
       span {
-        padding: 5px;
+        .pt(10);
+        .pb(10);
+        .pl(10);
+        .pr(10);
         background: #5abbf6;
         border-radius: 5px;
         color: #fff;
       }
-    }
+    }*/
     .sort-icon-selected {
       color: @theme-color-blue !important;
     }
@@ -228,6 +228,10 @@
       .pb(5);
       background: url("../assets/this_top_back.png") no-repeat center/cover;
       .flex-box {
+        .pic{
+          .w(160);
+          .h(160);
+        }
         .pl(15);
         box-sizing: border-box;
         display: flex;
@@ -252,20 +256,22 @@
         :nth-child(2) {
           color: #ffffff;
           font-weight: normal;
-          font-size: 12px;
-
+          .fs(25);
           .title {
             b {
-              font-size: 14px;
+              .fs(28);
               font-style: italic;
-              margin-right: 10px;
+              .mr(20);
             }
 
             span {
-              padding: 2px 12px;
+              .pt(4);
+              .pb(4);
+              .pl(24);
+              .pr(24);
               background: #089df6;
-              font-size: 12px;
-              line-height: 16px;
+              .fs(25);
+              .lh(32);
               border-radius: 10px;
               display: inline-block;
             }
@@ -273,35 +279,38 @@
 
           p:nth-child(2) {
             opacity: .8;
-            line-height: 20px;
+            .lh(40);
           }
         }
 
         .iconfont {
-          margin-right: 5px;
+          .mr(10);
           font-size: inherit;
         }
       }
 
       .search-box {
-        margin-top: 5px;
+        .mt(10);
         position: relative;
 
         &:before {
           content: '\e639';
           font-family: 'iconfont';
           color: #666666;
-          font-size: 12px;
+          .fs(25);
           position: absolute;
-          top: 6px;
-          left: 15px;
+          .t(12);
+          .l(30);
         }
 
         input {
-          padding: 5px 5px 5px 32px;
+          .pt(10);
+          .pb(10);
+          .pl(10);
+          .pr(64);
           width: 100%;
           box-sizing: border-box;
-          line-height: 20px;
+          .lh(40);
           outline: none;
           border-radius: 15px;
           background-color: #ffffff;
@@ -314,19 +323,22 @@
       }
 
       .link-box {
-        line-height: 20px;
-        margin-top: 5px;
-
+        .lh(40);
+        .mt(10);
         a {
           color: #ffffff;
-          margin: 0 5px;
+          .ml(10);
+          .mr(10);
           display: inline-block;
-          font-size: 12px;
+          .fs(25);
         }
       }
     }
     .is-search {
-      padding: 10px;
+      .pt(20);
+      .pb(20);
+      .pl(20);
+      .pr(20);
       background-color: #089cf6;
       position: relative;
 
@@ -334,18 +346,21 @@
         content: '\e639';
         font-family: 'iconfont';
         color: #ffffff;
-        font-size: 12px;
+        .fs(25);
         vertical-align: middle;
         position: absolute;
-        top: 16px;
-        left: 25px;
+        .t(32);
+        .l(50);
       }
 
       input {
         width: 100%;
         box-sizing: border-box;
-        line-height: 20px;
-        padding: 5px 5px 5px 30px;
+        .lh(40);
+        .pt(10);
+        .pb(10);
+        .pr(10);
+        .pl(60);
         border-radius: 15px;
         border: none;
         outline: none;
@@ -379,7 +394,7 @@
         background: #fff;
         box-sizing: border-box;
         color: #666;
-        .w(568);
+        .w(578);
         .h(91);
         .lh(91);
         .fs(24);

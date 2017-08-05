@@ -171,7 +171,10 @@
       .search-box {
         display: flex;
         position: relative;
-        padding: 5px;
+        .pl(10);
+        .pr(10);
+        .pt(10);
+        .pb(10);
         .ml(73);
         .search {
           .input {
@@ -182,7 +185,11 @@
         }
         .instruction {
           position: absolute;
-
+          .h(60);
+          box-sizing: border-box;
+          .instr-icon{
+            padding: 0 !important;
+          }
         }
       }
       .back {

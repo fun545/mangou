@@ -105,12 +105,12 @@
           <timeline v-if="orderDetail.status===3&&orderDetail.shopType===1">
             <!--自取-->
             <timeline-item v-if="orderDetail.sendType===1">
-              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。</p>
+              <p class="font-mind">您的商品已送达<span class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。</p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <!--送货上门-->
             <timeline-item v-if="orderDetail.sendType===2">
-              <p class="font-mind">您的商品已送达{{logist.storeStr.address}}取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。</p>
+              <p class="font-mind">您的商品已送达<span class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。</p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <timeline-item>
@@ -224,17 +224,17 @@
         </div>
         <!-- 收货人信息 自取-->
         <div class="flex-box top-info-box address" v-if="orderDetail.sendType===1">
-          <div class="iconfont" style="color:#666;">&#xe638;</div>
+          <div class="iconfont theme-color-s1" style="color:#666;">&#xe638;</div>
           <div class="flex-col">
-            <p>&emsp;收货人：<span>{{orderDetail.shippingName}}</span></p>
-            <p>联系电话：<span>{{orderDetail.shippingPhone}}</span></p>
+            <p>&emsp;收货人：<span>{{userInfo.userName}}</span></p>
+            <p>联系电话：<span>{{userInfo.phone}}</span></p>
             <p>取件地址：<span>{{orderDetail.address}}</span></p>
             <p>买家留言：<span>{{orderDetail.remarks | remarks}}</span></p>
           </div>
         </div>
         <!-- 收货人信息 送货到家-->
         <div class="flex-box top-info-box address" v-if="orderDetail.sendType===2">
-          <div class="iconfont" style="color:#666;">&#xe638;</div>
+          <div class="iconfont theme-color-s1" style="color:#666;">&#xe638;</div>
           <div class="flex-col">
             <p>&emsp;收货人：<span>{{orderDetail.shippingName}}</span></p>
             <p>联系电话：<span>{{orderDetail.shippingPhone}}</span></p>
@@ -338,7 +338,9 @@
         contentScrll: '',
         freight: 3,
         discount: 0, // 优惠金额
-        logist: '' // 物流信息
+        logist: '', // 物流信息
+        userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
+        nextShop: this.$store.state.nextShop
       }
     },
     async created () {

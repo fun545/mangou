@@ -33,8 +33,7 @@ const state = {
   totalPriceThis: '',   // 确认订单商品总价 及时送
   totalPriceNext: '',    // 确认订单商品总价 次日达
   orderId: '', // 订单Id
-  orderDeletFlag: false, // 订单列表子组件删除事件触发
-  cartInfo: '' // 购物车信息
+  orderDeletFlag: false // 订单列表子组件删除事件触发
 }
 
 export default new Vuex.Store({

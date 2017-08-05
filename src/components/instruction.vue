@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import {XDialog} from 'vux'
+  import { XDialog } from 'vux'
   export default {
     components: {
       XDialog
@@ -33,32 +33,37 @@
 
   .instr-icon {
     display: table;
-    padding: 5px;
-    line-height: 20px;
+    .pt(10);
+    .pb(10);
+    .pr(10);
+    .pl(10);
     color: #ffffff;
-    font-size: 20px;
-    .lh(50);
+    .fs(40);
   }
 
   .instruction {
     .r(23);
     .dialog-head {
-      font-size: 13px;
-      padding: 10px 0;
-      line-height: 15px;
+      .fs(26);
+      .pt(20);
+      .pb(20);
+      .lh(30);
       color: #f95d43;
       background-color: #f7f7f7;
     }
     .dialog-cont {
-      padding: 10px;
-      font-size: 12px;
-      line-height: 20px;
+      .pt(20);
+      .pb(20);
+      .pl(20);
+      .pr(20);
+      .fs(25);
+      .lh(40);
       color: #444444;
       p {
         text-align: left;
         .iconfont {
-          margin-right: 5px;
-          font-size: 13px;
+          .mr(10);
+          .fs(26);
           vertical-align: middle;
           color: #f95d43;
         }

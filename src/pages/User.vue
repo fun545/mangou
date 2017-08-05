@@ -300,6 +300,7 @@
         .pb(10);
         font-weight: bold;
         text-align: center;
+        .fs(25);
       }
 
       .address {

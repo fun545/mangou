@@ -11,7 +11,7 @@
           <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
         </div>
         <!-- 订单商品 -->
-        <div>
+        <div class="swiper" ref="swiper">
           <div class="scroller-box" @click="goOrderInfo(item)">
             <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
               <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
@@ -187,12 +187,10 @@
 
 <script>
   import { Toast, Confirm } from 'vux'
-  import BScroll from 'better-scroll'
   export default {
     components: {
       Toast,
-      Confirm,
-      BScroll
+      Confirm
     },
     props: {
       orderList: Array,
@@ -357,8 +355,7 @@
   }
 
   .order-item {
-    display: table;
-    width: 100%;
+   width: 100%;
     box-sizing: border-box;
     .mb(20);
     .pl(20);
@@ -391,7 +388,7 @@
 
   .title {
     font: italic bold 16px/20px 'Microsoft Yahei';
-    .fs(32);
+    .fs(34);
     .lh(40);
   }
 
@@ -413,8 +410,8 @@
   }
 
   .bottom-line {
-    .pt(10);
-    .pb(10);
+    .pt(25);
+    .pb(25);
     position: relative;
 
     &:after {
@@ -428,12 +425,18 @@
     }
   }
 
+  .swiper {
+    width: 100%;
+    .h(220);
+    overflow-x: scroll;
+  }
+
   .scroller-box {
-    display: flex;
+    box-sizing: border-box;
+    .h(220);
     align-items: center;
     .pt(10);
     .pb(10);
-    /*overflow: hidden;*/
     .pic {
       .w(200);
       .h(200);

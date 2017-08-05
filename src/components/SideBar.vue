@@ -12,6 +12,7 @@
   @import "../common/style/sum";
 
   .side-bar {
+    .fs(28);
     background-color: #eeeeee;
     .side-item {
       box-sizing: border-box;
@@ -32,7 +33,7 @@
     .active {
       background-color: #ffffff;
       color: #089cf6;
-      border-left: 2px solid #f95d43;
+      border-left: 3px solid #f95d43;
       .iconfont {
         color: #f95d43;
       }

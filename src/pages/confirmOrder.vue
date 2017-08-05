@@ -25,7 +25,7 @@
               </div>
               <div class="receiver-info">
                 <span class="color-444">收货地址： </span>
-                {{cartInfo.shippingInfo.address}}
+                {{shippingInfo.cityName+shippingInfo.areaName+shippingInfo.villageName+shippingInfo.address}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
@@ -93,31 +93,32 @@
               {{sendWay.value}}
             </div>
           </div>
-          <!--收货地址-->
+          <!--收货地址 次日达 自取-->
           <div class="adress" v-if="sendWay.key==='1'">
             <div class="iconfont icon f-l">&#xe638;</div>
             <div class="adress-info f-l">
               <div class="receiver-info">
-                <span class="color-444">取件人： </span>{{this.shippingInfo.shippingName}}
-                <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
+                <span class="color-444">取件人： </span>{{userInfo.userName}}
+                <span class="tel">{{userInfo.phone}}</span>
               </div>
               <div class="receiver-info">
                 <span class="color-444">取件地址： </span>
-                {{this.shippingInfo.address}}
+                {{nextShop.pointAddress}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
           </div>
+          <!--收货地址 次日达 送货上门-->
           <div class="adress" @click="$router.push({path:'/selecteAddress'})" v-if="sendWay.key==='2'">
             <div class="iconfont icon f-l">&#xe638;</div>
             <div class="adress-info f-l">
               <div class="receiver-info">
-                <span class="color-444">收货人： </span>{{this.shippingInfo.shippingName}}
-                <span class="tel">{{this.shippingInfo.shippingPhone}}</span>
+                <span class="color-444">收货人： </span>{{shippingInfo.shippingName}}
+                <span class="tel">{{shippingInfo.shippingPhone}}</span>
               </div>
               <div class="receiver-info">
                 <span class="color-444">收货地址： </span>
-                {{this.shippingInfo.address}}
+                {{shippingInfo.cityName+shippingInfo.areaName+shippingInfo.villageName+shippingInfo.address}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
@@ -240,7 +241,8 @@
         payFlag: true, // 支付方式Flag
         leaveMsgThis: '', // 留言 及时送
         leaveMsgNext: '', // 留言 次日达
-        cartInfo: this.$store.state.cartInfo
+        cartInfo: this.$store.state.cartInfo, // 购物车信息
+        userInfo: JSON.parse(localStorage.getItem('m-userInfo')) // 用户信息
       }
     },
     created () {
@@ -249,10 +251,6 @@
       this.$nextTick(() => {
         this._initScroll()
       })
-    },
-    mounted () {
-      // 判断配送方式 切换次日达收货信息
-      this.getPointInfo()
     },
     methods: {
       _initScroll () {
@@ -281,12 +279,6 @@
         this.$nextTick(() => {
           this.contentScroll.refresh()
         })
-      },
-      // 判断配送方式 切换次日达收货信息
-      getPointInfo () {
-        if (this.sendWay.key === '1') {
-          this.pointInfo.address = this.nextShop.pointAddress
-        }
       },
       // 支付方式
       onPayChange (type) {
@@ -331,6 +323,7 @@
   }
 
   .order {
+    .fs(25);
     .header {
       background: @theme-color;
       color: #fff;
@@ -441,6 +434,7 @@
             }
             .count {
               color: #999;
+              .fs(25);
             }
           }
         }
@@ -524,6 +518,7 @@
         }
       }
       .pay-methods {
+        .fs(28);
         .pl(35);
         .pr(50);
         .h(88);

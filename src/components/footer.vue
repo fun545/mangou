@@ -51,13 +51,18 @@
     bottom: 0;
     z-index: 10004;
   }
-
+  .item-badge{
+    .fs(25);
+    .lh(25) !important;
+  }
   .tabbar .item-active .transition-item {
     box-sizing: border-box;
-    width: 64px;
-    height: 64px;
+    .w(128);
+    .h(128);
     margin: -10px auto;
-    padding-top: 10px;
+    .mt(-20);
+    .mb(-20);
+    .pt(20);
     color: #fff;
     background: linear-gradient(#fa9f7a, #f75439);
     border-radius: 100px;
@@ -73,10 +78,12 @@
   @keyframes itemChange {
     from {
       margin: 0 auto -20px auto;
+      .mb(-40);
       transform: scale(0, 0);
     }
     to {
       margin: -10px auto;
+      .mt(-20);
       transform: scale(1, 1);
     }
   }
@@ -84,10 +91,12 @@
   .tabbar .tabbar-item .iconfont,
   .tabbar .tabbar-item [class^=icon-] {
     font: 24px/1 'iconfont';
+    .fs(48);
   }
 
   .tabbar .tabbar-item .item-label {
     font-size: 12px;
+    .fs(25);
   }
 
   .tabbar .tabbar-item .icon-home:before {

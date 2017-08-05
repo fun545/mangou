@@ -40,10 +40,11 @@
   }
 </script>
 
-<style>
+<style scoped lang="less">
+  @import "../common/style/sum";
   .tabbar-item {
     flex-grow: 1;
-    padding-top: 6px;
+    .pt(12);
     color: #957b70;
     text-align: center;
     position: relative;
@@ -54,24 +55,27 @@
   }
 
   .item-badge {
-    padding: 0 4px;
-    height: 16px;
+    .pl(8);
+    .pr(8);
+    .h(32);
     box-sizing: border-box;
     border-radius: 100px;
     border: 1px solid #fff;
     color: #fff;
     background-color: #f75439;
     font: 12px/16px 'Microsoft Yahei';
+    .fs(25);
     position: absolute;
-    top: 2px;
+    .t(4);
     left: 50%;
   }
 
   .item-icon {
-    line-height: 24px;
+    .lh(48);
   }
 
   .item-label {
     line-height: 20px;
+    .lh(40);
   }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <div class="home-wrap" @touchmove.prevent>
+    <div class="location-search-box" ref="header">
+      <router-link to="/location" class="location">{{villageName}}</router-link>
+      <a class="search iconfont" @click="goSearch">&#xe639;</a>
+    </div>
     <div class="home-view" ref="homeView">
       <div class="wrap">
-        <div class="location-search-box">
-          <router-link to="/location" class="location">{{villageName}}</router-link>
-          <a class="search" @click="goSearch"><input type="search" placeholder="搜索商品" readonly></a>
-        </div>
         <swiper :options="swiperOption" ref="mySwiper" class="banner">
           <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
             <img :src="item.imageUrl">
@@ -14,8 +14,8 @@
         </swiper>
         <!-- 次日达/即时达 -->
         <div class="link-box">
-          <router-link to="next"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
-          <router-link to="this"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+          <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
+          <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
         </div>
         <div class="active-box">
           <!-- 预售团购 -->
@@ -103,8 +103,8 @@
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
           <div class="new-goods">
-            <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
+            <home-title :title="mapTitleTips[4].name" v-if="mapTitleTips[4]">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[4].other">
             </home-title>
             <new-goods :goodsList="saleGoods"></new-goods>
           </div>
@@ -123,8 +123,8 @@
           </div>
           <!-- 实时推荐 -->
           <div class="moreRecommend">
-            <home-title :title="mapTitleTips[6].name" v-if="mapTitleTips[6]">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[6].other">
+            <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
+              <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
             </home-title>
             <two-column :goodsList="moreRecommendList"></two-column>
           </div>
@@ -340,6 +340,10 @@
           probeType: 3
         })
         this.homeSroll.on('scroll', (pos) => {
+          // 搜索部分背景渐现效果
+          let scrollTop1 = -Math.round(pos.y)
+          this.$refs.header.style.backgroundColor = `rgba(249,91,67,${scrollTop1 / 300})`
+          // 监听无限加载滚动
           let scrollTop = Math.abs(Math.round(pos.y))
           const homeView = this.$refs.homeView
           let homeViewHeight = homeView.offsetHeight
@@ -363,9 +367,14 @@
   .home-wrap {
     height: 100%;
   }
-
-  .home-view .location-search-box {
-    padding: 5px 10px;
+  .swiper-container{
+    .mt(10);
+  }
+  .location-search-box {
+    .pt(25);
+    .pb(25);
+    .pl(20);
+    .pr(20);
     display: flex;
     align-items: center;
     position: absolute;
@@ -373,22 +382,25 @@
     top: 0;
     right: 0;
     left: 0;
+    opacity: 1;
     .location {
       width: calc(~'(100% - 10px)/2');
-      margin-right: 5px;
+      .mr(10);
       padding: 0 15px;
+      .pl(30);
+      .pr(20);
       text-align: center;
       box-sizing: border-box;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow-x: hidden;
       color: #fff;
-      font-size: 12px;
+      .fs(25);
       position: relative;
     }
     .location:before {
-      content: '\e610';
-      font: 12px/1 'iconfont';
+      content: '送至：';
+      .fs(25);
       position: absolute;
       left: 0;
       top: 50%;
@@ -396,47 +408,31 @@
     }
     .location:after {
       content: '';
-      width: 5px;
-      height: 5px;
+      .w(10);
+      .h(10);
       border-width: 0 1px 1px 0;
       border-style: solid;
       border-color: #fff;
       position: absolute;
       top: 50%;
-      right: 0;
+      .r(30);
       transform: translate(-20%, -80%) rotate(45deg);
     }
     .search {
-      margin-left: 5px;
-      padding: 5px 10px;
-      flex-grow: 1;
-      height: 30px;
-      box-sizing: border-box;
-      line-height: 20px;
-      border-radius: 100px;
-      background-color: rgba(255, 255, 255, .3);
-      position: relative;
+     .fs(28);
+      position: absolute;
+      .r(28);
+      color: #e4ffe5;
     }
-    .search:before {
+    /*.search:before {
       content: '\e639';
       color: #fff;
       font: 12px/1 'iconfont';
+      .fs(25);
       position: absolute;
-      top: 10px;
-      left: 15px;
-    }
-    .search input {
-      padding-left: 20px;
-      width: 100%;
-      line-height: 20px;
-      background-color: transparent;
-      border: none;
-      -webkit-appearance: none;
-      outline: none;
-    }
-    .search input::placeholder {
-      color: #fff;
-    }
+      .t(20);
+      .l(30);
+    }*/
   }
 
   .banner {
@@ -471,12 +467,21 @@
       display: flex;
       .pt(5);
       .pb(5);
+      .pic {
+        width: 50%;
+        .h(120);
+        display: inline-block;
+      }
       a {
-        margin: 5px;
+        .mt(10);
+        .mb(10);
+        .mr(10);
+        .ml(10);
       }
     }
     .group-buy {
       .content {
+        width: 100%;
         box-shadow: 0 0 0 #f8f8f8;
         .item {
           width: 33.33%;
@@ -691,7 +696,6 @@
         .mt(12);
       }
     }
-
 
   }
 </style>

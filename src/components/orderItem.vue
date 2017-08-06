@@ -14,7 +14,14 @@
         <div class="swiper" ref="swiper">
           <div class="scroller-box" @click="goOrderInfo(item)" :style="{width:item.goodsList.length*2.66666667+'rem'}">
             <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
-              <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
+              <!--<img v-lazy="goodsItem.goodsImgUrl" alt="" width="100%" height="100%">-->
+              <lazy-image
+                :src='goodsItem.goodsImgUrl'
+                :placeholder='$store.state.defaultImg'
+                :events="['touchmove']"
+                width="100%"
+                height="100%"
+              ></lazy-image>
             </div>
           </div>
         </div>

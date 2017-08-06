@@ -6,6 +6,8 @@
           :src='item.goodsImgUrl'
           :placeholder='$store.state.defaultImg'
           :events="['touchmove']"
+          width="100%"
+          height="100%"
         ></lazy-image>
       </div>
       <div class="col f-l">

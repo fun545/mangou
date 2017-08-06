@@ -6,7 +6,7 @@
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
           <div class="pic">
-            <img v-lazy="storeMsg.storeImgurl" width="100%" height="100%" alt="">
+            <img :src="storeMsg.storeImgurl" alt="" width="100%" height="100%">
           </div>
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
@@ -56,7 +56,15 @@
           <div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index"
                  @click="goDetail(item.goodsId,$event)">
-              <img v-lazy="item.goodsImgUrl" alt="" class="pic">
+              <div class="pic">
+                <lazy-image
+                  :src='item.goodsImgUrl'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%"
+                  height="100%"
+                ></lazy-image>
+              </div>
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
@@ -129,6 +137,7 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
+          console.log(this.storeMsg)
         }
       })
       this.ind = 0
@@ -228,7 +237,7 @@
       .pb(5);
       background: url("../assets/this_top_back.png") no-repeat center/cover;
       .flex-box {
-        .pic{
+        .pic {
           .w(160);
           .h(160);
         }

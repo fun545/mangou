@@ -8,7 +8,13 @@
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
-              <img :src="item" alt="">
+              <!--<img :src="item" alt="">-->
+              <lazy-image
+                :src='item'
+                :placeholder='$store.state.defaultImg'
+                :events="['touchmove']"
+                class="pic"
+              ></lazy-image>
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -237,9 +243,13 @@
     }
     .content {
       .DetailSwiper {
+        .pic{
+          width: 100% !important;
+          .h(750) !important;
+        }
         img {
-          width: 100%;
-          .h(750);
+          width: 100% !important;
+          .h(750) !important;
         }
       }
       position: absolute;

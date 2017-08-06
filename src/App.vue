@@ -22,10 +22,6 @@ setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingLis
     url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.ttf') format('truetype'),
     url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.svg#iconfont') format('svg');
   }
-  .lazy-pic{
-    width: 100%;
-    height: 100%;
-  }
   .weui-tab__panel {
     overflow: hidden !important;
     padding-bottom: 0 !important;
@@ -61,15 +57,15 @@ setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingLis
   img {
     display: block;
     border: none;
-    transition: all 0.5s;
+    /*transition: all 0.5s;*/
   }
 
-  img[lazy=loading] {
-  }
+  /*img[lazy=loading] {*/
+  /*}*/
 
-  img[lazy=loaded] {
-    animation: fade 0.5s;
-  }
+  /*img[lazy=loaded] {*/
+    /*animation: fade 0.5s;*/
+  /*}*/
 
   @keyframes fade {
     0% {
@@ -98,9 +94,9 @@ setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingLis
     color: inherit;
   }
 
-  input[placeholder], [placeholder], *[placeholder] {
-    color: # !important;
-  }
+  /*input[placeholder], [placeholder], *[placeholder] {*/
+    /*color: # !important;*/
+  /*}*/
 
   .label-checkbox {
     font: 12px/1 'Microsoft Yahei';

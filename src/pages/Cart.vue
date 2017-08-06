@@ -53,7 +53,15 @@
                 失效
               </div>
               <!--商品图片 及时送-->
-              <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
+              <div class="pic">
+                <lazy-image
+                  :src='item.goodsImgUrl'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%"
+                  height="100%"
+                ></lazy-image>
+              </div>
               <!--商品信息 及时送-->
               <div class="flex-col">
                 <div class="goods-title">{{item.goodsName}}</div>
@@ -120,7 +128,15 @@
                 失效
               </div>
               <!--图片 次日达-->
-              <img v-lazy="item.goodsImgUrl" width="100%" height="100%">
+              <div class="pic">
+                <lazy-image
+                  :src='item.goodsImgUrl'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%"
+                  height="100%"
+                ></lazy-image>
+              </div>
               <!--商品信息 次日达-->
               <div class="flex-col">
                 <div class="goods-title">{{item.goodsName}}</div>
@@ -854,7 +870,10 @@
       .fs(24);
     }
   }
-
+  .pic{
+    .w(140);
+    .h(140);
+  }
   .theme-color {
     color: @theme-color;
   }

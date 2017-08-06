@@ -29,7 +29,16 @@
             <div class="list clearfix">
               <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index"
                    @click="goSecondList(item.classifyId)">
-                <img v-lazy="item.classifyImgUrl" alt="" class="pic">
+                <!--<img v-lazy="item.classifyImgUrl" alt="" class="pic">-->
+                <div class="pic">
+                  <lazy-image
+                    :src='item.classifyImgUrl'
+                    :placeholder='$store.state.defaultImg'
+                    :events="['touchmove']"
+                    width="100%"
+                    height="100%"
+                  ></lazy-image>
+                </div>
                 <p class="name t-c">{{item.classifyName}}</p>
               </div>
             </div>

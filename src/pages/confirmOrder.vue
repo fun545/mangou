@@ -39,7 +39,13 @@
           <div class="goods-list">
             <div class="item" v-for="(item, index) in filterListThis" :key="index">
               <div class="pic">
-                <img v-lazy="item.goodsImgUrl" alt="">
+                <lazy-image
+                  :src='item.goodsImgUrl'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%"
+                  height="100%"
+                ></lazy-image>
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>
@@ -132,7 +138,13 @@
           <div class="goods-list">
             <div class="item" v-for="(item, index) in filterListNext" :key="index">
               <div class="pic">
-                <img v-lazy="item.goodsImgUrl" alt="">
+                <lazy-image
+                  :src='item.goodsImgUrl'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%"
+                  height="100%"
+                ></lazy-image>
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>

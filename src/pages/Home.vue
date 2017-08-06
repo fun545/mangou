@@ -40,7 +40,7 @@
               <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
             </home-title>
             <div class="content">
-              <div class="left f-l">
+              <div class="left f-l" @click="goSerchKey(serchKey)">
                 <lazy-image
                   :src='serchKey.keyword'
                   :placeholder='$store.state.defaultImg'

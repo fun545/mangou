@@ -12,7 +12,8 @@
             :src='keyBanleImages'
             :placeholder='$store.state.defaultImg'
             :events="['touchmove']"
-            class="lazy-pic"
+            width="100%"
+            height="100%"
           ></lazy-image>
         </div>
         <div class="content">

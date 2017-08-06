@@ -15,8 +15,9 @@ import './common/style/index.less'
 Vue.use(VueLazyload)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  loading: './assets/home_GoodsDefaultImg@2x.png',
+  loading: '../assets/home_GoodsDefaultImg@2x.png',
   attempt: 1,
+  error: '../assets/home_GoodsDefaultImg@2x.png',
   listenEvents: ['scroll', 'mousewheel']
 })
 

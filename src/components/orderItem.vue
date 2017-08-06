@@ -382,7 +382,12 @@
     color: #444;
     background-color: #fff;
   }
-
+  .font-mind{
+    .fs(25);
+  }
+  .font-small{
+    .fs(25);
+  }
   .order-item:last-child {
     margin-bottom: 0;
   }

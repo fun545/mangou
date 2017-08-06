@@ -47,8 +47,8 @@
                     <p class="next-price">次日价：<span class="s1">¥</span><span
                       class="number">{{specialPriceGoodsList[0].price}}</span></p>
                   </div>
-                  <div class="pic f-l">
-                    <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
+                  <div class="pic f-l" v-lazy:background-image="specialPriceGoodsList[0].goodsImgUrl">
+                    <!--<img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">-->
                   </div>
                 </div>
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
@@ -59,8 +59,8 @@
                     <p class="next-price">次日价：<span class="s1">¥</span><span
                       class="number">{{specialPriceGoodsList[1].price}}</span></p>
                   </div>
-                  <div class="pic f-l">
-                    <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">
+                  <div class="pic f-l" v-lazy:background-image="specialPriceGoodsList[1].goodsImgUrl">
+                    <!--<img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">-->
                   </div>
                 </div>
               </div>
@@ -81,8 +81,8 @@
               <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index"
                    @click="goDetail(item.goodsId,$event)">
                 <div class="top">
-                  <div class="pic">
-                    <img v-lazy="item.goodsImgUrl" alt="">
+                  <div class="pic" v-lazy:background-image="item.goodsImgUrl">
+                    <!--<img v-lazy="item.goodsImgUrl" alt="">-->
                   </div>
                   <div class="des">
                     <h3 class="title">{{item.goodsName}}</h3>

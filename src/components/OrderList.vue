@@ -158,6 +158,7 @@
     }
     .load-more {
       color: @font-color-m;
+      .fs(25);
     }
   }
 </style>

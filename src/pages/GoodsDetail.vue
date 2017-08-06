@@ -8,7 +8,7 @@
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
-              <img :src="item">
+              <img :src="item" alt="">
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>

@@ -22,7 +22,10 @@ setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingLis
     url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.ttf') format('truetype'),
     url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.svg#iconfont') format('svg');
   }
-
+  .lazy-pic{
+    width: 100%;
+    height: 100%;
+  }
   .weui-tab__panel {
     overflow: hidden !important;
     padding-bottom: 0 !important;

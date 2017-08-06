@@ -10,16 +10,9 @@ Vue.use(AlertPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 import api from './util/api'
-import VueLazyload from 'vue-lazyload'
 import './common/style/index.less'
-Vue.use(VueLazyload)
-Vue.use(VueLazyload, {
-  preLoad: 1.3,
-  loading: '../assets/home_GoodsDefaultImg@2x.png',
-  attempt: 1,
-  error: '../assets/home_GoodsDefaultImg@2x.png',
-  listenEvents: ['scroll', 'mousewheel']
-})
+import VueLazyImage from 'vue-lazy-images'
+Vue.use(VueLazyImage)
 
 Vue.prototype.post = api.post
 FastClick.attach(document.body)

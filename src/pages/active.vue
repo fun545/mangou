@@ -7,12 +7,24 @@
       </m-header>
       <div class="scroll" v-if="isActive">
         <div class="activePic">
-          <img v-lazy="keyBanleImages" alt="">
+          <!--<img v-lazy="keyBanleImages" alt="">-->
+          <lazy-image
+            :src='keyBanleImages'
+            :placeholder='$store.state.defaultImg'
+            :events="['touchmove']"
+            class="lazy-pic"
+          ></lazy-image>
         </div>
         <div class="content">
           <div class="item" v-for="(item ,index) in goodsList" :key="index">
             <div class="pic f-l">
-              <img v-lazy="item.goodsImgUrl" alt="">
+              <!--<img v-lazy="item.goodsImgUrl" alt="">-->
+              <lazy-image
+                :src='item.goodsImgUrl'
+                :placeholder='$store.state.defaultImg'
+                :events="['touchmove']"
+                class="lazy-pic"
+              ></lazy-image>
             </div>
             <div class="des f-l">
               <h3 class="name">{{item.goodsName}}</h3>
@@ -82,7 +94,6 @@
       color: #07b3e0;
     }
   }
-
   .scroll {
     position: absolute;
     .t(92);

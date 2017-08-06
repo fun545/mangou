@@ -25,7 +25,12 @@
             </home-title>
             <div class="content clearfix">
               <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
-                <img v-lazy="item.keyword" alt="" width="100%" height="100%">
+                <lazy-image
+                  :src='item.keyword'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%" height="100%"
+                ></lazy-image>
               </div>
             </div>
           </div>
@@ -36,7 +41,12 @@
             </home-title>
             <div class="content">
               <div class="left f-l">
-                <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%" @click="goSerchKey(serchKey)">
+                <lazy-image
+                  :src='serchKey.keyword'
+                  :placeholder='$store.state.defaultImg'
+                  :events="['touchmove']"
+                  width="100%" height="100%"
+                ></lazy-image>
               </div>
               <div class="right f-l">
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
@@ -47,8 +57,12 @@
                     <p class="next-price">次日价：<span class="s1">¥</span><span
                       class="number">{{specialPriceGoodsList[0].price}}</span></p>
                   </div>
-                  <div class="pic f-l" v-lazy:background-image="specialPriceGoodsList[0].goodsImgUrl">
-                    <!--<img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">-->
+                  <div class="pic f-l">
+                    <lazy-image
+                      :src='specialPriceGoodsList[0].goodsImgUrl'
+                      :placeholder='$store.state.defaultImg'
+                      :events="['touchmove']"
+                    ></lazy-image>
                   </div>
                 </div>
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
@@ -59,8 +73,12 @@
                     <p class="next-price">次日价：<span class="s1">¥</span><span
                       class="number">{{specialPriceGoodsList[1].price}}</span></p>
                   </div>
-                  <div class="pic f-l" v-lazy:background-image="specialPriceGoodsList[1].goodsImgUrl">
-                    <!--<img v-lazy="specialPriceGoodsList[1].goodsImgUrl" alt="" width="100%" height="100%">-->
+                  <div class="pic f-l">
+                    <lazy-image
+                      :src='specialPriceGoodsList[1].goodsImgUrl'
+                      :placeholder='$store.state.defaultImg'
+                      :events="['touchmove']"
+                    ></lazy-image>
                   </div>
                 </div>
               </div>
@@ -81,8 +99,12 @@
               <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index"
                    @click="goDetail(item.goodsId,$event)">
                 <div class="top">
-                  <div class="pic" v-lazy:background-image="item.goodsImgUrl">
-                    <!--<img v-lazy="item.goodsImgUrl" alt="">-->
+                  <div class="pic">
+                    <lazy-image
+                      :src='item.goodsImgUrl'
+                      :placeholder='$store.state.defaultImg'
+                      :events="['touchmove']"
+                    ></lazy-image>
                   </div>
                   <div class="des">
                     <h3 class="title">{{item.goodsName}}</h3>

@@ -2,7 +2,11 @@
   <ul>
     <li class="item" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goodsId,$event)">
       <div class="pic f-l">
-        <img v-lazy="item.goodsImgUrl" alt="">
+        <lazy-image
+          :src='item.goodsImgUrl'
+          :placeholder='$store.state.defaultImg'
+          :events="['touchmove']"
+        ></lazy-image>
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>

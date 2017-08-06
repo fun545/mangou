@@ -3,17 +3,20 @@
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index"
         @click="goDetail(item.goodsId,$event)">
       <div class="pic">
-        <img v-lazy="item.goodsImgUrl" width="100%" alt="">
+        <lazy-image
+          :src='item.goodsImgUrl'
+          :placeholder='$store.state.defaultImg'
+          :events="['touchmove']"
+        ></lazy-image>
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>
-        <!--<p class="des">{{item.guige}}</p>-->
       </div>
       <div class="bt">
         <div>
           <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
           <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-            <buy-car-button :goods="item"></buy-car-button>
+          <buy-car-button :goods="item"></buy-car-button>
         </div>
       </div>
     </li>

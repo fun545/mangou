@@ -22,7 +22,7 @@
       </div>
     </div>
     <!--更多-->
-    <div class="more" v-if="goodsList.length>2">
+    <div class="more" v-if="goodsList&&goodsList.length>2">
       <div class="bt t-c" @click="setCount()" v-if="!showMoreFlag">显示更多</div>
       <div class="bt t-c" @click="setCount()" v-if="showMoreFlag">收起商品</div>
     </div>
@@ -64,7 +64,7 @@
     props: {
       goodsList: Array, // 商品列表
       goodsTotalCount: Number, // 商品总数
-      scrollObj: Function, // scroll实例
+      scrollObj: Object, // scroll实例
       shopType: Number,
       totalPrice: Number,
       freight: Number,
@@ -94,7 +94,9 @@
     computed: {
       // 显示更多与隐藏商品
       filterList () {
-        return this.goodsList.slice(0, this.limitNumber)
+        if (this.goodsList) {
+          return this.goodsList.slice(0, this.limitNumber)
+        }
       }
     }
   }

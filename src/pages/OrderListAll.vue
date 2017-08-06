@@ -1,15 +1,15 @@
 <template>
-  <order-list title="待发货" :status="status"></order-list>
+  <order-list title="全部订单" :status="status"></order-list>
 </template>
 
 <script>
   import OrderList from '../components/OrderList'
   export default{
-    name: 'orderSendList',
+    name: 'order_List',
     components: {OrderList},
     data () {
       return {
-        status: 2
+        status: -1
       }
     }
   }

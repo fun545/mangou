@@ -3,7 +3,7 @@
     <keep-alive exclude="user,about,active,address,addAddress,cart,collection,confirmOrder,editAddress,forget,
 detail,goPay,location,login,manualLocation,next,nextList1,saleList,orderInfo,order_List,orderPayList,orderRater,
 orderRaterList,orderRefund,orderSendList,orderShippingList,originActive,register,search,searchText,selectAddress,
-setting,userInfo">
+setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList">
       <router-view></router-view>
     </keep-alive>
   </div>

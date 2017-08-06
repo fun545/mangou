@@ -335,7 +335,7 @@
         toastText: '',
         showPositionValue: false, // 透明提示Flag
         orderDetail: '', // 订单详情
-        contentScrll: '',
+        contentScrll: {},
         freight: 3,
         discount: 0, // 优惠金额
         logist: '', // 物流信息

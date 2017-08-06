@@ -93,7 +93,7 @@ export default new Router({
     {
       /* 所有订单列表 */
       path: '/order_list',
-      component: require('../pages/OrderList')
+      component: require('../pages/OrderListAll.vue')
     },
     {
       /* 订单待付款列表 */

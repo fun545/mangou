@@ -12,7 +12,7 @@
         </div>
         <!-- 订单商品 -->
         <div class="swiper" ref="swiper">
-          <div class="scroller-box" @click="goOrderInfo(item)">
+          <div class="scroller-box" @click="goOrderInfo(item)" :style="{width:item.goodsList.length*2.66666667+'rem'}">
             <div class="pic d-ib" v-for="(goodsItem,index) in item.goodsList" :key="index">
               <img v-lazy="goodsItem.goodsImgUrl" :key="index" alt="" width="100%" height="100%">
             </div>
@@ -182,19 +182,22 @@
       <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
              :text="toastText" width="10em" class="toast"></toast>
     </div>
+    <slot name="loadMoreIcon"></slot>
   </div>
 </template>
 
 <script>
   import { Toast, Confirm } from 'vux'
+  import BScroll from 'better-scroll'
   export default {
     components: {
       Toast,
-      Confirm
+      Confirm,
+      BScroll
     },
     props: {
       orderList: Array,
-      _initScroll: Function
+      _initScroll: Object
     },
     data () {
       return {
@@ -204,6 +207,19 @@
         index: '' // 待删除订单index
       }
     },
+//    created () {
+//      this.$nextTick(() => {
+//        console.log(this.$refs.swiper)
+//      })
+//    },
+//    watch: {
+//      orderList () {
+//        console.log(this.$refs.swiper)
+//        this.$nextTick(() => {
+//          this._initSwiperScroll()
+//        })
+//      }
+//    },
     methods: {
       // 点击按钮事件
       onBt (item, index) {
@@ -280,11 +296,12 @@
           }
         })
       },
-      // 前端订单状态展示
-      showStatus () {},
       goOrderInfo (item) {
         this.$store.state.orderId = item.orderId
         this.$router.push({path: '/order_info'})
+      },
+      _initSwiperScroll () {
+        this.siperScroll = new BScroll(this.$refs.swiper, {scrollX: true, scrollY: false, mouseWheel: false})
       }
     },
     filters: {
@@ -355,7 +372,7 @@
   }
 
   .order-item {
-   width: 100%;
+    width: 100%;
     box-sizing: border-box;
     .mb(20);
     .pl(20);
@@ -413,7 +430,6 @@
     .pt(25);
     .pb(25);
     position: relative;
-
     &:after {
       content: '';
       height: 1px;
@@ -428,7 +444,7 @@
   .swiper {
     width: 100%;
     .h(220);
-    overflow-x: scroll;
+    overflow: hidden;
   }
 
   .scroller-box {

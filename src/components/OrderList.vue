@@ -1,18 +1,18 @@
 <template>
   <div class="order-list-view">
     <!-- 页面标题 -->
-    <m-header title="全部订单">
+    <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content-wrap" ref="content">
       <!-- 订单列表 及时送  -->
-      <order-list :orderList="orderList" :_initScroll="contentScroll">
+      <order-list :orderList="orderList" :_initScroll="contentScroll" ref="orderList">
+        <load-more
+          :tip="loadText"
+          :show-loading="moreIconFlag"
+          background-color="#f7f7f7"
+          class="load-more" slot="loadMoreIcon" v-if="loadMoreFlag"></load-more>
       </order-list>
-      <load-more
-        :tip="loadText"
-        :show-loading="moreIconFlag"
-        background-color="#f7f7f7"
-        class="load-more"></load-more>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="toastText" width="10em" class="toast"></toast>
@@ -21,8 +21,8 @@
 
 <script>
   import { Toast, LoadMore } from 'vux'
-  import mHeader from '../components/header'
-  import orderList from '../components/orderItem.vue'
+  import mHeader from './header'
+  import orderList from './orderItem.vue'
   import BScroll from 'better-scroll'
   export default{
     name: 'order_List',
@@ -33,6 +33,10 @@
       Toast,
       LoadMore
     },
+    props: {
+      status: Number,
+      title: ''
+    },
     data () {
       return {
         orderList: [],
@@ -42,7 +46,8 @@
         pageIndex: 1,
         loadText: '正在加载更多数据',
         moreIconFlag: true,
-        contentScroll: ''
+        contentScroll: {},
+        loadMoreFlag: false
       }
     },
     async created () {
@@ -50,7 +55,8 @@
         token: localStorage.getItem('m-token'),
         pageSize: 10,
         pageIndex: 1,
-        villageId: localStorage.getItem('m-villageId')
+        villageId: localStorage.getItem('m-villageId'),
+        status: this.status
       }).then((res) => {
         console.log(res.data)
         if (res.data.code === 100) {
@@ -81,6 +87,7 @@
           var scrollTop = Math.abs(pos.y)
           var innerHeight = this.$refs.content.children[0].offsetHeight
           if (scrollTop + contentHeight >= innerHeight) {
+            this.loadMoreFlag = true
             this.loadMore()
           }
         })
@@ -93,12 +100,12 @@
             token: localStorage.getItem('m-token'),
             pageSize: 10,
             pageIndex: this.pageIndex,
-            villageId: localStorage.getItem('m-villageId')
+            villageId: localStorage.getItem('m-villageId'),
+            status: this.status
           }).then((res) => {
             console.log(res.data)
             if (res.data.code === 100) {
               let newList = res.data.orderList
-              console.log(newList)
               newList.forEach((item, index) => {
                 this.orderList.push(item)
               })

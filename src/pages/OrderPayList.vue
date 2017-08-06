@@ -1,52 +1,16 @@
 <template>
- <div>
-
- </div>
+  <order-list title="待付款" :status="status"></order-list>
 </template>
 
 <script>
-  import { XHeader } from 'vux'
-
-  export default {
+  import OrderList from '../components/OrderList'
+  export default{
     name: 'orderPayList',
-    components: {
-      XHeader
+    components: {OrderList},
+    data () {
+      return {
+        status: 1
+      }
     }
   }
 </script>
-
-<style lang="less">
-  .order-pay-list-view .content-view-scroller {
-    height: calc(~'100% - 86px');
-  }
-
-  .order-pay-list-view .footer-box {
-    border-top: 1px solid #eee;
-    height: 40px;
-    box-sizing: border-box;
-    padding: 10px;
-    background-color: #fff;
-    align-items: center;
-    vertical-align: middle;
-
-    .input-checkbox:checked:before {
-      color: #fc766d;
-    }
-
-    .flex-col {
-      margin-left: 10px;
-      padding-left: 10px;
-      line-height: 20px;
-      border-left: 1px solid #ddd;
-    }
-
-    .play-btn {
-      padding: 4px 12px;
-      background-color: #fc766d;
-      color: #fff;
-      border-radius: 100px;
-      line-height: 1;
-      font-size: 12px;
-    }
-  }
-</style>

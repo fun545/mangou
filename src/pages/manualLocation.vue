@@ -103,7 +103,8 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-        this.$router.push({path: '/home'})
+        this.$router.replace('/home')
+        window.location.reload()
       },
       search (word) {
         this.post('/village/villageList', {

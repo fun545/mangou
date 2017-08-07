@@ -72,7 +72,8 @@
         secondId: '',
         listFlag: false,
         isActive: true,
-        loadingFlag: true
+        loadingFlag: true,
+        listScroll: {}
       }
     },
     created () {
@@ -86,9 +87,9 @@
         } else {
           this.listFlag = true
         }
-//        this.$nextTick(() => {
-//          this._initScroll()
-//        })
+        this.$nextTick(() => {
+          this._initScroll()
+        })
       },
       _initScroll () {
         this.listScroll = new BScroll(this.$refs.listWrap, {click: true})
@@ -187,7 +188,7 @@
           position: absolute;
           .h(60);
           box-sizing: border-box;
-          .instr-icon{
+          .instr-icon {
             padding: 0 !important;
           }
         }

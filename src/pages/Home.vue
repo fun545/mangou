@@ -29,8 +29,8 @@
                   :src='item.keyword'
                   :placeholder='$store.state.defaultImg'
                   :events="['touchmove']"
-                  width="100%" height="100%"
                 ></lazy-image>
+                <!--<img v-lazy="item.keyword" alt="" width="100%" height="100%">-->
               </div>
             </div>
           </div>
@@ -45,8 +45,8 @@
                   :src='serchKey.keyword'
                   :placeholder='$store.state.defaultImg'
                   :events="['touchmove']"
-                  width="100%" height="100%"
                 ></lazy-image>
+                <!--<img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">-->
               </div>
               <div class="right f-l">
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
@@ -63,6 +63,7 @@
                       :placeholder='$store.state.defaultImg'
                       :events="['touchmove']"
                     ></lazy-image>
+                    <!--<img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">-->
                   </div>
                 </div>
                 <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
@@ -79,6 +80,7 @@
                       :placeholder='$store.state.defaultImg'
                       :events="['touchmove']"
                     ></lazy-image>
+                    <!--<img v-lazy="specialPriceGoodsList[1].goodsImgUrl">-->
                   </div>
                 </div>
               </div>
@@ -105,6 +107,7 @@
                       :placeholder='$store.state.defaultImg'
                       :events="['touchmove']"
                     ></lazy-image>
+                    <!--<img v-lazy="item.goodsImgUrl" alt="">-->
                   </div>
                   <div class="des">
                     <h3 class="title">{{item.goodsName}}</h3>
@@ -217,7 +220,8 @@
           notNextTick: true,
           autoplay: 3000,
           pagination: '.swiper-pagination'
-        }
+        },
+        homeSroll: {}
       }
     },
     created () {
@@ -282,6 +286,12 @@
       this.post('/goods/getLabelGoods', {}).then((res) => {
         if (res.data.code === 100) {
         }
+      })
+    },
+    activated () {
+      this.$nextTick(() => {
+        console.log(this.homeSroll)
+        this.homeSroll.refresh()
       })
     },
     methods: {
@@ -374,9 +384,6 @@
             this.loadMore()
           }
         })
-        setTimeout(() => {
-          this.contentScrll.refresh()
-        }, 100)
       }
     }
   }
@@ -389,9 +396,11 @@
   .home-wrap {
     height: 100%;
   }
-  .swiper-container{
+
+  .swiper-container {
     .mt(10);
   }
+
   .location-search-box {
     .pt(25);
     .pb(25);
@@ -441,7 +450,7 @@
       transform: translate(-20%, -80%) rotate(45deg);
     }
     .search {
-     .fs(28);
+      .fs(28);
       position: absolute;
       .r(28);
       color: #e4ffe5;

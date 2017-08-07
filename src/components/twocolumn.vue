@@ -7,9 +7,8 @@
           :src='item.goodsImgUrl'
           :placeholder='$store.state.defaultImg'
           :events="['touchmove']"
-          width="100%"
-          height="100%"
         ></lazy-image>
+        <!--<img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">-->
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>

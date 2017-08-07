@@ -12,7 +12,7 @@
               <img src="../assets/vux_logo.png" class="picture" alt="" @click="$router.push({path:'/user_info'})">
               <img src="" alt="">
             </div>
-            <div class="user-info">
+            <div class="user-info" v-if="token">
               <div class="name">{{userInfo.userName}}</div>
               <span class="address">{{villageName}}</span>
               <div class="line-bar">&nbsp;</div>
@@ -45,35 +45,35 @@
             <router-link to="/order_pay_list" class="entry-item">
               <div class="icon">
                 <i class="iconfont">&#xe62c;</i>
-                <span>{{userFirst.nofukuanCount}}</span>
+                <span v-if="token&&userFirst.nofukuanCount>0">{{userFirst.nofukuanCount}}</span>
               </div>
               <div class="text">待付款</div>
             </router-link>
             <router-link to="/order_send_list" class="entry-item">
               <div class="icon">
                 <i class="iconfont">&#xe620;</i>
-                <span v-if="userFirst.nofahuoCount>0">{{userFirst.nofahuoCount}}</span>
+                <span v-if="userFirst.nofahuoCount>0&&token">{{userFirst.nofahuoCount}}</span>
               </div>
               <div class="text">待发货</div>
             </router-link>
             <router-link to="/order_shipping_list" class="entry-item">
               <div class="icon">
                 <i class="iconfont">&#xe60b;</i>
-                <span v-if="userFirst.peisongzhong>0">{{userFirst.peisongzhong}}</span>
+                <span v-if="userFirst.peisongzhong>0&&token">{{userFirst.peisongzhong}}</span>
               </div>
               <div class="text">配送中</div>
             </router-link>
             <router-link to="/order_rater_list" class="entry-item">
               <div class="icon">
                 <i class="iconfont">&#xe645;</i>
-                <span v-if="userFirst.nopingjia>0">{{userFirst.nopingjia}}</span>
+                <span v-if="userFirst.nopingjia>0&&token">{{userFirst.nopingjia}}</span>
               </div>
               <div class="text">待评价</div>
             </router-link>
             <router-link to="/order_after_sale_list" class="entry-item">
               <div class="icon">
                 <i class="iconfont">&#xe630;</i>
-                <span v-if="userFirst.refundCount>0">{{userFirst.refundCount}}</span>
+                <span v-if="userFirst.refundCount>0&&token">{{userFirst.refundCount}}</span>
               </div>
               <div class="text">退款/售后</div>
             </router-link>
@@ -146,7 +146,8 @@
         userFirst: '', // 订单数据
         userReg: '', // 注册xxx节省xxx
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
-        villageName: localStorage.getItem('m-villageName')  // 小区名字
+        villageName: localStorage.getItem('m-villageName'),  // 小区名字
+        token: localStorage.getItem('m-token')
       }
     },
     created () {

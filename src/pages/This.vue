@@ -6,11 +6,11 @@
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
           <div class="pic">
-            <img :src="storeMsg.storeImgurl" alt="" width="100%" height="100%">
+            <img v-lazy="storeMsg.storeImgurl" alt="" width="100%" height="100%">
           </div>
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
-            <p>{{storeMsg.shopHours}} | 满29元免配送费用</p>
+            <p>{{storeMsg.shopHours}} | {{storeMsg.startPrice}}元起送</p>
             <p><i class="iconfont">&#xe62a;</i>{{storeMsg.address}}</p>
             <p><i class="iconfont">&#xe624;</i>{{storeMsg.tel}}</p>
           </div>
@@ -28,8 +28,8 @@
       <div class="menu-wrap f-l" ref="menuWrap">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
-                     @click.native="memuChange(item.classifyId,index)"
-                     :class="{'active':index===ind,'strong':index>=0&&index<3}">
+                     @click.native="memuChange(item.classifyId,index,1)"
+                     :class="{'active':index===ind}">
             <span v-html="item.classifyName"></span>
           </side-item>
         </side-bar>
@@ -54,16 +54,27 @@
         </div>
         <div class="googs-list" ref="goodsListWrap">
           <div>
+            <div class="second-menu clearfix">
+              <div class="item" @click="getGoods(firstId,1)" :class="{'active':secondIndex===-1}">全部分类</div>
+              <div class="item" v-for="(item,index) in secondMenuList" :key="index"
+                   @click="getSecondGoods(item.classifyId,2,index)"
+                   :class="{'active':secondIndex===index}"
+              >
+                {{item.classifyName}}
+              </div>
+            </div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index"
                  @click="goDetail(item.goodsId,$event)">
               <div class="pic">
-                <lazy-image
-                  :src='item.goodsImgUrl'
-                  :placeholder='$store.state.defaultImg'
-                  :events="['touchmove']"
-                  width="100%"
-                  height="100%"
-                ></lazy-image>
+                <!--<lazy-image-->
+                <!--:src='item.goodsImgUrl'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
+                <!--width="100%"-->
+                <!--height="100%"-->
+                <!--&gt;</lazy-image>-->
+                <!--<img :src="item.goodsImgUrl" width="100%" height="100%">-->
+                <img width="100%" height="100%" v-lazy="item.goodsImgUrl">
               </div>
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
@@ -109,30 +120,25 @@
         sideList: [],
         storeMsg: [],
         goodsList: '',
-        firstClassifyId: 1,
-        ind: '',
+        ind: 0, // 当前一级菜单索引
+        secondIndex: -1, // 当前二级菜单索引
+        firstId: '', // 一级菜单对应的classifyId
+        secondId: '', // 二级菜单对应的classifyId
+        secondMenuList: '', // 二级菜单列表
         sortSelectIndex: 1,
         softType: 3,
         priceSortFlag: false,
-        saleSortFlag: false
+        saleSortFlag: false,
+        listSroll: {},
+        pageIndex: 1,
+        pageSize: 10,
+        sortId: '', // 当前排序Id
+        sortType: '' // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
       }
     },
-    created () {
-      this.post('/classify/firstClassifyList_new', {
-        storeId: localStorage.getItem('m-shopId'),
-        villageId: localStorage.getItem('m-villageId'),
-        shopType: 2
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.sideList = res.data.firstClassifyList
-          this.$nextTick(() => {
-            this._initScroll()
-          })
-        }
-      })
-      this.post('/basic/getStoreMsg', {
-        cityId: localStorage.getItem('m-cityId'),
-        areaId: localStorage.getItem('m-areaId'),
+    async created () {
+      // 店铺信息
+      await this.post('/basic/getStoreMsg', {
         storeId: localStorage.getItem('m-shopId')
       }).then((res) => {
         if (res.data.code === 100) {
@@ -140,37 +146,123 @@
           console.log(this.storeMsg)
         }
       })
-      this.ind = 0
-      this.getGoods(1)
+      // 一级菜单
+      await this.post('/classify/firstClassifyList_new_js', {
+        storeId: localStorage.getItem('m-shopId'),
+        villageId: localStorage.getItem('m-villageId'),
+        shopType: 2
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.sideList = res.data.firstClassifyList
+          // 默认对应数组第一项为classifyId
+          this.firstId = this.sideList[0].classifyId
+          this.sortId = this.sideList[0].classifyId
+          this.sortType = 1
+          console.log(this.sideList)
+        }
+      })
+      // 二级菜单
+      await this.post('/classify/secondClassifyList', {
+        classifyId: this.firstId,
+        storeId: localStorage.getItem('m-shopId'),
+        villageId: localStorage.getItem('m-villageId')
+      }).then((res) => {
+        console.log(res.data)
+        this.secondMenuList = res.data.secondClassifyList
+        console.log(this.secondMenuList)
+      })
+      // 商品列表
+      await this.post('/goods/goodsList', {
+        firstClassifyId: this.firstId,
+        storeId: localStorage.getItem('m-shopId'),
+        softType: this.softType,
+        villageId: localStorage.getItem('m-villageId'),
+        pageIndex: 1,
+        pageSize: 10
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.goodsList = res.data.goodsList
+        }
+      })
+      this.$nextTick(() => {
+        this._initScroll()
+      })
+    },
+    activated () {
+      this.$nextTick(() => {
+        console.log(this.listSroll)
+        this.listSroll.refresh()
+      })
     },
     methods: {
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
-      getGoods (id) {
-        this.firstClassifyId = id
-        this.post('/goods/goodsList', {
-          firstClassifyId: id,
-          storeId: localStorage.getItem('m-shopId'),
-          softType: this.softType,
-          villageId: localStorage.getItem('m-villageId')
-        }).then((res) => {
-          this.goodsList = res.data.goodsList
+//      getSecondMenu (id) {
+//        this.post('/classify/secondClassifyList', {
+//          classifyId: this.firstId,
+//          storeId: localStorage.getItem('m-shopId'),
+//          villageId: localStorage.getItem('m-villageId')
+//        }).then((res) => {
+//          console.log(res.data)
+//          this.secondMenuList = res.data.secondClassifyList
+//          console.log(this.secondMenuList)
+//        })
+//      },
+      async getGoods (id, type) {
+        var params = {}
+        if (type === 1) {
+          params.firstClassifyId = id
+          this.secondIndex = -1
+        } else {
+          params.secondClassifyId = id
+        }
+        params.storeId = localStorage.getItem('m-shopId')
+        params.softType = this.softType
+        params.villageId = localStorage.getItem('m-villageId')
+        params.villageId = localStorage.getItem('m-villageId')
+        params.pageSize = this.pageSize
+        params.pageIndex = this.pageIndex
+        await this.post('/goods/goodsList', params).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.goodsList = res.data.goodsList
+          }
+        })
+        this.$nextTick(() => {
+          this.listSroll.refresh()
         })
       },
-      memuChange (id, index) {
-        this.getGoods(id)
+      // 点击二级分类获取商品
+      getSecondGoods (id, type, index) {
+        this.secondIndex = index
+        this.sortType = type
+        this.sortId = id
+        this.getGoods(id, this.sortType)
+      },
+      memuChange (id, index, type) {
+        this.sortId = id
+        this.sortType = 1
+        this.getGoods(id, 1)
+        this._initListScroll()
         this.ind = index
+        this.post('/classify/secondClassifyList', {
+          classifyId: id,
+          storeId: localStorage.getItem('m-shopId'),
+          villageId: localStorage.getItem('m-villageId')
+        }).then((res) => {
+          this.secondMenuList = res.data.secondClassifyList
+        })
       },
       priceSort () {
         this.sortSelectIndex = 2
         if (!this.priceSortFlag) {
           this.softType = 1
-          this.getGoods(this.firstClassifyId)
+          this.getGoods(this.sortId, this.sortType)
           this.priceSortFlag = true
         } else {
           this.softType = 5
-          this.getGoods(this.firstClassifyId)
+          this.getGoods(this.sortId, this.sortType)
           this.priceSortFlag = false
         }
       },
@@ -178,20 +270,36 @@
         this.sortSelectIndex = 3
         if (!this.saleSortFlag) {
           this.softType = 2
-          this.getGoods(this.firstClassifyId)
+          this.getGoods(this.sortId, this.sortType)
           this.saleSortFlag = true
         } else {
           this.softType = 5
-          this.getGoods(this.firstClassifyId)
+          this.getGoods(this.sortId, this.sortType)
           this.saleSortFlag = false
         }
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrap, {
-          click: true
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
         })
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
-          click: true
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
+        })
+        this.listSroll.on('scroll', (pos) => {
+          console.log(pos)
+        })
+      },
+      _initListScroll () {
+        this.listSroll = new BScroll(this.$refs.goodsListWrap, {click: true, disableMouse: true})
+        this.listSroll.on('scroll', (pos) => {
+          console.log(pos.y)
+//          var y = Math.abs(pos.y)
         })
       },
       goDetail (id, e) {
@@ -444,6 +552,33 @@
       .w(578);
       overflow: hidden;
       .pl(10);
+      .pt(12);
+      .second-menu {
+        width: 100%;
+        .pl(40);
+        .pr(56);
+        border-bottom: 1px solid #eee;
+        .item {
+          .w(146);
+          .h(45);
+          .lh(45);
+          background: #f7f7f7;
+          border-radius: 3px;
+          .fs(26);
+          color: #666;
+          float: left;
+          .mr(22);
+          .mb(16);
+          text-align: center;
+          &.active {
+            color: #089cf6;
+            background-color: rgba(8, 156, 246, .12);
+          }
+          &:nth-child(3n) {
+            .mr(0);
+          }
+        }
+      }
       .goods-item {
         position: relative;
         box-sizing: border-box;

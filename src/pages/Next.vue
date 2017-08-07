@@ -82,7 +82,9 @@
         listHeight: [],
         scrollY: 0,
         lists: {},
-        isLoad: true
+        isLoad: true,
+        menuSroll: {},
+        listSroll: {}
       }
     },
     created () {
@@ -97,6 +99,13 @@
             this.isLoad = false
           })
         }
+      })
+    },
+    activated () {
+      this.$nextTick(() => {
+        console.log(this.listSroll)
+        this.menuSroll.refresh()
+        this.listSroll.refresh()
       })
     },
     computed: {
@@ -138,9 +147,6 @@
         this.$router.go(0)
       },
       memuChange (id, index, event) {
-        if (event._constructed) {
-          return
-        }
         this.listSroll.scrollToElement(this.lists[index], 300)
       },
       _initScroll () {

@@ -1,29 +1,33 @@
 <template>
-  <div class="help-view">
+  <div class="help-view" @touchmove.prevent>
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">客服与帮助</x-header>
+    <m-header title="客服与帮助">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- 服务提示 -->
     <div class="tips-box">
       <div class="flex-col">
-        <div class="iconfont">&#xe630;</div>
+        <div class="iconfont tui"></div>
         <p class="font-mind">支持售后退款</p>
       </div>
       <div class="flex-col">
-        <div class="iconfont">&#xe630;</div>
+        <div class="iconfont"></div>
         <p class="font-mind">支持补发</p>
       </div>
       <div class="flex-col">
-        <div class="iconfont">&#xe630;</div>
+        <div class="iconfont song"></div>
         <p class="font-mind">支持送货上门</p>
       </div>
     </div>
     <!-- 页面内容 -->
-    <div class="content-scroller">
-      <div class="organ-title" :class="{'active-item':organ1}" @click="organ1 = !organ1">
-        <div class="flex-col">1、收到的商品有问题怎么办？</div>
+    <div class="content-scroller" v-for="(item,index) in helpList" :key="index">
+      <div class="organ-title"
+           :class="{'active-item':ind===index&&showFlag}"
+           @click="show(index)">
+        <div class="flex-col">{{item.title}}</div>
         <div class="iconfont">&#xe674;</div>
       </div>
-      <div class="organ-content" v-if="organ1">若您收到的商品有问题，请您在签收后48小时内即时拍照留证并联系每日优先客服反馈处理</div>
+      <div class="organ-content" v-if="ind===index&&showFlag" v-html="item.content"></div>
     </div>
     <!-- 客服电话 -->
     <div class="footer-box">
@@ -34,31 +38,64 @@
 </template>
 
 <script>
-  import { XHeader } from 'vux'
+  import mHeader from '../components/header'
 
   export default {
     components: {
-      XHeader
+      mHeader
     },
     data () {
       return {
-        organ1: false
+        ind: '',
+        helpList: [],
+        showFlag: false
+      }
+    },
+    created () {
+      this.post('/basic/helpMe', {type: 4}).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          this.helpList = res.data.helpList
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+      })
+    },
+    methods: {
+      show (index) {
+        this.ind = index
+        if (index === this.ind) {
+          this.showFlag = !this.showFlag
+        }
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .help-view .vux-header {
-    background-color: #fff;
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
+  @import "../common/style/mlxin";
 
-    [class^=vux-header-] {
-      color: #444;
+  .help-view {
+    width: 100%;
+    height: 100%;
+    .fs(25);
+    .cp-header {
+      position: inherit;
     }
-
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #444;
+    .font-mind {
+      .fs(25);
     }
   }
 
@@ -67,41 +104,70 @@
     color: #666;
     text-align: center;
     background-color: #fff;
-    padding: 10px 0;
+    .pt(10);
+    .pb(20);
     border-top: 1px solid #eee;
-    margin-bottom: 10px;
-
+    .mb(20);
     .iconfont {
-      font-size: 26px;
+      width: 100%;
+      .h(56);
+      .mb(10);
+      .fs(52);
       color: #fc5050;
+      .bg-image('../../assets/ic_bu');
+      background-repeat: no-repeat;
+      background-size: .72rem .693rem;
+      background-position: center;
+      &.tui {
+        .bg-image('../../assets/ic_tui');
+      }
+      &.song {
+        .bg-image('../../assets/ic_song');
+      }
     }
   }
 
   .help-view .content-scroller {
-    height: calc(~'100% - 46px - 77px - 78px');
-    overflow-y: scroll;
+    /*height: calc(~'100% - 46px - 77px - 78px');*/
+    /*overflow-y: scroll;*/
   }
 
-  .help-view .footer-box .btn {
-    display: block;
-    margin: 10px 20px;
-    padding: 10px;
-    line-height: 20px;
-    border-radius: 5px;
-    text-align: center;
-    color: #fff;
-    background-color: #fc7070;
+  .help-view .footer-box {
+    position: absolute;
+    .b(100);
+    width: 100%;
+    .h(80);
+    .btn {
+      display: block;
+      .mt(20);
+      .mb(20);
+      .ml(40);
+      .mr(40);
+      .pt(20);
+      .pb(20);
+      .pr(20);
+      .pl(20);
+      .lh(40);
+      border-radius: 5px;
+      text-align: center;
+      color: #fff;
+      background-color: #fc7070;
+      .fs(35);
+    }
   }
 
   .help-view .organ-title {
     display: flex;
     background-color: #fff;
     border-bottom: 1px solid #eee;
-    padding: 10px;
-    line-height: 20px;
-
+    .pt(20);
+    .pb(20);
+    .pr(20);
+    .pl(20);
+    .lh(40);
+    .fs(28);
     .iconfont {
-      line-height: 20px;
+      .lh(40);
       color: #999;
       font-size: inherit;
     }
@@ -113,9 +179,13 @@
   }
 
   .help-view .organ-content {
-    padding: 15px 10px;
+    .pt(15);
+    .pb(15);
+    .pl(30);
+    .pr(30);
+    .lh(45);
     background-color: #fff;
-    color: #666;
-    font-size: 12px;
+    color: @font-color-input;
+    .fs(27);
   }
 </style>

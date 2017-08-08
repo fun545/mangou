@@ -1,40 +1,65 @@
 <template>
   <div class="join-view">
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">加入我们</x-header>
+    <m-header title="加入我们">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- 页面内容 -->
-    <div class="content-scroller">
-      <img src="../assets/jion.jpg" width="100%" alt="">
+    <div class="content-scroller" ref="content">
+      <div v-html="about"></div>
     </div>
   </div>
 </template>
 
 <script>
-  import { XHeader } from 'vux'
-
+  import mHeader from '../components/header'
   export default {
     components: {
-      XHeader
+      mHeader
+    },
+    data () {
+      return {
+        about: ''
+      }
+    },
+    created () {
+      this.post('/basic/getAbout', {
+        token: localStorage.getItem('m-token'),
+        type: 2
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.about = res.data.content
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+      })
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .join-view .vux-header {
-    background: linear-gradient(#f17458, #eb4e3b);
+  @import "../common/style/sum";
 
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #fff;
-    }
-  }
-
-  .join-view .content-scroller {
-    height: calc(~'100% - 46px');
-    overflow-y: scroll;
-
-    img {
-      vertical-align: middle;
+  .join-view {
+    /*width: 100%;*/
+    /*height: 100%;*/
+    .content-scroller {
+      position: absolute;
+      .t(92);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: scroll;
     }
   }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <div class="issue-view">
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">意见反馈</x-header>
+    <m-header title="意见反馈">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <div class="content-scroller">
       <popup-radio class="popup" title="问题类型" :options="popupArray" v-model="issueType"/>
       <textarea class="weui-textarea" maxlength="500" placeholder="详细描述问题内容" rows="5"/>
@@ -12,11 +14,11 @@
 </template>
 
 <script>
-  import { XHeader, PopupRadio } from 'vux'
-
+  import { PopupRadio } from 'vux'
+  import mHeader from '../components/header'
   export default{
     components: {
-      XHeader,
+      mHeader,
       PopupRadio
     },
     data () {
@@ -33,9 +35,22 @@
   }
 </script>
 
-<style scoped>
-  .issue-view .vux-header {
-    background-color: #f95d43;
+<style lang="less" scoped>
+  @import "../common/style/sum";
+
+  .issue-view {
+    .cp-header {
+      position: inherit;
+    }
+    .weui-cell {
+      .fs(30);
+    }
+    .weui-textarea{
+      .fs(28);
+    }
+    .weui-input{
+      .fs(28);
+    }
   }
 
   .issue-view [class^=vux-header-] {
@@ -47,34 +62,50 @@
     border-color: #fff;
   }
 
-  .issue-view .content-scroller {
-    height: calc(100% - 46px);
-    overflow-y: scroll;
-  }
+  /*.issue-view .content-scroller {*/
+  /*height: calc(100% - 46px);*/
+  /*overflow-y: scroll;*/
+  /*}*/
 
   .issue-view .popup {
     margin: 5px auto;
+    .mt(10);
+    .mb(10);
     background-color: #fff;
   }
 
   .issue-view .weui-textarea {
-    padding: 10px 15px;
+    .pt(20);
+    .pb(20);
+    .pl(30);
+    .pr(30);
     box-sizing: border-box;
-    margin-bottom: 10px;
+    .b(20);
   }
 
   .issue-view .weui-input {
-    padding: 10px;
+    box-sizing: border-box;
+    .pt(40);
+    .pb(40);
+    .pr(40);
+    .pl(40);
     background-color: #fff;
   }
 
   .issue-view .submit-btn {
-    margin: 20px 15px;
-    padding: 10px;
-    line-height: 20px;
+    .mt(40);
+    .mb(40);
+    .ml(30);
+    .mr(30);
+    .pt(20);
+    .pb(20);
+    .pr(20);
+    .pl(20);
+    .lh(40);
     text-align: center;
     color: #fff;
     background-color: #f95d43;
     border-radius: 5px;
+    .fs(32);
   }
 </style>

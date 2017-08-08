@@ -76,7 +76,7 @@
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
 //        this.$router.push({path: '/home'})
-        this.$router.replace('/home')
+        this.$router.replace(this.$route.query.path)
         window.location.reload()
       },
       searchLocation () {
@@ -85,7 +85,7 @@
         this.$vux.alert.show({content: `您的搜索内容是${this.search}`})
       },
       go () {
-        this.$router.push({path: '/manualLocation'})
+        this.$router.push({path: '/manualLocation', query: this.$route.query})
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrap" @touchmove.prevent>
     <div class="location-search-box" ref="header">
-      <router-link to="/location" class="location">{{villageName}}</router-link>
+      <router-link :to="{path:'/location',query:{path:'/home'}}" class="location">{{villageName}}</router-link>
       <a class="search iconfont" @click="goSearch">&#xe639;</a>
     </div>
     <div class="home-view" ref="homeView">
@@ -296,7 +296,10 @@
     },
     methods: {
       goSearch () {
-        this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
+        this.$router.push({
+          path: '/search',
+          query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}
+        })
       },
       goActive (item) {
         this.$router.push({
@@ -435,7 +438,7 @@
       position: absolute;
       left: 0;
       top: 50%;
-      transform: translateY(-45%);
+      transform: translateY(-50%);
     }
     .location:after {
       content: '';

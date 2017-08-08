@@ -1,7 +1,7 @@
 <template>
   <div class="this" @touchmove.prevent>
     <!-- 页面头部 -->
-    <div class="head-box">
+    <div class="head-box" v-if="!scrollFlag">
       <!-- 显示页面主题 -->
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
@@ -23,8 +23,12 @@
       <!-- 只显示搜索框 -->
       <!--<div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>-->
     </div>
+    <div class="location-search-box" v-if="scrollFlag">
+      <router-link :to="{path:'/location',query:{path:'/this'}}" class="location">{{villageName}}</router-link>
+      <a class="search iconfont" @click="goSearch">&#xe639;</a>
+    </div>
     <!-- 商品列表 -->
-    <div class="content">
+    <div class="content" :class="{'scroll-active':scrollFlag}">
       <div class="menu-wrap f-l" ref="menuWrap">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
@@ -36,26 +40,30 @@
       </div>
       <div class="right f-l">
         <div class="goods-sort">
-          <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="sortSelectIndex=1">综合排序</div>
+          <div class="sort-item" :class="{'active':1===sortSelectIndex}" @click="mixSort">综合排序</div>
           <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
             按价格
             <div class="sort-icon d-ib">
-              <span class="iconfont up" :class="{'sort-icon-selected':!priceSortFlag}">&#xe617;</span>
-              <span class="iconfont down" :class="{'sort-icon-selected':priceSortFlag}">&#xe632;</span>
+              <span class="iconfont up"
+                    :class="{'sort-icon-selected':!priceSortFlag,'sort-icon-clear-selected':2!==sortSelectIndex}">&#xe617;</span>
+              <span class="iconfont down"
+                    :class="{'sort-icon-selected':priceSortFlag,'sort-icon-clear-selected':2!==sortSelectIndex}">&#xe632;</span>
             </div>
           </div>
           <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
             按销量
             <div class="sort-icon d-ib">
-              <span class="iconfont up" :class="{'sort-icon-selected':saleSortFlag}">&#xe617;</span>
-              <span class="iconfont down" :class="{'sort-icon-selected':!saleSortFlag}">&#xe632;</span>
+              <span class="iconfont up"
+                    :class="{'sort-icon-selected':saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe617;</span>
+              <span class="iconfont down"
+                    :class="{'sort-icon-selected':!saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe632;</span>
             </div>
           </div>
         </div>
         <div class="googs-list" ref="goodsListWrap">
           <div>
             <div class="second-menu clearfix">
-              <div class="item" @click="getGoods(firstId,1)" :class="{'active':secondIndex===-1}">全部分类</div>
+              <div class="item" @click="getAll(firstId,1)" :class="{'active':secondIndex===-1}">全部分类</div>
               <div class="item" v-for="(item,index) in secondMenuList" :key="index"
                    @click="getSecondGoods(item.classifyId,2,index)"
                    :class="{'active':secondIndex===index}"
@@ -128,10 +136,12 @@
         secondId: '', // 二级菜单对应的classifyId
         secondMenuList: '', // 二级菜单列表
         sortSelectIndex: 1,
-        softType: 3,
+        softType: 3, // 排序参数
         priceSortFlag: false,
         saleSortFlag: false,
         listSroll: {},
+        scrollFlag: false,
+        villageName: localStorage.getItem('m-villageName'),
         pageSize: 10,
         sortId: '', // 当前排序Id
         sortType: '', // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
@@ -200,6 +210,7 @@
       })
     },
     methods: {
+      // 跳转搜索页面
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
@@ -214,6 +225,7 @@
 //          console.log(this.secondMenuList)
 //        })
 //      },
+      // 请求商品列表
       async getGoods (id, type) {
         var params = {}
         if (type === 1) {
@@ -227,7 +239,8 @@
         params.villageId = localStorage.getItem('m-villageId')
         params.villageId = localStorage.getItem('m-villageId')
         params.pageSize = this.pageSize
-        params.pageIndex = this.pageIndex
+        params.pageIndex = 1
+        this.pageIndex = 1
         await this.post('/goods/goodsList', params).then((res) => {
           console.log(res.data)
           if (res.data.code === 100) {
@@ -238,18 +251,28 @@
           this.listSroll.refresh()
         })
       },
+      // 点击二级菜单中的全部
+      getAll (id, type) {
+        this.sortId = id
+        this.sortType = type
+        this.getGoods(id, type)
+      },
       // 点击二级分类获取商品
       getSecondGoods (id, type, index) {
+        this.pageIndex = 1
+        this.listSroll.scrollTo(0, 0)
         this.secondIndex = index
         this.sortType = type
         this.sortId = id
         this.getGoods(id, this.sortType)
       },
+      // 点击一级菜单获取商品
       memuChange (id, index, type) {
+        this.firstId = id
         this.sortId = id
         this.sortType = 1
         this.getGoods(id, 1)
-        this._initListScroll()
+        this.listSroll.scrollTo(0, -1)
         this.ind = index
         this.post('/classify/secondClassifyList', {
           classifyId: id,
@@ -259,6 +282,12 @@
           this.secondMenuList = res.data.secondClassifyList
         })
       },
+      // 综合排序
+      mixSort () {
+        this.sortSelectIndex = 1
+        this.getGoods(this.sortId, this.sortType)
+      },
+      // 价格排序
       priceSort () {
         this.sortSelectIndex = 2
         if (!this.priceSortFlag) {
@@ -271,6 +300,7 @@
           this.priceSortFlag = false
         }
       },
+      // 销量排序
       saleSort () {
         this.sortSelectIndex = 3
         if (!this.saleSortFlag) {
@@ -297,16 +327,16 @@
           probeType: 3
         })
         // 加载更多
-        loadMore(this.listSroll, this.$refs.goodsListWrap, this.loadMore)
+        loadMore(this.listSroll, this.$refs.goodsListWrap, this.loadMore, this.onScroll)
       },
-      _initListScroll () {
-        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
-          click: true,
-          disableMouse: true,
-          disablePointer: false,
-          probeType: 3
-        })
-      },
+//      _initListScroll () {
+//        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
+//          click: true,
+//          disableMouse: true,
+//          disablePointer: false,
+//          probeType: 3
+//        })
+//      },
       loadMore () {
         if (!this.scrollDisable) {
           this.scrollDisable = true
@@ -314,10 +344,10 @@
           // paramas
           var params = {}
           if (this.sortType === 1) {
-            params.firstClassifyId = this.firstId
+            params.firstClassifyId = this.sortId
             this.secondIndex = -1
           } else {
-            params.secondClassifyId = this.secondId
+            params.secondClassifyId = this.sortId
           }
           params.storeId = localStorage.getItem('m-shopId')
           params.softType = this.softType
@@ -343,6 +373,17 @@
             }
           })
         }
+      },
+      // 滚动回调函数
+      onScroll (pos) {
+        if (this.listSroll.directionY === 1) {
+          this.scrollFlag = true
+        }
+        console.log(pos)
+        if (pos.y >= 0) {
+          this.scrollFlag = false
+        }
+        console.log(this.listSroll.directionY)
       },
       goDetail (id, e) {
         console.log(e.target.tagName.toLowerCase() !== 'i')
@@ -373,8 +414,79 @@
         color: #fff;
       }
     }*/
+    .location-search-box {
+      background-color: @theme-color-blue;
+      .pt(25);
+      .pb(25);
+      .pl(20);
+      .pr(20);
+      display: flex;
+      align-items: center;
+      position: absolute;
+      z-index: 500;
+      top: 0;
+      right: 0;
+      left: 0;
+      opacity: 1;
+      .location {
+        width: calc(~'(100% - 10px)/2');
+        .mr(10);
+        padding: 0 15px;
+        .pl(30);
+        .pr(20);
+        text-align: center;
+        box-sizing: border-box;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        color: #fff;
+        .fs(25);
+        position: relative;
+      }
+      .location:before {
+        content: '送至：';
+        .fs(25);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .location:after {
+        content: '';
+        .w(10);
+        .h(10);
+        border-width: 0 1px 1px 0;
+        border-style: solid;
+        border-color: #fff;
+        position: absolute;
+        top: 50%;
+        .r(30);
+        transform: translate(-20%, -80%) rotate(45deg);
+      }
+      .search {
+        .fs(28);
+        position: absolute;
+        .r(28);
+        color: #e4ffe5;
+      }
+      /*.search:before {
+        content: '\e639';
+        color: #fff;
+        font: 12px/1 'iconfont';
+        .fs(25);
+        position: absolute;
+        .t(20);
+        .l(30);
+      }*/
+    }
+    .scroll-active {
+      .t(92) !important;
+    }
     .sort-icon-selected {
       color: @theme-color-blue !important;
+    }
+    .sort-icon-clear-selected {
+      color: #666 !important;
     }
     .head-box {
       .h(190);

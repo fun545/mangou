@@ -1,8 +1,12 @@
 /**
  * 页面到达底部，加载更多
  */
-export const loadMore = (scrollObj, element, callBack) => {
+export const loadMore = (scrollObj, element, callBack, otherCallBack) => {
   scrollObj.on('scroll', (pos) => {
+    // 监听滚动事件回调函数
+    if (otherCallBack) {
+      otherCallBack(pos)
+    }
     // 监听无限加载滚动
     let scrollTop = Math.abs(Math.round(pos.y))
     const scrollBox = element

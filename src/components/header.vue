@@ -17,6 +17,7 @@
 
 <style lang="less">
   @import "../common/style/sum";
+  @import "../common/style/varlable";
 
   .cp-header {
     position: absolute;
@@ -28,14 +29,14 @@
     .lh(92);
     .fs(40);
     background: #fff;
-    color: #3d3634;
+    color: @font-color-m;
     .back {
       position: absolute;
       .t(50%);
       .mt(-17.5);
       .l(30);
       .fs(35);
-      color: #07b3e0;
+      color: @font-color-m;
     }
   }
 </style>

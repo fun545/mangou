@@ -9,8 +9,10 @@
           <!-- 用户头像卡片 -->
           <div class="picture-card">
             <div class="user-pic">
-              <img src="../assets/vux_logo.png" class="picture" alt="" @click="$router.push({path:'/user_info'})">
-              <img src="" alt="">
+              <img src="../assets/userlog.png" class="picture" alt="" @click="goPage('/user_info')">
+            </div>
+            <div class="login-bt t-c" v-if="!token" @click="$router.push({path:'login'})">
+              登录
             </div>
             <div class="user-info" v-if="token">
               <div class="name">{{userInfo.userName}}</div>
@@ -18,15 +20,15 @@
               <div class="line-bar">&nbsp;</div>
               <div class="flex-box">
                 <div class="flex-item">
-                  <p>{{userReg.phaseDay}}<span>天</span></p>
+                  <p>{{userReg.phaseDay | count}}<span>天</span></p>
                   <p>您已注册</p>
                 </div>
                 <div class="flex-item">
-                  <p>188<span>元</span></p>
+                  <p>{{userReg.cutSumMoney | count}}<span>元</span></p>
                   <p>为您节省</p>
                 </div>
                 <div class="flex-item">
-                  <p>88</p>
+                  <p>{{userReg.ranking | count}}</p>
                   <p>当前排行</p>
                 </div>
               </div>
@@ -34,49 +36,50 @@
           </div>
         </div>
         <!-- 我的订单卡片 -->
-        <div class="order-card">
+        <div class="order-card" :class="{'no-login':!token}">
           <!-- 卡片标题 -->
           <div class="title-box">
             <div class="title">我的订单</div>
-            <div @click="$router.push({path:'/order_list'})">查看更多订单</div>
+            <a @click="goPage('/order_list')">查看更多订单</a>
           </div>
+
           <!-- 订单入口 -->
           <div class="entry-flex">
-            <router-link to="/order_pay_list" class="entry-item">
+            <div class="entry-item" @click="goPage('/order_pay_list')">
               <div class="icon">
                 <i class="iconfont">&#xe62c;</i>
                 <span v-if="token&&userFirst.nofukuanCount>0">{{userFirst.nofukuanCount}}</span>
               </div>
               <div class="text">待付款</div>
-            </router-link>
-            <router-link to="/order_send_list" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/order_send_list')">
               <div class="icon">
                 <i class="iconfont">&#xe620;</i>
                 <span v-if="userFirst.nofahuoCount>0&&token">{{userFirst.nofahuoCount}}</span>
               </div>
               <div class="text">待发货</div>
-            </router-link>
-            <router-link to="/order_shipping_list" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/order_shipping_list')">
               <div class="icon">
                 <i class="iconfont">&#xe60b;</i>
                 <span v-if="userFirst.peisongzhong>0&&token">{{userFirst.peisongzhong}}</span>
               </div>
               <div class="text">配送中</div>
-            </router-link>
-            <router-link to="/order_rater_list" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/order_rater_list')">
               <div class="icon">
                 <i class="iconfont">&#xe645;</i>
                 <span v-if="userFirst.nopingjia>0&&token">{{userFirst.nopingjia}}</span>
               </div>
               <div class="text">待评价</div>
-            </router-link>
-            <router-link to="/order_after_sale_list" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/order_after_sale_list')">
               <div class="icon">
                 <i class="iconfont">&#xe630;</i>
                 <span v-if="userFirst.refundCount>0&&token">{{userFirst.refundCount}}</span>
               </div>
               <div class="text">退款/售后</div>
-            </router-link>
+            </div>
           </div>
         </div>
 
@@ -96,18 +99,18 @@
           </div>
           <!-- 功能入口 -->
           <div class="entry-flex">
-            <router-link to="/collection" class="entry-item">
+            <div class="entry-item" @click="goPage('/collection')">
               <div class="iconfont">&#xe629;</div>
               <div class="label">我的收藏</div>
-            </router-link>
-            <router-link to="/address" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/address')">
               <div class="iconfont">&#xe621;</div>
               <div class="label">收货地址</div>
-            </router-link>
-            <router-link to="/coupon" class="entry-item">
+            </div>
+            <div class="entry-item" @click="goPage('/coupon')">
               <div class="iconfont">&#xe62e;</div>
               <div class="label">我的优惠券</div>
-            </router-link>
+            </div>
             <router-link to="/help" class="entry-item">
               <div class="iconfont">&#xe626;</div>
               <div class="label">客服与帮助</div>
@@ -177,6 +180,22 @@
       },
       _initScroll () {
         this.contentScroll = new BScroll(this.$refs.content, {click: true})
+      },
+      goPage (url) {
+        if (this.token) {
+          this.$router.push({path: url})
+          return
+        }
+        this.$vux.toast.text('请先登录', 'bottom')
+        this.$router.push({path: '/login'})
+      }
+    },
+    filters: {
+      count (val) {
+        if (!val) {
+          return 0
+        }
+        return val
       }
     }
   }
@@ -184,6 +203,7 @@
 
 <style lang='less' scoped>
   @import "../common/style/sum";
+  @import "../common/style/varlable";
 
   .user-view {
     height: 100%;
@@ -280,15 +300,23 @@
       right: 0;
       z-index: 5;
       .pt(80);
-
+      .login-bt {
+        .w(170);
+        .h(45);
+        .lh(45);
+        .fs(30);
+        background: @theme-color;
+        border-radius: 25px;
+        color: #fff;
+        margin: 0 auto;
+        .mt(15);
+      }
       .picture {
         box-sizing: border-box;
         .w(160);
         .h(160);
         border-radius: 50%;
-        border: 2px solid #ffffff;
-        box-shadow: #d4d400 0 0 2px;
-        background-color: #e3eaee;
+        /*background-color: #e3eaee;*/
         transform: translate(-50%, -50%);
         position: absolute;
         top: 0;
@@ -353,6 +381,9 @@
     }
     .order-card {
       .mt(492);
+    }
+    .no-login {
+      .mt(323);
     }
     .order-card .entry-flex {
       display: flex;

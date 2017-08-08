@@ -1,20 +1,22 @@
 <template>
-  <div class="share-view">
+  <div class="share-view" @touchmove.prevent>
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">分享</x-header>
+    <m-header title="漫购">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- 分享页面 -->
-    <div class="share-img" @click="share">
-      <img src="../assets/share_img.png" width="100%" alt="">
+    <div class="share-img">
+      <img src="../assets/share.png" width="100%" alt="" height="100%">
+      <div class="bt" @click="share"></div>
     </div>
   </div>
 </template>
 
 <script>
-  import { XHeader } from 'vux'
-
+  import mHeader from '../components/header'
   export default {
     components: {
-      XHeader
+      mHeader
     },
     methods: {
       share () {
@@ -24,26 +26,32 @@
   }
 </script>
 
-<style lang="less">
-  .share-view .vux-header {
-    background-color: #fff;
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
-    [class^=vux-header-] {
-      color: #444;
+  .share-view {
+    .cp-header {
+      position: inherit;
+      .back {
+        color: @font-color-m;
+      }
     }
-
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #444;
+    .share-img {
+      position: absolute;
+      left: 0;
+      right: 0;
+      .t(92);
+      bottom: 0;
+    }
+    .bt {
+      position: absolute;
+      /*width: 80%;*/
+      .h(150);
+      right: 14.3%;
+      left: 13%;
+      .b(50);
     }
   }
 
-  .share-view .share-img {
-    height: calc(~'100% - 46px');
-    overflow-y: scroll;
-    padding: 10px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    box-shadow: #bbb 0 0 3px;
-  }
 </style>

@@ -103,7 +103,8 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-        this.$router.replace('/home')
+        this.$router.replace(this.$route.query.path)
+        console.log(this.$route.query.path)
         window.location.reload()
       },
       search (word) {

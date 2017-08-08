@@ -1,55 +1,65 @@
 <template>
-  <div class="about-view">
+  <div class="join-view">
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">关于我们</x-header>
+    <m-header title="关于我们">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- 页面内容 -->
-    <!--<div class="content-scroller">-->
-    <!--<img src="../assets/about.jpg" width="100%" alt="">-->
-    <!--</div>-->
-    <div>{{jindu}}</div>
+    <div class="content-scroller" ref="content">
+      <div v-html="about"></div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { XHeader } from 'vux'
-  export default{
-    name: 'about',
+  import mHeader from '../components/header'
+  export default {
     components: {
-      XHeader
+      mHeader
     },
     data () {
       return {
-        jindu: '',
-        weidu: ''
+        about: ''
       }
     },
-    methods: {},
     created () {
-
+      this.post('/basic/getAbout', {
+        token: localStorage.getItem('m-token'),
+        type: 1
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.about = res.data.content
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.show({
+            text: res.data.msg
+          })
+          localStorage.removeItem('m-token')
+        }
+      })
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .about-view .vux-header {
-    background-color: #fff;
+  @import "../common/style/sum";
 
-    [class^=vux-header-] {
-      color: #444;
+  .join-view {
+    /*width: 100%;*/
+    /*height: 100%;*/
+    .content-scroller {
+      position: absolute;
+      .t(92);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: scroll;
     }
-
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #444;
-    }
-  }
-
-  .about-view .content-scroller {
-    height: calc(~'100% - 46px');
-    overflow-y: scroll;
-  }
-
-  .about-view img {
-    vertical-align: middle;
   }
 </style>

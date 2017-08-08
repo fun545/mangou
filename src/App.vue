@@ -2,7 +2,7 @@
   <div class="app">
     <keep-alive exclude="detail,user,about,active,address,addAddress,cart,collection,confirmOrder,editAddress,forget,goPay,location,login,manualLocation,nextList1,saleList,orderInfo,order_List,orderPayList,orderRater,
 orderRaterList,orderRefund,orderSendList,orderShippingList,originActive,register,search,searchText,selectAddress,
-setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList">
+userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList,setting">
       <router-view></router-view>
     </keep-alive>
   </div>
@@ -15,11 +15,11 @@ setting,userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingLis
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.eot');
-    src: url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.woff') format('woff'),
-    url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_pnhbuq74v09evcxr.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.eot');
+    src: url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.woff') format('woff'),
+    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.svg#iconfont') format('svg');
   }
   .weui-tab__panel {
     overflow: hidden !important;

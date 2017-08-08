@@ -1,7 +1,9 @@
 <template>
-  <div class="setting-view">
+  <div class="setting-view" @touchmove.prevent>
     <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">设置</x-header>
+    <m-header title="设置">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    </m-header>
     <!-- logo -->
     <div class="logo-box">
       <img src="../assets/logo.png" width="80" alt="">
@@ -9,23 +11,24 @@
     </div>
     <!-- 退出登录 -->
     <div class="sign-out" @click="go">
-      <div class="btn">{{text}}</div>
+      <div class="btn" v-if="!loginFlg">登录</div>
+      <div class="btn" v-if="loginFlg">退出登录</div>
     </div>
   </div>
 </template>
 <script>
-  import { XHeader } from 'vux'
-
+  import mHeader from '../components/header'
   export default {
     name: 'setting',
     components: {
-      XHeader
+      mHeader
     },
     data () {
       return {
         number: '',
         text: '',
-        path: ''
+        path: '',
+        loginFlg: localStorage.getItem('m-token')
       }
     },
     created () {
@@ -34,55 +37,51 @@
           this.number = res.data.versionInfo.number
         }
       })
-//      console.log(localStorage.getItem('m-token'))
-      this.hasLogin()
     },
     methods: {
-      go () {
-//        console.log(localStorage.getItem('m-token'))
-        if (localStorage.getItem('m-token')) {
-          this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
+      async go () {
+        if (this.loginFlg) {
+          await this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
             console.log('退出登录接口返回：')
             if (res.data.code === 100) {
               localStorage.removeItem('m-token')
+              localStorage.removeItem('m-userInfo')
+              this.$router.push({path: '/user'})
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.show({
+                text: res.data.msg
+              })
+              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
-              this.$router.push({path: 'login'})
+              this.$vux.toast.show({
+                text: res.data.msg
+              })
+              localStorage.removeItem('m-token')
             }
           })
-        }
-        this.$router.push(this.path)
-      },
-      hasLogin () {
-        if (!localStorage.getItem('m-token')) {
-//          console.log('noLogin')
-          this.text = '登录'
-          this.path = {path: 'login'}
         } else {
-          this.text = '退出登录'
-          this.path = {path: 'user'}
+          this.$router.push({path: '/login'})
         }
       }
     }
   }
 </script>
-<style lang="less">
+<style lang="less" scoped>
   @import "../common/style/sum";
   @import "../common/style/varlable";
-
-  .setting-view .vux-header {
-    background-color: #fff;
-
-    [class^=vux-header-] {
-      color: #444;
-    }
-
-    .left-arrow:before {
-      border-width: 2px 0 0 2px;
-      border-color: #444;
+  .setting-view {
+    width: 100%;
+    height: 100%;
+    .cp-header {
+      position: inherit;
+      color: @font-color-m;
+      .back {
+        color: @font-color-m;
+      }
     }
   }
-
   .setting-view .logo-box {
     text-align: center;
     /*padding: 20px 0;*/
@@ -92,6 +91,8 @@
     background-color: #fff;
     .mb(20);
     img {
+      .w(160);
+      .h(160);
       margin: 0 auto;
     }
     .number {
@@ -106,8 +107,8 @@
     height: calc(~'100% - 183px');
     .pt(60);
     .pb(60);
-    .pl(100);
-    .pr(100);
+    .pl(80);
+    .pr(80);
     .btn {
       display: block;
       margin: 0 auto;
@@ -117,7 +118,8 @@
       .pt(20);
       .pb(20);
       text-align: center;
-      border-radius: 5px;
+      border-radius: 40px;
+      .fs(35);
     }
   }
 </style>

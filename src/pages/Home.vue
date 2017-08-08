@@ -264,7 +264,7 @@
               })
             }
           })
-          /* 无限加载 */
+          /* 无限加载初始位置 */
           this.post('/first/unlimitedLoading', {
             storeId: this.storeList[0].storeId,
             villageId: this.villageId,

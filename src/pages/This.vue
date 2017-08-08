@@ -100,6 +100,7 @@
   import Tabs from '../components/Tabs'
   import TabsItem from '../components/TabsItem'
   import shopCarButton from '../components/buyCarButton'
+  import { loadMore } from '../util/util'
 
   export default {
     name: 'this',
@@ -112,7 +113,8 @@
       SideItem,
       Tabs,
       TabsItem,
-      shopCarButton
+      shopCarButton,
+      loadMore
     },
     data () {
       return {
@@ -130,10 +132,13 @@
         priceSortFlag: false,
         saleSortFlag: false,
         listSroll: {},
-        pageIndex: 1,
         pageSize: 10,
         sortId: '', // 当前排序Id
-        sortType: '' // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
+        sortType: '', // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
+        scrollDisable: false,
+        loadText: '正在加载',
+        moreIconFlag: true,
+        pageIndex: 1
       }
     },
     async created () {
@@ -291,16 +296,53 @@
           disablePointer: false,
           probeType: 3
         })
-        this.listSroll.on('scroll', (pos) => {
-          console.log(pos)
-        })
+        // 加载更多
+        loadMore(this.listSroll, this.$refs.goodsListWrap, this.loadMore)
       },
       _initListScroll () {
-        this.listSroll = new BScroll(this.$refs.goodsListWrap, {click: true, disableMouse: true})
-        this.listSroll.on('scroll', (pos) => {
-          console.log(pos.y)
-//          var y = Math.abs(pos.y)
+        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
         })
+      },
+      loadMore () {
+        if (!this.scrollDisable) {
+          this.scrollDisable = true
+          this.pageIndex += 1
+          // paramas
+          var params = {}
+          if (this.sortType === 1) {
+            params.firstClassifyId = this.firstId
+            this.secondIndex = -1
+          } else {
+            params.secondClassifyId = this.secondId
+          }
+          params.storeId = localStorage.getItem('m-shopId')
+          params.softType = this.softType
+          params.villageId = localStorage.getItem('m-villageId')
+          params.villageId = localStorage.getItem('m-villageId')
+          params.pageIndex = this.pageIndex
+          this.post('/goods/goodsList', params).then((res) => {
+            console.log(res.data)
+            if (res.data.code === 100) {
+              let newList = res.data.goodsList
+              for (let i = 0; i < newList.length; i++) {
+                this.goodsList.push(newList[i])
+              }
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.listSroll.refresh()
+                }, 50)
+              } else {
+                this.loadText = '到底啦~'
+                this.moreIconFlag = false
+              }
+              this.scrollDisable = false
+            }
+          })
+        }
       },
       goDetail (id, e) {
         console.log(e.target.tagName.toLowerCase() !== 'i')

@@ -18,3 +18,8 @@ export const loadMore = (scrollObj, element, callBack, otherCallBack) => {
     }
   })
 }
+/**
+ * $emit 公共实例
+ */
+import Vue from 'vue'
+export const bus = new Vue()

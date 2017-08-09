@@ -1,15 +1,23 @@
 <template>
-  <i class="iconfont shop-car" @click="add(goods)">&#xe613;</i>
+  <i class="iconfont shop-car" @click="add($el,goods)">&#xe613;</i>
 </template>
 
 <script>
-
+  import { bus } from '../util/util'
   export default {
     props: {
       goods: Object
     },
+    components: {
+      bus
+    },
     methods: {
-      add (item) {
+      add (el, item) {
+        if (!localStorage.getItem('m-depotId')) {
+          this.$vux.toast.text('请登录', 'bottom')
+          this.$router.push({path: 'login'})
+          return
+        }
         if (item.shopType === 1) {
           this.storeId = localStorage.getItem('m-depotId')
         } else {
@@ -24,13 +32,20 @@
           villageId: localStorage.getItem('m-villageId'),
           storeId: this.storeId
         }).then((res) => {
-          if (res.data.code === 102) {
-            this.$router.push({path: 'login'})
+          if (res.data.code === 100) {
+            bus.$emit('drop', el)
+            console.log(res.data)
+            this.$store.commit('increment', res.data.totalBuyCount)
             return
           }
-          if (res.data.code === 100) {
-            console.log(res.data)
+          if (res.data.code === 101) {
+            this.$vux.toast.text('请登录', 'bottom')
           }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'bottom')
+          }
+          this.$router.push({path: 'login'})
+          localStorage.removeItem('m-token')
         })
       }
     }

@@ -117,8 +117,8 @@
       border: 1px solid #089cf6;
       border-radius: 50%;
       position: absolute;
-      .r(30);
-      .b(40);
+      .r(30) !important;
+      .b(40) !important;
     }
   }
 </style>

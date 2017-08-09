@@ -161,7 +161,8 @@
         </div>
       </div>
     </div>
-    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
+    <m-footer></m-footer>
+    <!--<ball></ball>-->
   </div>
 </template>
 
@@ -174,6 +175,7 @@
   import newGoods from '../components/oneColumn'
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
+  //  import ball from '../components/ball'
   export default {
     name: 'home',
     components: {
@@ -186,10 +188,10 @@
       twoColumn,
       LoadMore,
       buyCarButton
+//      ball
     },
     data () {
       return {
-        totalBuyCount: 0,
         villageName: '',
         swiperList: [],
         cityId: localStorage.getItem('m-cityId'),
@@ -226,11 +228,6 @@
       }
     },
     created () {
-      // 初始化购物车数量
-      if (this.token) {
-        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
-        this.totalBuyCount = this.$store.state.totalBuyCount
-      }
       this.post('/first/getFirst', {
         cityId: this.cityId,
         areaId: this.areaId,
@@ -238,9 +235,7 @@
         source: 1
       }).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
-          this.$store.state.totalBuyCount = res.data.firstInfo.totalBuyCount
-          console.log(this.$store.state.totalBuyCount)
+          this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
           /* 轮播图数据 */
           this.swiperList = res.data.firstInfo.imgList
           /* 店铺数据 */
@@ -252,7 +247,6 @@
             storeId: this.storeList[0].storeId,
             villageId: this.villageId
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.mapTitleTips = res.data.goodsList.mapTitleTips
               this.ystgWords = res.data.goodsList.ystgWords
@@ -296,8 +290,9 @@
     },
     activated () {
       this.$nextTick(() => {
-        console.log(this.homeSroll)
-        this.homeSroll.refresh()
+        setTimeout(() => {
+          this.homeSroll.refresh()
+        }, 1000)
       })
     },
     methods: {

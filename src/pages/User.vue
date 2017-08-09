@@ -135,7 +135,7 @@
         </div>
       </div>
     </div>
-    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
+    <m-footer></m-footer>
   </div>
 </template>
 <script>
@@ -146,7 +146,6 @@
     components: {mFooter, BScroll},
     data () {
       return {
-        totalBuyCount: 0,
         userFirst: '', // 订单数据
         userReg: '', // 注册xxx节省xxx
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
@@ -155,17 +154,12 @@
       }
     },
     created () {
-      if (this.token) {
-        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
-        this.totalBuyCount = this.$store.state.totalBuyCount
-      }
       this.$nextTick(() => {
         this._initScroll()
       })
       if (localStorage.getItem('m-token')) {
         // 我的订单
         this.post('/user/userFirst', {token: localStorage.getItem('m-token')}).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.userFirst = res.data.userFirst
           }
@@ -173,7 +167,6 @@
         // 注册XX天消费XX钱
         this.post('/user/userRegDay', {token: localStorage.getItem('m-token')}).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             this.userReg = res.data.userReg
           }
         })

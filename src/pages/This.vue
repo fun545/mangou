@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
+    <m-footer></m-footer>
   </div>
 </template>
 
@@ -126,7 +126,6 @@
     },
     data () {
       return {
-        totalBuyCount: 0,
         token: localStorage.getItem('m-token'),
         scrollTop: '',
         sideList: [],
@@ -154,18 +153,12 @@
       }
     },
     async created () {
-      // 初始化购物车
-      if (this.token) {
-        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
-        this.totalBuyCount = this.$store.state.totalBuyCount
-      }
       // 店铺信息
       await this.post('/basic/getStoreMsg', {
         storeId: localStorage.getItem('m-shopId')
       }).then((res) => {
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
-          console.log(this.storeMsg)
         }
       })
       // 一级菜单
@@ -180,7 +173,6 @@
           this.firstId = this.sideList[0].classifyId
           this.sortId = this.sideList[0].classifyId
           this.sortType = 1
-          console.log(this.sideList)
         }
       })
       // 二级菜单
@@ -189,9 +181,7 @@
         storeId: localStorage.getItem('m-shopId'),
         villageId: localStorage.getItem('m-villageId')
       }).then((res) => {
-        console.log(res.data)
         this.secondMenuList = res.data.secondClassifyList
-        console.log(this.secondMenuList)
       })
       // 商品列表
       await this.post('/goods/goodsList', {
@@ -212,8 +202,10 @@
     },
     activated () {
       this.$nextTick(() => {
-        console.log(this.listSroll)
-        this.listSroll.refresh()
+        setTimeout(() => {
+          this.listSroll.refresh()
+          this.menuSroll.refresh()
+        }, 1000)
       })
     },
     methods: {
@@ -249,7 +241,6 @@
         params.pageIndex = 1
         this.pageIndex = 1
         await this.post('/goods/goodsList', params).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsList = res.data.goodsList
           }
@@ -362,7 +353,6 @@
           params.villageId = localStorage.getItem('m-villageId')
           params.pageIndex = this.pageIndex
           this.post('/goods/goodsList', params).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               let newList = res.data.goodsList
               for (let i = 0; i < newList.length; i++) {
@@ -386,14 +376,11 @@
         if (this.listSroll.directionY === 1) {
           this.scrollFlag = true
         }
-        console.log(pos)
         if (pos.y >= 0) {
           this.scrollFlag = false
         }
-        console.log(this.listSroll.directionY)
       },
       goDetail (id, e) {
-        console.log(e.target.tagName.toLowerCase() !== 'i')
         if (e.target.tagName.toLowerCase() !== 'i') {
           this.$router.push({
             path: '/goods_detail',

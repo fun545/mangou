@@ -23,6 +23,7 @@
         <div class="item-label" slot="label">我的</div>
       </tabbar-item>
     </tabbar>
+    <ball></ball>
   </div>
 </template>
 
@@ -30,15 +31,21 @@
   import { ViewBox } from 'vux'
   import Tabbar from './Tabbar'
   import TabbarItem from './TabbarItem'
-
+  import ball from '../components/ball'
   export default {
     components: {
       ViewBox,
       Tabbar,
-      TabbarItem
+      TabbarItem,
+      ball
     },
-    props: {
-      totalBuyCount: Number
+    created () {
+      this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))
+    },
+    computed: {
+      totalBuyCount () {
+        return parseInt(this.$store.state.totalBuyCount)
+      }
     }
   }
 </script>

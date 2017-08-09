@@ -182,7 +182,6 @@
       </div>
       <confirm v-model="showComfirm"
                title="提示"
-               @on-cancel="onCancel"
                @on-confirm="onConfirm">
         <p style="text-align:center;">{{comfirmText}}</p>
       </confirm>
@@ -228,7 +227,7 @@
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
            :text="toastText" :width="toastWidth" class="toast"></toast>
-    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
+    <m-footer></m-footer>
   </div>
 </template>
 
@@ -251,7 +250,6 @@
     },
     data () {
       return {
-        totalBuyCount: 0,
         thisAllChecked: false, // 全选Flag 及时送
         nextAllChecked: false, // 全选Flag 次日达
         allChecked: false,      // 全选
@@ -289,21 +287,11 @@
       }
     },
     created () {
-      // 判断是否登录
-      if (!this.token) {
-        // 显示未登录状态提示页面
-        this.login = false
-        return
-      }
-      // 初始化购物车数量
-      this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
-      this.totalBuyCount = this.$store.state.totalBuyCount
       // 获取购物车列表数据
       this.post('/car/getUserCar', {
         token: this.token,
         villageId: localStorage.getItem('m-villageId')
       }).then((res) => {
-        console.log(res.data)
         this.$store.state.cartInfo = res.data
         if (res.data.code === 100) {
           // 商品列表 及时送
@@ -335,6 +323,13 @@
       this.$store.state.sendWay = {key: '1', value: '客户自取'}
       this.$nextTick(() => {
         this._initScroll()
+      })
+    },
+    activated () {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.contentScroll.refresh()
+        }, 1000)
       })
     },
     methods: {
@@ -403,8 +398,6 @@
               this.$router.push({path: 'login'})
               return
             }
-//            item.buyCount += 1
-            console.log(res.data)
           })
           return
         }
@@ -474,7 +467,6 @@
           type: 3,
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             item.buyCount = res.data.buyCount
           }
@@ -490,10 +482,6 @@
       },
       _initScroll () {
         this.contentScroll = new BScroll(this.$refs.content, {click: true, probeType: 3})
-      },
-      // 提示框取消回调
-      onCancel () {
-        console.log('取消')
       },
       // 提示框确认回调(减号减少到0时)
       onConfirm () {
@@ -518,7 +506,6 @@
             return
           }
         })
-        console.log('确认')
       },
       // 提示框确认回调(删除一个或多个商品)
       async delConfirm () {
@@ -833,9 +820,7 @@
         var count = 0
         this.NextGoodsList.forEach((item, index) => {
           if (item.checked) {
-            console.log(item.canKaoPrice)
             count += (parseFloat(item.canKaoPrice) - parseFloat(item.price)) * parseInt(item.buyCount)
-            console.log(count)
           }
         })
         return count.toFixed(1)

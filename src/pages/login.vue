@@ -117,10 +117,7 @@
             this.$store.state.userInfo = res.data.userInfo
             // 本地存储 userInfo
             localStorage.setItem('m-userInfo', JSON.stringify(res.data.userInfo))
-            // vuex储存m-totalBuyCount
-            localStorage.setItem('m-totalBuyCount', res.data.userInfo.totalBuyCount)
-            // 本地储存m-totalBuyCount
-            this.$store.state.totalBuyCount = res.data.userInfo.totalBuyCount
+            this.$store.commit('increment', res.data.userInfo.totalBuyCount)
             this.$store.state.login = true
             console.log(JSON.parse(localStorage.getItem('m-userInfo')))
             // 登录成功跳转个人中心

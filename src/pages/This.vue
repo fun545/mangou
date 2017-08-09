@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <m-footer></m-footer>
+    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
   </div>
 </template>
 
@@ -126,6 +126,8 @@
     },
     data () {
       return {
+        totalBuyCount: 0,
+        token: localStorage.getItem('m-token'),
         scrollTop: '',
         sideList: [],
         storeMsg: [],
@@ -152,6 +154,11 @@
       }
     },
     async created () {
+      // 初始化购物车
+      if (this.token) {
+        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
+        this.totalBuyCount = this.$store.state.totalBuyCount
+      }
       // 店铺信息
       await this.post('/basic/getStoreMsg', {
         storeId: localStorage.getItem('m-shopId')

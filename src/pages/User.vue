@@ -135,7 +135,7 @@
         </div>
       </div>
     </div>
-    <m-footer></m-footer>
+    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
   </div>
 </template>
 <script>
@@ -146,6 +146,7 @@
     components: {mFooter, BScroll},
     data () {
       return {
+        totalBuyCount: 0,
         userFirst: '', // 订单数据
         userReg: '', // 注册xxx节省xxx
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
@@ -154,6 +155,10 @@
       }
     },
     created () {
+      if (this.token) {
+        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
+        this.totalBuyCount = this.$store.state.totalBuyCount
+      }
       this.$nextTick(() => {
         this._initScroll()
       })

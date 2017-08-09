@@ -14,7 +14,7 @@
         <div class="iconfont" slot="icon">&#xe60a;</div>
         <div class="item-label" slot="label">次日达</div>
       </tabbar-item>
-      <tabbar-item link="/cart" active-class="item-active" :badge="123">
+      <tabbar-item link="/cart" active-class="item-active" :badge="totalBuyCount">
         <div class="icon-cart" slot="icon"/>
         <div class="item-label" slot="label">购物车</div>
       </tabbar-item>
@@ -36,6 +36,9 @@
       ViewBox,
       Tabbar,
       TabbarItem
+    },
+    props: {
+      totalBuyCount: Number
     }
   }
 </script>
@@ -51,10 +54,12 @@
     bottom: 0;
     z-index: 10004;
   }
-  .item-badge{
+
+  .item-badge {
     .fs(25);
-    .lh(25) !important;
+    .lh(29) !important;
   }
+
   .tabbar .item-active .transition-item {
     box-sizing: border-box;
     .w(128);

@@ -161,7 +161,7 @@
         </div>
       </div>
     </div>
-    <m-footer></m-footer>
+    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
   </div>
 </template>
 
@@ -189,6 +189,7 @@
     },
     data () {
       return {
+        totalBuyCount: 0,
         villageName: '',
         swiperList: [],
         cityId: localStorage.getItem('m-cityId'),
@@ -225,6 +226,11 @@
       }
     },
     created () {
+      // 初始化购物车数量
+      if (this.token) {
+        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
+        this.totalBuyCount = this.$store.state.totalBuyCount
+      }
       this.post('/first/getFirst', {
         cityId: this.cityId,
         areaId: this.areaId,

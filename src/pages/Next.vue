@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <m-footer></m-footer>
+    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
   </div>
 </template>
 
@@ -74,6 +74,8 @@
     },
     data () {
       return {
+        totalBuyCount: 0,
+        token: localStorage.getItem('m-token'),
         search: '',
         typeIndex: 0,
         ind: '',
@@ -88,6 +90,11 @@
       }
     },
     created () {
+      // 初始化购物车数量
+      if (this.token) {
+        this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
+        this.totalBuyCount = this.$store.state.totalBuyCount
+      }
       this.post('/classify/getClassifyAll', {}).then((res) => {
         if (this.isLoad && (res.data.code === 100)) {
           console.log('2222')

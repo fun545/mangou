@@ -228,7 +228,7 @@
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
            :text="toastText" :width="toastWidth" class="toast"></toast>
-    <m-footer></m-footer>
+    <m-footer :totalBuyCount="totalBuyCount"></m-footer>
   </div>
 </template>
 
@@ -251,6 +251,7 @@
     },
     data () {
       return {
+        totalBuyCount: 0,
         thisAllChecked: false, // 全选Flag 及时送
         nextAllChecked: false, // 全选Flag 次日达
         allChecked: false,      // 全选
@@ -283,19 +284,23 @@
         singleShowThis: true, // 差额显示Flag 及时送
         singleShowNext: true, // 差额显示Flag  次日达
         editShow: true,
-        ToCountText: '去结算'
+        ToCountText: '去结算',
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
       // 判断是否登录
-      if (!localStorage.getItem('m-token')) {
+      if (!this.token) {
         // 显示未登录状态提示页面
         this.login = false
         return
       }
+      // 初始化购物车数量
+      this.$store.state.totalBuyCount = parseInt(localStorage.getItem('m-totalBuyCount'))
+      this.totalBuyCount = this.$store.state.totalBuyCount
       // 获取购物车列表数据
       this.post('/car/getUserCar', {
-        token: localStorage.getItem('m-token'),
+        token: this.token,
         villageId: localStorage.getItem('m-villageId')
       }).then((res) => {
         console.log(res.data)
@@ -375,7 +380,7 @@
 //        this.$router.push({path: '/order_enter'})
         if (type === 1) {
           this.post('/car/addCar', {
-            token: localStorage.getItem('m-token'),
+            token: this.token,
             goodsId: item.goodsId,
             buyCount: 1,
             storeId: item.storeId,
@@ -414,7 +419,7 @@
             return
           }
           this.post('/car/addCar', {
-            token: localStorage.getItem('m-token'),
+            token: this.token,
             goodsId: item.goodsId,
             buyCount: 1,
             storeId: item.storeId,
@@ -462,7 +467,7 @@
       // 输入改变数量请求方法
       inputChangePost (item) {
         this.post('/car/addCar', {
-          token: localStorage.getItem('m-token'),
+          token: this.token,
           goodsId: item.goodsId,
           buyCount: item.buyCount,
           shopType: item.shopType,
@@ -493,7 +498,7 @@
       // 提示框确认回调(减号减少到0时)
       onConfirm () {
         this.post('/car/deleteCar', {
-          token: localStorage.getItem('m-token'),
+          token: this.token,
           goodsId: this.comfirmGoods.goodsId,
           carId: this.comfirmGoods.carId
         }).then((res) => {
@@ -521,7 +526,7 @@
           var curThis = this.thisGoodsList[i]
           if (curThis.checked) {
             await this.post('/car/deleteCar', {
-              token: localStorage.getItem('m-token'),
+              token: this.token,
               carId: curThis.carId
             }).then((res) => {
               if (res.data.code === 100) {
@@ -535,7 +540,7 @@
           }
           if (curThis.NoGoods) {
             await this.post('/car/deleteCar', {
-              token: localStorage.getItem('m-token'),
+              token: this.token,
               carId: curThis.carId
             }).then((res) => {
               if (res.data.code === 100) {
@@ -552,7 +557,7 @@
           var curNext = this.NextGoodsList[i]
           if (curNext.checked) {
             await this.post('/car/deleteCar', {
-              token: localStorage.getItem('m-token'),
+              token: this.token,
               carId: curNext.carId
             }).then((res) => {
               if (res.data.code === 100) {
@@ -566,7 +571,7 @@
           }
           if (curNext.NoGoods) {
             await this.post('/car/deleteCar', {
-              token: localStorage.getItem('m-token'),
+              token: this.token,
               carId: curNext.carId
             }).then((res) => {
               if (res.data.code === 100) {
@@ -870,16 +875,20 @@
       .fs(24);
     }
   }
-  .pic{
+
+  .pic {
     .w(140);
     .h(140);
   }
+
   .theme-color {
     color: @theme-color;
   }
-  .circle{
+
+  .circle {
     .fs(32) !important;
   }
+
   .header {
     position: fixed;
     z-index: 2;
@@ -930,7 +939,7 @@
     }
   }
 
-  .select-all-icon{
+  .select-all-icon {
     color: #666;
     .fs(32) !important;
   }

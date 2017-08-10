@@ -1,12 +1,15 @@
 <template>
-  <div class="ball-container">
-    <div v-for="(ball,index) in balls" :key="index">
-      <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
-        <div class="ball" v-show="ball.show" ref="endBall">
-          <div class="inner inner-hook"></div>
-        </div>
-      </transition>
+  <div class="ball-box">
+    <div class="ball-container">
+      <div v-for="(ball,index) in balls" :key="index">
+        <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
+          <div class="ball" v-show="ball.show" ref="endBall">
+            <div class="inner inner-hook"></div>
+          </div>
+        </transition>
+      </div>
     </div>
+    <div class="tab" ref="tab"></div>
   </div>
 </template>
 
@@ -32,9 +35,6 @@
       }
     },
     mounted () {
-      setTimeout(() => {
-        console.log(this.$refs.endBall[0].getBoundingClientRect())
-      }, 2000)
       bus.$on('drop', (el) => {
         this.drop(el)
       })
@@ -58,10 +58,12 @@
         while (count--) {
           let ball = this.balls[count]
           if (ball.show) {
-            let endBallRect = this.$refs.endBall[0].getBoundingClientRect()
+            let tabX = parseInt(getComputedStyle(this.$refs.tab).left)
+            let tabY = parseInt(getComputedStyle(this.$refs.tab).bottom)
+            console.log(tabX, tabY)
             let rect = ball.el.getBoundingClientRect() // 获取小球的相对于视口的位移(小球高度)
-            let x = rect.left - endBallRect.left
-            let y = -(window.innerHeight - rect.top - endBallRect.bottom) // 负数,因为是从左上角往下的的方向
+            let x = rect.left - tabX
+            let y = -(window.innerHeight - rect.top - tabY) // 负数,因为是从左上角往下的的方向
             el.style.display = '' // 清空display
             el.style.webkitTransform = `translate3d(0,${y}px,0)`
             el.style.transform = `translate3d(0,${y}px,0)`
@@ -102,14 +104,24 @@
   @import "../common/style/varlable";
   @import "../common/style/sum";
 
+  .ball-box {
+    .tab {
+      position: fixed;
+      .w(36);
+      .h(36);
+      .l(530);
+      .b(44);
+      /*background: red;*/
+      opacity: 0;
+    }
+  }
+
   .ball-container {
     .ball {
       position: fixed; //小球动画必须脱离html布局流
-      left: 265px;
-      /*left: 7.06rem;*/
-      bottom: 22px;
-      /*bottom: .6rem;*/
-      z-index: 200;
+      .l(530);
+      .b(44);
+      z-index: 10009;
       transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
     }
     .inner {

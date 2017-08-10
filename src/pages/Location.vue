@@ -76,6 +76,10 @@
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
 //        this.$router.push({path: '/home'})
+        if (!this.$route.query.path) {
+          this.$router.replace('/home')
+          window.location.reload()
+        }
         this.$router.replace(this.$route.query.path)
         window.location.reload()
       },

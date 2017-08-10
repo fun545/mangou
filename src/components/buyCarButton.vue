@@ -39,13 +39,13 @@
             return
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text('请登录', 'bottom')
+            this.$vux.toast.text(res.data.msg, 'bottom')
           }
           if (res.data.code === 102) {
             this.$vux.toast.text(res.data.msg, 'bottom')
           }
-          this.$router.push({path: 'login'})
-          localStorage.removeItem('m-token')
+          // this.$router.push({path: 'login'})
+          // localStorage.removeItem('m-token')
         })
       }
     }

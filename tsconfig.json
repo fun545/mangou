@@ -40,3 +40,97 @@
     }
   ]
 }
+
+
+{
+  "orderList": [
+    {
+      "areaId": 1,
+      "cityId": 1,
+      "goodsList": [
+        {
+          "carId": 4601,
+          "goodsId": 10062
+        }
+      ],
+      "payType": 2,
+      "pointAddress": "珠江花城二期13栋109号",
+      "qujianName": "美美",
+      "qujianPhone": "13974947697",
+      "remarks": "",
+      "sendType": 1,
+      "shippingId": "",
+      "shopType": 1,
+      "storeId": "1",
+      "villageId": 8
+    }
+  ]
+}
+
+{
+  "orderList": [
+    {
+      "areaId": 1,
+      "cityId": 1,
+      "goodsList": [
+        {
+          "carId": 4621,
+          "goodsId": 10063
+        }
+      ],
+      "payType": 2,
+      "pointAddress": "",
+      "qujianName": "",
+      "qujianPhone": "",
+      "remarks": "",
+      "sendType": 2,
+      "shippingId": "266",
+      "shopType": 1,
+      "storeId": "1",
+      "villageId": 9
+    }
+  ]
+}
+
+
+{
+  "orderList": [
+    {
+      "areaId": 1,
+      "cityId": 1,
+      "goodsList": [
+        {
+          "carId": 4602,
+          "goodsId": 10063
+        }
+      ],
+      "payType": 2,
+      "pointAddress": "珠江花城二期13栋109号",
+      "qujianName": "美美",
+      "qujianPhone": "13974947697",
+      "remarks": "",
+      "sendType": 1,
+      "shippingId": "",
+      "shopType": 1,
+      "storeId": "1",
+      "villageId": 8
+    },
+    {
+      "areaId": 1,
+      "cityId": 1,
+      "goodsList": [
+        {
+          "carId": 4565,
+          "goodsId": 215
+        }
+      ],
+      "payType": 2,
+      "remarks": "",
+      "sendType": 2,
+      "shippingId": "202",
+      "shopType": 2,
+      "storeId": "2",
+      "villageId": 8
+    }
+  ]
+}

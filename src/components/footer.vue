@@ -80,7 +80,7 @@
     border-radius: 100px;
     animation: itemChange 300ms;
     position: relative;
-    z-index: 2;
+    z-index: 999;
   }
 
   .tabbar {

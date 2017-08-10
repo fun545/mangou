@@ -1,12 +1,12 @@
 <template>
   <ul class="goods-detail-wrap clearfix">
-    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index"
-        @click="goDetail(item.goodsId,$event)">
+    <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
         <lazy-image
           :src='item.goodsImgUrl'
           :placeholder='$store.state.defaultImg'
           :events="['touchmove']"
+          @click.native="goDetail(item.goodsId)"
         ></lazy-image>
         <!--<img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">-->
       </div>
@@ -34,14 +34,11 @@
       buyCarButton
     },
     methods: {
-      goDetail (id, e) {
-        if (e.target.tagName.toLowerCase() !== 'i') {
-          this.$router.push({
-            path: '/goods_detail',
-            query: {goodsId: id}
-          })
-          this.$router.go(0)
-        }
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
       }
     }
   }

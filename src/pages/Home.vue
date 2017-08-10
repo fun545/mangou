@@ -98,14 +98,14 @@
               <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
             </home-title>
             <div class="content clearfix">
-              <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index"
-                   @click="goDetail(item.goodsId,$event)">
+              <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
                 <div class="top">
                   <div class="pic">
                     <lazy-image
                       :src='item.goodsImgUrl'
                       :placeholder='$store.state.defaultImg'
                       :events="['touchmove']"
+                      @click.native="goDetail(item.goodsId)"
                     ></lazy-image>
                     <!--<img v-lazy="item.goodsImgUrl" alt="">-->
                   </div>
@@ -175,7 +175,7 @@
   import newGoods from '../components/oneColumn'
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
-  //  import ball from '../components/ball'
+//  import ball from '../components/ball'
   export default {
     name: 'home',
     components: {
@@ -308,13 +308,11 @@
           query: {keyId: item.keyId, remarks: item.remarks, keyBanleImages: item.keyBanleImages}
         })
       },
-      goDetail (id, e) {
-        if (e.target.tagName.toLowerCase() !== 'i') {
-          this.$router.push({
-            path: '/goods_detail',
-            query: {goodsId: id}
-          })
-        }
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
       },
       goOriginDetail (id) {
         this.$router.push({
@@ -372,7 +370,7 @@
       _initScroll () {
         const homeView = this.$refs.homeView
         this.homeSroll = new BScroll(homeView, {
-          click: true,
+//          click: true,
           probeType: 3
         })
         this.homeSroll.on('scroll', (pos) => {

@@ -55,7 +55,7 @@
             合计：<span>￥50.55</span>
           </div>
         </div>
-        <div class="button t-c">
+        <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt">
           加入购物车
         </div>
         <div class="button t-c buy">
@@ -63,6 +63,7 @@
         </div>
       </div>
       <no-login-footer v-if="!login"></no-login-footer>
+      <ball :type="2"></ball>
     </div>
   </div>
 </template>
@@ -74,9 +75,11 @@
   import BScroll from 'better-scroll'
   import { Badge } from 'vux'
   import noLoginFooter from '../components/noLoginBuyFooter'
+  import ball from '../components/ball'
+  import { bus } from '../util/util'
   export default {
     name: 'detail',
-    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter},
+    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter, ball, bus},
     data () {
       return {
         villageId: localStorage.getItem('m-villageId'),
@@ -92,7 +95,8 @@
           notNextTick: true,
           autoplay: 3000,
           pagination: '.swiper-pagination'
-        }
+        },
+        clickTag: 0
       }
     },
     created () {
@@ -221,6 +225,49 @@
           let scrollTop = -Math.round(pos.y)
           this.$refs.header.$el.style.opacity = scrollTop / 300
         })
+      },
+      addCart (item) {
+        console.log(item)
+        // 没登录跳转登录
+        if (!localStorage.getItem('m-token')) {
+          this.$vux.toast.text('请登录', 'bottom')
+          this.$router.push({path: 'login'})
+          return
+        }
+        // 限制点击速度
+        if (this.clickTag === 0) {
+          this.clickTag = 1
+          if (item.shopType === 1) {
+            this.storeId = localStorage.getItem('m-depotId')
+          } else {
+            this.storeId = localStorage.getItem('m-shopId')
+          }
+          this.post('/car/addCar', {
+            token: localStorage.getItem('m-token'),
+            goodsId: item.goodsId,
+            buyCount: 1,
+            shopType: item.shopType,
+            type: 1,
+            villageId: localStorage.getItem('m-villageId'),
+            storeId: this.storeId
+          }).then((res) => {
+            console.log(res.data)
+            if (res.data.code === 100) {
+              bus.$emit('drop', this.$refs.cartBt)
+              console.log(res.data)
+              this.$store.commit('increment', res.data.totalBuyCount)
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'top')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'top')
+            }
+          })
+          setTimeout(() => {
+            this.clickTag = 0
+          }, 500)
+        }
       }
     }
   }
@@ -243,7 +290,7 @@
     }
     .content {
       .DetailSwiper {
-        .pic{
+        .pic {
           width: 100% !important;
           .h(750) !important;
         }

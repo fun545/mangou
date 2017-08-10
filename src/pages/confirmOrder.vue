@@ -25,7 +25,7 @@
               </div>
               <div class="receiver-info">
                 <span class="color-444">收货地址： </span>
-                {{shippingInfo.cityName+shippingInfo.areaName+shippingInfo.villageName+shippingInfo.address}}
+                {{shippingInfo.cityName + shippingInfo.areaName + shippingInfo.villageName + shippingInfo.address}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
@@ -124,7 +124,7 @@
               </div>
               <div class="receiver-info">
                 <span class="color-444">收货地址： </span>
-                {{shippingInfo.cityName+shippingInfo.areaName+shippingInfo.villageName+shippingInfo.address}}
+                {{shippingInfo.cityName + shippingInfo.areaName + shippingInfo.villageName + shippingInfo.address}}
               </div>
             </div>
             <div class="iconfont icon-right f-l">&#xe601;</div>
@@ -201,12 +201,12 @@
         <div class="pay-methods">
           <span>支付方式：</span>
           <div class="bt-wrap">
-            <div class="item t-c" @click="onPayChange(1)" :class="{'weixin-color':payFlag}">
+            <div class="item t-c" @click="onPayChange(2)" :class="{'weixin-color':payFlag}">
               微信
             </div>
-            <div class="item t-c" @click="onPayChange(2)" :class="{'zhifubao-color':!payFlag}">
-              支付宝
-            </div>
+            <!--<div class="item t-c" @click="onPayChange(1)" :class="{'zhifubao-color':!payFlag}">-->
+            <!--支付宝-->
+            <!--</div>-->
           </div>
         </div>
       </div>
@@ -237,9 +237,9 @@
         NextGoodsList: this.$store.state.carOrderNextGoodsList, // 次日达 商品
         Thisfreight: this.$store.state.Thisfreight, // 运费 及时送
         Nextfreight: this.$store.state.Nextfreight, // 运费 次日达
-        sendWay: this.$store.state.sendWay, // 配送方式
+        sendWay: this.$store.state.sendWay, // 配送方式  1 自取 2 送货上门
         shippingInfo: this.$store.state.shippingInfo, // 收货相关信息 送货到家
-        pointInfo: this.$store.state.shippingInfo, // 收货相关信息 自取
+        // pointInfo: this.$store.state.shippingInfo, // 收货相关信息 自取
         selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
         selectedTotalCountNext: this.$store.state.selectedTotalCountNext, // 商品数量 次日达
         totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
@@ -249,12 +249,15 @@
         limitNumberThis: 2,    // 显示更多默认显示商品数量 及时送
         limitNumberNext: 2,   // 显示更多默认显示商品数量 次日达
         discount: 0,         // 优惠金额 次日达
-        nextShop: this.$store.state.nextShop, // 购物车次日达相关信息
         payFlag: true, // 支付方式Flag
+        payType: 2, // 1 支付宝 2 微信
         leaveMsgThis: '', // 留言 及时送
         leaveMsgNext: '', // 留言 次日达
         cartInfo: this.$store.state.cartInfo, // 购物车信息
-        userInfo: JSON.parse(localStorage.getItem('m-userInfo')) // 用户信息
+        userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
+        orderList: '',
+        thisShop: this.$store.state.thisShop, // 购物车及时送相关信息
+        nextShop: this.$store.state.nextShop // 购物车次日达相关信息
       }
     },
     created () {
@@ -294,15 +297,83 @@
       },
       // 支付方式
       onPayChange (type) {
-        if (type === 1) {
+        if (type === 2) {
           this.payFlag = true
         } else {
           this.payFlag = false
         }
+        this.payType = type
       },
       confirm () {
 //        var goodsList = this.thisGoodsList.concat(this.NextGoodsList)
 //        this.post('/orders/submitOrders_new',{})
+        let orderJsonObj = {}
+        this.orderList = []
+        // 及时送
+        if (this.thisGoodsList) {
+          let thisOrder = {}
+          thisOrder.cityId = this.thisShop.cityId
+          thisOrder.areaId = this.thisShop.areaId
+          thisOrder.goodsList = []
+          this.thisGoodsList.forEach((item, index) => {
+            let obj = {}
+            obj.carId = item.carId
+            obj.goodsId = item.goodsId
+            thisOrder.goodsList.push(obj)
+          })
+          thisOrder.payType = this.payType
+          thisOrder.remarks = this.leaveMsgThis
+          // 配送方式:1自取 2配送上门
+          thisOrder.sendType = 2
+          thisOrder.shippingId = this.shippingInfo.shippingId
+          thisOrder.shopType = this.thisShop.shopType
+          thisOrder.storeId = this.thisShop.storeId
+          thisOrder.villageId = this.thisShop.villageId
+          this.orderList.push(thisOrder)
+        }
+        // 次日达
+        if (this.NextGoodsList) {
+          let nextOrder = {}
+          nextOrder.cityId = this.nextShop.cityId
+          nextOrder.areaId = this.nextShop.areaId
+          nextOrder.goodsList = []
+          this.NextGoodsList.forEach((item, index) => {
+            let obj = {}
+            obj.carId = item.carId
+            obj.goodsId = item.goodsId
+            nextOrder.goodsList.push(obj)
+          })
+          nextOrder.payType = this.payType
+          nextOrder.remarks = this.leaveMsgNext
+          nextOrder.shopType = this.nextShop.shopType
+          nextOrder.storeId = this.nextShop.storeId
+          nextOrder.villageId = this.nextShop.villageId
+          // 配送方式:1自取 2配送上门
+          nextOrder.sendType = parseInt(this.sendWay.key)
+          if (nextOrder.sendType === 2) {
+            nextOrder.shippingId = this.shippingInfo.shippingId
+            nextOrder.pointAddress = ''
+            nextOrder.qujianName = ''
+            nextOrder.qujianPhone = ''
+          }
+          if (nextOrder.sendType === 1) {
+            nextOrder.shippingId = ''
+            nextOrder.pointAddress = this.nextShop.pointAddress
+            nextOrder.qujianName = this.userInfo.userName
+            nextOrder.qujianPhone = this.userInfo.phone
+          }
+//          console.log(this.nextShop)
+          this.orderList.push(nextOrder)
+        }
+        orderJsonObj.orderList = this.orderList
+        let orderJsonStr = JSON.stringify(orderJsonObj)
+//        console.log(orderJsonStr)
+        this.post('/orders/submitOrders_new', {
+          token: localStorage.getItem('m-token'),
+          OrderStr: orderJsonStr
+        }).then((res) => {
+          console.log(res.data)
+        })
       }
     },
     computed: {

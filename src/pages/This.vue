@@ -71,8 +71,7 @@
                 {{item.classifyName}}
               </div>
             </div>
-            <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index"
-                 @click="goDetail(item.goodsId,$event)">
+            <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
               <div class="pic">
                 <!--<lazy-image-->
                 <!--:src='item.goodsImgUrl'-->
@@ -82,7 +81,7 @@
                 <!--height="100%"-->
                 <!--&gt;</lazy-image>-->
                 <!--<img :src="item.goodsImgUrl" width="100%" height="100%">-->
-                <img width="100%" height="100%" v-lazy="item.goodsImgUrl">
+                <img width="100%" height="100%" v-lazy="item.goodsImgUrl" @click="goDetail(item.goodsId)">
               </div>
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
@@ -96,6 +95,7 @@
       </div>
     </div>
     <m-footer></m-footer>
+    <!--<ball></ball>-->
   </div>
 </template>
 
@@ -109,7 +109,7 @@
   import TabsItem from '../components/TabsItem'
   import shopCarButton from '../components/buyCarButton'
   import { loadMore } from '../util/util'
-
+//  import ball from '../components/ball'
   export default {
     name: 'this',
     components: {
@@ -123,6 +123,7 @@
       TabsItem,
       shopCarButton,
       loadMore
+//      ball
     },
     data () {
       return {
@@ -313,13 +314,13 @@
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrap, {
-          click: true,
+//          click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3
         })
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
-          click: true,
+//          click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3
@@ -380,13 +381,11 @@
           this.scrollFlag = false
         }
       },
-      goDetail (id, e) {
-        if (e.target.tagName.toLowerCase() !== 'i') {
-          this.$router.push({
-            path: '/goods_detail',
-            query: {goodsId: id}
-          })
-        }
+      goDetail (id) {
+        this.$router.push({
+          path: '/goods_detail',
+          query: {goodsId: id}
+        })
       }
     }
   }

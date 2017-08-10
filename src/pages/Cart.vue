@@ -292,6 +292,7 @@
         token: this.token,
         villageId: localStorage.getItem('m-villageId')
       }).then((res) => {
+        console.log(res.data)
         this.$store.state.cartInfo = res.data
         if (res.data.code === 100) {
           // 商品列表 及时送

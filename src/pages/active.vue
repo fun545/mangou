@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <div>
       <m-header :title="title">
@@ -12,8 +11,6 @@
             :src='keyBanleImages'
             :placeholder='$store.state.defaultImg'
             :events="['touchmove']"
-            width="100%"
-            height="100%"
           ></lazy-image>
         </div>
         <div class="content">
@@ -30,7 +27,8 @@
             <div class="des f-l">
               <h3 class="name">{{item.goodsName}}</h3>
               <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-              <div class="iconfont shop-car t-c">&#xe613;</div>
+              <!--<div class="iconfont shop-car t-c">&#xe613;</div>-->
+              <shop-car-button :goods="item"></shop-car-button>
             </div>
           </div>
         </div>
@@ -38,6 +36,7 @@
       <no-page :isActive="isActive"></no-page>
     </div>
     <loading :loadingFlag="loadingFlag"></loading>
+    <ball :type="3"></ball>
   </div>
 </template>
 
@@ -45,9 +44,11 @@
   import mHeader from '../components/header'
   import noPage from '../components/noPage'
   import loading from '../components/loading'
+  import ball from '../components/ball'
+  import shopCarButton from '../components/buyCarButton'
   export default {
     name: 'active',
-    components: {mHeader, noPage, loading},
+    components: {mHeader, noPage, loading, ball, shopCarButton},
     data () {
       return {
         goodsList: [],
@@ -95,6 +96,7 @@
       color: #07b3e0;
     }
   }
+
   .scroll {
     position: absolute;
     .t(92);
@@ -104,7 +106,11 @@
     overflow-y: scroll;
     z-index: 101;
     .activePic {
+      width: 100%;
       .h(314);
+      div {
+        .h(314);
+      }
       img {
         width: 100%;
         height: 100%;
@@ -162,13 +168,13 @@
             .lh(50);
             box-sizing: border-box;
             /*background: red;*/
-            .fs(36);
+            .fs(32);
             color: #07b3e0;
             border: 1px solid #07b3e0;
             border-radius: 50%;
             position: absolute;
-            .r(62);
-            .b(51);
+            .r(22);
+            .b(81);
           }
         }
       }

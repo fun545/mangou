@@ -95,7 +95,7 @@
       </div>
     </div>
     <m-footer></m-footer>
-    <!--<ball></ball>-->
+    <ball></ball>
   </div>
 </template>
 
@@ -109,7 +109,7 @@
   import TabsItem from '../components/TabsItem'
   import shopCarButton from '../components/buyCarButton'
   import { loadMore } from '../util/util'
-//  import ball from '../components/ball'
+  import ball from '../components/ball'
   export default {
     name: 'this',
     components: {
@@ -122,8 +122,8 @@
       Tabs,
       TabsItem,
       shopCarButton,
-      loadMore
-//      ball
+      loadMore,
+      ball
     },
     data () {
       return {
@@ -314,13 +314,13 @@
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrap, {
-//          click: true,
+          click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3
         })
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
-//          click: true,
+          click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3

@@ -162,7 +162,7 @@
       </div>
     </div>
     <m-footer></m-footer>
-    <!--<ball></ball>-->
+    <ball></ball>
   </div>
 </template>
 
@@ -175,7 +175,7 @@
   import newGoods from '../components/oneColumn'
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
-//  import ball from '../components/ball'
+  import ball from '../components/ball'
   export default {
     name: 'home',
     components: {
@@ -187,8 +187,8 @@
       newGoods,
       twoColumn,
       LoadMore,
-      buyCarButton
-//      ball
+      buyCarButton,
+      ball
     },
     data () {
       return {
@@ -370,7 +370,7 @@
       _initScroll () {
         const homeView = this.$refs.homeView
         this.homeSroll = new BScroll(homeView, {
-//          click: true,
+          click: true,
           probeType: 3
         })
         this.homeSroll.on('scroll', (pos) => {

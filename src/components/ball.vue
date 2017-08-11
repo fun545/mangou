@@ -59,11 +59,11 @@
         }
         if (this.type === 3) {
           this.el = this.$refs.other
-          console.log(this.el)
+//          console.log(this.el)
         }
         this.tabX = parseInt(getComputedStyle(this.el).left)
         this.tabY = parseInt(getComputedStyle(this.el).bottom)
-        console.log(this.tabX)
+//        console.log(this.tabX)
       })
       bus.$on('drop', (el) => {
         this.drop(el)
@@ -78,12 +78,15 @@
             ball.show = true
             ball.el = el // 设置小球的el属性为一个dom对象
             this.dropBalls.push(ball)
-            return
           }
         }
+        console.log(this.dropBalls)
+        console.log(2)
+//        console.log(this.dropBalls)
       },
       beforeDrop (el) { // 这个方法的执行是因为这是一个vue的监听事件
         let count = this.balls.length
+//        console.log(this.tabY, this.tabX)
         while (count--) {
           let ball = this.balls[count]
           if (ball.show) {
@@ -119,6 +122,15 @@
           ball.show = false
           el.style.display = 'none' // 隐藏小球
         }
+//        el.children[0].addEventListener('transitionend', () => {
+//          this.$refs.cartContainer.addEventListener('animationend', () => {
+//            this.receiveInCart = false;
+//          })
+//          this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
+//            this.receiveInCart = false;
+//          })
+//        })
+//        el.children[0].addEventListener('webkitAnimationEnd', () => {})
       }
     },
     computed: {

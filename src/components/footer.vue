@@ -23,7 +23,7 @@
         <div class="item-label" slot="label">我的</div>
       </tabbar-item>
     </tabbar>
-    <ball></ball>
+    <!--<ball></ball>-->
   </div>
 </template>
 
@@ -31,13 +31,13 @@
   import { ViewBox } from 'vux'
   import Tabbar from './Tabbar'
   import TabbarItem from './TabbarItem'
-  import ball from '../components/ball'
+//  import ball from '../components/ball'
   export default {
     components: {
       ViewBox,
       Tabbar,
-      TabbarItem,
-      ball
+      TabbarItem
+//      ball
     },
     created () {
       this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))

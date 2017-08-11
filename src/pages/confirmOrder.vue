@@ -213,7 +213,7 @@
     </div>
     <div class="footer">
       合计： <span
-      class="theme-color">{{parseFloat(totalPriceThis) + parseFloat(Thisfreight) + parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)}}</span>
+      class="theme-color">{{totalPrice}}</span>
       <div class="bt f-r t-c" @click="confirm">
         确认下单
       </div>
@@ -384,6 +384,11 @@
       // 显示更多与隐藏商品  次日达
       filterListNext () {
         return this.NextGoodsList.slice(0, this.limitNumberNext)
+      },
+      // 合计
+      totalPrice () {
+        let total = (Number(this.totalPriceThis) + Number(this.Thisfreight) + Number(this.totalPriceNext) + Number(this.Nextfreight) - Number(this.discount)).toFixed(1)
+        return total
       }
     }
   }

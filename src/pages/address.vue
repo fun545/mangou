@@ -47,6 +47,13 @@
         title: '收货地址',
         defaultFlag: false
       }
+    },
+    created () {
+      this.post('/shipping/getAddressList', {
+        token: localStorage.getItem('m-token')
+      }).then((res) => {
+        console.log(res.data)
+      })
     }
   }
 </script>

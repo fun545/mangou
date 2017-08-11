@@ -31,7 +31,7 @@
   import { ViewBox } from 'vux'
   import Tabbar from './Tabbar'
   import TabbarItem from './TabbarItem'
-//  import ball from '../components/ball'
+  //  import ball from '../components/ball'
   export default {
     components: {
       ViewBox,
@@ -39,8 +39,15 @@
       TabbarItem
 //      ball
     },
+    data () {
+      return {
+        total: -1
+      }
+    },
     created () {
-      this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))
+//      this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))
+      this.total = this.$store.state.totalBuyCount
+      console.log('footer')
     },
     computed: {
       totalBuyCount () {

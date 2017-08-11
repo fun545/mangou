@@ -7,7 +7,7 @@
         <span v-if="!editShow">完成</span>
       </div>
     </div>
-    <div v-if="login">
+    <div v-if="token">
       <!-- 页面中心 -->
       <div class="content-view-scroller" ref="content">
         <div>
@@ -216,13 +216,13 @@
       </div>
 
     </div>
-    <div v-if="!login" class="car-noLogin">
+    <div v-if="!token" class="car-noLogin">
       <div class="login-bt" @click="$router.push({path:'/login'})">
         立即登录
       </div>
     </div>
     <!--购物车无商品-->
-    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0&&login">
+    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0&&token">
       <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
@@ -255,7 +255,6 @@
         allChecked: false,      // 全选
         showMoreThis: true,    // 显示更多FLag 及时送
         showMoreNext: true,    // 显示更多FLag 次日达
-        login: true,           // 是否登录FLag
         thisGoodsList: [],     // 购物车商品列表 及时送
         NextGoodsList: [],     // 购物车商品列表 次日达
         limitNumberThis: 2,    // 显示更多默认显示商品数量 及时送
@@ -313,6 +312,7 @@
           this.$store.state.shippingInfo = res.data.shippingInfo
           // 判断店铺营业状态
           this.shopStatusMethods(this.thisShop.shopStatus)
+//          console.log(res.data)
           this.$nextTick(() => {
             this.contentScroll.refresh()
           })

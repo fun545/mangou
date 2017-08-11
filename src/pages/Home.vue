@@ -652,10 +652,10 @@
             }
           }
           .iconfont.shop-car {
-            .w(48);
-            .h(48);
-            .lh(48);
-            .fs(38);
+            .w(45);
+            .h(45);
+            .lh(45);
+            .fs(36);
             text-align: center;
             color: @theme-color;
             border: 1px solid @theme-color;

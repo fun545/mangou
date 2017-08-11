@@ -25,6 +25,8 @@ Vue.use(VueLazyload, {
   // listenEvents: [ 'scroll' ]
 })
 Vue.prototype.post = api.post
+Vue.prototype.weichatPost = api.weichatPost
+Vue.prototype.HOST = '/api'
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false

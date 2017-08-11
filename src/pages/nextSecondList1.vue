@@ -29,23 +29,25 @@
           </div>
         </div>
         <div class="list-wrap" ref="listWrap">
-          <ul v-if="listFlag">
-            <li class="item" v-for="(item,index) in list" :key="index">
-              <div class="pic f-l">
-                <img v-lazy="item.goodsImgUrl" alt="">
-              </div>
-              <div class="col f-l">
-                <h3 class="title">{{item.goodsName}}</h3>
-                <p class="des">{{item.guige}}</p>
-                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-              </div>
-              <div class="iconfont shop-car t-c">&#xe613;</div>
-            </li>
-          </ul>
+          <!--<ul v-if="listFlag">-->
+            <!--<li class="item" v-for="(item,index) in list" :key="index">-->
+              <!--<div class="pic f-l">-->
+                <!--<img v-lazy="item.goodsImgUrl" alt="">-->
+              <!--</div>-->
+              <!--<div class="col f-l">-->
+                <!--<h3 class="title">{{item.goodsName}}</h3>-->
+                <!--<p class="des">{{item.guige}}</p>-->
+                <!--<p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>-->
+                <!--<p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>-->
+              <!--</div>-->
+              <!--<div class="iconfont shop-car t-c">&#xe613;</div>-->
+            <!--</li>-->
+          <!--</ul>-->
+          <one-column v-if="listFlag" :goodsList="list"></one-column>
           <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
         </div>
       </div>
+      <ball :type="3"></ball>
       <no-page :isActive="isActive"></no-page>
     </div>
     <loading :loadingFlag="loadingFlag"></loading>
@@ -56,12 +58,14 @@
   import BScroll from 'better-scroll'
   import instruction from '../components/instruction.vue'
   import nextSearch from '../components/nextSearch.vue'
+  import oneColumn from '../components/oneColumn.vue'
   import twoColumn from '../components/twocolumn.vue'
   import noPage from '../components/noPage'
   import loading from '../components/loading'
+  import ball from '../components/ball'
   export default {
     name: 'nextList1',
-    components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading},
+    components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading, ball, oneColumn},
     data () {
       return {
         list: [],

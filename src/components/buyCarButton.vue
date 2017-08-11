@@ -43,7 +43,6 @@
           }).then((res) => {
             if (res.data.code === 100) {
               bus.$emit('drop', el)
-//              console.log(res.data)
               this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
@@ -65,10 +64,10 @@
   @import "../common/style/sum";
 
   .iconfont.shop-car {
-    .w(48);
-    .h(48);
-    .lh(48);
-    .fs(38);
+    .w(50);
+    .h(50);
+    .lh(39);
+    .fs(36);
     text-align: center;
     color: @theme-color;
     border: 1px solid @theme-color;

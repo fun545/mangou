@@ -113,10 +113,9 @@
             localStorage.setItem('m-token', res.data.userInfo.token)
             // 本地存储 token
             this.$store.state.token = res.data.userInfo.token
-            // vuex存储 userInfo
-            this.$store.state.userInfo = res.data.userInfo
-            // 本地存储 userInfo
-            localStorage.setItem('m-userInfo', JSON.stringify(res.data.userInfo))
+            // 存储 userInfo
+            this.$store.commit('getUserInfo', res.data.userInfo)
+            // 存储 购物车总数
             this.$store.commit('increment', res.data.userInfo.totalBuyCount)
             this.$store.state.login = true
             console.log(JSON.parse(localStorage.getItem('m-userInfo')))

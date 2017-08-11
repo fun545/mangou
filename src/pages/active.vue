@@ -33,6 +33,14 @@
           </div>
         </div>
       </div>
+      <div class="buy-cart">
+        <div class="wrap">
+          <i class="iconfont center">&#xe613;</i>
+          <div class="badge">
+            <badge :text="totalBuyCount"></badge>
+          </div>
+        </div>
+      </div>
       <no-page :isActive="isActive"></no-page>
     </div>
     <loading :loadingFlag="loadingFlag"></loading>
@@ -41,6 +49,7 @@
 </template>
 
 <script>
+  import { Badge } from 'vux'
   import mHeader from '../components/header'
   import noPage from '../components/noPage'
   import loading from '../components/loading'
@@ -48,7 +57,7 @@
   import shopCarButton from '../components/buyCarButton'
   export default {
     name: 'active',
-    components: {mHeader, noPage, loading, ball, shopCarButton},
+    components: {mHeader, noPage, loading, ball, shopCarButton, Badge},
     data () {
       return {
         goodsList: [],
@@ -69,12 +78,18 @@
           this.loadingFlag = false
         }
       })
+    },
+    computed: {
+      totalBuyCount () {
+        return this.$store.state.totalBuyCount
+      }
     }
   }
 </script>
 
 <style lang="less" scoped>
   @import "../common/style/sum";
+  @import "../common/style/varlable";
 
   .header {
     position: absolute;
@@ -180,4 +195,43 @@
       }
     }
   }
+
+  /*.buy-cart {
+     position: fixed;
+     .l(600);
+     .b(44);
+     .w(68);
+     .h(68);
+     z-index: 999;
+     .wrap {
+       position: relative;
+       .ml(20);
+       color: @theme-color;
+       .t(16);
+       background: #07b3e0;
+       background: rgba(7, 179, 224, .6);
+       .w(68);
+       .h(68);
+       border-radius: 50%;
+       .iconfont {
+         .fs(38);
+         color: #fff;
+       }
+       .badge {
+         position: absolute;
+         .h(30);
+         .r(20);
+         .t(0);
+         .vux-badge {
+           position: absolute;
+           .fs(22);
+           .pl(4);
+           .pr(4);
+           .h(30);
+           .lh(30);
+           border: 1px solid #fff;
+         }
+       }
+     }
+   }*/
 </style>

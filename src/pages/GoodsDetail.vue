@@ -48,7 +48,7 @@
           <div class="icon d-ib">
             <i class="iconfont center">&#xe613;</i>
             <div class="badge">
-              <badge text="13"></badge>
+              <badge :text="totalBuyCount" v-if="totalBuyCount"></badge>
             </div>
           </div>
           <div class="text d-ib">
@@ -268,6 +268,11 @@
             this.clickTag = 0
           }, 500)
         }
+      }
+    },
+    computed: {
+      totalBuyCount () {
+        return this.$store.state.totalBuyCount
       }
     }
   }

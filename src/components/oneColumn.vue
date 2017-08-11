@@ -42,7 +42,7 @@
 <style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
-
+  /*@import "../common/style/mlxin";*/
   .item {
     .h(253);
     box-sizing: border-box;
@@ -106,17 +106,17 @@
       }
     }
     .iconfont.shop-car {
-      .w(60);
-      .h(60);
-      .lh(60);
+      .w(50);
+      .h(50);
+      .lh(39);
       box-sizing: border-box;
       /*background: red;*/
-      .fs(36);
+      .fs(30);
       color: #089cf6;
       border: 1px solid #089cf6;
       border-radius: 50%;
       position: absolute;
-      .r(30) !important;
+      .r(40) !important;
       .b(40) !important;
     }
   }

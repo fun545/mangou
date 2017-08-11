@@ -224,11 +224,13 @@
 <script>
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
+  import { wxConfig } from '../util/util'
   export default{
     name: 'confirmOrder',
     components: {
       mHeader,
-      BScroll
+      BScroll,
+      wxConfig
     },
     data () {
       return {
@@ -305,12 +307,10 @@
         this.payType = type
       },
       confirm () {
-//        var goodsList = this.thisGoodsList.concat(this.NextGoodsList)
-//        this.post('/orders/submitOrders_new',{})
         let orderJsonObj = {}
         this.orderList = []
         // 及时送
-        if (this.thisGoodsList) {
+        if (this.thisGoodsList.length > 0) {
           let thisOrder = {}
           thisOrder.cityId = this.thisShop.cityId
           thisOrder.areaId = this.thisShop.areaId
@@ -332,7 +332,7 @@
           this.orderList.push(thisOrder)
         }
         // 次日达
-        if (this.NextGoodsList) {
+        if (this.NextGoodsList.length > 0) {
           let nextOrder = {}
           nextOrder.cityId = this.nextShop.cityId
           nextOrder.areaId = this.nextShop.areaId
@@ -370,10 +370,29 @@
 //        console.log(orderJsonStr)
         this.post('/orders/submitOrders_new', {
           token: localStorage.getItem('m-token'),
-          OrderStr: orderJsonStr
+          orderStr: orderJsonStr
         }).then((res) => {
           console.log(res.data)
+          if (res.data.code === 100) {
+            this.$store.commit('saveOrderNumList', res.data.orderNumList)
+//            var url = getWeichatCode(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
+            this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
+              .then((res) => {
+                console.log(res.data)
+                if (res.data.code === 100) {
+                  this.weixinxiaochengxu = res.data.weixinxiaochengxu
+                  wxConfig(this.weixinxiaochengxu.timeStamp,
+                    this.weixinxiaochengxu.nonceStr,
+                    this.weixinxiaochengxu.prepayid,
+                    this.weixinxiaochengxu.paySign,
+                    this.wxPayCallBack)
+                }
+              })
+          }
         })
+      },
+      wxPayCallBack (res) {
+        console.log(res)
       }
     },
     computed: {

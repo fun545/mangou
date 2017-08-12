@@ -16,41 +16,29 @@
           <div class="sort-item" :class="{'active':2===sortSelectIndex}" @click="priceSort()">
             按价格
             <div class="sort-icon d-ib">
-              <span class="iconfont up" :class="{'sort-icon-selected':!priceSortFlag}">&#xe617;</span>
-              <span class="iconfont down" :class="{'sort-icon-selected':priceSortFlag}">&#xe632;</span>
+              <span class="iconfont up"
+                    :class="{'sort-icon-selected':!priceSortFlag,'sort-icon-clear-selected':2!==sortSelectIndex}">&#xe617;</span>
+              <span class="iconfont down"
+                    :class="{'sort-icon-selected':priceSortFlag,'sort-icon-clear-selected':2!==sortSelectIndex}">&#xe632;</span>
             </div>
           </div>
           <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
             按销量
             <div class="sort-icon d-ib">
-              <span class="iconfont up" :class="{'sort-icon-selected':saleSortFlag}">&#xe617;</span>
-              <span class="iconfont down" :class="{'sort-icon-selected':!saleSortFlag}">&#xe632;</span>
+              <span class="iconfont up" :class="{'sort-icon-selected':!saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe617;</span>
+              <span class="iconfont down" :class="{'sort-icon-selected':saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe632;</span>
             </div>
           </div>
         </div>
         <div class="list-wrap" ref="listWrap">
-          <!--<ul v-if="listFlag">-->
-            <!--<li class="item" v-for="(item,index) in list" :key="index">-->
-              <!--<div class="pic f-l">-->
-                <!--<img v-lazy="item.goodsImgUrl" alt="">-->
-              <!--</div>-->
-              <!--<div class="col f-l">-->
-                <!--<h3 class="title">{{item.goodsName}}</h3>-->
-                <!--<p class="des">{{item.guige}}</p>-->
-                <!--<p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>-->
-                <!--<p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>-->
-              <!--</div>-->
-              <!--<div class="iconfont shop-car t-c">&#xe613;</div>-->
-            <!--</li>-->
-          <!--</ul>-->
           <one-column v-if="listFlag" :goodsList="list"></one-column>
           <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
         </div>
+        <loading :loadingFlag="loadingFlag"></loading>
       </div>
       <ball :type="3"></ball>
       <no-page :isActive="isActive"></no-page>
     </div>
-    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -161,6 +149,9 @@
     height: 100%;
     .sort-icon-selected {
       color: @theme-color-blue !important;
+    }
+    .sort-icon-clear-selected {
+      color: #666 !important;
     }
     .header {
       position: absolute;

@@ -29,22 +29,25 @@
             <div class="list clearfix">
               <div class="item f-l" v-for="(item,index) in firstClass.classifys" :key="index"
                    @click="goSecondList(item.classifyId)">
-                <!--<img v-lazy="item.classifyImgUrl" alt="" class="pic">-->
                 <div class="pic">
-                  <lazy-image
-                    :src='item.classifyImgUrl'
-                    :placeholder='$store.state.defaultImg'
-                    :events="['touchmove']"
-                    width="100%"
-                    height="100%"
-                  ></lazy-image>
+                  <img v-lazy="item.classifyImgUrl" alt="" width="100%" height="100%">
                 </div>
+                <!--<div class="pic">-->
+                <!--<lazy-image-->
+                <!--:src='item.classifyImgUrl'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
+                <!--width="100%"-->
+                <!--height="100%"-->
+                <!--&gt;</lazy-image>-->
+                <!--</div>-->
                 <p class="name t-c">{{item.classifyName}}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <loading :loadingFlag="loadingFlag"></loading>
     </div>
     <m-footer></m-footer>
   </div>
@@ -53,14 +56,12 @@
 <script>
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
-
-  import {
-    XDialog
-  } from 'vux'
+  import { XDialog } from 'vux'
   import instruction from '../components/instruction.vue'
   import nextSearch from '../components/nextSearch.vue'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
+  import loading from '../components/loading'
   export default {
     name: 'next',
     components: {
@@ -70,7 +71,8 @@
       nextSearch,
       SideBar,
       SideItem,
-      BScroll
+      BScroll,
+      loading
     },
     data () {
       return {
@@ -85,7 +87,8 @@
         lists: {},
         isLoad: true,
         menuSroll: {},
-        listSroll: {}
+        listSroll: {},
+        loadingFlag: true
       }
     },
     created () {
@@ -96,6 +99,7 @@
             this._initScroll()
             this._calculateHeight()
             this.isLoad = false
+            this.loadingFlag = false
           })
         }
       })

@@ -1,5 +1,7 @@
 <template>
-  <i class="iconfont shop-car" @click="add($el,goods)" ref="icon">&#xe613;</i>
+  <div class="shop-cart-wrap" @click="add($el,goods)">
+    <i class="iconfont shop-car" ref="icon">&#xe613;</i>
+  </div>
 </template>
 
 <script>
@@ -21,7 +23,7 @@
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
-          this.$router.push({path: 'login'})
+          this.$router.push({path: '/login'})
           return
         }
         // 限制点击速度
@@ -47,9 +49,12 @@
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'top')
+              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'top')
+              localStorage.removeItem('m-token')
+              this.$router.push({path: '/login'})
             }
           })
           this.clickTag = 0
@@ -59,24 +64,30 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import "../common/style/varlable";
   @import "../common/style/sum";
+
+  .shop-cart-wrap {
+    position: absolute;
+    .pl(35);
+    .pr(15);
+    .pt(15);
+    .pb(15);
+  }
 
   .iconfont.shop-car {
     .w(50);
     .h(50);
     .lh(39);
-    .fs(36);
+    .fs(30);
     text-align: center;
     color: @theme-color;
     border: 1px solid @theme-color;
     border-radius: 50%;
-    .pl(4);
-    .pr(4);
-    .pt(4);
-    .pb(4);
-    position: absolute;
-    .ml(-25);
+    .pl(6);
+    .pr(6);
+    .pt(5);
+    .pb(5);
   }
 </style>

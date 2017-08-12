@@ -4,7 +4,7 @@
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
-    <div class="content-wrap" ref="content">
+    <div class="content-wrap" ref="content" :class="{'noOrderList':orderList.length===0}">
       <!-- 订单列表 及时送  -->
       <order-list :orderList="orderList" :_initScroll="contentScroll" ref="orderList">
         <load-more
@@ -13,6 +13,7 @@
           background-color="#f7f7f7"
           class="load-more" slot="loadMoreIcon" v-if="loadMoreFlag"></load-more>
       </order-list>
+      <loading :loadingFlag="loadingFlag"></loading>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="toastText" width="10em" class="toast"></toast>
@@ -24,6 +25,7 @@
   import mHeader from './header'
   import orderList from './orderItem.vue'
   import BScroll from 'better-scroll'
+  import loading from '../components/loading'
   export default{
     name: 'order_List',
     components: {
@@ -31,7 +33,8 @@
       orderList,
       BScroll,
       Toast,
-      LoadMore
+      LoadMore,
+      loading
     },
     props: {
       status: Number,
@@ -39,7 +42,7 @@
     },
     data () {
       return {
-        orderList: [],
+        orderList: [1],
         toastText: '',
         showPositionValue: false,
         scrollDisable: false,
@@ -47,7 +50,8 @@
         loadText: '正在加载更多数据',
         moreIconFlag: true,
         contentScroll: {},
-        loadMoreFlag: false
+        loadMoreFlag: false,
+        loadingFlag: true
       }
     },
     async created () {
@@ -61,15 +65,18 @@
         console.log(res.data)
         if (res.data.code === 100) {
           this.orderList = res.data.orderList
+          this.loadingFlag = false
           return
         }
         if (res.data.code === 101) {
           this.toastText = res.data.msg
           this.showPositionValue = true
+          localStorage.removeItem('m-token')
         }
         if (res.data.code === 102) {
           this.toastText = res.data.msg
           this.showPositionValue = true
+          localStorage.removeItem('m-token')
         }
       })
       this.$nextTick(() => {
@@ -155,6 +162,10 @@
       right: 0;
       bottom: 0;
       overflow: hidden;
+    }
+    .noOrderList {
+      background: url("../assets/noOrderList.png") no-repeat center center;
+      background-size: 50% 50%;
     }
     .load-more {
       color: @font-color-m;

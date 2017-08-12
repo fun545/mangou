@@ -2,13 +2,13 @@
   <ul class="goods-detail-wrap clearfix">
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
-        <lazy-image
-          :src='item.goodsImgUrl'
-          :placeholder='$store.state.defaultImg'
-          :events="['touchmove']"
-          @click.native="goDetail(item.goodsId)"
-        ></lazy-image>
-        <!--<img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">-->
+        <!--<lazy-image-->
+          <!--:src='item.goodsImgUrl'-->
+          <!--:placeholder='$store.state.defaultImg'-->
+          <!--:events="['touchmove']"-->
+          <!--@click.native="goDetail(item.goodsId)"-->
+        <!--&gt;</lazy-image>-->
+        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>
@@ -101,15 +101,9 @@
         .this-price {
 
         }
-        .shop-car {
-          position: absolute;
-          .w(51);
-          .h(51);
-          .lh(55);
+        .shop-cart-wrap {
           .t(30);
           .r(32);
-          border-radius: 50%;
-          border: 1px solid @theme-color;
           .icon-col {
             color: @theme-color;
             .fs(33);

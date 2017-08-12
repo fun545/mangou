@@ -42,7 +42,7 @@ export default {
     redirectUri = urlencode(redirectUri)
     //   let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirectUri}
     // &response_type=code&scope=snsapi_base&state=1234#wechat_redirect`
-    return Vue.http.post('/api', {
+    return Vue.http.post('https://open.weixin.qq.com/connect/oauth2/authorize', {
       appid: appid,
       redirect_uri: redirectUri,
       response_type: 'code',

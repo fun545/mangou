@@ -9,12 +9,13 @@
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
               <!--<img :src="item" alt="">-->
-              <lazy-image
-                :src='item'
-                :placeholder='$store.state.defaultImg'
-                :events="['touchmove']"
-                class="pic"
-              ></lazy-image>
+              <div class="pic"><img v-lazy="item" width="100%" height="100%"></div>
+              <!--<lazy-image-->
+              <!--:src='item'-->
+              <!--:placeholder='$store.state.defaultImg'-->
+              <!--:events="['touchmove']"-->
+              <!--class="pic"-->
+              <!--&gt;</lazy-image>-->
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -42,6 +43,7 @@
             </div>
           </div>
         </div>
+        <loading :loadingFlag="loadingFlag" class="loading"></loading>
       </div>
       <div class="footer" v-if="login">
         <div class="buy-car">
@@ -77,9 +79,10 @@
   import noLoginFooter from '../components/noLoginBuyFooter'
   import ball from '../components/ball'
   import { bus } from '../util/util'
+  import loading from '../components/loading'
   export default {
     name: 'detail',
-    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter, ball, bus},
+    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter, ball, bus, loading},
     data () {
       return {
         villageId: localStorage.getItem('m-villageId'),
@@ -96,7 +99,8 @@
           autoplay: 3000,
           pagination: '.swiper-pagination'
         },
-        clickTag: 0
+        clickTag: 0,
+        loadingFlag: true
       }
     },
     created () {
@@ -151,6 +155,7 @@
             this.$nextTick(() => {
               this._initScroll()
             })
+            this.loadingFlag = false
           }
           if (res.data.code === 102) {
             this.$router.push({
@@ -177,6 +182,7 @@
             this.$nextTick(() => {
               this._initScroll()
             })
+            this.loadingFlag = false
           }
           this.loadingFlag = false
           this.login = false
@@ -311,6 +317,14 @@
       .b(100);
       z-index: 101;
       overflow: hidden;
+      .loading {
+        //        .h()
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+      }
       .des {
         position: relative;
         box-sizing: border-box;

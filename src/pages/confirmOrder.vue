@@ -1,6 +1,6 @@
 <template>
   <div class="order" @touchmove.prevent>
-    <m-header :title="title" class="header">
+    <m-header :title="title" class="header" @click.native="confirm">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content" ref="content">
@@ -375,24 +375,23 @@
           console.log(res.data)
           if (res.data.code === 100) {
             this.$store.commit('saveOrderNumList', res.data.orderNumList)
-//            var url = getWeichatCode(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
-            this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
-              .then((res) => {
-                console.log(res.data)
-                if (res.data.code === 100) {
-                  this.weixinxiaochengxu = res.data.weixinxiaochengxu
-                  wxConfig(this.weixinxiaochengxu.timeStamp,
-                    this.weixinxiaochengxu.nonceStr,
-                    this.weixinxiaochengxu.prepayid,
-                    this.weixinxiaochengxu.paySign,
-                    this.wxPayCallBack)
-                }
-              })
+            /* this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
+             .then((res) => {
+             console.log(res.data, 'weichatPost')
+             if (res.data.code === 100) {
+             this.weixinxiaochengxu = res.data.weixinxiaochengxu
+             wxConfig(this.weixinxiaochengxu.timeStamp,
+             this.weixinxiaochengxu.nonceStr,
+             this.weixinxiaochengxu.prepayid,
+             this.weixinxiaochengxu.paySign,
+             this.wxPayCallBack)
+             }
+             }) */
           }
         })
       },
       wxPayCallBack (res) {
-        console.log(res)
+        console.log(res, 'callbal')
       }
     },
     computed: {

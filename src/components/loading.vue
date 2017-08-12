@@ -21,23 +21,22 @@
   @import "../common/style/varlable";
 
   .loading {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
     z-index: 10000;
-    .fs(30);
+    .fs(26);
     background: #eee url("../assets/loading_02.png") no-repeat center;
-    background-size: 1.6rem 2.4rem;
+    /*background: rgba(0, 0, 0, 0) url("../assets/loading_02.png") no-repeat center;*/
+    background-size: .8rem 1.2rem;
     .text {
       position: absolute;
       text-align: center;
       .w(200);
       left: 50%;
-      bottom: 35%;
+      bottom: 39%;
       .ml(-90);
-      color: @font-color-m;
+      color: @font-color-input;
     }
   }
 </style>

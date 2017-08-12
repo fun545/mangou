@@ -6,23 +6,23 @@
       </m-header>
       <div class="scroll" v-if="isActive">
         <div class="activePic">
-          <!--<img v-lazy="keyBanleImages" alt="">-->
-          <lazy-image
-            :src='keyBanleImages'
-            :placeholder='$store.state.defaultImg'
-            :events="['touchmove']"
-          ></lazy-image>
+          <img v-lazy="keyBanleImages" alt="">
+          <!--<lazy-image-->
+          <!--:src='keyBanleImages'-->
+          <!--:placeholder='$store.state.defaultImg'-->
+          <!--:events="['touchmove']"-->
+          <!--&gt;</lazy-image>-->
         </div>
         <div class="content">
           <div class="item" v-for="(item ,index) in goodsList" :key="index">
             <div class="pic f-l">
-              <!--<img v-lazy="item.goodsImgUrl" alt="">-->
-              <lazy-image
-                :src='item.goodsImgUrl'
-                :placeholder='$store.state.defaultImg'
-                :events="['touchmove']"
-                class="lazy-pic"
-              ></lazy-image>
+              <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
+              <!--<lazy-image-->
+              <!--:src='item.goodsImgUrl'-->
+              <!--:placeholder='$store.state.defaultImg'-->
+              <!--:events="['touchmove']"-->
+              <!--class="lazy-pic"-->
+              <!--&gt;</lazy-image>-->
             </div>
             <div class="des f-l">
               <h3 class="name">{{item.goodsName}}</h3>
@@ -43,7 +43,7 @@
       </div>
       <no-page :isActive="isActive"></no-page>
     </div>
-    <loading :loadingFlag="loadingFlag"></loading>
+    <loading :loadingFlag="loadingFlag" class="loading"></loading>
     <ball :type="3"></ball>
   </div>
 </template>
@@ -177,23 +177,26 @@
               color: #ff0000;
             }
           }
-          .iconfont.shop-car {
-            .w(50);
-            .h(50);
-            .lh(50);
-            box-sizing: border-box;
-            /*background: red;*/
-            .fs(32);
-            color: #07b3e0;
-            border: 1px solid #07b3e0;
-            border-radius: 50%;
+          .shop-cart-wrap {
             position: absolute;
             .r(22);
             .b(81);
+            .iconfont.shop-car {
+              color: #07b3e0;
+              border: 1px solid #07b3e0;
+            }
           }
         }
       }
     }
+  }
+
+  .loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    .t(92);
   }
 
   /*.buy-cart {

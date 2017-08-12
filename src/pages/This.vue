@@ -6,7 +6,7 @@
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
           <div class="pic">
-            <img v-lazy="storeMsg.storeImgurl" alt="" width="100%" height="100%">
+            <img :src="storeMsg.storeImgurl" alt="" width="100%" height="100%">
           </div>
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
@@ -87,11 +87,12 @@
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <shop-car-button :goods="item"></shop-car-button>
+                <shop-car-button :goods="item" class="this-bt"></shop-car-button>
               </div>
             </div>
           </div>
         </div>
+        <loading :loadingFlag="loadingFlag"></loading>
       </div>
     </div>
     <m-footer></m-footer>
@@ -110,6 +111,7 @@
   import shopCarButton from '../components/buyCarButton'
   import { loadMore } from '../util/util'
   import ball from '../components/ball'
+  import loading from '../components/loading'
   export default {
     name: 'this',
     components: {
@@ -123,7 +125,8 @@
       TabsItem,
       shopCarButton,
       loadMore,
-      ball
+      ball,
+      loading
     },
     data () {
       return {
@@ -150,7 +153,8 @@
         scrollDisable: false,
         loadText: '正在加载',
         moreIconFlag: true,
-        pageIndex: 1
+        pageIndex: 1,
+        loadingFlag: true
       }
     },
     async created () {
@@ -195,6 +199,7 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.goodsList = res.data.goodsList
+          this.loadingFlag = false
         }
       })
       this.$nextTick(() => {
@@ -777,18 +782,19 @@
               .fs(30);
             }
           }
-          .iconfont.shop-car {
-            .fs(26);
-            color: #089cf6;
-            border: 1px solid #089cf6;
-            border-radius: 50%;
-            .pl(4);
-            .pr(4);
-            .pt(4);
-            .pb(4);
+          .this-bt {
             position: absolute;
             .r(32);
             .b(46);
+            .iconfont.shop-car {
+              .fs(26) !important;
+              color: #089cf6;
+              border: 1px solid #089cf6;
+              .pl(4);
+              .pr(4);
+              .pt(4);
+              .pb(4);
+            }
           }
         }
       }

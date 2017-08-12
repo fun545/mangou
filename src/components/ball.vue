@@ -15,7 +15,7 @@
     </div>
     <div class="tab" ref="tab"></div>
     <div class="goods-detail-cart" ref="detail" v-if="type===2"></div>
-    <div class="other-cart" ref="otherCart" v-if="type===3">
+    <div class="other-cart" ref="otherCart" v-if="type===3" @click="$router.push({path:'/cart'})">
       <div class="wrap">
         <i class="iconfont center">&#xe613;</i>
         <div class="badge">

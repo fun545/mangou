@@ -2,13 +2,13 @@
   <ul>
     <li class="item" v-for="(item,index) in goodsList" :key="index">
       <div class="pic f-l">
-        <lazy-image
-          :src='item.goodsImgUrl'
-          :placeholder='$store.state.defaultImg'
-          :events="['touchmove']"
-          @click.native="goDetail(item.goodsId)"
-        ></lazy-image>
-        <!--<img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">-->
+        <!--<lazy-image-->
+          <!--:src='item.goodsImgUrl'-->
+          <!--:placeholder='$store.state.defaultImg'-->
+          <!--:events="['touchmove']"-->
+          <!--@click.native="goDetail(item.goodsId)"-->
+        <!--&gt;</lazy-image>-->
+        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>
@@ -105,17 +105,7 @@
         }
       }
     }
-    .iconfont.shop-car {
-      .w(50);
-      .h(50);
-      .lh(39);
-      box-sizing: border-box;
-      /*background: red;*/
-      .fs(30);
-      color: #089cf6;
-      border: 1px solid #089cf6;
-      border-radius: 50%;
-      position: absolute;
+    .shop-cart-wrap {
       .r(40) !important;
       .b(40) !important;
     }

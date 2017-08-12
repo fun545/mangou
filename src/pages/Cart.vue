@@ -7,223 +7,233 @@
         <span v-if="!editShow">完成</span>
       </div>
     </div>
-    <div v-if="token">
-      <!-- 页面中心 -->
-      <div class="content-view-scroller" ref="content">
-        <div>
-          <!-- 即时送 -->
-          <div class="this-wrap" v-if="thisGoodsList.length">
-            <div class="flex-box this">
-              <!-- 全选按钮 及时送-->
-              <div class="flex-item">
-                <div class="select-all-icon d-ib" @click="thisCheckAll(thisGoodsList)">
-                  <i class="iconfont selected-color circle" v-if="thisAllChecked">&#xe634;</i>
-                  <i class="iconfont circle" v-if="!thisAllChecked">&#xe635;</i>
+    <div class="content-wrapper">
+      <!--已登录-->
+      <div v-if="token">
+        <div v-if="thisGoodsList.length!==0||NextGoodsList.length!==0">
+          <!-- 页面中心 -->
+          <div class="content-view-scroller" ref="content">
+            <div>
+              <!-- 即时送 -->
+              <div class="this-wrap" v-if="thisGoodsList.length">
+                <div class="flex-box this">
+                  <!-- 全选按钮 及时送-->
+                  <div class="flex-item">
+                    <div class="select-all-icon d-ib" @click="thisCheckAll(thisGoodsList)">
+                      <i class="iconfont selected-color circle" v-if="thisAllChecked">&#xe634;</i>
+                      <i class="iconfont circle" v-if="!thisAllChecked">&#xe635;</i>
+                    </div>
+                    <span class="label-checkbox">全选</span>
+                  </div>
+                  <!-- 及时送标题-->
+                  <div class="flex-col">
+                    <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
+                  </div>
+                  <!--  凑单 及时送-->
+                  <div class="flex-col single" v-if="singleShowThis">
+                    <div class="difference" style="color: #999">还差<span
+                      style="color:#f95d43;">{{singlePriceThis}}</span>元起送
+                    </div>
+                    <div class="go-single theme-color" @click="$router.push({path:'/this'})">去凑单></div>
+                  </div>
+                  <!--商家打烊提示-->
+                  <div class="flex-col closing" v-if="thisShop.shopStatus!==0">
+                    <div class="difference" style="color:#f95d43;">店家已打烊</div>
+                    <div class="go-single" style="color: #999">({{thisShop.shopHours}})</div>
+                  </div>
                 </div>
-                <span class="label-checkbox">全选</span>
-              </div>
-              <!-- 及时送标题-->
-              <div class="flex-col">
-                <div class="block-title color-0493ed"><i class="iconfont">&#xe61f;</i>即时送</div>
-              </div>
-              <!--  凑单 及时送-->
-              <div class="flex-col single" v-if="singleShowThis">
-                <div class="difference" style="color: #999">还差<span style="color:#f95d43;">{{singlePriceThis}}</span>元起送
+                <!-- 及时送购物车商品列表-->
+                <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
+                  <!--单选按钮 及时送-->
+                  <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)" v-if="item.status===1">
+                    <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
+                    <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
+                  </div>
+                  <!--已售罄，失效标识 及时送-->
+                  <div class="disabled-item t-c" v-if="item.status===2">
+                    已售罄
+                  </div>
+                  <div class="disabled-item t-c" v-if="item.status===3">
+                    失效
+                  </div>
+                  <!--商品图片 及时送-->
+                  <div class="pic">
+                    <!--<lazy-image-->
+                    <!--:src='item.goodsImgUrl'-->
+                    <!--:placeholder='$store.state.defaultImg'-->
+                    <!--:events="['touchmove']"-->
+                    <!--width="100%"-->
+                    <!--height="100%"-->
+                    <!--&gt;</lazy-image>-->
+                    <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
+                  </div>
+                  <!--商品信息 及时送-->
+                  <div class="flex-col">
+                    <div class="goods-title">{{item.goodsName}}</div>
+                    <div class="flex-box">
+                      <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
+                      <div class="remove" @click="count(item,2,index,thisGoodsList)"/>
+                      <input type="number" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
+                      <div class="added" @click="count(item,1)"/>
+                    </div>
+                  </div>
                 </div>
-                <div class="go-single theme-color" @click="$router.push({path:'/this'})">去凑单></div>
-              </div>
-              <!--商家打烊提示-->
-              <div class="flex-col closing" v-if="thisShop.shopStatus!==0">
-                <div class="difference" style="color:#f95d43;">店家已打烊</div>
-                <div class="go-single" style="color: #999">({{thisShop.shopHours}})</div>
-              </div>
-            </div>
-            <!-- 及时送购物车商品列表-->
-            <div class="flex-box this-goods" v-for="(item,index) in filterListThis" :key="index">
-              <!--单选按钮 及时送-->
-              <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)" v-if="item.status===1">
-                <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
-                <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
-              </div>
-              <!--已售罄，失效标识 及时送-->
-              <div class="disabled-item t-c" v-if="item.status===2">
-                已售罄
-              </div>
-              <div class="disabled-item t-c" v-if="item.status===3">
-                失效
-              </div>
-              <!--商品图片 及时送-->
-              <div class="pic">
-                <lazy-image
-                  :src='item.goodsImgUrl'
-                  :placeholder='$store.state.defaultImg'
-                  :events="['touchmove']"
-                  width="100%"
-                  height="100%"
-                ></lazy-image>
-              </div>
-              <!--商品信息 及时送-->
-              <div class="flex-col">
-                <div class="goods-title">{{item.goodsName}}</div>
-                <div class="flex-box">
-                  <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
-                  <div class="remove" @click="count(item,2,index,thisGoodsList)"/>
-                  <input type="number" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
-                  <div class="added" @click="count(item,1)"/>
+                <!--更多 及时送-->
+                <div v-if="thisGoodsList.length>2">
+                  <div class="more-btn" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
+                  <div class="more-btn" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
+                </div>
+                <div class="flex-box count">
+                  <!--选择商品总计 及时送-->
+                  <div class="flex-item total-count">共{{selectedTotalCountThis}}件商品</div>
+                  <!--选择商品总价 及时送-->
+                  <div class="flex-col text-right font-mind count-price">小计：<span
+                    class="theme-color">¥{{thisTotalPrice}}</span></div>
+                </div>
+                <!--配送费 及时送-->
+                <div class="flex-box send">
+                  <div class="flex-item">配送费用:</div>
+                  <div class="flex-col text-right font-mind theme-color">{{CThisfreight}}</div>
                 </div>
               </div>
-            </div>
-            <!--更多 及时送-->
-            <div v-if="thisGoodsList.length>2">
-              <div class="more-btn" @click="setCountThis()" v-if="showMoreThis">显示更多</div>
-              <div class="more-btn" @click="setCountThis()" v-if="!showMoreThis">收起商品</div>
-            </div>
-            <div class="flex-box count">
-              <!--选择商品总计 及时送-->
-              <div class="flex-item total-count">共{{selectedTotalCountThis}}件商品</div>
-              <!--选择商品总价 及时送-->
-              <div class="flex-col text-right font-mind count-price">小计：<span
-                class="theme-color">¥{{thisTotalPrice}}</span></div>
-            </div>
-            <!--配送费 及时送-->
-            <div class="flex-box send">
-              <div class="flex-item">配送费用:</div>
-              <div class="flex-col text-right font-mind theme-color">{{CThisfreight}}</div>
+              <!-- 次日达 -->
+              <div class="next-wrap" v-if="NextGoodsList.length">
+                <div class="flex-box this">
+                  <!-- 全选按钮 次日达-->
+                  <div class="flex-item">
+                    <div class="select-all-icon d-ib" @click="nextCheckAll(NextGoodsList)">
+                      <i class="iconfont selected-color circle" v-if="nextAllChecked">&#xe634;</i>
+                      <i class="iconfont circle" v-if="!nextAllChecked">&#xe635;</i>
+                    </div>
+                    <span class="label-checkbox">全选</span>
+                  </div>
+                  <!--次日达标题-->
+                  <div class="flex-col">
+                    <div class="block-title theme-color"><i class="iconfont next-icon">&#xe60a;</i>次日达</div>
+                  </div>
+                  <!--  凑单 次日达  暂时不做-->
+                  <!--<div class="flex-col single" v-if="singleShowNext">
+                    <div class="difference" style="color: #999">还差<span style="color:#f95d43;">{{singlePriceNext}}</span>元起送
+                    </div>
+                    <div class="go-single theme-color" @click="$router.push({path:'/this'})">去凑单></div>
+                  </div>-->
+                </div>
+                <!--购物车列表 次日达-->
+                <div class="flex-box this-goods" v-for="(item,index) in filterListNext" :key="index">
+                  <!--单选按钮 次日达-->
+                  <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)" v-if="item.status===1">
+                    <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
+                    <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
+                  </div>
+                  <!--已售罄，失效标识 次日达-->
+                  <div class="disabled-item t-c" v-if="item.status===2">
+                    已售罄
+                  </div>
+                  <div class="disabled-item t-c" v-if="item.status===3">
+                    失效
+                  </div>
+                  <!--图片 次日达-->
+                  <div class="pic">
+                    <!--<lazy-image-->
+                    <!--:src='item.goodsImgUrl'-->
+                    <!--:placeholder='$store.state.defaultImg'-->
+                    <!--:events="['touchmove']"-->
+                    <!--width="100%"-->
+                    <!--height="100%"-->
+                    <!--&gt;</lazy-image>-->
+                    <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
+                  </div>
+                  <!--商品信息 次日达-->
+                  <div class="flex-col">
+                    <div class="goods-title">{{item.goodsName}}</div>
+                    <div class="flex-box">
+                      <div class="flex-col font-normal price">￥{{item.price}}</div>
+                      <div class="remove" @click="count(item,2,index,NextGoodsList)"/>
+                      <input type="tel" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
+                      <div class="added" @click="count(item,1)"/>
+                    </div>
+                  </div>
+                </div>
+                <!--更多 次日达-->
+                <div v-if="NextGoodsList.length>2">
+                  <div class="more-btn" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
+                  <div class="more-btn" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
+                </div>
+                <div class="flex-box count">
+                  <!--选择商品总计 次日达-->
+                  <div class="flex-item total-count">共{{selectedTotalCountNext}}件商品</div>
+                  <!--选择商品总价 次日达-->
+                  <div class="flex-col text-right font-mind count-price">小计：<span
+                    class="theme-color">¥{{nextTotalPrice}}</span></div>
+                </div>
+                <div class="flex-box send-way-wrap">
+                  <div class="flex-item send-way">配送方式</div>
+                  <checker class="flex-col text-right select-way-wrap" default-item-class="default-checker"
+                           selected-item-class="selected-checker" v-model="demo11" @on-change="sendWayChange">
+                    <checker-item :value="item" v-for="(item, index) in items1" :key="index" class="item">{{item.value}}
+                    </checker-item>
+                  </checker>
+                </div>
+                <!--配送费 次日达-->
+                <div class="flex-box send" v-if="nextFreightShow">
+                  <div class="flex-item">配送费用:</div>
+                  <div class="flex-col text-right font-mind">配送费:￥{{Nextfreight}}</div>
+                </div>
+                <div class="flex-box get-address" v-if="!nextFreightShow">
+                  <div class="flex-item">取货地址</div>
+                  <div class="flex-col font-mind text-right color-666 address">{{nextShop.address}}</div>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- 次日达 -->
-          <div class="next-wrap" v-if="NextGoodsList.length">
-            <div class="flex-box this">
-              <!-- 全选按钮 次日达-->
-              <div class="flex-item">
-                <div class="select-all-icon d-ib" @click="nextCheckAll(NextGoodsList)">
-                  <i class="iconfont selected-color circle" v-if="nextAllChecked">&#xe634;</i>
-                  <i class="iconfont circle" v-if="!nextAllChecked">&#xe635;</i>
-                </div>
-                <span class="label-checkbox">全选</span>
-              </div>
-              <!--次日达标题-->
-              <div class="flex-col">
-                <div class="block-title theme-color"><i class="iconfont next-icon">&#xe60a;</i>次日达</div>
-              </div>
-              <!--  凑单 次日达  暂时不做-->
-              <!--<div class="flex-col single" v-if="singleShowNext">
-                <div class="difference" style="color: #999">还差<span style="color:#f95d43;">{{singlePriceNext}}</span>元起送
-                </div>
-                <div class="go-single theme-color" @click="$router.push({path:'/this'})">去凑单></div>
-              </div>-->
+          <confirm v-model="showComfirm"
+                   title="提示"
+                   @on-confirm="onConfirm">
+            <p style="text-align:center;">{{comfirmText}}</p>
+          </confirm>
+          <confirm v-model="showComfirmDel"
+                   title="提示"
+                   @on-confirm="delConfirm">
+            <p style="text-align:center;">{{comfirmText}}</p>
+          </confirm>
+          <alert v-model="showAlert" button-text="我知道了">
+            <p class="alert-title" slot="title">{{alertText}}</p>
+            <div class="alert-content" name="content">
+              <p class="p1">暂不接受新的订单</p>
+              <p class="p2">(门店营业时间：{{thisShop.shopHours}})</p>
             </div>
-            <!--购物车列表 次日达-->
-            <div class="flex-box this-goods" v-for="(item,index) in filterListNext" :key="index">
-              <!--单选按钮 次日达-->
-              <div class="d-ib checked-icon-wrap" @click="selectedGoods(item)" v-if="item.status===1">
-                <i class="iconfont selected-color checked" v-if="item.checked">&#xe634;</i>
-                <i class="iconfont circle" v-if="!item.checked">&#xe635;</i>
-              </div>
-              <!--已售罄，失效标识 次日达-->
-              <div class="disabled-item t-c" v-if="item.status===2">
-                已售罄
-              </div>
-              <div class="disabled-item t-c" v-if="item.status===3">
-                失效
-              </div>
-              <!--图片 次日达-->
-              <div class="pic">
-                <lazy-image
-                  :src='item.goodsImgUrl'
-                  :placeholder='$store.state.defaultImg'
-                  :events="['touchmove']"
-                  width="100%"
-                  height="100%"
-                ></lazy-image>
-              </div>
-              <!--商品信息 次日达-->
-              <div class="flex-col">
-                <div class="goods-title">{{item.goodsName}}</div>
-                <div class="flex-box">
-                  <div class="flex-col font-normal price">￥{{item.price}}</div>
-                  <div class="remove" @click="count(item,2,index,NextGoodsList)"/>
-                  <input type="tel" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
-                  <div class="added" @click="count(item,1)"/>
-                </div>
+          </alert>
+          <!-- 页面底部 -->
+          <div class="count-box" v-if="!(thisGoodsList.length===0&&NextGoodsList.length===0)">
+            <!--<input type="checkbox" class="input-checkbox">-->
+            <div class="select-all-icon d-ib" @click="selectAll()">
+              <i class="iconfont selected-color circle" v-if="allChecked">&#xe634;</i>
+              <i class="iconfont circle" v-if="!allChecked">&#xe635;</i>
+            </div>
+            <span class="label-checkbox">全选</span>
+            <div class="col">
+              <!--次日达及时送总合计-->
+              <div v-if="editShow">
+                <p>合计：<span>¥{{(parseFloat(thisTotalPrice) + parseFloat(nextTotalPrice)).toFixed(1)}}</span></p>
+                <p class="font-mind">为您节省：¥{{Discount}}</p>
               </div>
             </div>
-            <!--更多 次日达-->
-            <div v-if="NextGoodsList.length>2">
-              <div class="more-btn" @click="setCountNext()" v-if="showMoreNext">显示更多</div>
-              <div class="more-btn" @click="setCountNext()" v-if="!showMoreNext">收起商品</div>
-            </div>
-            <div class="flex-box count">
-              <!--选择商品总计 次日达-->
-              <div class="flex-item total-count">共{{selectedTotalCountNext}}件商品</div>
-              <!--选择商品总价 次日达-->
-              <div class="flex-col text-right font-mind count-price">小计：<span
-                class="theme-color">¥{{nextTotalPrice}}</span></div>
-            </div>
-            <div class="flex-box send-way-wrap">
-              <div class="flex-item send-way">配送方式</div>
-              <checker class="flex-col text-right select-way-wrap" default-item-class="default-checker"
-                       selected-item-class="selected-checker" v-model="demo11" @on-change="sendWayChange">
-                <checker-item :value="item" v-for="(item, index) in items1" :key="index" class="item">{{item.value}}
-                </checker-item>
-              </checker>
-            </div>
-            <!--配送费 次日达-->
-            <div class="flex-box send" v-if="nextFreightShow">
-              <div class="flex-item">配送费用:</div>
-              <div class="flex-col text-right font-mind">配送费:￥{{Nextfreight}}</div>
-            </div>
-            <div class="flex-box get-address" v-if="!nextFreightShow">
-              <div class="flex-item">取货地址</div>
-              <div class="flex-col font-mind text-right color-666 address">{{nextShop.address}}</div>
-            </div>
+            <div class="count t-c" @click="toCount">{{ToCountText}}</div>
           </div>
         </div>
-      </div>
-      <confirm v-model="showComfirm"
-               title="提示"
-               @on-confirm="onConfirm">
-        <p style="text-align:center;">{{comfirmText}}</p>
-      </confirm>
-      <confirm v-model="showComfirmDel"
-               title="提示"
-               @on-confirm="delConfirm">
-        <p style="text-align:center;">{{comfirmText}}</p>
-      </confirm>
-      <alert v-model="showAlert" button-text="我知道了">
-        <p class="alert-title" slot="title">{{alertText}}</p>
-        <div class="alert-content" name="content">
-          <p class="p1">暂不接受新的订单</p>
-          <p class="p2">(门店营业时间：{{thisShop.shopHours}})</p>
+        <!--购物车无商品-->
+        <div class="car-no-goods t-c" v-if="!loadingFlag&&thisGoodsList.length===0&&NextGoodsList.length===0">
+          <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
         </div>
-      </alert>
-      <!-- 页面底部 -->
-      <div class="count-box" v-if="!(thisGoodsList.length===0&&NextGoodsList.length===0)">
-        <!--<input type="checkbox" class="input-checkbox">-->
-        <div class="select-all-icon d-ib" @click="selectAll()">
-          <i class="iconfont selected-color circle" v-if="allChecked">&#xe634;</i>
-          <i class="iconfont circle" v-if="!allChecked">&#xe635;</i>
-        </div>
-        <span class="label-checkbox">全选</span>
-        <div class="col">
-          <!--次日达及时送总合计-->
-          <div v-if="editShow">
-            <p>合计：<span>¥{{(parseFloat(thisTotalPrice) + parseFloat(nextTotalPrice)).toFixed(1)}}</span></p>
-            <p class="font-mind">为您节省：¥{{Discount}}</p>
-          </div>
-        </div>
-        <div class="count t-c" @click="toCount">{{ToCountText}}</div>
       </div>
-
-    </div>
-    <div v-if="!token" class="car-noLogin">
-      <div class="login-bt" @click="$router.push({path:'/login'})">
-        立即登录
+      <!--未登录-->
+      <div v-if="!token" class="car-noLogin">
+        <div class="login-bt" @click="$router.push({path:'/login'})">
+          立即登录
+        </div>
       </div>
-    </div>
-    <!--购物车无商品-->
-    <div class="car-no-goods t-c" v-if="thisGoodsList.length===0&&NextGoodsList.length===0&&token">
-      <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
+      <!--加载动画-->
+      <loading v-if="token" :loadingFlag="loadingFlag"></loading>
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
            :text="toastText" :width="toastWidth" class="toast"></toast>
@@ -235,6 +245,7 @@
   import { XHeader, Checker, CheckerItem, Confirm, Toast, Alert } from 'vux'
   import mFooter from '../components/footer'
   import BScroll from 'better-scroll'
+  import loading from '../components/loading'
 
   export default {
     name: 'cart',
@@ -246,7 +257,8 @@
       BScroll,
       Confirm,
       Toast,
-      Alert
+      Alert,
+      loading
     },
     data () {
       return {
@@ -282,49 +294,60 @@
         singleShowNext: true, // 差额显示Flag  次日达
         editShow: true,
         ToCountText: '去结算',
-        token: localStorage.getItem('m-token')
+        token: localStorage.getItem('m-token'),
+        loadingFlag: true // 加载页面
       }
     },
-    created () {
+    async created () {
       // 获取购物车列表数据
-      this.post('/car/getUserCar', {
-        token: this.token,
-        villageId: localStorage.getItem('m-villageId')
-      }).then((res) => {
-        console.log(res.data)
-        this.$store.state.cartInfo = res.data
-        if (res.data.code === 100) {
-          // 商品列表 及时送
-          this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
-          // 商品列表 次日达
-          this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-          // 运费 次日达
-          this.Nextfreight = res.data.carList[0].storeShop.freight
-          // 运费 及时送
-          this.Thisfreight = res.data.carList[1].shandianShop.freight
-          // 及时送相关信息
-          this.thisShop = res.data.carList[1].shandianShop
-          // 次日达相关信息
-          this.nextShop = res.data.carList[0].storeShop
-          this.$store.state.thisShop = res.data.carList[1].shandianShop
-          this.$store.state.nextShop = res.data.carList[0].storeShop
-          // 收货相关信息
-          this.$store.state.shippingInfo = res.data.shippingInfo
-          // 判断店铺营业状态
-          this.shopStatusMethods(this.thisShop.shopStatus)
+      if (this.token) {
+        await this.post('/car/getUserCar', {
+          token: this.token,
+          villageId: localStorage.getItem('m-villageId')
+        }).then((res) => {
+          console.log(res.data)
+          this.$store.state.cartInfo = res.data
+          if (res.data.code === 100) {
+            // 商品列表 及时送
+            this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+            // 商品列表 次日达
+            this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+            // 运费 次日达
+            this.Nextfreight = res.data.carList[0].storeShop.freight
+            // 运费 及时送
+            this.Thisfreight = res.data.carList[1].shandianShop.freight
+            // 及时送相关信息
+            this.thisShop = res.data.carList[1].shandianShop
+            // 次日达相关信息
+            this.nextShop = res.data.carList[0].storeShop
+            this.$store.state.thisShop = res.data.carList[1].shandianShop
+            this.$store.state.nextShop = res.data.carList[0].storeShop
+            // 收货相关信息
+            this.$store.state.shippingInfo = res.data.shippingInfo
+            // 判断店铺营业状态
+            this.shopStatusMethods(this.thisShop.shopStatus)
 //          console.log(res.data)
-          this.$nextTick(() => {
-            this.contentScroll.refresh()
-          })
-        } else {
-          this.$router.push({path: 'login'})
-        }
-      })
-      // 初始化默认配送方式
-      this.$store.state.sendWay = {key: '1', value: '客户自取'}
-      this.$nextTick(() => {
-        this._initScroll()
-      })
+            this.$nextTick(() => {
+              this.contentScroll.refresh()
+            })
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'top')
+            localStorage.removeItem('m-token')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'top')
+            localStorage.removeItem('m-token')
+            this.$router.push({path: '/login'})
+          }
+        })
+        this.loadingFlag = false
+        // 初始化默认配送方式
+        this.$store.state.sendWay = {key: '1', value: '客户自取'}
+        this.$nextTick(() => {
+          this._initScroll()
+        })
+      }
     },
     activated () {
       this.$nextTick(() => {
@@ -386,6 +409,7 @@
           }).then((res) => {
             if (res.data.code === 100) {
               item.buyCount = res.data.buyCount
+              this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
               // 提示失败信息
@@ -423,6 +447,7 @@
           }).then((res) => {
             if (res.data.code === 100) {
               item.buyCount = res.data.buyCount
+              this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
               // 提示失败信息
@@ -470,6 +495,7 @@
         }).then((res) => {
           if (res.data.code === 100) {
             item.buyCount = res.data.buyCount
+            this.$store.commit('increment', res.data.totalBuyCount)
           }
           if (res.data.code === 101) {
             this.toastText = res.data.msg
@@ -496,6 +522,7 @@
             this.$nextTick(() => {
               this.contentScroll.refresh()
             })
+            this.$store.commit('totalBuyCountReduce', 1)
             return
           }
           if (res.data.code === 101) {
@@ -520,6 +547,8 @@
               if (res.data.code === 100) {
                 this.thisGoodsList.splice(i, 1)
                 i--
+                console.log(res.data.totalBuyCount)
+                this.$store.commit('totalBuyCountReduce', 1)
               }
               if (res.data.code === 102) {
                 this.$router.push({path: '/login'})
@@ -534,6 +563,7 @@
               if (res.data.code === 100) {
                 this.thisGoodsList.splice(i, 1)
                 i--
+                this.$store.commit('totalBuyCountReduce', 1)
               }
               if (res.data.code === 102) {
                 this.$router.push({path: '/login'})
@@ -551,6 +581,7 @@
               if (res.data.code === 100) {
                 this.NextGoodsList.splice(i, 1)
                 i--
+                this.$store.commit('totalBuyCountReduce', 1)
               }
               if (res.data.code === 102) {
                 this.$router.push({path: '/login'})
@@ -565,6 +596,7 @@
               if (res.data.code === 100) {
                 this.NextGoodsList.splice(i, 1)
                 i--
+                this.$store.commit('totalBuyCountReduce', 1)
               }
               if (res.data.code === 102) {
                 this.$router.push({path: '/login'})
@@ -680,11 +712,6 @@
       // 去结算 和删除商品
       toCount () {
         // 去结算
-        // 如果用户没有填收货信息，跳转收货地址
-        if (!this.$store.state.shippingInfo) {
-          this.$router.push({path: '/address'})
-          return
-        }
         if (this.editShow) {
           var thisGoodsList = []
           var nextGoodsList = []
@@ -703,6 +730,12 @@
             this.toastText = '请您先选择商品'
             this.showPositionValue = true
           } else {
+            // 如果用户没有填收货信息，跳转收货地址
+            if (!this.$store.state.shippingInfo) {
+              this.$router.push({path: '/address'})
+              this.$vux.toast.text('请填写收货地址', 'bottom')
+              return
+            }
             // 确认订单所选商品 及时送
             this.$store.state.carOrderThisGoodsList = thisGoodsList
             // 确认订单所选商品 次日达
@@ -897,6 +930,14 @@
     }
   }
 
+  .content-wrapper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    .t(92);
+    .b(100);
+  }
+
   .car-noLogin {
     position: absolute;
     .t(92);
@@ -1068,10 +1109,10 @@
   .cart-view .content-view-scroller {
     box-sizing: border-box;
     position: absolute;
-    .t(92);
+    top: 0;
     left: 0;
     right: 0;
-    .b(200);
+    .b(100);
     overflow: hidden;
     .flex-box {
       align-items: center;

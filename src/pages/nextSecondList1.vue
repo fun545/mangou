@@ -25,8 +25,10 @@
           <div class="sort-item" :class="{'active':3===sortSelectIndex}" @click="saleSort()">
             按销量
             <div class="sort-icon d-ib">
-              <span class="iconfont up" :class="{'sort-icon-selected':!saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe617;</span>
-              <span class="iconfont down" :class="{'sort-icon-selected':saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe632;</span>
+              <span class="iconfont up"
+                    :class="{'sort-icon-selected':!saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe617;</span>
+              <span class="iconfont down"
+                    :class="{'sort-icon-selected':saleSortFlag,'sort-icon-clear-selected':3!==sortSelectIndex}">&#xe632;</span>
             </div>
           </div>
         </div>
@@ -65,7 +67,8 @@
         listFlag: false,
         isActive: true,
         loadingFlag: true,
-        listScroll: {}
+        listScroll: {},
+        ball
       }
     },
     created () {

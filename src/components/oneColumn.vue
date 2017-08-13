@@ -3,18 +3,24 @@
     <li class="item" v-for="(item,index) in goodsList" :key="index">
       <div class="pic f-l">
         <!--<lazy-image-->
-          <!--:src='item.goodsImgUrl'-->
-          <!--:placeholder='$store.state.defaultImg'-->
-          <!--:events="['touchmove']"-->
-          <!--@click.native="goDetail(item.goodsId)"-->
+        <!--:src='item.goodsImgUrl'-->
+        <!--:placeholder='$store.state.defaultImg'-->
+        <!--:events="['touchmove']"-->
+        <!--@click.native="goDetail(item.goodsId)"-->
         <!--&gt;</lazy-image>-->
         <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>
         <p class="des">{{item.guige}}</p>
-        <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-        <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+        <div v-if="shopType===1">
+          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+        </div>
+        <div v-if="shopType===2">
+          <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+          <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+        </div>
       </div>
       <buyCarButton :goods="item"></buyCarButton>
     </li>
@@ -25,7 +31,11 @@
   import buyCarButton from '../components/buyCarButton'
   export default {
     props: {
-      goodsList: Array
+      goodsList: Array,
+      shopType: {
+        type: Number,
+        default: 1
+      }
     },
     components: {buyCarButton},
     methods: {

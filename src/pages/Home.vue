@@ -363,8 +363,8 @@
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
               }
-              this.scrollDisable = false
             }
+            this.scrollDisable = false
           })
         }
         this.loadMoreFlag = true

@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <span class="iconfont icon" @click="searchText()">&#xe639;</span>
-    <div class="input">
+    <div class="input" @click="$router.push({path:'/search'})">
       <input type="search" v-model="search" @keyup.enter="searchText" placeholder="搜索商品">
     </div>
   </div>

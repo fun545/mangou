@@ -9,7 +9,7 @@
         <tab-item><i class="iconfont">&#xe61f;</i>即时送</tab-item>
       </tab>
       <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index" v-if="!selected">
-        <tab-item><i class="iconfont">&#xe60a;</i>次日达</tab-item>
+        <tab-item :style="{color:'yellow'}"><i class="iconfont">&#xe60a;</i>次日达</tab-item>
         <tab-item selected><i class="iconfont">&#xe61f;</i>即时送</tab-item>
       </tab>
     </div>
@@ -132,50 +132,16 @@
 
   .search-text-view .vux-tab .iconfont {
     font-size: inherit;
-    margin-right: 5px;
+    .mr(10);
   }
 
-  .search-text-view .vux-slider {
-    height: calc(~'100% - 84px');
-
-    .vux-swiper {
-      overflow-y: scroll;
-    }
-    .vux-tab .vux-tab-item {
-      height: 44px !important;
-      height: 88px !important;
-      .h(88) !important;
-      .fs(28) !important;
-    }
-    .goods-item {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      background-color: #fff;
-      position: relative;
-    }
-
-    .goods-item:after {
-      content: '';
-      height: 1px;
-      background-color: #ddd;
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    }
-
-    .flex-col {
-      margin: auto 10px;
-      line-height: 1.6;
-    }
-
-    .cart-icon {
-      padding: 4px;
-      border-radius: 100px;
-      font: 18px/1 'iconfont';
-      color: #fff;
-      background-color: #999;
+  .search-text-view .vux-tab {
+    .h(88);
+    .lh(88);
+    .vux-tab-item {
+      .h(88);
+      .lh(88);
+      .fs(28);
     }
   }
 
@@ -190,7 +156,6 @@
       background: #fff;
     }
   }
-
   .footer {
     box-sizing: border-box;
     border-top: 1px solid #eee;

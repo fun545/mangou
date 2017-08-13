@@ -21,11 +21,13 @@
 </template>
 
 <script>
+  import { bus } from '../util/util'
   import searchHearder from '../components/searchHeader'
   export default{
     name: 'search',
     components: {
-      searchHearder
+      searchHearder,
+      bus
     },
     data () {
       return {
@@ -66,6 +68,7 @@
 
   .search-view {
     background-color: #fff;
+    .fs(25);
   }
 
   .search-view .top-search-box {
@@ -87,20 +90,31 @@
     display: flex;
     align-items: center;
     color: #444;
-    line-height: 20px;
-    padding: 0 10px;
+    .lh(40);
+    .pl(20);
+    .pr(20);
     clear: both;
   }
 
   .search-view .word-flex {
     display: flex;
     flex-wrap: wrap;
-    margin: 5px;
-
+    .mt(10);
+    .mb(10);
+    .mr(10);
+    .ml(10);
     .word-item {
-      margin: 5px;
-      padding: 5px 15px;
-      font: 12px/20px 'Microsoft Yahei';
+      .mt(10);
+      .mb(10);
+      .mr(10);
+      .ml(10);
+      .pt(10);
+      .pb(10);
+      .pr(30);
+      .pl(30);
+      .fs(25);
+      .lh(40);
+      font-family: 'Microsoft Yahei';
       color: #666;
       background-color: #f5f5f5;
       border-radius: 100px;

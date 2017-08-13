@@ -119,7 +119,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   @import "../common/style/sum";
   @import "../common/style/varlable";
 
@@ -141,7 +141,12 @@
     .vux-swiper {
       overflow-y: scroll;
     }
-
+    .vux-tab .vux-tab-item {
+      height: 44px !important;
+      height: 88px !important;
+      .h(88) !important;
+      .fs(28) !important;
+    }
     .goods-item {
       display: flex;
       align-items: center;

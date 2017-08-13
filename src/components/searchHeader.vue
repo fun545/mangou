@@ -39,11 +39,17 @@
     }
 
     .search-box {
-      margin: auto 10px;
-      padding: 5px 10px;
+      margin-top:auto;
+      margin-bottom:auto;
+      .ml(20);
+      .mr(20);
+      .pt(10);
+      .pb(10);
+      .pl(20);
+      .pr(20);
       flex-grow: 1;
-      height: 20px;
-      line-height: 20px;
+      .h(40);
+      .lh(40);
       background-color: #f2f2f2;
       border-radius: 100px;
       position: relative;
@@ -53,15 +59,16 @@
       content: '\e639';
       color: #666;
       font: 12px/1 'iconfont';
+      .fs(25);
       position: absolute;
-      top: 10px;
-      left: 10px;
+      .t(20);
+      .l(20);
     }
 
     input {
       width: 100%;
-      line-height: 20px;
-      padding-left: 16px;
+      .lh(40);
+      .pl(32);
       color: #666;
       .fs(30);
       border: none;

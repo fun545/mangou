@@ -31,8 +31,11 @@
       <div class="top">
         <!-- Tab列表 -->
         <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index">
-          <tab-item selected><i class="iconfont">&#xe60a;</i>次日达</tab-item>
-          <tab-item><i class="iconfont">&#xe61f;</i>即时送</tab-item>
+          <tab-item :selected="item.name===curItem" v-for="(item,index) in tabList" :key="index"
+                    @on-item-click="tabClick"><i
+            class="iconfont" v-html="item.icon"></i>{{item.name}}
+          </tab-item>
+          <!--<tab-item><i class="iconfont">&#xe61f;</i>即时送</tab-item>-->
         </tab>
         <!--<tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index" v-if="!selected">-->
         <!--<tab-item><i class="iconfont">&#xe60a;</i>次日达</tab-item>-->
@@ -40,36 +43,58 @@
         <!--</tab>-->
       </div>
       <!-- 相关内容 -->
-      <div ref="contentNext" class="contentWrap">
-        <div v-if="shopType===1">
-          <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content" v-if="!noPageFlag"></one-column>
+      <div class="list-conent-wrap" :class="{'active':shopType===2}">
+        <div ref="contentNext" class="contentWrap">
+          <div>
+            <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content" v-if="!noPageFlag"></one-column>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more"
+              v-if="NextGoodsList.length>0"
+            ></load-more>
+          </div>
+          <no-page v-if="noPageFlag"></no-page>
+        </div>
+        <div ref="contentThis" class="contentWrap this">
+          <div>
+            <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content" v-if="!noPageFlag"></one-column>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more"
+              v-if="NextGoodsList.length>0"
+            ></load-more>
+          </div>
           <no-page v-if="noPageFlag"></no-page>
         </div>
       </div>
-      <div class="footer" v-if="token">
-        <div class="buy-car">
-          <div class="icon d-ib">
-            <i class="iconfont center">&#xe613;</i>
-            <div class="badge">
-              <badge :text="totalBuyCount"></badge>
-            </div>
-          </div>
-          <div class="text d-ib">
-            合计：<span>￥50.55</span>
+    </div>
+    <div class="footer" v-if="token">
+      <div class="buy-car">
+        <div class="icon d-ib">
+          <i class="iconfont center">&#xe613;</i>
+          <div class="badge">
+            <badge :text="totalBuyCount"></badge>
           </div>
         </div>
-        <div class="button t-c">
-          去结算
+        <div class="text d-ib">
+          合计：<span>￥50.55</span>
         </div>
       </div>
-      <ball :type="2"></ball>
-      <no-login-footer v-if="!token"></no-login-footer>
+      <div class="button t-c">
+        去结算
+      </div>
     </div>
+    <ball :type="2"></ball>
+    <no-login-footer v-if="!token"></no-login-footer>
   </div>
 </template>
 
 <script>
-  import { Tab, TabItem, Badge } from 'vux'
+  import { Tab, TabItem, Badge, LoadMore } from 'vux'
   import oneColumn from '../components/oneColumn'
   //  import searchHearder from '../components/searchHeader'
   import BScroll from 'better-scroll'
@@ -91,7 +116,7 @@
       noLoginFooter,
       noPage,
       ball,
-      loadMore
+      LoadMore
     },
     data () {
       return {
@@ -99,7 +124,7 @@
         delHistory: false,
         KeyWords: [],
 //        search: '',
-        index: 0,
+        index: 1,
         selected: '',
         ThisGoodsList: [],
         NextGoodsList: [],
@@ -113,7 +138,12 @@
         nextScroll: {},
         thisScroll: {},
         scrollDisableThis: false,
-        scrollDisableNext: false
+        scrollDisableNext: false,
+        loadText: '加载中...',
+        moreIconFlag: true,
+        tabList: [{name: '次日达', icon: '&#xe60a;'}, {name: '即时送', icon: '&#xe61f;'}],
+        thisTabFlag: false,
+        nextTabFlag: false
       }
     },
     created () {
@@ -139,6 +169,30 @@
           storeId: this.storeId
         }
         this.$router.push({path: 'search_text', query: searchQuery})
+      },
+      // tab切换
+      tabClick (index) {
+        if (index === 0) {
+          this.thisTabFlag = true
+          this.shopType = 1
+          if (this.NextGoodsList.length === 0) {
+            this.goSearch()
+          }
+          if (typeof this.nextScroll.refresh === 'function') {
+            this.nextScroll.refresh()
+            console.log('thisrefresh')
+          }
+        } else {
+          this.nextTabFlag = true
+          this.shopType = 2
+          if (this.ThisGoodsList.length === 0) {
+            this.goSearch()
+          }
+          console.log(this.ThisGoodsList.length)
+          if (typeof this.thisScroll.refresh === 'function') {
+            this.thisScroll.refresh()
+          }
+        }
       },
       // 去搜索
       async goSearch () {
@@ -172,61 +226,60 @@
           }
         })
         if (this.shopType === 1) {
-          var scroll = this.nextScroll
-          var element = this.$refs.contentNext
-          console.log(element)
-          var scrollDisable = this.scrollDisableNext
-          var pageIndex = this.NextPageIndex
-        } else {
-          scroll = this.thisScroll
-          element = this.$refs.contentThis
-          scrollDisable = this.scrollDisableThis
-          pageIndex = this.ThisPageIndex
+          this._initScrollNext()
         }
-        this._initScroll(scroll, element, this.loadMoreCallBack(scrollDisable, pageIndex, scroll))
+        if (this.shopType === 2) {
+          this._initScrollThis()
+        }
       },
       hotSearch (value) {
         this.search = value.keyword
       },
-      _initScroll (scroll, element, callBack) {
-        scroll = new BScroll(element, {
+      // 次日达scroll
+      _initScrollNext () {
+        this.nextScroll = new BScroll(this.$refs.contentNext, {
           click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3
         })
-        loadMore(scroll, element, callBack)
+        loadMore(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext)
       },
-      async loadMoreCallBack (scrollDisable, pageIndex, scroll) {
-        if (!scrollDisable) {
-          scrollDisable = true
-          pageIndex += 1
+      _initScrollThis () {
+        this.nextScroll = new BScroll(this.$refs.contentThis, {
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
+        })
+        loadMore(this.nextScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
+      },
+      async loadMoreCallBackNext () {
+        if (!this.scrollDisableNext) {
+          this.scrollDisableNext = true
+          this.NextPageIndex += 1
           await this.post('/goods/searchGoods', {
             storeId: this.storeId,
             shopType: this.shopType,
             keyName: this.keyName,
             pageSize: 10,
-            pageIndex: pageIndex
+            pageIndex: this.NextPageIndex
           }).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsInfo.goodsList
               // 如果是及时送
               newList.forEach((item) => {
-                if (this.shopType === 2) {
-                  this.NextGoodsList.push(item)
-                } else {
-                  this.ThisGoodsList = res.data.goodsInfo.goodsList
-                }
+                this.NextGoodsList.push(item)
               })
               if (newList.length > 0) {
                 setTimeout(() => {
-                  this.homeSroll.refresh()
+                  this.nextScroll.refresh()
                 }, 50)
               } else {
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
               }
-              this.scrollDisable = false
+              this.scrollDisableNext = false
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'bottom')
@@ -236,7 +289,46 @@
               this.$vux.toast.text(res.data.msg, 'bottom')
               localStorage.removeItem('m-token')
             }
-            scrollDisable = false
+            this.scrollDisableNext = false
+          })
+        }
+      },
+      async loadMoreCallBackThis () {
+        if (!this.scrollDisableThis) {
+          this.scrollDisableThis = true
+          this.ThisPageIndex += 1
+          await this.post('/goods/searchGoods', {
+            storeId: localStorage.getItem('m-shopId'),
+            shopType: this.shopType,
+            keyName: this.keyName,
+            pageSize: 10,
+            pageIndex: this.ThisPageIndex
+          }).then((res) => {
+            if (res.data.code === 100) {
+              let newList = res.data.goodsInfo.goodsList
+              // 如果是及时送
+              newList.forEach((item) => {
+                this.ThisGoodsList.push(item)
+              })
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.thisScroll.refresh()
+                }, 50)
+              } else {
+                this.loadText = '到底啦~'
+                this.moreIconFlag = false
+              }
+              this.scrollDisableThis = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            this.scrollDisableThis = false
           })
         }
       }
@@ -247,6 +339,13 @@
       },
       totalBuyCount () {
         return this.$store.state.totalBuyCount
+      },
+      curItem () {
+        if (this.shopType === 1) {
+          return '次日达'
+        } else {
+          return '即时送'
+        }
       }
     },
     directives: {
@@ -393,13 +492,25 @@
     }
   }
 
-  .contentWrap {
-    position: absolute;
-    .t(168);
-    right: 0;
+  .list-conent-wrap {
     left: 0;
+    position: absolute;
+    .w(1500);
+    .t(168);
     .b(100);
+    &.active {
+      .l(750);
+    }
+  }
+
+  .contentWrap {
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    &.this {
+    }
     .content {
       background: #fff;
     }

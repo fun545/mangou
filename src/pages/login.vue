@@ -20,12 +20,12 @@
           </tab>
           <div v-if="!loginMethodFlag">
             <group gutter="0" class="group">
-              <x-input v-model="userAccount" placeholder="请输入账号">
+              <x-input v-model="tel" placeholder="请输入账号">
                 <span slot="label" class="iconfont">&#xe63f;</span>
               </x-input>
             </group>
             <group gutter="0" class="group">
-              <x-input v-model="userPassword" placeholder="请输入密码" type="password">
+              <x-input v-model="userPassword" placeholder="请输入密码" type="password" @change.native="inPut">
                 <span slot="label" class="iconfont">&#xe63e;</span>
               </x-input>
             </group>
@@ -71,27 +71,35 @@
     components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5, Toast},
     data () {
       return {
-        userAccount: '',
-        userPassword: '',
+        pass: '', // 默认快速登录密码
         tel: '',
         loginMethodFlag: true,
         agreeFlag: true,
         type: 3,
         code: '',
         showPositionValue: false,
-        text: '验证码错误'
+        text: '验证码错误',
+        loginType: 2, // 默认2 快速登录 1 账号登录
+        userPassword: ''
       }
     },
     methods: {
       changeLogin (index) {
         if (index === 0) {
+          this.loginType = 2
           this.loginMethodFlag = true
         } else {
           this.loginMethodFlag = false
+          this.loginType = 1
         }
       },
       receiveCode (code) {
-        this.code = code
+        this.pass = code
+      },
+      inPut () {
+        if (this.userPassword.trim()) {
+          this.pass = this.userPassword
+        }
       },
       login () {
         if (!/^1\d{10}$/.test(this.tel)) {
@@ -101,12 +109,13 @@
         }
         this.post('/user/login', {
           phone: this.tel,
-          userPwd: md5(this.code),
-          loginType: 2,
-          villageId: 1,
-          cityId: 1,
-          areaId: 1
+          userPwd: md5(this.pass),
+          loginType: this.loginType,
+          villageId: localStorage.getItem('m-villageId'),
+          cityId: localStorage.getItem('m-cityId'),
+          areaId: localStorage.getItem('m-areaId')
         }).then((res) => {
+          console.log(this.tel, this.pass)
           if (res.data.code === 100) {
             console.log(res.data)
             // vuex存储 token

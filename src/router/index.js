@@ -61,11 +61,6 @@ export default new Router({
       component: require('../pages/SearchText')
     },
     {
-      /* 登录 */
-      path: '/sign_in',
-      component: require('../pages/SignIn')
-    },
-    {
       /* 商品详情 */
       path: '/goods_detail',
       component: require('../pages/GoodsDetail')

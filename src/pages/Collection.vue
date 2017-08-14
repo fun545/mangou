@@ -1,139 +1,463 @@
 <template>
-  <div class="collection-view">
-    <!-- 页面头部 -->
-    <x-header :left-options="{backText:''}">我的收藏<span slot="right" @click="isEdit = !isEdit" v-html="editText"/>
-    </x-header>
-    <!-- 页面内容 -->
-    <div class="content-scroller">
-      <!-- 商品类型 -->
-      <tab :line-width="1" :active-color="activeColor" default-color="#999" v-model="currentIndex">
-        <tab-item><i class="iconfont">&#xe60a;</i>次日达</tab-item>
-        <tab-item><i class="iconfont">&#xe61f;</i>即时达</tab-item>
-      </tab>
-      <!-- 商品列表 -->
-      <swiper height="100%" :show-dots="false" v-model="currentIndex">
-        <swiper-item>
-          <div class="flex-box goods-item" v-for="index in 10" :key="index">
-            <img src="../assets/goods_img.jpg" width="30%" alt="">
-            <div class="flex-col">
-              <p>景田百岁山348ml</p>
-              <p style="color:#999">次日价：¥1.5</p>
-              <p :style="{color:activeColor}">即时价：¥2.0</p>
-            </div>
-            <input type="checkbox" class="input-checkbox" :style="{color:activeColor}" v-if="isEdit">
+  <div class="search-view">
+    <m-header title="我的收藏">
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      <span class="edit" slot="right">
+        编辑
+      </span>
+    </m-header>
+    <div class="search-bottom-wrap">
+      <div class="top">
+        <!-- Tab列表 -->
+        <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index">
+          <tab-item :selected="item.name===curItem" v-for="(item,index) in tabList" :key="index"
+                    @on-item-click="tabClick"><i
+            class="iconfont" v-html="item.icon"></i>{{item.name}}
+          </tab-item>
+        </tab>
+      </div>
+      <!-- 相关内容 -->
+      <div class="list-conent-wrap">
+        <!--次日达-->
+        <div ref="contentNext" class="contentWrap next" :class="{'active':shopType===1,'no-goods':noGoodsFlagNext}">
+          <div>
+            <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content"></one-column>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more"
+              v-if="loadMoreFlagNext"
+            ></load-more>
           </div>
-          <!-- 删除按钮 -->
-          <div class="remove-btn" v-if="isEdit" @click="remove">删除</div>
-        </swiper-item>
-        <swiper-item>
-          <div class="flex-box goods-item" v-for="index in 10" :key="index">
-            <img src="../assets/goods_img.jpg" width="30%" alt="">
-            <div class="flex-col">
-              <p>景田百岁山348ml</p>
-              <p style="color:#999">次日价：¥1.5</p>
-              <p :style="{color:activeColor}">即时价：¥2.0</p>
-            </div>
-            <input type="checkbox" class="input-checkbox" :style="{color:activeColor}" v-if="isEdit">
+        </div>
+        <!--及时送-->
+        <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
+          <div>
+            <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"></one-column>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more"
+              v-if="loadMoreFlagThis"
+            ></load-more>
           </div>
-          <!-- 删除按钮 -->
-          <div class="remove-btn" v-if="isEdit" @click="remove">删除</div>
-        </swiper-item>
-      </swiper>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { XHeader, Tab, TabItem, Swiper, SwiperItem } from 'vux'
-
-  export default {
-    name: 'collection',
+  import { Tab, TabItem, LoadMore } from 'vux'
+  import oneColumn from '../components/oneColumn'
+  import BScroll from 'better-scroll'
+  import { loadMore } from '../util/util'
+  import mHeader from '../components/header'
+  export default{
+    name: 'collect',
     components: {
-      XHeader,
       Tab,
       TabItem,
-      Swiper,
-      SwiperItem
+      oneColumn,
+      BScroll,
+      LoadMore,
+      mHeader
     },
     data () {
       return {
-        isEdit: false,
-        currentIndex: 0
+        index: 1,
+        selected: '',
+        ThisGoodsList: [],
+        NextGoodsList: [],
+        token: localStorage.getItem('m-token'),
+        storeId: localStorage.getItem('m-depotId'), // 默认仓库store
+        shopType: 1, // 默认次日达
+        pageSize: 10,
+        ThisPageIndex: 1,
+        NextPageIndex: 1,
+        nextScroll: {},
+        thisScroll: {},
+        scrollDisableThis: false,
+        scrollDisableNext: false,
+        loadText: '加载中...',
+        moreIconFlag: true,
+        tabList: [{name: '次日达', icon: '&#xe60a;'}, {name: '即时送', icon: '&#xe61f;'}],
+        thisTabFlag: false,
+        nextTabFlag: false,
+        loadMoreFlagThis: false,
+        loadMoreFlagNext: false,
+        noGoodsFlagThis: false,
+        noGoodsFlagNext: false
+      }
+    },
+    created () {
+      this.goSearch()
+    },
+    methods: {
+      // tab切换
+      tabClick (index) {
+        if (index === 0) {
+          this.shopType = 1
+          this.thisTabFlag = true
+          this.storeId = localStorage.getItem('m-depotId')
+          if (this.NextGoodsList.length === 0) {
+            this.goSearch()
+          }
+          if (typeof this.nextScroll.refresh === 'function') {
+            this.nextScroll.refresh()
+            console.log('thisrefresh')
+          }
+        } else {
+          this.storeId = localStorage.getItem('m-shopId')
+          this.nextTabFlag = true
+          this.shopType = 2
+          if (this.ThisGoodsList.length === 0) {
+            this.goSearch()
+          }
+          console.log(this.ThisGoodsList.length)
+          if (typeof this.thisScroll.refresh === 'function') {
+            this.thisScroll.refresh()
+          }
+        }
+      },
+      // 去搜索
+      async goSearch () {
+        await this.post('/collect/getCollectList', {
+          token: this.token,
+          villageId: localStorage.getItem('m-villageId'),
+          storeId: this.storeId,
+          shopType: this.shopType
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+//            if (res.data.collectList.length === 0) {
+//              return
+//            }
+            // 如果是及时送
+            if (this.shopType === 2) {
+              this.ThisGoodsList = res.data.collectList
+              if (this.ThisGoodsList.length === 0) {
+                this.noGoodsFlagThis = true
+              }
+              // 如果是次日达
+            } else {
+              this.NextGoodsList = res.data.collectList
+              if (this.NextGoodsList.length === 0) {
+                this.noGoodsFlagNext = true
+              }
+            }
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'bottom')
+            localStorage.removeItem('m-token')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'bottom')
+            localStorage.removeItem('m-token')
+          }
+        })
+        if (this.shopType === 1) {
+          this._initScrollNext()
+        }
+        if (this.shopType === 2) {
+          this._initScrollThis()
+        }
+      },
+      hotSearch (value) {
+        this.search = value.keyword
+      },
+      // 次日达scroll
+      _initScrollNext () {
+        this.nextScroll = new BScroll(this.$refs.contentNext, {
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
+        })
+        loadMore(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext)
+      },
+      _initScrollThis () {
+        this.thisScroll = new BScroll(this.$refs.contentThis, {
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
+        })
+        loadMore(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
+      },
+      async loadMoreCallBackNext () {
+        this.loadMoreFlagNext = true
+        if (!this.scrollDisableNext) {
+          this.scrollDisableNext = true
+          this.NextPageIndex += 1
+          await this.post('/collect/getCollectList', {
+            token: this.token,
+            villageId: localStorage.getItem('m-villageId'),
+            storeId: localStorage.getItem('m-depotId'),
+            pageSize: 10,
+            pageIndex: this.NextPageIndex
+          }).then((res) => {
+            if (res.data.code === 100) {
+              let newList = res.data.collectList
+              // 如果是及时送
+              newList.forEach((item) => {
+                this.NextGoodsList.push(item)
+              })
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.nextScroll.refresh()
+                }, 50)
+              } else {
+                this.loadText = '到底啦~'
+                this.moreIconFlag = false
+              }
+              this.scrollDisableNext = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            this.scrollDisableNext = false
+          })
+        }
+      },
+      async loadMoreCallBackThis () {
+        this.loadMoreFlagThis = true
+        if (!this.scrollDisableThis) {
+          this.scrollDisableThis = true
+          this.ThisPageIndex += 1
+          await this.post('/collect/getCollectList', {
+            storeId: localStorage.getItem('m-shopId'),
+            token: this.token,
+            villageId: localStorage.getItem('m-villageId'),
+            pageSize: 10,
+            pageIndex: this.ThisPageIndex
+          }).then((res) => {
+            if (res.data.code === 100) {
+              let newList = res.data.collectList
+              // 如果是及时送
+              newList.forEach((item) => {
+                this.ThisGoodsList.push(item)
+              })
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.thisScroll.refresh()
+                }, 50)
+              } else {
+                this.loadText = '到底啦~'
+                this.moreIconFlag = false
+              }
+              this.scrollDisableThis = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'bottom')
+              localStorage.removeItem('m-token')
+            }
+            this.scrollDisableThis = false
+          })
+        }
       }
     },
     computed: {
       activeColor () {
-        return this.currentIndex ? '#07a4f6' : '#ff2323'
+        return this.index ? '#07a4f6' : '#fc7070'
       },
-      editText () {
-        return this.isEdit ? '取消' : '编辑'
-      }
-    },
-    methods: {
-      remove () {
-        this.$vux.alert.show({content: '删除所选商品成功'})
+      totalBuyCount () {
+        return this.$store.state.totalBuyCount
+      },
+      curItem () {
+        if (this.shopType === 1) {
+          return '次日达'
+        } else {
+          return '即时送'
+        }
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .collection-view .vux-header {
-    background: linear-gradient(#f17458, #eb4e3b);
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
-    [class^=vux-header-] {
-      color: #fff;
-    }
-
-    .left-arrow:before {
-      border-color: #fff;
-      border-width: 2px 0 0 2px;
-    }
-  }
-
-  .collection-view .content-scroller {
-    height: calc(~'100% - 46px');
-  }
-
-  .collection-view .vux-tab-item .iconfont {
-    font-size: inherit;
-    margin-right: 5px;
-  }
-
-  .collection-view .vux-slider {
-    height: calc(~'100% - 44px');
-
-    .vux-swiper {
-      overflow-y: scroll;
-    }
-
-    .vux-swiper::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .collection-view .goods-item {
-    align-items: center;
+  .search-view {
     background-color: #fff;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+    .fs(25);
+  }
 
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .flex-col {
-      margin-left: 10px;
+  .cp-header {
+    position: inherit;
+    .edit {
+      position: absolute;
+      .r(40);
+      .fs(30);
+      color: @theme-color;
     }
   }
 
-  .collection-view .remove-btn {
-    padding: 10px;
-    line-height: 20px;
-    text-align: center;
-    color: #ffffff;
-    background-color: #ff2323;
-    margin: 20px;
-    border-radius: 5px;
+  .no-goods {
+    background: url("../assets/noneGoods.png") no-repeat center center;
+    background-size: 50% 50%;
+  }
+
+  .search-view .title-box {
+    display: flex;
+    align-items: center;
+    color: #444;
+    .lh(40);
+    .pl(20);
+    .pr(20);
+    clear: both;
+  }
+
+  .search-view .word-flex {
+    display: flex;
+    flex-wrap: wrap;
+    .mt(10);
+    .mb(10);
+    .mr(10);
+    .ml(10);
+    .word-item {
+      .mt(10);
+      .mb(10);
+      .mr(10);
+      .ml(10);
+      .pt(10);
+      .pb(10);
+      .pr(30);
+      .pl(30);
+      .fs(25);
+      .lh(40);
+      font-family: 'Microsoft Yahei';
+      color: #666;
+      background-color: #f5f5f5;
+      border-radius: 100px;
+    }
+  }
+
+  .search-bottom-wrap {
+    border-top: 1px solid #eee;
+    box-sizing: border-box;
+  }
+
+  .search-view .vux-tab .iconfont {
+    font-size: inherit;
+    .mr(10);
+  }
+
+  .search-view .vux-tab {
+    .h(88);
+    .lh(88);
+    .vux-tab-item {
+      .h(88);
+      .lh(88);
+      .fs(28);
+    }
+  }
+
+  .list-conent-wrap {
+    left: 0;
+    position: absolute;
+    .w(750);
+    .t(183);
+    bottom: 0;
+  }
+
+  .contentWrap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    .content {
+      background: #fff;
+    }
+  }
+
+  /*.this {*/
+  /*z-index: 100;*/
+  /*}*/
+
+  /*.next {*/
+  /*z-index: 101;*/
+  /*}*/
+  .active {
+    z-index: 102;
+    opacity: 1;
+  }
+
+  .footer {
+    box-sizing: border-box;
+    border-top: 1px solid #eee;
+    background: #f8f8f8;
+    .h(100);
+    .lh(100);
+    .buy-car {
+      float: left;
+      .h(100);
+      .ml(20);
+      color: @theme-color;
+      .icon {
+        position: relative;
+        float: left;
+        .t(5);
+        background: #fff;
+        .w(90);
+        .h(90);
+        border-radius: 50%;
+        .iconfont {
+          .fs(60);
+        }
+        .badge {
+          position: absolute;
+          .h(30);
+          .r(40);
+          .t(10);
+          .vux-badge {
+            position: absolute;
+            .fs(22);
+            .pl(4);
+            .pr(4);
+            .h(30);
+            .lh(30);
+            border: 1px solid #fff;
+          }
+        }
+      }
+      .text {
+        position: absolute;
+        .ml(30);
+        .h(100);
+        .lh(100);
+        .fs(32);
+        color: @font-color-m;
+        span {
+          color: @theme-color;
+          .fs(35);
+        }
+      }
+    }
+    .button {
+      position: absolute;
+      right: 0;
+      text-outline:;
+      .w(160);
+      .h(100);
+      .lh(100);
+      background: #ff0000;
+      color: #fff;
+      .fs(30);
+    }
   }
 </style>

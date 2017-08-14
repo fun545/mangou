@@ -8,7 +8,7 @@
           <!--:events="['touchmove']"-->
           <!--@click.native="goDetail(item.goodsId)"-->
         <!--&gt;</lazy-image>-->
-        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
+        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>

@@ -234,6 +234,11 @@ export default new Router({
       /* 订单页面中的 去支付 */
       path: '/goPay',
       component: require('../pages/goPay')
+    },
+    {
+      /* 订单页面中的 去支付 */
+      path: '/okPay',
+      component: require('../pages/okPay')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

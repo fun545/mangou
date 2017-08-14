@@ -26,6 +26,7 @@ Vue.use(VueLazyload, {
 })
 Vue.prototype.post = api.post
 Vue.prototype.weichatPost = api.weichatPost
+Vue.prototype.weixinPay = api.weixinPay
 Vue.prototype.HOST = '/api'
 FastClick.attach(document.body)
 

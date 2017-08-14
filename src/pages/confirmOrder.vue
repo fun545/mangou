@@ -373,6 +373,7 @@
           orderStr: orderJsonStr
         }).then((res) => {
           console.log(res.data)
+          console.log(res.data)
           if (res.data.code === 100) {
             this.$store.commit('saveOrderNumList', res.data.orderNumList)
             /* this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
@@ -387,6 +388,7 @@
              this.wxPayCallBack)
              }
              }) */
+            this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
           }
         })
       },

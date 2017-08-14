@@ -183,19 +183,19 @@
           scrollDisable = this.scrollDisableThis
           pageIndex = this.ThisPageIndex
         }
-        this._initScroll(scroll, element, this.loadMoreCallBack(scrollDisable, pageIndex, scroll))
+        this._initScroll(scroll, element, scrollDisable, pageIndex)
       },
       hotSearch (value) {
         this.search = value.keyword
       },
-      _initScroll (scroll, element, callBack) {
+      _initScroll (scroll, element, scrollDisable, pageIndex) {
         scroll = new BScroll(element, {
           click: true,
           disableMouse: true,
           disablePointer: false,
           probeType: 3
         })
-        loadMore(scroll, element, callBack)
+        loadMore(scroll, element, this.loadMoreCallBack(scrollDisable, pageIndex, scroll))
       },
       async loadMoreCallBack (scrollDisable, pageIndex, scroll) {
         if (!scrollDisable) {

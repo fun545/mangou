@@ -2,9 +2,9 @@
   <div class="search-view">
     <m-header title="我的收藏">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      <span class="edit" slot="right">
-        编辑
-      </span>
+      <!--<span class="edit" slot="right">-->
+        <!--编辑-->
+      <!--</span>-->
     </m-header>
     <div class="search-bottom-wrap">
       <div class="top">
@@ -130,7 +130,6 @@
           storeId: this.storeId,
           shopType: this.shopType
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
 //            if (res.data.collectList.length === 0) {
 //              return

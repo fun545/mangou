@@ -326,7 +326,8 @@
             this.$store.state.shippingInfo = res.data.shippingInfo
             // 判断店铺营业状态
             this.shopStatusMethods(this.thisShop.shopStatus)
-//          console.log(res.data)
+            // 购物车数量
+            this.$store.commit('increment', res.data.totalBuyCount)
             this.$nextTick(() => {
               this.contentScroll.refresh()
             })
@@ -940,7 +941,7 @@
 
   .car-noLogin {
     position: absolute;
-    .t(92);
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -953,7 +954,8 @@
       .fs(36);
       background: @theme-color;
       color: #fff;
-      margin: 100% auto 0 auto;
+      margin: 0 auto 0 auto;
+      .mt(700);
       border-radius: 5px;
       text-align: center;
     }

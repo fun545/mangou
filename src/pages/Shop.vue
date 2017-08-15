@@ -51,7 +51,7 @@
             <div class="input-group">
               <div class="input-box">
                 <span class="input-append">姓名：</span>
-                <input type="text" maxlength="6" placeholder="请填写您的姓名" v-model="name">
+                <input type="text" maxlength="8" placeholder="请填写您的姓名" v-model="name">
               </div>
               <div class="input-box">
                 <span class="input-append">电话：</span>
@@ -96,8 +96,45 @@
       })
     },
     methods: {
+      toastTip (text) {
+        this.$vux.toast.text(text, 'bottom')
+      },
       submitFrom () {
-        this.$vux.alert.show({content: '提交申请成功！'})
+        var flag = true
+        if (this.address.length < 5 || this.address.length > 30) {
+          this.toastTip('请输入合法的地址')
+          flag = false
+        }
+        if (this.phone.length !== 11) {
+          this.toastTip('请输入合法的手机号码')
+          flag = false
+        }
+        if (this.name.length < 2 || this.name.length > 6) {
+          this.toastTip('请输入合法的姓名')
+          flag = false
+        }
+        if (flag) {
+          this.post('/user/addMerchantsJoin', {
+            token: localStorage.getItem('m-token'),
+            joinPhone: this.phone,
+            joinName: this.name,
+            address: this.address,
+            remark: this.msg
+          }).then((res) => {
+            console.log(res.data)
+            if (res.data.code === 100) {
+              this.$vux.alert.show({content: '提交申请成功！'})
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'top')
+              localStorage.removeItem('m-token')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'top')
+              localStorage.removeItem('m-token')
+            }
+          })
+        }
       }
     }
   }

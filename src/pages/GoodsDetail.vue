@@ -1,9 +1,8 @@
 <template>
   <div>
     <div class="detail-wrap">
-      <m-header :title="title" ref="header">
-        <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      </m-header>
+      <m-header :title="title" ref="header"></m-header>
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe654;</span>
       <div class="content" ref="content">
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
@@ -64,6 +63,36 @@
           立即购买
         </div>
       </div>
+      <!--立即下单-->
+      <div class="fast-buy">
+        <div class="inner">
+          <div class="top">
+            <div class="des">
+              <div class="pic">
+                <img v-lazy="goodsDetail.goodsImgUrl" alt="" width="100%" height="100%">
+              </div>
+              <div class="iconfont close-icon">
+                &#xe655;
+              </div>
+              <div>
+                <p class="theme-color">即时价：15.0</p>
+                <p>库存：20</p>
+              </div>
+            </div>
+            <div class="count">
+              <p>购买数量</p>
+              <div class="count-box">
+                <div class="remove" @click="count(2)"/>
+                <input type="number" class="val-box" v-model="countNm">
+                <div class="added" @click="count(1)"/>
+              </div>
+            </div>
+          </div>
+          <div class="bottom t-c">
+            确认
+          </div>
+        </div>
+      </div>
       <no-login-footer v-if="!login"></no-login-footer>
       <ball :type="2"></ball>
     </div>
@@ -100,7 +129,9 @@
           pagination: '.swiper-pagination'
         },
         clickTag: 0,
-        loadingFlag: true
+        loadingFlag: true,
+        countNm: 1,
+        close: true
       }
     },
     created () {
@@ -121,6 +152,7 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
+          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             if (res.data.goodsDetail.isCollect === 1) {
@@ -142,6 +174,7 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
+          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.goodsList = res.data.listGoods
@@ -274,6 +307,15 @@
             this.clickTag = 0
           }, 500)
         }
+      },
+      count (type) {
+//        this.$router.push({path: '/order_enter'})
+        if (type === 1) {
+          this.countNm++
+        }
+        if (type === 2) {
+          this.countNm--
+        }
       }
     },
     computed: {
@@ -295,9 +337,20 @@
       opacity: 0;
       color: @font-color-m;
       z-index: 103;
-      .back {
-        color: @font-color-m;
-      }
+    }
+    .back {
+      position: fixed;
+      .w(50);
+      .h(50);
+      .lh(50);
+      border-radius: 50%;
+      text-align: center;
+      background: rgba(0, 0, 0, .4);
+      color: #fff;
+      .t(23);
+      .l(40);
+      z-index: 10000;
+      .fs(28);
     }
     .content {
       .DetailSwiper {
@@ -467,6 +520,144 @@
       .buy {
         .r(185);
         background: #ffae00;
+      }
+    }
+    .fast-buy {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .3);
+      z-index: 100109;
+      .inner {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .h(448);
+        .top {
+          width: 100%;
+          .h(348);
+          background: #fff;
+          .des {
+            .pl(300);
+            .h(220);
+            display: flex;
+            align-items: center;
+            .lh(80);
+            .fs(35);
+            .pic {
+              position: absolute;
+              .w(235);
+              .h(235);
+              .l(38);
+              .t(-50);
+              box-sizing: border-box;
+              border-radius: 5px;
+              border: 3px solid #ddd;
+            }
+            .close-icon {
+              position: absolute;
+              .r(26);
+              .t(18);
+              .fs(32);
+              color: @theme-color;
+            }
+          }
+          .count {
+            box-sizing: border-box;
+            border-top: 1px solid @theme-color;
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+            .h(128);
+            .lh(128);
+            .pl(43);
+            .pr(43);
+            .fs(32);
+            .count-box {
+              display: flex;
+              align-items: center;
+              .remove {
+                box-sizing: border-box;
+                .h(55);
+                .w(60);
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                position: relative;
+              }
+              .remove:before {
+                content: '';
+                .w(32);
+                .h(2.4);
+                background-color: #444;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: @font-color-input;
+              }
+              .val-box {
+                box-sizing: border-box;
+                .w(68);
+                .h(55);
+                .lh(50);
+                text-align: center;
+                color: #666;
+                outline: none;
+                -webkit-appearance: none;
+                border-radius: 0;
+                border: 1px solid #ddd;
+                border-left: none;
+                border-right: none;
+                .fs(32);
+              }
+              .added {
+                box-sizing: border-box;
+                .h(55);
+                .w(60);
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                position: relative;
+              }
+              .added:before {
+                content: '';
+                .w(32);
+                .h(2.4);
+                background-color: #444;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
+              .added:after {
+                content: '';
+                .h(32);
+                .w(2.4);
+                background-color: #444;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
+            }
+          }
+        }
+        .bottom {
+          width: 100%;
+          .h(100);
+          .lh(100);
+          background: @theme-color;
+          .fs(32);
+          color: #fff;
+        }
       }
     }
   }

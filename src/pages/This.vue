@@ -32,7 +32,7 @@
       <div class="menu-wrap f-l" ref="menuWrap">
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in sideList" :key="index" :classifyId="item.classifyId"
-                     @click.native="memuChange(item.classifyId,index,1)"
+                     @click.native="memuChange(item.classifyId,index)"
                      :class="{'active':index===ind}">
             <span v-html="item.classifyName"></span>
           </side-item>
@@ -72,7 +72,7 @@
               </div>
             </div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
-              <div class="pic">
+              <div class="pic pos-re" @click="goDetail(item.goodsId)">
                 <!--<lazy-image-->
                 <!--:src='item.goodsImgUrl'-->
                 <!--:placeholder='$store.state.defaultImg'-->
@@ -81,13 +81,15 @@
                 <!--height="100%"-->
                 <!--&gt;</lazy-image>-->
                 <!--<img :src="item.goodsImgUrl" width="100%" height="100%">-->
-                <img width="100%" height="100%" v-lazy="item.goodsImgUrl" @click="goDetail(item.goodsId)">
+                <div class="pos-ab" :class="{'daigou':item.goodsType===2}"></div>
+                <img width="100%" height="100%" v-lazy="item.goodsImgUrl"/>
               </div>
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
                 <shop-car-button :goods="item" class="this-bt"></shop-car-button>
+
               </div>
             </div>
           </div>
@@ -154,7 +156,9 @@
         loadText: '正在加载',
         moreIconFlag: true,
         pageIndex: 1,
-        loadingFlag: true
+        loadingFlag: true,
+        fastSortGoodsList: [], // 速选商品
+        fastSortFlag: false // 是否有速选商品
       }
     },
     async created () {
@@ -178,30 +182,49 @@
           this.firstId = this.sideList[0].classifyId
           this.sortId = this.sideList[0].classifyId
           this.sortType = 1
+          console.log(res.data)
         }
       })
-      // 二级菜单
-      await this.post('/classify/secondClassifyList', {
-        classifyId: this.firstId,
-        storeId: localStorage.getItem('m-shopId'),
-        villageId: localStorage.getItem('m-villageId')
-      }).then((res) => {
-        this.secondMenuList = res.data.secondClassifyList
-      })
+      // 速选商品列表 如果bt===2 则有速选商品
+      if (this.sideList[0].bt === 2) {
+        this.fastSortFlag = true
+        await this.post('/goods/getLabelGoods', {
+          keyWordId: 7,
+          softType: 3
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.fastSortGoodsList = res.data.goodsList
+            this.goodsList = this.fastSortGoodsList
+            this.loadingFlag = false
+          }
+        })
+      }
       // 商品列表
-      await this.post('/goods/goodsList', {
-        firstClassifyId: this.firstId,
-        storeId: localStorage.getItem('m-shopId'),
-        softType: this.softType,
-        villageId: localStorage.getItem('m-villageId'),
-        pageIndex: 1,
-        pageSize: 10
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.goodsList = res.data.goodsList
-          this.loadingFlag = false
-        }
-      })
+      if (this.sideList[0].bt !== 2) {
+        // 二级菜单
+        await this.post('/classify/secondClassifyList', {
+          classifyId: this.firstId,
+          storeId: localStorage.getItem('m-shopId'),
+          villageId: localStorage.getItem('m-villageId')
+        }).then((res) => {
+          this.secondMenuList = res.data.secondClassifyList
+        })
+        await this.post('/goods/goodsList', {
+          firstClassifyId: this.firstId,
+          storeId: localStorage.getItem('m-shopId'),
+          softType: this.softType,
+          villageId: localStorage.getItem('m-villageId'),
+          pageIndex: 1,
+          pageSize: 10
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.goodsList = res.data.goodsList
+            this.loadingFlag = false
+          }
+        })
+      }
+
       this.$nextTick(() => {
         this._initScroll()
       })
@@ -246,11 +269,26 @@
         params.pageSize = this.pageSize
         params.pageIndex = 1
         this.pageIndex = 1
-        await this.post('/goods/goodsList', params).then((res) => {
-          if (res.data.code === 100) {
-            this.goodsList = res.data.goodsList
-          }
-        })
+        // 如果有速选商品
+        if (this.ind === 0 && this.fastSortFlag) {
+          await this.post('/goods/getLabelGoods', {
+            keyWordId: 7,
+            softType: this.softType
+          }).then((res) => {
+            console.log(res.data)
+            if (res.data.code === 100) {
+              this.fastSortGoodsList = res.data.goodsList
+              this.goodsList = this.fastSortGoodsList
+              this.loadingFlag = false
+            }
+          })
+        } else {
+          await this.post('/goods/goodsList', params).then((res) => {
+            if (res.data.code === 100) {
+              this.goodsList = res.data.goodsList
+            }
+          })
+        }
         this.$nextTick(() => {
           this.listSroll.refresh()
         })
@@ -271,13 +309,18 @@
         this.getGoods(id, this.sortType)
       },
       // 点击一级菜单获取商品
-      memuChange (id, index, type) {
+      memuChange (id, index) {
         this.firstId = id
         this.sortId = id
         this.sortType = 1
-        this.getGoods(id, 1)
         this.listSroll.scrollTo(0, -1)
         this.ind = index
+        this.getGoods(id, 1)
+        // 有速选时没有二级菜单
+        if (this.ind === 0 && this.fastSortFlag) {
+          this.secondMenuList = []
+          return
+        }
         this.post('/classify/secondClassifyList', {
           classifyId: id,
           storeId: localStorage.getItem('m-shopId'),
@@ -289,6 +332,7 @@
       // 综合排序
       mixSort () {
         this.sortSelectIndex = 1
+        this.softType = 3
         this.getGoods(this.sortId, this.sortType)
       },
       // 价格排序
@@ -387,6 +431,7 @@
         }
       },
       goDetail (id) {
+        console.log(22)
         this.$router.push({
           path: '/goods_detail',
           query: {goodsId: id}

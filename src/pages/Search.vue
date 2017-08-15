@@ -3,88 +3,105 @@
     <!-- 搜索框 -->
     <!--<search-hearder :searchWord="searchWord" :search="search" ref="searchHeader"></search-hearder>-->
     <!--v-model.trim="searchWord"-->
-    <div class="top-search-box">
-      <div class="search-left" @click="$router.back()">&#xe600;</div>
-      <div class="search-box">
-        <input type="search" placeholder="搜索内容" @keyup.enter="searchWord" v-focus v-model="keyName">
-      </div>
-      <div class="search-right" @click="goSearch">搜索</div>
-    </div>
-    <!-- 热门搜索 -->
-    <div class="search-words-wrap" v-if="false">
-      <div class="title-box">热门搜索</div>
-      <div class="word-flex">
-        <div class="word-item" v-for="(value,index) in KeyWords" @click="hotSearch(value)" :key="index">
-          {{value.keyword}}
+    <div v-if="!goSearchFlag">
+      <div class="top-search-box">
+        <div class="search-left" @click="$router.back()">&#xe600;</div>
+        <div class="search-box">
+          <input type="search" placeholder="搜索内容" @keyup.enter="goSearch(1)" v-focus v-model="keyName">
         </div>
+        <div class="search-right" @click="goSearch(1)">搜索</div>
       </div>
-      <!-- 历史记录 -->
-      <!--<div class="title-box">
-        <div class="flex-col">历史搜索</div>
-        <div class="iconfont font-small" @click="delHistory = true">&#xe673;</div>
-      </div>-->
-      <!--<div class="word-flex">-->
-      <!--<div class="word-item" v-for="value in historyList" @click="search = value" v-html="value"/>-->
-      <!--</div>-->
-    </div>
-    <div class="search-bottom-wrap">
-      <div class="top">
-        <!-- Tab列表 -->
-        <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index">
-          <tab-item :selected="item.name===curItem" v-for="(item,index) in tabList" :key="index"
-                    @on-item-click="tabClick"><i
-            class="iconfont" v-html="item.icon"></i>{{item.name}}
-          </tab-item>
-        </tab>
-      </div>
-      <!-- 相关内容 -->
-      <div class="list-conent-wrap">
-        <!--次日达-->
-        <div ref="contentNext" class="contentWrap next" :class="{'active':shopType===1,'no-goods':noGoodsFlagNext}">
-          <div>
-            <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content"></one-column>
-            <load-more
-              :tip="loadText"
-              :show-loading="moreIconFlag"
-              background-color="#f7f7f7"
-              class="load-more"
-              v-if="loadMoreFlagNext"
-            ></load-more>
+      <!-- 热门搜索 -->
+      <div class="search-words-wrap">
+        <div v-if="KeyWords.length>0">
+          <!--热门搜索-->
+          <div class="title-box">热门搜索</div>
+          <div class="word-flex">
+            <div class="word-item" v-for="(value,index) in KeyWords" @click="hotSearch(value)" :key="index">
+              {{value.keyword}}
+            </div>
           </div>
         </div>
-        <!--及时送-->
-        <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
-          <div>
-            <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"></one-column>
-            <load-more
-              :tip="loadText"
-              :show-loading="moreIconFlag"
-              background-color="#f7f7f7"
-              class="load-more"
-              v-if="loadMoreFlagThis"
-            ></load-more>
+        <div v-if="historyWords.length>0">
+          <!--历史搜索-->
+          <div class="title-box">
+            历史搜索
+            <div class="iconfont f-r deletIcon" @click="deletHistory">&#xe61b;</div>
+          </div>
+          <div class="word-flex">
+            <div class="word-item" v-for="(value,index) in historyWords" @click="hotSearch(value,2)" :key="index">
+              {{value.historyName}}
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="footer" v-if="token">
-      <div class="buy-car">
-        <div class="icon d-ib">
-          <i class="iconfont center">&#xe613;</i>
-          <div class="badge">
-            <badge :text="totalBuyCount"></badge>
+    <div v-if="goSearchFlag">
+      <div class="top-search-box search-text">
+        <div class="search-left" @click="backSearch">&#xe600;</div>
+        <div class="search-box">
+          <input type="search" placeholder="搜索内容" v-focus v-model="keyName" @click="backSearch">
+        </div>
+      </div>
+      <div class="search-bottom-wrap">
+        <div class="top">
+          <!-- Tab列表 -->
+          <tab :line-width="1" defaultColor="#999" :active-color="activeColor" v-model="index">
+            <tab-item :selected="item.name===curItem" v-for="(item,index) in tabList" :key="index"
+                      @on-item-click="tabClick"><i
+              class="iconfont" v-html="item.icon"></i>{{item.name}}
+            </tab-item>
+          </tab>
+        </div>
+        <!-- 相关内容 -->
+        <div class="list-conent-wrap">
+          <!--次日达-->
+          <div ref="contentNext" class="contentWrap next" :class="{'active':shopType===1,'no-goods':noGoodsFlagNext}">
+            <div>
+              <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content"></one-column>
+              <load-more
+                :tip="loadText"
+                :show-loading="moreIconFlagNext"
+                background-color="#f7f7f7"
+                class="load-more"
+                v-if="loadMoreFlagNext"
+              ></load-more>
+            </div>
+          </div>
+          <!--及时送-->
+          <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
+            <div>
+              <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"></one-column>
+              <load-more
+                :tip="loadText"
+                :show-loading="moreIconFlagThis"
+                background-color="#f7f7f7"
+                class="load-more"
+                v-if="loadMoreFlagThis"
+              ></load-more>
+            </div>
           </div>
         </div>
-        <div class="text d-ib">
-          合计：<span>￥50.55</span>
+      </div>
+      <div class="footer" v-if="token">
+        <div class="buy-car">
+          <div class="icon d-ib">
+            <i class="iconfont center">&#xe613;</i>
+            <div class="badge">
+              <badge :text="totalBuyCount"></badge>
+            </div>
+          </div>
+          <div class="text d-ib">
+            合计：<span>￥50.55</span>
+          </div>
+        </div>
+        <div class="button t-c">
+          去结算
         </div>
       </div>
-      <div class="button t-c">
-        去结算
-      </div>
+      <ball :type="2"></ball>
+      <no-login-footer v-if="!token"></no-login-footer>
     </div>
-    <ball :type="2"></ball>
-    <no-login-footer v-if="!token"></no-login-footer>
   </div>
 </template>
 
@@ -114,15 +131,14 @@
         keyName: '', // 搜索关键词
         delHistory: false,
         KeyWords: [],
-//        search: '',
+        historyWords: [],
         index: 1,
-        selected: '',
         ThisGoodsList: [],
         NextGoodsList: [],
         noPageFlag: false,
         token: localStorage.getItem('m-token'),
-        storeId: localStorage.getItem('m-depotId'), // 默认仓库store
-        shopType: 1, // 默认次日达
+        storeId: this.$route.query.storeId,
+        shopType: parseInt(this.$route.query.shopType),
         pageSize: 10,
         ThisPageIndex: 1,
         NextPageIndex: 1,
@@ -131,21 +147,31 @@
         scrollDisableThis: false,
         scrollDisableNext: false,
         loadText: '加载中...',
-        moreIconFlag: true,
+        moreIconFlagThis: true,
+        moreIconFlagNext: true,
         tabList: [{name: '次日达', icon: '&#xe60a;'}, {name: '即时送', icon: '&#xe61f;'}],
         thisTabFlag: false,
         nextTabFlag: false,
         loadMoreFlagThis: false,
         loadMoreFlagNext: false,
         noGoodsFlagThis: false,
-        noGoodsFlagNext: false
+        noGoodsFlagNext: false,
+        goSearchFlag: false
       }
     },
     created () {
+      // 搜索关键词
       this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
         if (res.data.code === 100) {
           console.log(res.data)
           this.KeyWords = res.data.KeyWords
+        }
+      })
+      // 搜索历史记录
+      this.post('/goods/searchHistory', {token: this.token}).then((res) => {
+        if (res.data.code === 100) {
+          console.log(res.data)
+          this.historyWords = res.data.KeyHistory
         }
       })
     },
@@ -154,16 +180,24 @@
 //        this.$router.push({path: 'search'})
 //        this.$router.go(0)
 //      },
-      searchWord () {
-        if (!this.search) {
-          return this.$vux.alert.show({content: '搜索内容不能为空'})
-        }
-        const searchQuery = {
-          search: this.search,
-          shopType: this.shopType,
-          storeId: this.storeId
-        }
-        this.$router.push({path: 'search_text', query: searchQuery})
+      // 返回搜索输入
+      backSearch () {
+        this.goSearchFlag = false
+        this.ThisGoodsList = []
+        this.NextGoodsList = []
+        this.noPageFlag = false
+        this.ThisPageIndex = 1
+        this.NextPageIndex = 1
+        this.loadText = '加载中...'
+        this.moreIconFlagThis = true
+        this.moreIconFlagNext = true
+        this.noGoodsFlagThis = false
+        this.noGoodsFlagNext = false
+        this.index = 1
+        this.loadMoreFlagThis = false
+        this.loadMoreFlagNext = false
+        this.thisTabFlag = false
+        this.nextTabFlag = false
       },
       // tab切换
       tabClick (index) {
@@ -192,10 +226,14 @@
         }
       },
       // 去搜索
-      async goSearch () {
+      async goSearch (type) {
+        if (type && (type === 1) && this.keyName) {
+          this.goSearchFlag = true
+        }
         if (!this.keyName) {
           return this.$vux.alert.show({content: '搜索内容不能为空'})
         }
+        this.addHistory(this.keyName)
         await this.post('/goods/searchGoods', {
           storeId: this.storeId,
           shopType: this.shopType,
@@ -235,8 +273,13 @@
           this._initScrollThis()
         }
       },
-      hotSearch (value) {
-        this.search = value.keyword
+      hotSearch (value, type) {
+        this.keyName = value.keyword
+        if (type === 2) {
+          this.keyName = value.historyName
+        }
+        this.goSearchFlag = true
+        this.goSearch()
       },
       // 次日达scroll
       _initScrollNext () {
@@ -258,7 +301,6 @@
         loadMore(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
       },
       async loadMoreCallBackNext () {
-        this.loadMoreFlagNext = true
         if (!this.scrollDisableNext) {
           this.scrollDisableNext = true
           this.NextPageIndex += 1
@@ -271,7 +313,7 @@
           }).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsInfo.goodsList
-              // 如果是及时送
+              // 如果是次日达
               newList.forEach((item) => {
                 this.NextGoodsList.push(item)
               })
@@ -279,9 +321,10 @@
                 setTimeout(() => {
                   this.nextScroll.refresh()
                 }, 50)
+                this.loadMoreFlagNext = true
               } else {
                 this.loadText = '到底啦~'
-                this.moreIconFlag = false
+                this.moreIconFlagNext = false
               }
               this.scrollDisableNext = false
             }
@@ -298,7 +341,6 @@
         }
       },
       async loadMoreCallBackThis () {
-        this.loadMoreFlagThis = true
         if (!this.scrollDisableThis) {
           this.scrollDisableThis = true
           this.ThisPageIndex += 1
@@ -319,9 +361,10 @@
                 setTimeout(() => {
                   this.thisScroll.refresh()
                 }, 50)
+                this.loadMoreFlagThis = true
               } else {
                 this.loadText = '到底啦~'
-                this.moreIconFlag = false
+                this.moreIconFlagThis = false
               }
               this.scrollDisableThis = false
             }
@@ -336,6 +379,34 @@
             this.scrollDisableThis = false
           })
         }
+      },
+      // 添加搜索记录
+      addHistory (keyName) {
+        this.post('/goods/addHistory', {
+          token: this.token,
+          keyName: keyName,
+          storeId: this.storeId
+        }).then((res) => {
+          console.log(res, '增加搜索记录')
+        })
+      },
+      // 删除搜索记录
+      deletHistory () {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '是否需要删除全部历史记录',
+          // 组件除show外的属性
+          onConfirm () {
+            _this.post('/goods/DelHistory', {
+              token: _this.token
+            }).then((res) => {
+              if (res.data.code === 100) {
+                _this.historyWords = []
+              }
+            })
+          }
+        })
       }
     },
     computed: {
@@ -370,6 +441,8 @@
   .search-view {
     background-color: #fff;
     .fs(25);
+    width: 100%;
+    height: 100%;
   }
 
   .no-goods {
@@ -377,12 +450,20 @@
     background-size: 50% 50%;
   }
 
+  .search-text {
+    border-bottom: 1px solid #eee;
+    .search-right {
+      .pr(36);
+      display: none;
+    }
+  }
+
   .top-search-box {
     display: flex;
     align-items: center;
     background-color: #fff;
     .pt(15);
-    .pb(5);
+    .pb(15);
     .search-left {
       padding-left: 10px;
       /* font: 16px/1 'iconfont';*/
@@ -459,7 +540,18 @@
     .lh(40);
     .pl(20);
     .pr(20);
+    .pt(20);
+    .pb(10);
     clear: both;
+    .fs(29);
+    font-weight: bold;
+    position: relative;
+    .deletIcon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      .r(60);
+    }
   }
 
   .search-view .word-flex {
@@ -506,7 +598,7 @@
     left: 0;
     position: absolute;
     .w(750);
-    .t(168);
+    .t(182);
     .b(100);
   }
 

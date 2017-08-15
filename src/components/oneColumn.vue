@@ -12,7 +12,7 @@
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>
-        <p class="des">{{item.guige}}</p>
+        <!--<p class="des">{{item.guige}}</p>-->
         <div v-if="shopType===1">
           <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
           <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
@@ -54,7 +54,7 @@
   @import "../common/style/sum";
   /*@import "../common/style/mlxin";*/
   .item {
-    .h(253);
+    .h(233);
     box-sizing: border-box;
     .pt(16);
     .pl(33);
@@ -83,6 +83,7 @@
         .fs(27);
         .lh(44);
         .mt(12);
+        .mb(48);
       }
       .des {
         color: #888;

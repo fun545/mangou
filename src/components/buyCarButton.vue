@@ -1,6 +1,7 @@
 <template>
   <div class="shop-cart-wrap" @click="add($el,goods)">
-    <i class="iconfont shop-car" ref="icon">&#xe613;</i>
+    <i class="iconfont shop-car" ref="icon" v-if="goods.status===1">&#xe613;</i>
+    <div v-if="goods.status!==1" class="no-goods">已售罄</div>
   </div>
 </template>
 
@@ -15,7 +16,8 @@
     },
     data () {
       return {
-        clickTag: 0
+        clickTag: 0,
+        statusFlag: false
       }
     },
     methods: {
@@ -24,6 +26,9 @@
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
           this.$router.push({path: '/login'})
+          return
+        }
+        if (item.status !== 1) {
           return
         }
         // 限制点击速度
@@ -70,10 +75,19 @@
 
   .shop-cart-wrap {
     position: absolute;
-    .pl(35);
+    .pl(15);
     .pr(15);
     .pt(15);
     .pb(15);
+    .no-goods {
+      display: inline-block;
+      .fs(24);
+      .pr(10);
+      .pl(10);
+      background: #ddd;
+      border-radius: 10px;
+      color: #fff;
+    }
   }
 
   .iconfont.shop-car {

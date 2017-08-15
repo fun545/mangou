@@ -176,10 +176,9 @@
         .pb(10);
         .ml(73);
         .search {
+          .w(500);
           .input {
-            input {
-              .w(498);
-            }
+            input {}
           }
         }
         .instruction {

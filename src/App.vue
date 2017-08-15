@@ -1,6 +1,7 @@
 <template>
   <div class="app">
-    <keep-alive exclude="detail,user,about,active,address,addAddress,cart,collection,confirmOrder,editAddress,forget,goPay,location,login,manualLocation,nextList1,saleList,orderInfo,order_List,orderPayList,orderRater,
+    <keep-alive
+      exclude="detail,user,about,active,address,addAddress,cart,collection,confirmOrder,editAddress,forget,goPay,location,login,manualLocation,nextList1,saleList,orderInfo,order_List,orderPayList,orderRater,
 orderRaterList,orderRefund,orderSendList,orderShippingList,originActive,register,search,searchText,selectAddress,
 userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList,setting,collect">
       <router-view></router-view>
@@ -12,15 +13,17 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
   @import "~vux/src/styles/reset.less";
   @import "common/style/index.less";
   @import "common/style/sum";
+  @import "common/style/varlable";
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.eot');
-    src: url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.woff') format('woff'),
-    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_qs1qmapp1s65stt9.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.eot');
+    src: url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.woff') format('woff'),
+    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.svg#iconfont') format('svg');
   }
+
   .weui-tab__panel {
     overflow: hidden !important;
     padding-bottom: 0 !important;
@@ -59,11 +62,41 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     /*transition: all 0.5s;*/
   }
 
+  .pos-re {
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
+  .pos-ab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .daigou {
+    width: 100%;
+    height: 100%;
+    background: url("assets/daigou.png") no-repeat;
+    background-size: 30% 30%;
+  }
+
+  .theme-color {
+    color: @theme-color;
+  }
+
+  /*.daigou {*/
+  /*background: url("assets/daigou.png") no-repeat;*/
+  /*background-size: 100% 100%;*/
+  /*}*/
+
   /*img[lazy=loading] {*/
   /*}*/
 
   /*img[lazy=loaded] {*/
-    /*animation: fade 0.5s;*/
+  /*animation: fade 0.5s;*/
   /*}*/
 
   @keyframes fade {
@@ -94,7 +127,7 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
   }
 
   /*input[placeholder], [placeholder], *[placeholder] {*/
-    /*color: # !important;*/
+  /*color: # !important;*/
   /*}*/
 
   .label-checkbox {

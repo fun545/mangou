@@ -5,9 +5,12 @@
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content-scroller">
-      <popup-radio class="popup" title="问题类型" :options="popupArray" v-model="issueType"/>
-      <textarea class="weui-textarea" maxlength="500" placeholder="详细描述问题内容" rows="5"/>
-      <input type="tel" class="weui-input" maxlength="11" placeholder="选题手机号，方便我们与你联系！">
+      <popup-radio class="popup" title="问题类型" v-model="issueType" :options="popupArray">
+        <!--<div slot="popup-header">请选择问题</div>-->
+        <!--<div slot="each-item" v-for="(item,index) in popupArray" :key="index"></div>-->
+      </popup-radio>
+      <textarea class="weui-textarea" maxlength="500" placeholder="详细描述问题内容" rows="5" v-model="text"/>
+      <input type="tel" class="weui-input" maxlength="11" placeholder="选题手机号，方便我们与你联系！" v-model="tel">
       <div class="submit-btn" @click="submitFrom">提交</div>
     </div>
   </div>
@@ -24,12 +27,52 @@
     data () {
       return {
         issueType: '请选择',
-        popupArray: ['订单', '商品', '物流', '支付', '操作', '设计', '服务', '其他']
+        popupArray: [],
+        tel: '',
+        text: ''
       }
     },
+    created () {
+//      var tempArr = []
+      this.post('/goods/searchKeyWord', {statusType: 5}).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+//          this.popupArray = res.data.KeyWords
+          res.data.KeyWords.forEach((item) => {
+            var obj = {}
+            obj.key = item.keyId
+            obj.value = item.keyword
+            this.popupArray.push(obj)
+          })
+        }
+      })
+    },
     methods: {
+      toastTip (text) {
+        this.$vux.toast.text(text, 'bottom')
+      },
       submitFrom () {
-        this.$vux.alert.show({content: '提交问题成功'})
+        var flag = true
+        if (this.text.length < 0) {
+          this.toastTip('亲，您还没输入反馈呢')
+          flag = false
+        }
+        if (this.tel.length !== 11) {
+          this.toastTip('请输入合法的手机号码')
+          flag = false
+        }
+//        console.log(this.issueType)
+        if (flag) {
+          this.post('/orders/feedBack', {
+            token: localStorage.getItem('m-token'),
+            feedContext: this.text,
+            feedType: this.issueType
+          }).then((res) => {
+            console.log(res.data)
+            this.$router.push('/user')
+          })
+          this.$vux.alert.show({content: '提交问题成功'})
+        }
       }
     }
   }
@@ -45,10 +88,11 @@
     .weui-cell {
       .fs(30);
     }
-    .weui-textarea{
+    .weui-textarea {
       .fs(28);
     }
-    .weui-input{
+    .weui-input {
+      .mt(10);
       .fs(28);
     }
   }

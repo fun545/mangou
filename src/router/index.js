@@ -198,7 +198,7 @@ export default new Router({
     {
       /* 忘记密码 */
       path: '/forget',
-      component: require('../pages/Forget')
+      component: require('../pages/Forget.vue')
     },
     {
       /* 活动页面 */

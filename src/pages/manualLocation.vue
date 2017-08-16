@@ -66,7 +66,7 @@
         </div>
       </div>
     </div>
-    <div class="location-footer t-c noScroll">
+    <div class="location-footer t-c noScroll" @click="$router.push('/shop')">
       我要开店
     </div>
   </div>

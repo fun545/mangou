@@ -15,7 +15,10 @@
         </div>
         <div class="content">
           <div class="item" v-for="(item ,index) in goodsList" :key="index">
-            <div class="pic f-l">
+            <div class="pic f-l"  @click="$router.push({
+          path: '/goods_detail',
+          query: {goodsId: item.goodsId}
+        })">
               <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
               <!--<lazy-image-->
               <!--:src='item.goodsImgUrl'-->

@@ -6,7 +6,7 @@
     </div>
     <div class="home-view" ref="homeView">
       <div class="wrap">
-       <!-- banner-->
+        <!-- banner-->
         <swiper :options="swiperOption" ref="mySwiper" class="banner">
           <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
             <img :src="item.imageUrl">
@@ -27,9 +27,9 @@
             <div class="content clearfix">
               <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
                 <!--<lazy-image-->
-                  <!--:src='item.keyword'-->
-                  <!--:placeholder='$store.state.defaultImg'-->
-                  <!--:events="['touchmove']"-->
+                <!--:src='item.keyword'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
                 <!--&gt;</lazy-image>-->
                 <img v-lazy="item.keyword" alt="" width="100%" height="100%">
               </div>
@@ -43,9 +43,9 @@
             <div class="content">
               <div class="left f-l" @click="goSerchKey(serchKey)">
                 <!--<lazy-image-->
-                  <!--:src='serchKey.keyword'-->
-                  <!--:placeholder='$store.state.defaultImg'-->
-                  <!--:events="['touchmove']"-->
+                <!--:src='serchKey.keyword'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
                 <!--&gt;</lazy-image>-->
                 <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
               </div>
@@ -60,9 +60,9 @@
                   </div>
                   <div class="pic f-l">
                     <!--<lazy-image-->
-                      <!--:src='specialPriceGoodsList[0].goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
+                    <!--:src='specialPriceGoodsList[0].goodsImgUrl'-->
+                    <!--:placeholder='$store.state.defaultImg'-->
+                    <!--:events="['touchmove']"-->
                     <!--&gt;</lazy-image>-->
                     <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
                   </div>
@@ -77,9 +77,9 @@
                   </div>
                   <div class="pic f-l">
                     <!--<lazy-image-->
-                      <!--:src='specialPriceGoodsList[1].goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
+                    <!--:src='specialPriceGoodsList[1].goodsImgUrl'-->
+                    <!--:placeholder='$store.state.defaultImg'-->
+                    <!--:events="['touchmove']"-->
                     <!--&gt;</lazy-image>-->
                     <img v-lazy="specialPriceGoodsList[1].goodsImgUrl">
                   </div>
@@ -103,10 +103,10 @@
                 <div class="top" @click="goDetail(item.goodsId)">
                   <div class="pic">
                     <!--<lazy-image-->
-                      <!--:src='item.goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
-                      <!--@click.native="goDetail(item.goodsId)"-->
+                    <!--:src='item.goodsImgUrl'-->
+                    <!--:placeholder='$store.state.defaultImg'-->
+                    <!--:events="['touchmove']"-->
+                    <!--@click.native="goDetail(item.goodsId)"-->
                     <!--&gt;</lazy-image>-->
                     <img v-lazy="item.goodsImgUrl" alt="">
                   </div>
@@ -164,6 +164,7 @@
     </div>
     <m-footer></m-footer>
     <ball></ball>
+    <to-top v-if="scrollTop>=800" :scrollObj="homeSroll"></to-top>
   </div>
 </template>
 
@@ -177,6 +178,7 @@
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
+  import toTop from '../components/toTop'
   export default {
     name: 'home',
     components: {
@@ -189,7 +191,8 @@
       twoColumn,
       LoadMore,
       buyCarButton,
-      ball
+      ball,
+      toTop
     },
     data () {
       return {
@@ -380,11 +383,15 @@
           let scrollTop1 = -Math.round(pos.y)
           this.$refs.header.style.backgroundColor = `rgba(249,91,67,${scrollTop1 / 300})`
           // 监听无限加载滚动
-          let scrollTop = Math.abs(Math.round(pos.y))
+          this.scrollTop = Math.abs(Math.round(pos.y))
           const homeView = this.$refs.homeView
           let homeViewHeight = homeView.offsetHeight
           let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
-          if (scrollTop + homeViewHeight >= wrapperHeight) {
+          if (this.scrollTop >= 800) {
+            console.log('toTop')
+            this.homeSroll.scrollY = 0
+          }
+          if (this.scrollTop + homeViewHeight >= wrapperHeight) {
             this.loadMore()
           }
         })
@@ -659,7 +666,8 @@
             .ml(-56);
             .b(10);
           }
-          .iconfont.shop-car {}
+          .iconfont.shop-car {
+          }
         }
       }
     }

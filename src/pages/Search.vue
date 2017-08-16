@@ -95,12 +95,14 @@
             合计：<span>￥50.55</span>
           </div>
         </div>
-        <div class="button t-c">
+        <div class="button t-c" @click="$router.push({path:'/cart'})">
           去结算
         </div>
       </div>
       <ball :type="2"></ball>
       <no-login-footer v-if="!token"></no-login-footer>
+      <to-top v-if="scrollTopThis>=800&&shopType===2" :scrollObj="thisScroll"></to-top>
+      <to-top v-if="scrollTopNext>=800&&shopType===1" :scrollObj="nextScroll"></to-top>
     </div>
   </div>
 </template>
@@ -110,9 +112,10 @@
   import oneColumn from '../components/oneColumn'
   import BScroll from 'better-scroll'
   import noLoginFooter from '../components/noLoginBuyFooter'
-  import { loadMore } from '../util/util'
+  import { loadMoreMehod } from '../util/util'
   import searchHearder from '../components/searchHeader'
   import ball from '../components/ball'
+  import toTop from '../components/toTop'
   export default{
     name: 'search',
     components: {
@@ -124,7 +127,8 @@
       BScroll,
       noLoginFooter,
       ball,
-      LoadMore
+      LoadMore,
+      toTop
     },
     data () {
       return {
@@ -156,7 +160,9 @@
         loadMoreFlagNext: false,
         noGoodsFlagThis: false,
         noGoodsFlagNext: false,
-        goSearchFlag: false
+        goSearchFlag: false,
+        scrollTopThis: '',
+        scrollTopNext: ''
       }
     },
     created () {
@@ -289,7 +295,7 @@
           disablePointer: false,
           probeType: 3
         })
-        loadMore(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext)
+        loadMoreMehod(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext, this.backTopNext)
       },
       _initScrollThis () {
         this.thisScroll = new BScroll(this.$refs.contentThis, {
@@ -298,7 +304,7 @@
           disablePointer: false,
           probeType: 3
         })
-        loadMore(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
+        loadMoreMehod(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis, this.backTopThis)
       },
       async loadMoreCallBackNext () {
         if (!this.scrollDisableNext) {
@@ -379,6 +385,12 @@
             this.scrollDisableThis = false
           })
         }
+      },
+      backTopThis (pos, scrollTop) {
+        this.scrollTopThis = scrollTop
+      },
+      backTopNext (pos, scrollTop) {
+        this.scrollTopNext = scrollTop
       },
       // 添加搜索记录
       addHistory (keyName) {

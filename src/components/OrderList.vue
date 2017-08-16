@@ -17,6 +17,7 @@
     </div>
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
            :text="toastText" width="10em" class="toast"></toast>
+    <to-top v-if="scrollTop>=800" :scrollObj="contentScroll"></to-top>
   </div>
 </template>
 
@@ -26,6 +27,7 @@
   import orderList from './orderItem.vue'
   import BScroll from 'better-scroll'
   import loading from '../components/loading'
+  import toTop from '../components/toTop'
   export default{
     name: 'order_List',
     components: {
@@ -34,7 +36,8 @@
       BScroll,
       Toast,
       LoadMore,
-      loading
+      loading,
+      toTop
     },
     props: {
       status: Number,
@@ -51,7 +54,8 @@
         moreIconFlag: true,
         contentScroll: {},
         loadMoreFlag: false,
-        loadingFlag: true
+        loadingFlag: true,
+        scrollTop: ''
       }
     },
     async created () {
@@ -91,9 +95,9 @@
         })
         this.contentScroll.on('scroll', (pos) => {
           var contentHeight = this.$refs.content.offsetHeight
-          var scrollTop = Math.abs(pos.y)
+          this.scrollTop = Math.abs(pos.y)
           var innerHeight = this.$refs.content.children[0].offsetHeight
-          if (scrollTop + contentHeight >= innerHeight) {
+          if (this.scrollTop + contentHeight >= innerHeight) {
             this.loadMoreFlag = true
             this.loadMore()
           }

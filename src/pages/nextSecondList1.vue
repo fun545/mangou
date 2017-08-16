@@ -38,8 +38,9 @@
         </div>
         <loading :loadingFlag="loadingFlag"></loading>
       </div>
-      <ball :type="3"></ball>
+      <ball :type="3" v-if="list.length>0"></ball>
       <no-page :isActive="isActive"></no-page>
+      <to-top :scrollObj="listScroll" v-if="scrollTop>=800"></to-top>
     </div>
   </div>
 </template>
@@ -53,6 +54,7 @@
   import noPage from '../components/noPage'
   import loading from '../components/loading'
   import ball from '../components/ball'
+  import toTop from '../components/toTop'
   export default {
     name: 'nextList1',
     components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading, ball, oneColumn},
@@ -68,7 +70,9 @@
         isActive: true,
         loadingFlag: true,
         listScroll: {},
-        ball
+        ball,
+        toTop,
+        scrollTop: ''
       }
     },
     created () {
@@ -88,6 +92,9 @@
       },
       _initScroll () {
         this.listScroll = new BScroll(this.$refs.listWrap, {click: true})
+        this.listScroll.on('scroll', (pos) => {
+          this.scrollTop = Math.abs(pos.y)
+        })
       },
       getGoods (id) {
         this.post('/goods/goodsList', {
@@ -178,7 +185,8 @@
         .search {
           .w(500);
           .input {
-            input {}
+            input {
+            }
           }
         }
         .instruction {

@@ -1,23 +1,27 @@
 <template>
-  <forget header="忘记密码" :type="type" @userMsg="userMsg"></forget>
+  <div>
+    <!--<forget header="忘记密码" :type="type" @userMsg="userMsg"></forget>-->
+    <!--<forget></forget>-->
+    <forget-page></forget-page>
+  </div>
 </template>
 
 <script>
-  import forget from '../components/registerForget'
+  import forgetPage from '../components/registerForget.vue'
   export default {
     name: 'forget',
-    components: {forget},
-    data () {
-      return {
-        type: 3
-      }
-    },
-    created () {},
-    methods: {
-      userMsg (res) {
-        console.log(res)
-      }
-    }
+    components: {forgetPage}
+//    data () {
+//      return {
+//        type: 3
+//      }
+//    },
+//    created () {},
+//    methods: {
+//      userMsg (res) {
+//        console.log(res)
+//      }
+//    }
   }
 </script>
 

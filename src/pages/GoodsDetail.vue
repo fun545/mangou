@@ -53,30 +53,32 @@
             </div>
           </div>
           <div class="text d-ib">
-            合计：<span>￥50.55</span>
+            合计：<span>￥{{detailInfo.totalPrice}}</span>
           </div>
         </div>
         <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt">
           加入购物车
         </div>
-        <div class="button t-c buy">
+        <div class="button t-c buy" @click="close=true" v-if="goodsDetail.shopType===2">
           立即购买
         </div>
       </div>
       <!--立即下单-->
-      <div class="fast-buy">
+      <div class="fast-buy" v-if="close">
         <div class="inner">
           <div class="top">
             <div class="des">
               <div class="pic">
                 <img v-lazy="goodsDetail.goodsImgUrl" alt="" width="100%" height="100%">
               </div>
-              <div class="iconfont close-icon">
-                &#xe655;
+              <div class="close-icon" @click="close=false">
+                <div class="iconfont">
+                  &#xe655;
+                </div>
               </div>
               <div>
-                <p class="theme-color">即时价：15.0</p>
-                <p>库存：20</p>
+                <p class="theme-color">即时价：{{goodsDetail.canKaoPrice}}</p>
+                <p>库存：{{goodsDetail.kucun}}</p>
               </div>
             </div>
             <div class="count">
@@ -88,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div class="bottom t-c">
+          <div class="bottom t-c" @click="goBuy">
             确认
           </div>
         </div>
@@ -118,6 +120,7 @@
         swiperList: [],
         title: '商品详情',
         goodsDetail: '',
+        detailInfo: '',
         goodsList: [],
         collectId: '',
         collectFlag: '',
@@ -131,11 +134,12 @@
         clickTag: 0,
         loadingFlag: true,
         countNm: 1,
-        close: true
+        close: false,
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
-      if (!localStorage.getItem('m-token')) {
+      if (!this.token) {
         this.noLogin()
       } else {
         this.hasLogin()
@@ -152,7 +156,7 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
-          console.log(res.data)
+//          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             if (res.data.goodsDetail.isCollect === 1) {
@@ -174,9 +178,11 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
-          console.log(res.data)
+//          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
+            this.detailInfo = res.data
+            this.$store.commit('increment', res.data.totalBuyCount)
             this.goodsList = res.data.listGoods
             this.swiperList = res.data.goodsDetail.imagesList
             this.computedSwiperLength()
@@ -204,6 +210,8 @@
         }).then((res) => {
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
+            this.detailInfo = res.data
+            this.$store.commit('increment', res.data.totalBuyCount)
             this.goodsList = res.data.listGoods
             this.swiperList = res.data.goodsDetail.imagesList
             this.computedSwiperLength()
@@ -266,7 +274,7 @@
         })
       },
       addCart (item) {
-        console.log(item)
+//        console.log(item)
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
@@ -290,10 +298,10 @@
             villageId: localStorage.getItem('m-villageId'),
             storeId: this.storeId
           }).then((res) => {
-            console.log(res.data)
+//            console.log(res.data)
             if (res.data.code === 100) {
               bus.$emit('drop', this.$refs.cartBt)
-              console.log(res.data)
+//              console.log(res.data)
               this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
@@ -311,11 +319,63 @@
       count (type) {
 //        this.$router.push({path: '/order_enter'})
         if (type === 1) {
+          if (this.countNm >= this.goodsDetail.kucun) {
+            this.$vux.toast.text('该商品库存不足', 'center')
+            return
+          }
           this.countNm++
         }
         if (type === 2) {
+          if (this.countNm <= 1) {
+            this.$vux.toast.text('亲，不能再减了', 'center')
+            return
+          }
           this.countNm--
         }
+      },
+      async goBuy () {
+//        console.log(this.goodsDetail)
+        // 加入购物车
+        if (this.goodsDetail.kucun <= 0) {
+          this.$vux.toast.text('库存不足', 'center')
+          return
+        }
+        await this.post('/car/addCar', {
+          token: this.token,
+          goodsId: this.goodsDetail.goodsId,
+          buyCount: this.countNm,
+          shopType: this.goodsDetail.shopType,
+          storeId: this.goodsDetail.storeId,
+          type: 3,
+          villageId: localStorage.getItem('m-villageId')
+        }).then((res) => {
+//          console.log(res.data)
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'top')
+            localStorage.removeItem('m-token')
+            return
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'top')
+            localStorage.removeItem('m-token')
+            return
+          }
+        })
+        this.post('/car/quickOrder', {
+          token: this.token,
+          goodsId: this.goodsDetail.goodsId,
+          buyCount: this.countNm,
+          storeId: this.goodsDetail.storeId,
+          shopType: this.goodsDetail.shopType,
+          villageId: localStorage.getItem('m-villageId')
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+//            bus.$emit('fastBuyGoodsDetail', 1212121)
+            this.$store.commit('getFastBuyInfo', res.data.carMap)
+            this.$router.push({path: '/confirmOrder', query: {fastBuy: 'fastBuy'}})
+          }
+        })
       }
     },
     computed: {
@@ -559,10 +619,14 @@
             }
             .close-icon {
               position: absolute;
-              .r(26);
-              .t(18);
+              .r(0);
+              .t(0);
               .fs(32);
               color: @theme-color;
+              .pl(40);
+              .pr(20);
+              .pb(40);
+              .pt(20);
             }
           }
           .count {

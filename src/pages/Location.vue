@@ -25,7 +25,7 @@
       </div>
       <alert v-model="alertShow" :title="alertTitle" :content="alertContent"></alert>
     </div>
-    <div class="location-footer t-c">
+    <div class="location-footer t-c" @click="$router.push('/shop')">
       我要开店
     </div>
   </div>
@@ -80,8 +80,8 @@
           this.$router.replace('/home')
           window.location.reload()
         }
-        this.$router.replace(this.$route.query.path)
         window.location.reload()
+        this.$router.replace(this.$route.query.path)
       },
       searchLocation () {
         if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})

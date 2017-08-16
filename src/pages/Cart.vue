@@ -2,7 +2,7 @@
   <div class="cart-view" @touchmove.prevent>
     <div class="header t-c">
       购物车
-      <div class="edit" @click="edit">
+      <div class="edit" @click="edit" v-if="token">
         <span v-if="editShow">编辑</span>
         <span v-if="!editShow">完成</span>
       </div>
@@ -295,7 +295,8 @@
         editShow: true,
         ToCountText: '去结算',
         token: localStorage.getItem('m-token'),
-        loadingFlag: true // 加载页面
+        loadingFlag: true, // 加载页面
+        fastClick: false
       }
     },
     async created () {
@@ -396,70 +397,72 @@
         })
       },
       // 点击加减改变数量
-      count (item, type, index, list) {
+      async count (item, type, index, list) {
 //        this.$router.push({path: '/order_enter'})
-        if (type === 1) {
-          this.post('/car/addCar', {
-            token: this.token,
-            goodsId: item.goodsId,
-            buyCount: 1,
-            storeId: item.storeId,
-            shopType: item.shopType,
-            type: 1,
-            villageId: localStorage.getItem('m-villageId')
-          }).then((res) => {
-            if (res.data.code === 100) {
-              item.buyCount = res.data.buyCount
-              this.$store.commit('increment', res.data.totalBuyCount)
-            }
-            if (res.data.code === 101) {
-              // 提示失败信息
-              this.toastWidth = '10em'
-              this.toastText = res.data.msg
-              this.showPositionValue = true
-              return
-            }
-            if (res.data.code === 102) {
-              // 请登录
-              this.$router.push({path: 'login'})
-              return
-            }
-          })
-          return
-        }
-        if (type === 2) {
-          // 删除购物车
-          if (item.buyCount <= 1) {
-            // 保存当前商品信息，以供删除时使用
-            this.showComfirm = true
-            this.comfirmGoods = item
-            this.comfirmGoodsIndex = index
-            this.comfirmGoodsList = list
-            return
+        if (!this.fastClick) {
+          this.fastClick = true
+          if (type === 1) {
+            await this.post('/car/addCar', {
+              token: this.token,
+              goodsId: item.goodsId,
+              buyCount: 1,
+              storeId: item.storeId,
+              shopType: item.shopType,
+              type: 1,
+              villageId: localStorage.getItem('m-villageId')
+            }).then((res) => {
+              if (res.data.code === 100) {
+                item.buyCount = res.data.buyCount
+                this.$store.commit('increment', res.data.totalBuyCount)
+              }
+              if (res.data.code === 101) {
+                // 提示失败信息
+                this.toastWidth = '10em'
+                this.toastText = res.data.msg
+                this.showPositionValue = true
+              }
+              if (res.data.code === 102) {
+                // 请登录
+                this.$router.push({path: 'login'})
+              }
+            })
           }
-          this.post('/car/addCar', {
-            token: this.token,
-            goodsId: item.goodsId,
-            buyCount: 1,
-            storeId: item.storeId,
-            shopType: item.shopType,
-            type: 2,
-            villageId: localStorage.getItem('m-villageId')
-          }).then((res) => {
-            if (res.data.code === 100) {
-              item.buyCount = res.data.buyCount
-              this.$store.commit('increment', res.data.totalBuyCount)
-            }
-            if (res.data.code === 101) {
-              // 提示失败信息
+          if (type === 2) {
+            // 删除购物车
+            if (item.buyCount <= 1) {
+              // 保存当前商品信息，以供删除时使用
+              this.showComfirm = true
+              this.comfirmGoods = item
+              this.comfirmGoodsIndex = index
+              this.comfirmGoodsList = list
+              this.fastClick = false
               return
             }
-            if (res.data.code === 102) {
-              // 跳转重载页面
-              return
-            }
-          })
-          return
+            await this.post('/car/addCar', {
+              token: this.token,
+              goodsId: item.goodsId,
+              buyCount: 1,
+              storeId: item.storeId,
+              shopType: item.shopType,
+              type: 2,
+              villageId: localStorage.getItem('m-villageId')
+            }).then((res) => {
+              if (res.data.code === 100) {
+                item.buyCount = res.data.buyCount
+                this.$store.commit('increment', res.data.totalBuyCount)
+              }
+              if (res.data.code === 101) {
+                // 提示失败信息
+                this.$vux.toast.text(res.data.msg, 'center')
+                this.fastClick = false
+              }
+              if (res.data.code === 102) {
+                this.$vux.toast.text(res.data.msg, 'center')
+                // 跳转重载页面
+              }
+            })
+          }
+          this.fastClick = false
         }
       },
       // 输入改变数量

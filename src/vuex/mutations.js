@@ -21,8 +21,13 @@ export default {
   saveOrderNumList (state, val) {
     state.orderNumList = val
   },
+  // 存储用户信息
   getUserInfo (state, val) {
     state.userInfo = val
     localStorage.setItem('m-userInfo', JSON.stringify(val))
+  },
+  // 快速购买info
+  getFastBuyInfo (state, val) {
+    state.fastBuyInfo = val
   }
 }

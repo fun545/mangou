@@ -50,6 +50,7 @@
       <loading :loadingFlag="loadingFlag"></loading>
     </div>
     <m-footer></m-footer>
+    <to-top :scrollObj="listSroll" v-if="scrollTop>=800"></to-top>
   </div>
 </template>
 
@@ -62,6 +63,7 @@
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   import loading from '../components/loading'
+  import toTop from '../components/toTop'
   export default {
     name: 'next',
     components: {
@@ -72,7 +74,8 @@
       SideBar,
       SideItem,
       BScroll,
-      loading
+      loading,
+      toTop
     },
     data () {
       return {
@@ -88,7 +91,8 @@
         isLoad: true,
         menuSroll: {},
         listSroll: {},
-        loadingFlag: true
+        loadingFlag: true,
+        scrollTop: ''
       }
     },
     created () {
@@ -163,6 +167,7 @@
         })
         this.listSroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
+          this.scrollTop = Math.abs(Math.round(pos.y))
         })
       },
       _calculateHeight () {

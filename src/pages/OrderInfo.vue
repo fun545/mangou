@@ -255,7 +255,7 @@
           :totalPrice="orderDetail.totalPrice"
           :freight="freight"
           :discount="discount"
-          :goodsTotalPrice="orderDetail.goodsTotalPrice"
+          :goodsTotalPrice="orderDetail.goodsTotalPrice.toFixed(1)"
         ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
         <div v-if="logist">

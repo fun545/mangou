@@ -53,7 +53,7 @@
   import { Tab, TabItem, LoadMore } from 'vux'
   import oneColumn from '../components/oneColumn'
   import BScroll from 'better-scroll'
-  import { loadMore } from '../util/util'
+  import { loadMoreMehod } from '../util/util'
   import mHeader from '../components/header'
   export default{
     name: 'collect',
@@ -175,7 +175,7 @@
           disablePointer: false,
           probeType: 3
         })
-        loadMore(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext)
+        loadMoreMehod(this.nextScroll, this.$refs.contentNext, this.loadMoreCallBackNext)
       },
       _initScrollThis () {
         this.thisScroll = new BScroll(this.$refs.contentThis, {
@@ -184,7 +184,7 @@
           disablePointer: false,
           probeType: 3
         })
-        loadMore(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
+        loadMoreMehod(this.thisScroll, this.$refs.contentThis, this.loadMoreCallBackThis)
       },
       async loadMoreCallBackNext () {
         this.loadMoreFlagNext = true

@@ -39,13 +39,14 @@
           <div class="goods-list">
             <div class="item" v-for="(item, index) in filterListThis" :key="index">
               <div class="pic">
-                <lazy-image
-                  :src='item.goodsImgUrl'
-                  :placeholder='$store.state.defaultImg'
-                  :events="['touchmove']"
-                  width="100%"
-                  height="100%"
-                ></lazy-image>
+                <!--<lazy-image-->
+                <!--:src='item.goodsImgUrl'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
+                <!--width="100%"-->
+                <!--height="100%"-->
+                <!--&gt;</lazy-image>-->
+                <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>
@@ -138,13 +139,14 @@
           <div class="goods-list">
             <div class="item" v-for="(item, index) in filterListNext" :key="index">
               <div class="pic">
-                <lazy-image
-                  :src='item.goodsImgUrl'
-                  :placeholder='$store.state.defaultImg'
-                  :events="['touchmove']"
-                  width="100%"
-                  height="100%"
-                ></lazy-image>
+                <!--<lazy-image-->
+                <!--:src='item.goodsImgUrl'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
+                <!--width="100%"-->
+                <!--height="100%"-->
+                <!--&gt;</lazy-image>-->
+                <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>
@@ -214,7 +216,8 @@
     <div class="footer">
       合计： <span
       class="theme-color">{{totalPrice}}</span>
-      <div class="bt f-r t-c" @click="confirm">
+      <!--@click="confirm"-->
+      <div class="bt f-r t-c">
         确认下单
       </div>
     </div>
@@ -224,13 +227,14 @@
 <script>
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
-  import { wxConfig } from '../util/util'
+  import { wxConfig, bus } from '../util/util'
   export default{
     name: 'confirmOrder',
     components: {
       mHeader,
       BScroll,
-      wxConfig
+      wxConfig,
+      bus
     },
     data () {
       return {
@@ -263,11 +267,57 @@
       }
     },
     created () {
+//      var info = this.$store.state.fastBuyInfo
+//      console.log(info)
+//      this.thisGoodsList = info.carList[0].shandianShop.goodsList
+//      console.log(this.thisGoodsList)
+//      this.Thisfreight = info.carList[0].shandianShop.freight
+//      this.shippingInfo = info.shippingInfo
+//      this.selectedTotalCountThis = info.totalBuyCount
+//      this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
       // 初始化Bscroll
-      console.log(this.cartInfo)
+//      bus.$on('fastBuyGoodsDetail', () => {
+//        console.log(333333)
+//        var info = this.$store.state.fastBuyInfo
+//        console.log(info)
+//        this.thisGoodsList = info.carList[0].shandianShop.goodsList
+//        console.log(this.thisGoodsList)
+//        this.Thisfreight = info.carList[0].shandianShop.freight
+//        this.shippingInfo = info.shippingInfo
+//        this.selectedTotalCountThis = info.totalBuyCount
+//        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
+//      })
+//      console.log(this.$route.query)
+      if (this.$route.query.fastBuy === 'fastBuy') {
+//        console.log(val)
+        var info = this.$store.state.fastBuyInfo
+        console.log(info)
+        this.thisGoodsList = info.carList[0].shandianShop.goodsList
+        console.log(this.thisGoodsList)
+        this.Thisfreight = info.carList[0].shandianShop.freight
+        this.shippingInfo = info.shippingInfo
+        this.selectedTotalCountThis = info.totalBuyCount
+        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
+      }
+//      bus.$on('fastBuyGoodsDetail', (val) => {
+//        console.log(val)
+//        var info = this.$store.state.fastBuyInfo
+//        console.log(info)
+//        this.thisGoodsList = info.carList[0].shandianShop.goodsList
+//        console.log(this.thisGoodsList)
+//        this.Thisfreight = info.carList[0].shandianShop.freight
+//        this.shippingInfo = info.shippingInfo
+//        this.selectedTotalCountThis = info.totalBuyCount
+//        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
+//      })
       this.$nextTick(() => {
         this._initScroll()
       })
+    },
+    mounted () {
+//      this.$nextTick(() => {
+//        this._initScroll()
+//      })
     },
     methods: {
       _initScroll () {
@@ -372,8 +422,8 @@
           token: localStorage.getItem('m-token'),
           orderStr: orderJsonStr
         }).then((res) => {
-          console.log(res.data)
-          console.log(res.data)
+//          console.log(res.data)
+//          console.log(res.data)
           if (res.data.code === 100) {
             this.$store.commit('saveOrderNumList', res.data.orderNumList)
             /* this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
@@ -393,7 +443,10 @@
         })
       },
       wxPayCallBack (res) {
-        console.log(res, 'callbal')
+//        console.log(res, 'callbal')
+      },
+      fastBuyGoodsDetail (val) {
+        console.log(val)
       }
     },
     computed: {

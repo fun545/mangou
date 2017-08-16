@@ -92,6 +92,11 @@
 
               </div>
             </div>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more" v-if="loadMoreFlag"></load-more>
           </div>
         </div>
         <loading :loadingFlag="loadingFlag"></loading>
@@ -99,21 +104,23 @@
     </div>
     <m-footer></m-footer>
     <ball></ball>
+    <to-top :scrollObj="listSroll" v-if="scrollTop>=800"></to-top>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
-  import { Flexbox, FlexboxItem } from 'vux'
+  import { Flexbox, FlexboxItem, LoadMore } from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   import Tabs from '../components/Tabs'
   import TabsItem from '../components/TabsItem'
   import shopCarButton from '../components/buyCarButton'
-  import { loadMore } from '../util/util'
+  import { loadMoreMehod } from '../util/util'
   import ball from '../components/ball'
   import loading from '../components/loading'
+  import toTop from '../components/toTop'
   export default {
     name: 'this',
     components: {
@@ -126,9 +133,11 @@
       Tabs,
       TabsItem,
       shopCarButton,
-      loadMore,
+      loadMoreMehod,
       ball,
-      loading
+      loading,
+      LoadMore,
+      toTop
     },
     data () {
       return {
@@ -158,7 +167,8 @@
         pageIndex: 1,
         loadingFlag: true,
         fastSortGoodsList: [], // 速选商品
-        fastSortFlag: false // 是否有速选商品
+        fastSortFlag: false, // 是否有速选商品
+        loadMoreFlag: false
       }
     },
     async created () {
@@ -375,7 +385,7 @@
           probeType: 3
         })
         // 加载更多
-        loadMore(this.listSroll, this.$refs.goodsListWrap, this.loadMore, this.onScroll)
+        loadMoreMehod(this.listSroll, this.$refs.goodsListWrap, this.loadMore, this.onScroll)
       },
 //      _initListScroll () {
 //        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
@@ -386,6 +396,7 @@
 //        })
 //      },
       loadMore () {
+        this.loadMoreFlag = true
         if (!this.scrollDisable) {
           this.scrollDisable = true
           this.pageIndex += 1
@@ -413,8 +424,10 @@
                   this.listSroll.refresh()
                 }, 50)
               } else {
-                this.loadText = '到底啦~'
-                this.moreIconFlag = false
+//                this.loadText = '到底啦~'
+//                this.moreIconFlag = false
+                this.$vux.toast.text('没有跟多商品了', 'center')
+                this.loadMoreFlag = false
               }
               this.scrollDisable = false
             }
@@ -422,16 +435,17 @@
         }
       },
       // 滚动回调函数
-      onScroll (pos) {
+      onScroll (pos, scrollTop) {
         if (this.listSroll.directionY === 1) {
           this.scrollFlag = true
         }
         if (pos.y >= 0) {
           this.scrollFlag = false
         }
+        this.scrollTop = scrollTop
       },
       goDetail (id) {
-        console.log(22)
+//        console.log(22)
         this.$router.push({
           path: '/goods_detail',
           query: {goodsId: id}

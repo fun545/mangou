@@ -42,8 +42,9 @@
 
 <style scoped lang="less">
   @import "../common/style/sum";
+  @import "../common/style/varlable";
   .tabbar-item {
-    flex-grow: 1;
+    .w(150);
     .pt(12);
     color: #957b70;
     text-align: center;
@@ -51,7 +52,7 @@
   }
 
   .item-active {
-    color: #f75439;
+    color: @theme-color;
   }
 
   .item-badge {

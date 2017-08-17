@@ -12,9 +12,9 @@
             <span slot="label" class="iconfont">&#xe618;</span>
           </x-input>
         </group>
-        <get-code :codeType="type"></get-code>
+        <get-code :codeType="type"  @getCode="receiveCode" :tel="userAccount"></get-code>
         <group gutter="0" class="group">
-          <x-input v-model="setPassword" placeholder="请设置密码" type="password">
+          <x-input v-model="setPassword" placeholder="请输入6-10英文字母、数字或者下划线" type="password">
             <span slot="label" class="iconfont">&#xe63e;</span>
           </x-input>
         </group>
@@ -24,9 +24,10 @@
           </x-input>
         </group>
       </div>
+      <slot name="agree"></slot>
       <div class="bt-box">
         <x-button class="submit-bt" @click.native="btClick">
-          登录
+          {{btText}}
         </x-button>
       </div>
     </div>
@@ -42,17 +43,40 @@
       return {
         userAccount: '',
         setPassword: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        code: ''
       }
     },
     props: {
       header: String,
-      post: Function,
-      type: Number
+      postAjax: Function,
+      type: Number,
+      btText: String
     },
     methods: {
       btClick () {
-        this.$emit('userMsg', {userAccount: this.userAccount, setPassword: this.setPassword})
+        // 手机号码正则
+        var telReg = /^1[0-9]{10}$/
+        // 密码正则
+        var passReg = /^[a-zA-Z_0-9]{6,10}$/
+        console.log(telReg.test(this.userAccount))
+        if (!telReg.test(this.userAccount)) {
+          this.$vux.toast.text('请输入正确手机号')
+          return
+        }
+        if (!passReg.test(this.setPassword)) {
+          this.$vux.toast.text('请输入6-10英文字母、数字或者下划线')
+          return
+        }
+        if (this.confirmPassword !== this.setPassword) {
+          this.$vux.toast.text('两次输入密码不一致')
+          return
+        }
+//        this.$emit('userMsg', {userAccount: this.userAccount, setPassword: this.setPassword})
+        this.postAjax(this.userAccount, this.code, this.setPassword)
+      },
+      receiveCode (val) {
+        this.code = val
       }
     }
   }
@@ -150,7 +174,7 @@
           .h(98);
           background: @theme-color;
           color: #fff;
-          .fs(28);
+          .fs(33);
         }
       }
     }

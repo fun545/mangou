@@ -8,7 +8,7 @@ export default new Router({
     {
       /* 默认 */
       path: '/',
-      component: require('../pages/Home')
+      redirect: '/home'
     },
     {
       /* 首页 */
@@ -234,6 +234,16 @@ export default new Router({
       /* 订单页面中的 去支付 */
       path: '/okPay',
       component: require('../pages/okPay')
+    },
+    {
+      /* 订单页面中的 去支付 */
+      path: '/registAreement',
+      component: require('../pages/registAreement')
+    },
+    {
+      /* 订单页面中的 去支付 */
+      path: '/searchVillage',
+      component: require('../pages/searchVillage')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

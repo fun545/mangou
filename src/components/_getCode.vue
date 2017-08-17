@@ -30,19 +30,36 @@
     },
     methods: {
       getCodeBt () {
+        // 手机号码正则
+        var telReg = /^1[0-9]{10}$/
+        if (!telReg.test(this.tel)) {
+          this.$vux.toast.text('请输入正确手机号')
+          return
+        }
         if (!this.hasSendFlag) {
-          this.hasSendFlag = true
           this.post('/user/getCode', {phone: this.tel, type: this.codeType}).then((res) => {
-            console.log(res)
-          })
-          this.timer = setInterval(() => {
-            this.time--
-            if (this.time === 0) {
-              this.hasSendFlag = false
-              this.time = 60
-              clearInterval(this.timer)
+            console.log(res.data)
+            if (res.data.code === 100) {
+              console.log(22222)
+              this.hasSendFlag = true
+              this.timer = setInterval(() => {
+                this.time--
+                if (this.time === 0) {
+                  this.hasSendFlag = false
+                  this.time = 60
+                  clearInterval(this.timer)
+                }
+              }, 1000)
             }
-          }, 1000)
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'center')
+              return
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'center')
+              return
+            }
+          })
         }
       },
       onInput () {

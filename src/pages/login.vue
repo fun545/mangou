@@ -1,5 +1,5 @@
 <template>
-  <div class="login-view">
+  <div class="login-view" @touchmove.prevent>
     <router-link to="/register">
       <div class="register">
         <span class="text">注册</span>
@@ -244,6 +244,7 @@
               }
             }
             .get-code-bt {
+              .w(148);
               .h(49);
               .pl(14);
               .pr(14);

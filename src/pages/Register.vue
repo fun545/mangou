@@ -1,156 +1,89 @@
 <template>
-  <div class="register-view">
-    <div class="register-header t-c">
-      <span class="back iconfont f-l" @click="$router.back(-1)">&#xe600;</span>
-      <span class="t-c">注册</span>
-    </div>
-    <div class="logo"></div>
-    <div class="content">
-      <div class="input-box">
-        <group gutter="0" class="group">
-          <x-input v-model="tel" placeholder="手机号" type="tel">
-            <span slot="label" class="iconfont">&#xe618;</span>
-          </x-input>
-        </group>
-        <get-code :codeType="type"></get-code>
-        <group gutter="0" class="group">
-          <x-input v-model="password" placeholder="请设置密码" type="password">
-            <span slot="label" class="iconfont">&#xe63e;</span>
-          </x-input>
-        </group>
-        <group gutter="0" class="group last-group">
-          <x-input v-model="confirmPassword" placeholder="请确认密码" type="password">
-            <span slot="label" class="iconfont">&#xe63e;</span>
-          </x-input>
-        </group>
+  <div class="regist" @touchmove.prevent>
+    <!--<forget header="忘记密码" :type="type" @userMsg="userMsg"></forget>-->
+    <!--<forget></forget>-->
+    <forget-page header="注册" :type="1" btText="注册" :postAjax="postAjax">
+      <div class="agreement-box" slot="agree">
+        <check-icon type="plain" class="agree-icon" :value.sync="agreeFlag"></check-icon>
+        同意
+        <router-link to="/registAreement">
+          <a class="agreement-content">漫购注册协议</a>
+        </router-link>
       </div>
-      <check-icon :value.sync="defaultFlag">Do you agree? ({{ defaultFlag }})</check-icon>
-      <div class="bt-box">
-        <x-button class="submit-bt" @click.native="test">
-          登录
-        </x-button>
-      </div>
-    </div>
+    </forget-page>
   </div>
 </template>
 
 <script>
-  import { XHeader, Group, XInput, XButton, CheckIcon } from 'vux'
-  import getCode from '../components/_getCode'
+  import forgetPage from '../components/registerForget.vue'
+  import { md5, CheckIcon } from 'vux'
   export default {
-    name: 'register',
-    components: {XHeader, Group, XInput, XButton, getCode, CheckIcon},
+    name: 'forget',
+    components: {forgetPage, md5, CheckIcon},
     data () {
       return {
-        type: 1,
-        tel: '',
-        password: '',
-        confirmPassword: '',
-        defaultFlag: false
+        agreeFlag: true
       }
     },
-    created () {},
+//    created () {},
     methods: {
-      test () {}
+//      userMsg (res) {
+//        console.log(res)
+//      },
+      postAjax (tel, code, pass) {
+        console.log(tel, code, pass)
+        this.post('/user/insertUser', {
+//          token: this.token,
+          phone: tel,
+          userPwd: pass,
+          type: 1,
+          cityId: localStorage.getItem('m-cityId'),
+          code: md5(code)
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.$vux.toast.text('注册成功', 'center')
+            this.$router.push('/user')
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+        })
+      }
     }
   }
 </script>
 
-<style lang="less">
-  @import "../common/style/varlable";
+<style lang="less" scoped>
   @import "../common/style/sum";
-  @import "../common/style/mlxin";
+  @import "../common/style/varlable";
 
-  .register-view {
-    .register-header {
-      .h(92);
-      .lh(92);
-      background: #fff;
-      color: #403f3f;
-      box-sizing: border-box;
-      .pl(30);
-      .fs(40);
-      .back {
-        .h(92);
-        .lh(92);
-        .fs(40);
-        font-weight: 700;
+  .regist {
+    .register-view .content .bt-box {
+      border-top:0;
+      .pt(30);
+    }
+  }
+
+  .agreement-box {
+    border-top: 2px solid #eee;
+    color: @font-color-m;
+    .mt(20);
+    .pl(20);
+    .pt(10);
+    .agree-icon {
+      .weui-icon {
+        .fs(29);
       }
     }
-    .logo {
-      .h(352);
-      width: 100%;
-      .bg-image('../../assets/zhuce-BG');
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
-    }
-    .content {
-      .input-box {
-        .group {
-          .weui-cells {
-            background: none !important;
-            .vux-x-input {
-              .pt(24) !important;
-              .pb(24) !important;
-            }
-            &:before {
-              border-top: none;
-            }
-            input {
-              text-indent: 12px;
-              .fs(25);
-              color: @font-color-m;
-            }
-          }
-          .iconfont {
-            color: #555;
-            .fs(30);
-          }
-        }
-        .pass-group {
-          .weui-cells {
-            .vux-x-input {
-              position: relative;
-            }
-          }
-          .get-code-bt {
-            .h(49);
-            .pl(14);
-            .pr(14);
-            background: @theme-color;
-            color: #fff;
-            position: absolute;
-            .r(32);
-            top: 50%;
-            .mt(-24.5);
-            .fs(22);
-            .lh(24);
-            &.has-send {
-              background: #d2d2d2;
-              color: #fefefe;
-            }
-          }
-        }
-        .last-group {
-          .weui-cells {
-            &:after {
-              display: none;
-            }
-          }
-        }
-      }
-      .bt-box {
-        .pl(30);
-        .pr(30);
-        border-top: 5px solid #f2f1f1;
-        .pt(46);
-        .submit-bt {
-          .h(98);
-          background: @theme-color;
-          color: #fff;
-          .fs(28);
-        }
-      }
+    .agreement-content {
+      color: @font-color-m;
+      .fs(25);
+      text-decoration: underline;
     }
   }
 </style>

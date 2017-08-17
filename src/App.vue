@@ -17,11 +17,11 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.eot');
-    src: url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.woff') format('woff'),
-    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_284244_ubnnpx3o8paurf6r.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.eot');
+    src: url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.woff') format('woff'),
+    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.svg#iconfont') format('svg');
   }
 
   .weui-tab__panel {
@@ -42,6 +42,7 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     font: 14px/1.5  'PingFang SC', 'Microsoft Yahei', 'Kai', Arial, sans-serif, Impact;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    .fs(25);
   }
 
   .app {

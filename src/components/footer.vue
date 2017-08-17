@@ -39,14 +39,14 @@
       TabbarItem
 //      ball
     },
-    data () {
-      return {
-        total: -1
-      }
-    },
+//    data () {
+//      return {
+//        total: -1
+//      }
+//    },
     created () {
 //      this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))
-      this.total = this.$store.state.totalBuyCount
+//      this.total = this.$store.state.totalBuyCount
       console.log('footer')
     },
     computed: {

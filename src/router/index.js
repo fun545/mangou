@@ -244,6 +244,11 @@ export default new Router({
       /* 订单页面中的 去支付 */
       path: '/searchVillage',
       component: require('../pages/searchVillage')
+    },
+    {
+      /* 订单页面中的 去支付 */
+      path: '/chooseCity',
+      component: require('../pages/chooseCity')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

@@ -166,6 +166,7 @@
       }
     },
     created () {
+      console.log(this.$store.state.totalBuyCount)
       // 搜索关键词
       this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
         if (res.data.code === 100) {

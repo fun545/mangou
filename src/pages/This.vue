@@ -24,7 +24,7 @@
       <!--<div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>-->
     </div>
     <div class="location-search-box" v-if="scrollFlag">
-      <router-link :to="{path:'/location',query:{path:'/this'}}" class="location">{{villageName}}</router-link>
+      <a class="location" @click="goLocation">{{villageName}}</a>
       <a class="search iconfont" @click="goSearch">&#xe639;</a>
     </div>
     <!-- 商品列表 -->
@@ -89,7 +89,6 @@
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
                 <shop-car-button :goods="item" class="this-bt"></shop-car-button>
-
               </div>
             </div>
             <load-more
@@ -251,6 +250,28 @@
       // 跳转搜索页面
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
+      },
+      goLocation () {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '切换小区会清空购物车中即时送商品，您确定切换么？',
+          onConfirm () {
+            _this.post('/car/deleteUserCarJs', {
+              token: _this.token,
+              userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.code === 101) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+              }
+              if (res.data.code === 102) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+              }
+            })
+            _this.$router.push({path: '/location', query: {path: '/this'}})
+          }
+        })
       },
 //      getSecondMenu (id) {
 //        this.post('/classify/secondClassifyList', {

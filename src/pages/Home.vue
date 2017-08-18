@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrap" @touchmove.prevent>
     <div class="location-search-box" ref="header">
-      <router-link :to="{path:'/location',query:{path:'/home'}}" class="location">{{villageName}}</router-link>
+      <a class="location" @click="goLocation">{{villageName}}</a>
       <a class="search iconfont" @click="goSearch">&#xe639;</a>
     </div>
     <div class="home-view" ref="homeView">
@@ -232,6 +232,12 @@
       }
     },
     created () {
+      if (!localStorage.getItem('m-villageName')) {
+        this.$router.push({path: '/chooseCity'})
+      } else {
+        this.villageName = localStorage.getItem('m-villageName')
+      }
+      // 获取首页数据
       this.post('/first/getFirst', {
         cityId: this.cityId,
         areaId: this.areaId,
@@ -282,11 +288,6 @@
           })
         }
       })
-      if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/location'})
-      } else {
-        this.villageName = localStorage.getItem('m-villageName')
-      }
       /* 标签商品 */
       this.post('/goods/getLabelGoods', {}).then((res) => {
         if (res.data.code === 100) {
@@ -301,6 +302,28 @@
       })
     },
     methods: {
+      goLocation () {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '切换小区会清空购物车中即时送商品，您确定切换么？',
+          onConfirm () {
+            _this.post('/car/deleteUserCarJs', {
+              token: _this.token,
+              userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.code === 101) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+              }
+              if (res.data.code === 102) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+              }
+            })
+            _this.$router.push({path: '/location', query: {path: '/home'}})
+          }
+        })
+      },
       goSearch () {
         this.$router.push({
           path: '/search',

@@ -3,7 +3,7 @@
     <m-header title="我的收藏">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
       <!--<span class="edit" slot="right">-->
-        <!--编辑-->
+      <!--编辑-->
       <!--</span>-->
     </m-header>
     <div class="search-bottom-wrap">
@@ -21,7 +21,7 @@
         <!--次日达-->
         <div ref="contentNext" class="contentWrap next" :class="{'active':shopType===1,'no-goods':noGoodsFlagNext}">
           <div>
-            <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content"></one-column>
+            <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content" :isCollect="isCollect"></one-column>
             <load-more
               :tip="loadText"
               :show-loading="moreIconFlag"
@@ -34,7 +34,7 @@
         <!--及时送-->
         <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
           <div>
-            <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"></one-column>
+            <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content" :isCollect="isCollect"></one-column>
             <load-more
               :tip="loadText"
               :show-loading="moreIconFlag"
@@ -89,7 +89,8 @@
         loadMoreFlagThis: false,
         loadMoreFlagNext: false,
         noGoodsFlagThis: false,
-        noGoodsFlagNext: false
+        noGoodsFlagNext: false,
+        isCollect: true
       }
     },
     created () {

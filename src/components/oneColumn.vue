@@ -22,7 +22,7 @@
           <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
         </div>
       </div>
-      <buyCarButton :goods="item" v-if="item.isCollect===1"></buyCarButton>
+      <buyCarButton :goods="item" v-if="!isCollect"></buyCarButton>
     </li>
   </ul>
 </template>
@@ -35,6 +35,10 @@
       shopType: {
         type: Number,
         default: 1
+      },
+      isCollect: {
+        type: Boolean,
+        default: false
       }
     },
     components: {buyCarButton},

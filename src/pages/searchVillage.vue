@@ -1,14 +1,162 @@
 <template>
-  <div>
-    搜索小区页面
+  <div class="search-village-box" @touchmove.prevent>
+    <div class="search-box">
+      <div class="input-box d-ib">
+        <div class="city d-ib" @click="$router.push({path:'/chooseCity',query:{path:'/searchVillage'}})">
+          长沙<i class="iconfont icon">&#xe674;</i>
+        </div>
+        <div class="input d-ib">
+          <i class="iconfont search-icon">&#xe639;</i>
+          <input type="text" placeholder="请输入小区名称" v-model="keyName">
+        </div>
+      </div>
+      <span class="back" @click="$router.push('/location')">取消</span>
+    </div>
+    <div class="content">
+      <div class="item" v-for="(item,index) in list" :key="index" @click="curVillage(item)">
+        {{item.villageName}}
+      </div>
+      <div class="noThing t-c" v-if="list.length<=0">
+        亲，没有搜索到相关信息
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 
-  export default {}
+  export default {
+    name: 'searchVillage',
+    data () {
+      return {
+        list: [],
+        keyName: '', // 搜索关键字
+        cityName: '长沙', // 默认长沙
+        cityId: 1 // 默认长沙
+      }
+    },
+    created () {
+      this.cityId = localStorage.getItem('m-cityId')
+      this.cityName = localStorage.getItem('m-cityName')
+      console.log(this.cityId, this.cityName)
+//      this.post('/village/villageList', {})
+//      this.getCity()
+    },
+    methods: {
+      searchVillage () {
+        if (!this.keyName) {
+          return
+        }
+        this.post('/village/getAllVillage', {
+          cityId: this.cityId,
+          keyName: this.keyName
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.list = res.data.villageList
+          }
+        })
+      },
+      curVillage (data) {
+        this.village = data.villageName
+        localStorage.setItem('m-cityId', data.cityId)
+        localStorage.setItem('m-areaId', data.areaId)
+        localStorage.setItem('m-villageId', data.villageId)
+        localStorage.setItem('m-villageName', data.villageName)
+//        this.$router.push({path: '/home'})
+        if (!this.$route.query.path) {
+          this.$router.replace('/home')
+          window.location.reload()
+        }
+        this.$router.replace(this.$route.query.path)
+        window.location.reload()
+      }
+    },
+    watch: {
+      keyName () {
+        this.searchVillage()
+      }
+    }
+  }
 </script>
 
-<style>
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
+  .search-village-box {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+  }
+
+  .search-box {
+    .pl(25);
+    .pr(25);
+    .pt(20);
+    .pb(20);
+    .fs(28);
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    .input-box {
+      background: @bg-color;
+      .w(608);
+      .h(58);
+      .lh(58);
+      .mr(20);
+      border: 1px solid #eee;
+      border-radius: 5px;
+      .city {
+        height: 100%;
+        .pl(25);
+        background: #fff;
+        .icon {
+          .fs(20);
+          .pl(12);
+          .pr(12);
+        }
+      }
+      .input {
+        .search-icon {
+          .fs(27);
+          color: @font-color-input;
+          .pl(18);
+          .pr(18);
+        }
+        input {
+          background: @bg-color;
+          border: none;
+          .fs(28);
+          display: inline-block;
+          height: 100%;
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .t(104);
+    .item {
+      .h(90);
+      .lh(90);
+      .fs(32);
+      .pl(35);
+      border-bottom: 1px solid #eee;
+      color: @font-color-m;
+    }
+    .noThing {
+      position: absolute;
+      width: 100%;
+      .h(40);
+      .lh(40);
+      color: @font-color-input;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
 </style>

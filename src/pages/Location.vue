@@ -15,7 +15,7 @@
           </div>
         </div>
         <!--定位当前-->
-        <div class="current-position t-c" @click="goCurrentVillage">
+        <div class="current-position t-c" @click="curVillage(villageList[0])">
           <span class="iconfont">&#xe656;</span>
           定位到当前位置
         </div>
@@ -24,39 +24,24 @@
           <div class="title">
             常用收获地址
           </div>
-          <div class="item">
+          <div class="item" v-for="(item,index) in addressList" :key="index" @click="curVillage(item)">
             <div class="top">
-              <span class="name">小玉米</span>
-              <span class="tel">15258195623</span>
+              <span class="name">{{item.shippingName}}</span>
+              <span class="tel">{{item.shippingPhone}}</span>
             </div>
-            <div class="bottom">长沙市开福区</div>
-          </div>
-          <div class="item">
-            <div class="top">
-              <span class="name">小玉米</span>
-              <span class="tel">15258195623</span>
-            </div>
-            <div class="bottom">长沙市开福区</div>
-          </div>
-          <div class="item">
-            <div class="top">
-              <span class="name">小玉米</span>
-              <span class="tel">15258195623</span>
-            </div>
-            <div class="bottom">长沙市开福区</div>
+            <div class="bottom">{{item.cityName + item.areaName + item.villageName + item.address}}</div>
           </div>
         </div>
         <!--附近小区-->
         <div class="current-village">
           <group title="附近配送到小区">
-            <cell title="小区一" is-link></cell>
-            <cell title="小区一" is-link></cell>
-            <cell title="小区一" is-link></cell>
+            <cell :title="item.villageName" is-link v-for="(item,index) in villageList" :key="index"
+                  @click.native="curVillage(item)"></cell>
           </group>
         </div>
         <!--没有登录时 登录按钮-->
         <div class="t-c login-bt-wrap" v-if="!token">
-          <div class="login-bt">
+          <div class="login-bt" @click="$router.push('/login')">
             登录
           </div>
           登录查看已有收获地址
@@ -70,29 +55,26 @@
   import { Alert, Group, Cell } from 'vux'
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
+  import { MP } from '../util/map'
   export default {
     name: 'location',
     components: {Alert, mHeader, Group, Cell, BScroll},
     data () {
       return {
         search: '',
-        city: '长沙',
-        area: '开福区',
         villageList: '',
         village: '',
-        isOk: false,
-        alertShow: false,
-        alertTitle: '定位失败',
-        alertContent: '请手动搜索',
-        token: localStorage.getItem('m-token')
+        token: localStorage.getItem('m-token'),
+        userlocation: {lng: '', lat: ''}, // 用户位置
+        addressList: [] // 收获地址
       }
     },
-    created () {
-      console.log(localStorage.getItem('m-token'))
-      this.$nextTick(() => {
-        this._initScroll()
-      })
-      this.getPosition()
+    async created () {
+      await this.getPosition()
+      this.goCurrentVillage()
+      if (this.token) {
+        this.getAddress()
+      }
 //      var curPosition = JSON.parse(localStorage.getItem('m-CurrentPosition'))
 //      console.log(curPosition)
 //      if (curPosition) {
@@ -112,34 +94,53 @@
 //      }
     },
     methods: {
-      curVillage (data) {
+      // 选择当前小区
+      async curVillage (data) {
         this.village = data.villageName
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-//        this.$router.push({path: '/home'})
+        // 更新storeId
+        await this.getStoreId()
         if (!this.$route.query.path) {
           this.$router.replace('/home')
           window.location.reload()
         }
+        this.$router.push(this.$route.query.path)
         window.location.reload()
-        this.$router.replace(this.$route.query.path)
       },
-      searchLocation () {
-        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
-
-        this.$vux.alert.show({content: `您的搜索内容是${this.search}`})
-      },
-      go () {
-        this.$router.push({path: '/manualLocation', query: this.$route.query})
-      },
+//      searchLocation () {
+//        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
+//
+//        this.$vux.alert.show({content: `您的搜索内容是${this.search}`})
+//      },
+//      go () {
+//        this.$router.push({path: '/manualLocation', query: this.$route.query})
+//      },
       // 跳转搜索
       goSearch () {
         this.$router.push('/searchVillage')
       },
       // 获取当前位置信息
-      getPosition () {},
+      getPosition () {
+        var _this = this
+        /* eslint-disable no-undef */
+        MP().then(BMap => {
+          var geolocation = new BMap.Geolocation()
+          geolocation.getCurrentPosition(function (r) {
+            if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+              _this.userlocation = {
+                lng: r.point.lng,
+                lat: r.point.lat
+              }
+              var c = JSON.stringify(_this.userlocation)
+              console.log(_this.userlocation)
+              localStorage.setItem('m-userlocation', c)
+            }
+          })
+        })
+      },
       // 跳转添加收货地址
       addAddress () {
         if (!this.token) {
@@ -150,9 +151,10 @@
       },
       // 定位到当前小区
       goCurrentVillage () {
+        // 请求数据获取附近小区
         this.post('/village/villageList', {
-          longitude: this.longitude,
-          latitude: this.latitude,
+          longitude: this.userlocation.lng,
+          latitude: this.userlocation.lat,
           source: 1
         }).then((res) => {
           if (res.data.code === 100) {
@@ -160,10 +162,49 @@
             this.villageList = res.data.villageList
             console.log(this.villageList)
           }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+          this.$nextTick(() => {
+            this._initScroll()
+          })
+        })
+      },
+      // 获取收货地址
+      getAddress () {
+        this.post('/shipping/getAddressList', {
+          token: this.token
+        }).then((res) => {
+          console.log(res)
+          if (res.data.code === 100) {
+            this.addressList = res.data.shippingAddressList
+          }
+        })
+      },
+      // 更新storeId
+      async getStoreId () {
+        await this.post('/first/getFirst', {
+          cityId: localStorage.getItem('m-cityId'),
+          areaId: localStorage.getItem('m-areaId'),
+          villageId: localStorage.getItem('m-villageId'),
+          source: 1
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+            /* 店铺数据 */
+            this.storeList = res.data.firstInfo.storeList
+            localStorage.setItem('m-depotId', this.storeList[0].storeId)
+            localStorage.setItem('m-shopId', this.storeList[1].storeId)
+            console.log(this.storeList)
+          }
         })
       },
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content)
+        this.contentScroll = new BScroll(this.$refs.content, {click: true})
       }
     }
   }

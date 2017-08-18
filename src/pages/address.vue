@@ -1,28 +1,28 @@
 <template>
-  <div class="address">
+  <div class="address" @touchmove.prevent>
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="address-list">
-      <div class="item">
+      <div class="item" v-for="(item,index) in addressList" :key="index">
         <div class="top">
           <div class="user-msg">
-            <span>小玉米</span>
-            <span class="tel">15258195623</span>
+            <span>{{item.shippingName}}</span>
+            <span class="tel">{{item.shippingPhone}}</span>
           </div>
           <div class="address">
-            收货地址是地方都是反倒是第
+            {{item.cityName + item.areaName + item.villageName + item.address}}
           </div>
         </div>
         <div class="bt">
-          <div class="left f-l">
-            <div class="icon d-ib" @click="defaultFlag=!defaultFlag">
-              <i class="iconfont" v-if="!defaultFlag">&#xe635;</i>
-              <i class="iconfont selected" v-if="defaultFlag">&#xe634;</i>
+          <div class="left f-l" @click="setDefault(item)">
+            <div class="icon d-ib">
+              <i class="iconfont" v-if="item.isDefault!==1">&#xe635;</i>
+              <i class="iconfont selected" v-if="item.isDefault===1">&#xe634;</i>
             </div>
-            <span :class="{'theme-color':defaultFlag}">设为默认</span>
+            <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
           </div>
-          <div class="right" @click="$router.push({path:'/edit_address'})">
+          <div class="right" @click="$router.push({path:'/edit_address',query:{curEdt:item}})">
             <i class="iconfont">&#xe602;</i>
             编辑
           </div>
@@ -45,15 +45,44 @@
     data () {
       return {
         title: '收货地址',
-        defaultFlag: false
+        defaultFlag: false,
+        addressList: [],
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
-      this.post('/shipping/getAddressList', {
-        token: localStorage.getItem('m-token')
-      }).then((res) => {
-        console.log(res.data)
-      })
+      this.getAddress()
+    },
+    methods: {
+      // 获取收货地址
+      getAddress () {
+        this.post('/shipping/getAddressList', {
+          token: this.token
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.addressList = res.data.shippingAddressList
+          }
+        })
+      },
+      async setDefault (item) {
+        await this.post('/shipping/updateAddress', {
+          token: this.token,
+          isDefault: 1,
+          shippingId: item.shippingId
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {}
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+        })
+        this.getAddress()
+      }
     }
   }
 </script>

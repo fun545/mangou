@@ -2,21 +2,22 @@
   <div class="edit-address">
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      <span slot="right" class="save" @click="saveAddress">保存</span>
+      <span slot="right" class="save" @click="deleteAddress">删除</span>
     </m-header>
     <group class="userInfo">
-      <x-input title="收货人" name="username" is-type="china-name" v-model="ss"></x-input>
-      <x-input title="手机号码" name="mobile" keyboard="number" is-type="china-mobile"></x-input>
+      <x-input title="收货人" name="username" is-type="china-name" v-model="name"></x-input>
+      <x-input title="手机号码" name="mobile" keyboard="number" is-type="china-mobile"
+               v-model="phone"></x-input>
       <x-address title="选择地区" v-model="value" :list="addressList" placeholder="请选择地址"></x-address>
       <x-textarea title="详细地址" :show-counter="false" :rows="2"
                   autosize v-model="detailAddrss"></x-textarea>
     </group>
     <group class="setDefault">
-      <x-switch title="设为默认地址" v-model="defaultFlag"></x-switch>
+      <x-switch title="设为默认地址" v-model="defaultFlag" @on-change="setDefault"></x-switch>
     </group>
-    <group class="delet">
-      <cell title="删除地址" @click="delAddress"></cell>
-    </group>
+    <div class="delet t-c" @click="saveAddress">
+      保存
+    </div>
   </div>
 </template>
 
@@ -37,7 +38,8 @@
     data () {
       return {
         title: '修改收货地址',
-        ss: '2222',
+        phone: '2222',
+        name: '',
         value: [],
         addressList: [
           {
@@ -125,13 +127,99 @@
             'parent': '430100'
           }
         ],
-        detailAddrss: '505室',
-        defaultFlag: false
+        detailAddrss: '',
+        curAddress: {},
+        token: localStorage.getItem('m-token'),
+        villageId: ''
       }
     },
+    created () {
+      this.curAddress = this.$route.query.curEdt
+      console.log(this.curAddress.shippingId)
+      this.name = this.curAddress.shippingName
+      this.phone = this.curAddress.shippingPhone
+      this.detailAddrss = this.curAddress.address
+      console.log(this.$route.query.curEdt)
+    },
     methods: {
-      delAddress () {},
-      saveAddress () {}
+      deleteAddress () {
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '你确定要删除该地址么？',
+          onConfirm () {
+            _this.post('/shipping/deleteAddress', {
+              token: _this.token,
+              shippingId: _this.curAddress.shippingId
+            }).then(res => {
+              if (res.data.code === 100) {
+                _this.$router.go(-1)
+              }
+              if (res.data.code === 101) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+              }
+              if (res.data.code === 102) {
+                _this.$vux.toast.text(res.data.msg, 'center')
+                localStorage.removeItem('m-token')
+              }
+            })
+          }
+        })
+      },
+      saveAddress () {
+        this.post('/shipping/updateAddress', {
+          token: this.token,
+          shippingName: this.name,
+          shippingPhone: this.phone,
+          villageId: this.villageId,
+          areaId: this.areaId,
+          address: this.detailAddrss
+        }).then(res => {
+          if (res.data.code === 100) {
+            this.$router.go(-1)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+        })
+      },
+      setDefault (val) {
+        console.log(val)
+        val ? this.defaultVal = 1 : this.defaultVal = 0
+//        if (val) {
+//          var defaultVal = 1
+//        } else {
+//          defaultVal = 0
+//        }
+        this.post('/shipping/updateAddress', {
+          token: this.token,
+          isDefault: this.defaultVal,
+          shippingId: this.curAddress.shippingId
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {}
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+        })
+      }
+    },
+    computed: {
+      defaultFlag () {
+        if (this.curAddress.isDefault === 1) {
+          return true
+        } else {
+          return false
+        }
+      }
     }
   }
 </script>
@@ -159,7 +247,15 @@
       .mt(92)
     }
     .delet {
-      color: @theme-color;
+      .h(90);
+      .lh(90);
+      color: #fff;
+      width: 90%;
+      margin: 0 auto;
+      .mt(50);
+      background: @theme-color;
+      .fs(36);
+      border-radius: 5px;
     }
   }
 

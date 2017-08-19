@@ -54,3 +54,44 @@ export const wxConfig = (timestamp, nonceStr, prepayId, paySign, callBall) => {
     }
   })
 }
+
+/**
+ * $获取当前位置并储存经纬度
+ */
+import { MP } from '../util/map.js'
+export const getPosition = () => {
+  var _this = this
+  /* eslint-disable no-undef */
+  MP().then(BMap => {
+    var geolocation = new BMap.Geolocation()
+    geolocation.getCurrentPosition(function (r) {
+      if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+        _this.userlocation = {
+          lng: r.point.lng,
+          lat: r.point.lat
+        }
+        var c = JSON.stringify(_this.userlocation)
+        console.log(_this.userlocation)
+        localStorage.setItem('m-userlocation', c)
+      }
+    })
+  })
+}
+// getPosition () {
+//   var _this = this
+//   /* eslint-disable no-undef */
+//   MP().then(BMap => {
+//     var geolocation = new BMap.Geolocation()
+//     geolocation.getCurrentPosition(function (r) {
+//       if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+//         _this.userlocation = {
+//           lng: r.point.lng,
+//           lat: r.point.lat
+//         }
+//         var c = JSON.stringify(_this.userlocation)
+//         console.log(_this.userlocation)
+//         localStorage.setItem('m-userlocation', c)
+//       }
+//     })
+//   })
+// },

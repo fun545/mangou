@@ -303,6 +303,10 @@
     },
     methods: {
       goLocation () {
+        if (!this.token) {
+          this.$router.push({path: '/location', query: {path: '/home'}})
+          return
+        }
         var _this = this
         this.$vux.confirm.show({
           title: '提示',

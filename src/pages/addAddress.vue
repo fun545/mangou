@@ -10,11 +10,14 @@
                v-model="shippingPhone"></x-input>
       <x-address title="选择地区" v-model="value" :list="addressList" placeholder="请选择地址"></x-address>
       <x-textarea title="详细地址" :show-counter="false" :rows="2"
-                  autosize v-model="address" placeholder="请填写"></x-textarea>
+                  autosize v-model="address" placeholder="例如5号楼202室"></x-textarea>
     </group>
     <group class="setDefault">
       <x-switch title="设为默认地址" v-model="defaultFlag"></x-switch>
     </group>
+    <div class="delet t-c" @click="saveAddress">
+      保存
+    </div>
   </div>
 </template>
 
@@ -56,7 +59,7 @@
       saveAddress () {},
       // 三级联动
       async threeLinkage () {
-        await this.post('/village/getAllData', {cityId: 1}).then((res) => {
+        await this.post('/village/getAllData', {areaId: 1}).then((res) => {
           console.log(res.data)
           if (res.data.code === 100) {
             this.areaList = res.data.areaList
@@ -79,18 +82,28 @@
                 areaObj['value'] = areaValue
                 this.addressList.push(areaObj)
                 var villageValue = areaValue + 2
-                item.villageList.forEach((item, index) => {
+                if (item.villageList.length > 0) {
+                  item.villageList.forEach((item, index) => {
+                    var villageObj = {}
+                    villageObj['name'] = item.villageName
+                    villageObj['parent'] = areaValue
+                    villageObj['value'] = villageValue
+                    this.addressList.push(villageObj)
+                    villageValue += 1
+                  })
+                } else {
                   var villageObj = {}
-                  villageObj['name'] = item.villageName
+                  villageObj['name'] = '--'
                   villageObj['parent'] = areaValue
-                  villageObj['value'] = villageValue
+                  villageObj['value'] = '--'
                   this.addressList.push(villageObj)
-                  villageValue += 1
-                })
+//                  villageValue += 1
+                }
                 areaValue += 100
               })
               firstVal += 10000
             })
+            console.log(this.addressList)
           }
         })
       }
@@ -119,6 +132,17 @@
     }
     .userInfo {
       .mt(92)
+    }
+    .delet {
+      .h(90);
+      .lh(90);
+      color: #fff;
+      width: 90%;
+      margin: 0 auto;
+      .mt(50);
+      background: @theme-color;
+      .fs(36);
+      border-radius: 5px;
     }
   }
 

@@ -70,28 +70,12 @@
       }
     },
     async created () {
+      // 获取当前位置
       await this.getPosition()
-      this.goCurrentVillage()
+      console.log(this.userlocation, 'test')
       if (this.token) {
         this.getAddress()
       }
-//      var curPosition = JSON.parse(localStorage.getItem('m-CurrentPosition'))
-//      console.log(curPosition)
-//      if (curPosition) {
-//        this.post('/village/villageList', {
-//          longitude: curPosition.lng.toFixed(6),
-//          latitude: curPosition.lat.toFixed(6),
-//          source: 1
-//        }).then((res) => {
-//          if (res.data.code === 100) {
-//            console.log(res.data)
-//            this.villageList = res.data.villageList
-//            console.log(this.villageList)
-//          }
-//        })
-//      } else {
-//        this.alertShow = true
-//      }
     },
     methods: {
       // 选择当前小区
@@ -135,7 +119,8 @@
                 lat: r.point.lat
               }
               var c = JSON.stringify(_this.userlocation)
-              console.log(_this.userlocation)
+//              console.log(_this.userlocation)
+              _this.goCurrentVillage()
               localStorage.setItem('m-userlocation', c)
             }
           })

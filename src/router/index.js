@@ -249,6 +249,11 @@ export default new Router({
       /* 订单页面中的 去支付 */
       path: '/chooseCity',
       component: require('../pages/chooseCity')
+    },
+    {
+      /* 地图 */
+      path: '/Bmap',
+      component: require('../pages/map')
     }
   ],
   scrollBehavior (to, from, savedPosition) {

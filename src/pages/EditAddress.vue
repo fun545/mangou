@@ -8,7 +8,10 @@
       <x-input title="收货人" name="username" is-type="china-name" v-model="name"></x-input>
       <x-input title="手机号码" name="mobile" keyboard="number" is-type="china-mobile"
                v-model="phone"></x-input>
-      <x-address title="选择地区" v-model="value" :list="addressList" placeholder="请选择地址"></x-address>
+      <x-address title="选择地区" v-model="value"
+                 :list="addressList" @on-shadow-change="onShadowChange" placeholder="请选择地址"
+                 @on-hide="onHide"
+      ></x-address>
       <x-textarea title="详细地址" :show-counter="false" :rows="2"
                   autosize v-model="detailAddrss"></x-textarea>
     </group>
@@ -49,12 +52,18 @@
           {
             'name': '芙蓉区',
             'value': '430100',
-            'parent': '430000'
+            'parent': '430000',
+            'id': 1
           },
           {
             'name': '天心区',
             'value': '430200',
             'parent': '430000'
+          },
+          {
+            'name': '--',
+            'value': '--',
+            'parent': '430200'
           },
           {
             'name': '岳麓区',
@@ -210,6 +219,12 @@
             localStorage.removeItem('m-token')
           }
         })
+      },
+      onShadowChange (ids, names) {
+        console.log(ids, names)
+      },
+      onHide () {
+        console.log(this.value)
       }
     },
     computed: {

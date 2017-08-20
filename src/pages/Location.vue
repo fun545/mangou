@@ -1,8 +1,8 @@
 <template>
   <div class="location-view">
     <m-header title="配送至">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      <span class="right" slot="right" @click="addAddress">新增地址</span>
+      <span class="back iconfont" @click="$router.push('/home')" slot="icon">&#xe600;</span>
+      <span class="right" slot="right" @click="goAddAddress">新增地址</span>
     </m-header>
     <div class="content" ref="content">
       <div>
@@ -15,7 +15,7 @@
           </div>
         </div>
         <!--定位当前-->
-        <div class="current-position t-c" @click="curVillage(villageList[0])">
+        <div class="current-position t-c" @click="curVillage(villageList[0],1)">
           <span class="iconfont">&#xe656;</span>
           定位到当前位置
         </div>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <!--附近小区-->
-        <div class="current-village">
+        <div class="current-village" v-if="villageList.length>0">
           <group title="附近配送到小区">
             <cell :title="item.villageName" is-link v-for="(item,index) in villageList" :key="index"
                   @click.native="curVillage(item)"></cell>
@@ -79,7 +79,11 @@
     },
     methods: {
       // 选择当前小区
-      async curVillage (data) {
+      async curVillage (data, type) {
+        if (this.village.length === 0 && type === 1) {
+          this.$vux.toast.text('当前区域暂时没有开通服务', 'center')
+          return
+        }
         this.village = data.villageName
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
@@ -87,11 +91,11 @@
         localStorage.setItem('m-villageName', data.villageName)
         // 更新storeId
         await this.getStoreId()
-        if (!this.$route.query.path) {
-          this.$router.replace('/home')
-          window.location.reload()
-        }
-        this.$router.push(this.$route.query.path)
+//        if (!this.$route.query.path) {
+//          this.$router.replace(this.$store.state.selectVillagePath)
+//          window.location.reload()
+//        }
+        this.$router.replace(this.$store.state.selectVillagePath)
         window.location.reload()
       },
 //      searchLocation () {
@@ -104,6 +108,7 @@
 //      },
       // 跳转搜索
       goSearch () {
+        this.$store.commit('saveSearchVillagePath', '/location')
         this.$router.push('/searchVillage')
       },
       // 获取当前位置信息
@@ -127,11 +132,12 @@
         })
       },
       // 跳转添加收货地址
-      addAddress () {
+      goAddAddress () {
         if (!this.token) {
           this.$router.push('/login')
           return
         }
+        this.$store.commit('saveAddAddress', '/location')
         this.$router.push('/addAddress')
       },
       // 定位到当前小区

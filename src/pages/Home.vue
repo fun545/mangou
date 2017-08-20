@@ -231,14 +231,14 @@
         homeSroll: {}
       }
     },
-    created () {
+    async created () {
       if (!localStorage.getItem('m-villageName')) {
         this.$router.push({path: '/chooseCity'})
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
       // 获取首页数据
-      this.post('/first/getFirst', {
+      await this.post('/first/getFirst', {
         cityId: this.cityId,
         areaId: this.areaId,
         villageId: this.villageId,
@@ -252,45 +252,40 @@
           this.storeList = res.data.firstInfo.storeList
           localStorage.setItem('m-depotId', this.storeList[0].storeId)
           localStorage.setItem('m-shopId', this.storeList[1].storeId)
-          /* 首页数据数据 */
-          this.post('/first/getFirstGoods', {
-            storeId: this.storeList[0].storeId,
-            villageId: this.villageId
-          }).then((res) => {
-            if (res.data.code === 100) {
-              this.mapTitleTips = res.data.goodsList.mapTitleTips
-              this.ystgWords = res.data.goodsList.ystgWords
-              this.serchKey = res.data.goodsList.serchKey
-              this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
-              this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
-              this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
-              console.log(this.tuijianImagesList.length)
-              this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
-              this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
-              this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
-              this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
-              this.computedSwiperLength()
-              this.$nextTick(() => {
-                this._initScroll()
-              })
-            }
-          })
-          /* 无限加载初始位置 */
-          this.post('/first/unlimitedLoading', {
-            storeId: this.storeList[0].storeId,
-            villageId: this.villageId,
-            pageIndex: 1,
-            pageSize: 10
-          }).then((res) => {
-            if (res.data.code === 100) {
-              this.moreRecommendList = res.data.goodsList
-            }
+        }
+      })
+      /* 首页数据数据 */
+      await this.post('/first/getFirstGoods', {
+        storeId: this.storeList[0].storeId,
+        villageId: this.villageId
+      }).then((res) => {
+        if (res.data.code === 100) {
+          this.mapTitleTips = res.data.goodsList.mapTitleTips
+          this.ystgWords = res.data.goodsList.ystgWords
+          this.serchKey = res.data.goodsList.serchKey
+          this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
+          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
+          this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
+          console.log(this.tuijianImagesList.length)
+          this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
+          this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
+          this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
+          this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
+          this.computedSwiperLength()
+          this.$nextTick(() => {
+            this._initScroll()
           })
         }
       })
-      /* 标签商品 */
-      this.post('/goods/getLabelGoods', {}).then((res) => {
+      /* 无限加载初始位置 */
+      await this.post('/first/unlimitedLoading', {
+        storeId: this.storeList[0].storeId,
+        villageId: this.villageId,
+        pageIndex: 1,
+        pageSize: 10
+      }).then((res) => {
         if (res.data.code === 100) {
+          this.moreRecommendList = res.data.goodsList
         }
       })
     },
@@ -304,7 +299,8 @@
     methods: {
       goLocation () {
         if (!this.token) {
-          this.$router.push({path: '/location', query: {path: '/home'}})
+          this.$store.commit('saveSelectVillagePath', '/home')
+          this.$router.push({path: '/location'})
           return
         }
         var _this = this
@@ -324,7 +320,8 @@
                 _this.$vux.toast.text(res.data.msg, 'center')
               }
             })
-            _this.$router.push({path: '/location', query: {path: '/home'}})
+            _this.$store.commit('saveSelectVillagePath', '/home')
+            _this.$router.push({path: '/location'})
           }
         })
       },

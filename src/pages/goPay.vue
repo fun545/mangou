@@ -9,11 +9,11 @@
         <div class="left">
           <div class="item">
             <span class="s1">总价</span>
-            <span class="s2">￥ 24.7</span>
+            <span class="s2">￥ {{order.totalPrice}}</span>
           </div>
           <div class="item">
             <span class="s1">优惠</span>
-            <span class="s2">-￥ 24.7</span>
+            <span class="s2">-￥ 0</span>
           </div>
         </div>
         <div class="right">
@@ -21,7 +21,7 @@
             实付金额
           </div>
           <div class="s2 t-c">
-            ￥ 24.8
+            ￥ {{order.totalPrice}}
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div class="go-pay t-c">
+    <div class="go-pay t-c" @click="goPay">
       去支付
     </div>
   </div>
@@ -52,7 +52,19 @@
     },
     data () {
       return {
-        weixinFlag: true
+        weixinFlag: true,
+        order: {}
+      }
+    },
+    created () {
+      this.order = this.$store.state.payOrder
+    },
+    methods: {
+      goPay () {
+        var orderNumList = []
+        orderNumList.push(this.order.orderNum)
+//        this.$store.commit('saveTotalPay', this.order.totalPrice)
+        this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.order.totalPrice, orderNumList)
       }
     }
   }

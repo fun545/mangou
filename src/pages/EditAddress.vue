@@ -1,19 +1,21 @@
 <template>
-  <div class="edit-address">
+  <div class="edit-address" @touchmove.prevent>
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.push('/address')" slot="icon">&#xe600;</span>
       <span slot="right" class="save" @click="deleteAddress">删除</span>
     </m-header>
     <group class="userInfo">
-      <x-input title="收货人" name="username" is-type="china-name" v-model="name"></x-input>
+      <x-input title="收货人" name="username" is-type="china-name" v-model="addressInfo.shippingName"></x-input>
       <x-input title="手机号码" name="mobile" keyboard="number" is-type="china-mobile"
-               v-model="phone"></x-input>
-      <x-address title="选择地区" v-model="value"
-                 :list="addressList" @on-shadow-change="onShadowChange" placeholder="请选择地址"
-                 @on-hide="onHide"
-      ></x-address>
+               v-model="addressInfo.shippingPhone"></x-input>
+      <cell title="选择小区" is-link value-align="left"
+            @click.native="goMap">
+        <div slot="default" class="village">
+          {{addressInfo.villageName}}
+        </div>
+      </cell>
       <x-textarea title="详细地址" :show-counter="false" :rows="2"
-                  autosize v-model="detailAddrss"></x-textarea>
+                  autosize v-model="addressInfo.address"></x-textarea>
     </group>
     <group class="setDefault">
       <x-switch title="设为默认地址" v-model="defaultFlag" @on-change="setDefault"></x-switch>
@@ -41,116 +43,21 @@
     data () {
       return {
         title: '修改收货地址',
-        phone: '2222',
-        name: '',
-        value: [],
-        addressList: [
-          {
-            'name': '长沙市',
-            'value': '430000'
-          },
-          {
-            'name': '芙蓉区',
-            'value': '430100',
-            'parent': '430000',
-            'id': 1
-          },
-          {
-            'name': '天心区',
-            'value': '430200',
-            'parent': '430000'
-          },
-          {
-            'name': '--',
-            'value': '--',
-            'parent': '430200'
-          },
-          {
-            'name': '岳麓区',
-            'value': '430300',
-            'parent': '430000'
-          },
-          {
-            'name': '开福区',
-            'value': '430400',
-            'parent': '430000'
-          },
-          {
-            'name': '雨花区',
-            'value': '430500',
-            'parent': '430000'
-          },
-          {
-            'name': '望城',
-            'value': '430600',
-            'parent': '430000'
-          },
-          {
-            'name': '长沙县',
-            'value': '430700',
-            'parent': '430000'
-          },
-          {
-            'name': '宁乡县',
-            'value': '430800',
-            'parent': '430000'
-          },
-          {
-            'name': '珠江一',
-            'value': '430102',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430103',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430104',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430105',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430111',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430112',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430121',
-            'parent': '430100'
-          },
-          {
-            'name': '珠江二',
-            'value': '430124',
-            'parent': '430100'
-          }
-        ],
-        detailAddrss: '',
         curAddress: {},
-        token: localStorage.getItem('m-token'),
-        villageId: ''
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
-      this.curAddress = this.$route.query.curEdt
-      console.log(this.curAddress.shippingId)
-      this.name = this.curAddress.shippingName
-      this.phone = this.curAddress.shippingPhone
-      this.detailAddrss = this.curAddress.address
-      console.log(this.$route.query.curEdt)
+//      this.curAddress = this.$route.query.curEdt
+//      console.log(this.curAddress.shippingId)
+//      this.name = this.curAddress.shippingName
+//      this.phone = this.curAddress.shippingPhone
+//      this.village = this.curAddress.villageName
+//      this.detailAddrss = this.curAddress.address
+//      console.log(this.$route.query.curEdt)
     },
     methods: {
+      // 删除地址
       deleteAddress () {
         var _this = this
         this.$vux.confirm.show({
@@ -159,10 +66,12 @@
           onConfirm () {
             _this.post('/shipping/deleteAddress', {
               token: _this.token,
-              shippingId: _this.curAddress.shippingId
+              shippingId: _this.addressInfo.shippingId
             }).then(res => {
+              console.log(res.data)
               if (res.data.code === 100) {
-                _this.$router.go(-1)
+//                console.log(_this.$store.state.mapBackPath)
+                _this.$router.push('/address')
               }
               if (res.data.code === 101) {
                 _this.$vux.toast.text(res.data.msg, 'center')
@@ -175,17 +84,20 @@
           }
         })
       },
+      // 修改地址
       saveAddress () {
         this.post('/shipping/updateAddress', {
           token: this.token,
-          shippingName: this.name,
-          shippingPhone: this.phone,
-          villageId: this.villageId,
-          areaId: this.areaId,
-          address: this.detailAddrss
+          shippingName: this.addressInfo.shippingName,
+          shippingPhone: this.addressInfo.shippingPhone,
+          villageId: this.addressInfo.villageId,
+          cityId: this.addressInfo.cityId,
+          areaId: this.addressInfo.areaId,
+          address: this.addressInfo.address,
+          shippingId: this.addressInfo.shippingId
         }).then(res => {
           if (res.data.code === 100) {
-            this.$router.go(-1)
+            this.$router.push('/address')
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'center')
@@ -196,9 +108,11 @@
           }
         })
       },
+      // 设置默认地址
       setDefault (val) {
+//        console.log(val)
         console.log(val)
-        val ? this.defaultVal = 1 : this.defaultVal = 0
+        val ? this.addressInfo.isDefault = 1 : this.addressInfo.isDefault = 0
 //        if (val) {
 //          var defaultVal = 1
 //        } else {
@@ -206,8 +120,8 @@
 //        }
         this.post('/shipping/updateAddress', {
           token: this.token,
-          isDefault: this.defaultVal,
-          shippingId: this.curAddress.shippingId
+          isDefault: this.addressInfo.isDefault,
+          shippingId: this.addressInfo.shippingId
         }).then((res) => {
           console.log(res.data)
           if (res.data.code === 100) {}
@@ -220,20 +134,21 @@
           }
         })
       },
-      onShadowChange (ids, names) {
-        console.log(ids, names)
-      },
-      onHide () {
-        console.log(this.value)
+      goMap () {
+        this.$store.commit('saveSelectVillagePath', '/edit_address')
+        this.$router.push({path: '/Bmap'})
       }
     },
     computed: {
       defaultFlag () {
-        if (this.curAddress.isDefault === 1) {
+        if (this.addressInfo.isDefault === 1) {
           return true
         } else {
           return false
         }
+      },
+      addressInfo () {
+        return this.$store.state.addressInfo
       }
     }
   }
@@ -259,7 +174,12 @@
       }
     }
     .userInfo {
-      .mt(92)
+      .mt(92);
+      .village {
+        text-align: left;
+        color: #000;
+        .pl(30);
+      }
     }
     .delet {
       .h(90);

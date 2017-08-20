@@ -45,7 +45,7 @@
         <loading :loadingFlag="loadingFlag" class="loading"></loading>
       </div>
       <div class="footer" v-if="login">
-        <div class="buy-car">
+        <div class="buy-car" @click="$router.push('/cart')">
           <div class="icon d-ib">
             <i class="iconfont center">&#xe613;</i>
             <div class="badge">
@@ -56,10 +56,12 @@
             合计：<span>￥{{detailInfo.totalPrice}}</span>
           </div>
         </div>
-        <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt">
+        <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt"
+             :class="{'disabled-color':shopStatus!==0}">
           加入购物车
         </div>
-        <div class="button t-c buy" @click="close=true" v-if="goodsDetail.shopType===2">
+        <div class="button t-c buy" @click="goFastBuy" v-if="goodsDetail.shopType===2"
+             :class="{'disabled-color':shopStatus!==0}">
           立即购买
         </div>
       </div>
@@ -135,10 +137,14 @@
         loadingFlag: true,
         countNm: 1,
         close: false,
-        token: localStorage.getItem('m-token')
+        token: localStorage.getItem('m-token'),
+        shopStatus: 0 // 店铺状态
       }
     },
     created () {
+      if (this.$route.query.shopStatus) {
+        this.shopStatus = this.$route.query.shopStatus
+      }
       if (!this.token) {
         this.noLogin()
       } else {
@@ -281,6 +287,11 @@
           this.$router.push({path: 'login'})
           return
         }
+        // 店铺状态
+        if (this.shopStatus !== 0) {
+          this.$vux.toast.text('门店休息中，不接收订单', 'center')
+          return
+        }
         // 限制点击速度
         if (this.clickTag === 0) {
           this.clickTag = 1
@@ -315,6 +326,20 @@
             this.clickTag = 0
           }, 500)
         }
+      },
+      goFastBuy () {
+        // 没登录跳转登录
+        if (!localStorage.getItem('m-token')) {
+          this.$vux.toast.text('请登录', 'bottom')
+          this.$router.push({path: 'login'})
+          return
+        }
+        // 店铺状态
+        if (this.shopStatus !== 0) {
+          this.$vux.toast.text('门店休息中，不接收订单', 'center')
+          return
+        }
+        this.close = true
       },
       count (type) {
 //        this.$router.push({path: '/order_enter'})
@@ -510,9 +535,6 @@
           background-color: #f7f7f7;
           background-size: 43% 39%;
         }
-        .d-content {
-
-        }
       }
     }
     .footer {
@@ -580,6 +602,9 @@
       .buy {
         .r(185);
         background: #ffae00;
+      }
+      .disabled-color {
+        background: #d2d2d2;
       }
     }
     .fast-buy {

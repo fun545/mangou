@@ -88,7 +88,7 @@
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <shop-car-button :goods="item" class="this-bt"></shop-car-button>
+                <shop-car-button :goods="item" class="this-bt" :shopStatus="shopStatus"></shop-car-button>
               </div>
             </div>
             <load-more
@@ -98,6 +98,13 @@
               class="load-more" v-if="loadMoreFlag"></load-more>
           </div>
         </div>
+        <alert v-model="showAlert" button-text="我知道了">
+          <p class="alert-title" slot="title">{{alertText}}</p>
+          <div class="alert-content" name="content">
+            <p class="p1">暂不接受新的订单</p>
+            <p class="p2">(门店营业时间：{{this.storeMsg.shopHours}})</p>
+          </div>
+        </alert>
         <loading :loadingFlag="loadingFlag"></loading>
       </div>
     </div>
@@ -110,7 +117,7 @@
 <script>
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
-  import { Flexbox, FlexboxItem, LoadMore } from 'vux'
+  import { Flexbox, FlexboxItem, LoadMore, Alert } from 'vux'
   import SideBar from '../components/SideBar'
   import SideItem from '../components/SideItem'
   import Tabs from '../components/Tabs'
@@ -136,7 +143,8 @@
       ball,
       loading,
       LoadMore,
-      toTop
+      toTop,
+      Alert
     },
     data () {
       return {
@@ -167,7 +175,10 @@
         loadingFlag: true,
         fastSortGoodsList: [], // 速选商品
         fastSortFlag: false, // 是否有速选商品
-        loadMoreFlag: false
+        loadMoreFlag: false,
+        showAlert: false,      // alert flag
+        alertText: '',         // alert文本内容
+        shopStatus: '' // 门店状态
       }
     },
     async created () {
@@ -175,8 +186,11 @@
       await this.post('/basic/getStoreMsg', {
         storeId: localStorage.getItem('m-shopId')
       }).then((res) => {
+        console.log(res.data)
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
+          this.shopStatus = res.data.storeInfo.shopStatus
+          this.shopStatusMethods(res.data.storeInfo.shopStatus)
         }
       })
       // 一级菜单
@@ -247,6 +261,20 @@
       })
     },
     methods: {
+      // 判断商铺营业状态
+      shopStatusMethods (status) {
+        console.log(status)
+        // 放假中
+        if (status === 1) {
+          this.alertText = '门店放假中'
+          this.showAlert = true
+        }
+        // 非营业时间
+        if (status === 2) {
+          this.alertText = '门店休息中'
+          this.showAlert = true
+        }
+      },
       // 跳转搜索页面
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
@@ -469,7 +497,7 @@
 //        console.log(22)
         this.$router.push({
           path: '/goods_detail',
-          query: {goodsId: id}
+          query: {goodsId: id, shopStatus: this.shopStatus}
         })
       }
     }

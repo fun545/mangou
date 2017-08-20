@@ -318,20 +318,20 @@
             // 运费 及时送
             this.Thisfreight = res.data.carList[1].shandianShop.freight
             // 及时送相关信息
+            this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
             this.thisShop = res.data.carList[1].shandianShop
             // 次日达相关信息
+            this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
             this.nextShop = res.data.carList[0].storeShop
-            this.$store.state.thisShop = res.data.carList[1].shandianShop
-            this.$store.state.nextShop = res.data.carList[0].storeShop
+//            this.$store.state.thisShop = res.data.carList[1].shandianShop
+//            this.$store.state.nextShop = res.data.carList[0].storeShop
             // 收货相关信息
-            this.$store.state.shippingInfo = res.data.shippingInfo
+//            this.$store.state.shippingInfo = res.data.shippingInfo
+            this.$store.commit('saveShippingInfo', res.data.shippingInfo)
             // 判断店铺营业状态
             this.shopStatusMethods(this.thisShop.shopStatus)
             // 购物车数量
             this.$store.commit('increment', res.data.totalBuyCount)
-            this.$nextTick(() => {
-              this.contentScroll.refresh()
-            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'top')
@@ -361,6 +361,7 @@
     methods: {
       // 判断商铺营业状态
       shopStatusMethods (status) {
+        console.log(status)
         // 放假中
         if (status === 1) {
           this.alertText = '门店放假中'
@@ -688,6 +689,11 @@
       },
       // 选择商品 单选
       selectedGoods (item) {
+        console.log(this.thisShop.shopStatus)
+        if (item.shopType === 2 && this.thisShop.shopStatus !== 0) {
+          return
+        }
+        console.log(item)
         if (typeof item.checked === 'undefined') {
           this.$set(item, 'checked', true)
         } else {

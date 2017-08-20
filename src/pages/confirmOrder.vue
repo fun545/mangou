@@ -1,7 +1,8 @@
 <template>
   <div class="order" @touchmove.prevent>
-    <m-header :title="title" class="header" @click.native="confirm">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+    <!--@click.native="confirm"-->
+    <m-header :title="title" class="header">
+      <span class="back iconfont" @click="$router.push('/cart')" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content" ref="content">
       <div>
@@ -426,6 +427,8 @@
 //          console.log(res.data)
           if (res.data.code === 100) {
             this.$store.commit('saveOrderNumList', res.data.orderNumList)
+            // 储存支付总金额
+//            this.$store.commit('saveTotalPay', this.totalPrice)
             /* this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
              .then((res) => {
              console.log(res.data, 'weichatPost')

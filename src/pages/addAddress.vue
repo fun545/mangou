@@ -1,19 +1,23 @@
 <template>
   <div class="add-address">
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
-      <span slot="right" class="save" @click="saveAddress">保存</span>
+      <span class="back iconfont" @click="$router.push($store.state.addAddressBackPath)" slot="icon">&#xe600;</span>
     </m-header>
     <group class="userInfo">
       <x-input title="收货人" name="username" is-type="china-name" v-model="shippingName" placeholder="请填写"></x-input>
-      <x-input title="手机号码" name="mobile" keyboard="number" is-type="china-mobile" placeholder="请填写"
+      <x-input title="手机号码" name="mobile" keyboard="number" placeholder="请填写"
                v-model="shippingPhone"></x-input>
-      <x-address title="选择地区" v-model="value" :list="addressList" placeholder="请选择地址"></x-address>
+      <cell title="选择小区" is-link value-align="left"
+            @click.native="goMap">
+        <div slot="default" class="village">
+          {{addressInfo.villageName}}
+        </div>
+      </cell>
       <x-textarea title="详细地址" :show-counter="false" :rows="2"
                   autosize v-model="address" placeholder="例如5号楼202室"></x-textarea>
     </group>
     <group class="setDefault">
-      <x-switch title="设为默认地址" v-model="defaultFlag"></x-switch>
+      <x-switch title="设为默认地址" v-model="defaultFlag" @on-change="setDefault"></x-switch>
     </group>
     <div class="delet t-c" @click="saveAddress">
       保存
@@ -25,7 +29,6 @@
   import mHeader from '../components/header'
   import { Group, XInput, XAddress, XTextarea, XSwitch, Cell } from 'vux'
   export default{
-    name: 'addAddress',
     components: {
       mHeader,
       Group,
@@ -38,9 +41,7 @@
     data () {
       return {
         title: '新增收货地址',
-        ss: '2222',
-        value: [],
-        addressList: [],
+        isDefault: 0,
         defaultFlag: false,
         shippingName: '',
         shippingPhone: '',
@@ -48,64 +49,63 @@
         cityId: '',
         areaId: '',
         address: '',
-        areaList: ''
+        token: localStorage.getItem('m-token')
       }
     },
-    created () {
-      this.threeLinkage()
-    },
     methods: {
-      delAddress () {},
-      saveAddress () {},
-      // 三级联动
-      async threeLinkage () {
-        await this.post('/village/getAllData', {areaId: 1}).then((res) => {
+      goMap () {
+        this.$store.commit('saveSelectVillagePath', '/addAddress')
+        this.$store.commit('saveMapBackPath', '/addAddress')
+        this.$router.push({path: '/Bmap'})
+      },
+      saveAddress () {
+        // 验证名字
+        if (this.shippingName.length < 2 || this.shippingName.length > 6) {
+          this.$vux.toast.text('请输入合法的名字')
+          return
+        }
+        // 验证手机号
+        var telReg = /^1[0-9]{10}$/
+        if (!telReg.test(this.shippingPhone)) {
+          this.$vux.toast.text('请输入正确手机号')
+          return
+        }
+        // 验证详细地址
+        if (this.address.length < 5) {
+          this.$vux.toast.text('详细地址长度不能小于五个字', 'center')
+          return
+        }
+        this.post('/shipping/insertAddress', {
+          token: this.token,
+          shippingName: this.shippingName,
+          shippingPhone: this.shippingPhone,
+          villageId: this.addressInfo.villageId,
+          cityId: this.addressInfo.cityId,
+          areaId: this.addressInfo.areaId,
+          isDefault: this.isDefault,
+          address: this.address
+        }).then(res => {
           console.log(res.data)
           if (res.data.code === 100) {
-            this.areaList = res.data.areaList
+            this.$router.replace(this.$store.state.addAddressBackPath)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
           }
         })
-        var firstVal = 430000
-        this.post('/village/cityList', {}).then((res) => {
-          console.log(res.data)
-          if (res.data.code === 100) {
-            res.data.cityList.forEach((item, index) => {
-              var cityObj = {}
-              cityObj['name'] = item.cityName
-              cityObj['value'] = firstVal
-              this.addressList.push(cityObj)
-              var areaValue = firstVal + 100
-              this.areaList.forEach((item, index) => {
-                var areaObj = {}
-                areaObj['name'] = item.areaName
-                areaObj['parent'] = firstVal
-                areaObj['value'] = areaValue
-                this.addressList.push(areaObj)
-                var villageValue = areaValue + 2
-                if (item.villageList.length > 0) {
-                  item.villageList.forEach((item, index) => {
-                    var villageObj = {}
-                    villageObj['name'] = item.villageName
-                    villageObj['parent'] = areaValue
-                    villageObj['value'] = villageValue
-                    this.addressList.push(villageObj)
-                    villageValue += 1
-                  })
-                } else {
-                  var villageObj = {}
-                  villageObj['name'] = '--'
-                  villageObj['parent'] = areaValue
-                  villageObj['value'] = '--'
-                  this.addressList.push(villageObj)
-//                  villageValue += 1
-                }
-                areaValue += 100
-              })
-              firstVal += 10000
-            })
-            console.log(this.addressList)
-          }
-        })
+      },
+      setDefault (val) {
+        console.log(val)
+        val ? this.isDefault = 1 : this.isDefault = 0
+      }
+    },
+    computed: {
+      addressInfo () {
+        return this.$store.state.addressInfo
       }
     }
   }
@@ -123,15 +123,14 @@
       .back {
         color: #222;
       }
-      .save {
-        position: absolute;
-        .r(36);
-        color: @theme-color;
-        .fs(32);
-      }
     }
     .userInfo {
-      .mt(92)
+      .mt(92);
+      .village {
+        text-align: left;
+        color: #000;
+        .pl(30);
+      }
     }
     .delet {
       .h(90);

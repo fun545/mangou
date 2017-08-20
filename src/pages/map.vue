@@ -5,28 +5,36 @@
         <div class="city d-ib" @click="$router.push({path:'/chooseCity',query:{path:'/Bmap'}})">
           长沙<i class="iconfont icon">&#xe674;</i>
         </div>
-        <div class="input d-ib">
+        <div class="input d-ib" @click="goSearch">
           <i class="iconfont search-icon">&#xe639;</i>
           <input type="text" placeholder="请输入小区名称">
         </div>
       </div>
-      <span class="back" @click="$router.push('/location')">取消</span>
+      <span class="back" @click="$router.push($store.state.mapBackPath)">取消</span>
     </div>
     <div id="allmap" class="map"></div>
     <div class="village-box clearfix">
       <div class="areaList f-l t-c" ref="areaList">
         <!--<div class="item">附近</div>-->
         <div>
-          <div class="item" v-for="(item,index) in areaList" :key="index" @click="changeList(item)">
+          <div class="item" @click="nearChange" :class="{'active':ind===-1}">
+            附近
+          </div>
+          <div class="item" v-for="(item,index) in areaList" :key="index" @click="changeList(item,index)"
+               :class="{'active':ind===index}">
             {{item.areaName}}
           </div>
         </div>
       </div>
       <div class="village-list f-l" ref="villageList">
         <div>
-          <div class="item" v-for="(item,index) in nearVillageList" :key="index">
+          <div class="item" v-for="(item,index) in villageList" :key="index" @click="chooseVillage(item)">
             {{item.villageName}}
-            <span class="nearest f-r"><span v-if="index===0">最近</span></span>
+            <span class="nearest f-r"><span v-if="ind===-1&&index===0">最近</span></span>
+          </div>
+          <div v-if="noVillageFlag" class="t-c no-village">
+            <span class="text d-ib">该区域未开通</span>
+            <div class="bt" @click="$router.push('/shop')">我要开店</div>
           </div>
         </div>
       </div>
@@ -45,11 +53,18 @@
         longitude: 116.417854,
         // 纬度
         latitude: 39.921988,
-        villageList: ['珠江一期'],
+        villageList: [],
         description: '天安门',
         areaList: [],
         userlocation: {lng: '', lat: ''}, // 用户位置
-        nearVillageList: [] // 附近小区
+        nearVillageList: [], // 附近小区
+        ind: -1,
+        noVillageFlag: false,
+        opts: {
+          width: 250, // 信息窗口宽度
+          height: 40, // 信息窗口高度
+          title: '' // 信息窗口标题
+        } // 窗口信息配置
       }
     },
     async mounted () {
@@ -76,82 +91,64 @@
 //        })
         MP().then(BMap => {
           var _this = this
-          // 获取当前位置
-          /* eslint-disable no-undef */
-          var geolocation = new BMap.Geolocation()
-          geolocation.getCurrentPosition(function (r) {
-            console.log(this.getStatus())
-            if (this.getStatus() === BMAP_STATUS_SUCCESS) {
-              _this.userlocation = {
-                lng: r.point.lng,
-                lat: r.point.lat
-              }
-              var c = JSON.stringify(_this.userlocation)
-              console.log(_this.userlocation)
-              _this.getNearVillage()
-              localStorage.setItem('m-userlocation', c)
+          // 获取经纬度
+          var getPositon = () => {
+            var promise = new Promise((resolve) => {
+              // 获取当前位置
+              /* eslint-disable no-undef */
+              var geolocation = new BMap.Geolocation()
+              geolocation.getCurrentPosition(function (r) {
+                console.log(this.getStatus())
+                if (this.getStatus() === BMAP_STATUS_SUCCESS) {
+                  _this.userlocation = {
+                    lng: r.point.lng,
+                    lat: r.point.lat
+                  }
+                  var c = JSON.stringify(_this.userlocation)
+                  console.log(_this.userlocation)
+                  _this.getNearVillage()
+                  localStorage.setItem('m-userlocation', c)
+                  resolve(_this.userlocation)
+                }
+              })
+            })
+            return promise
+          }
+          getPositon().then(() => {
+            // 地图
+            /* eslint-disable no-undef */
+            var map = new BMap.Map('allmap')
+            map.centerAndZoom(new BMap.Point(_this.userlocation.lng, _this.userlocation.lat), 15)
+//            var dataInfo = [[116.417854, 39.921988, '地址：北京市东城区王府井大街88号乐天银泰百货八层'],
+//              [116.406605, 39.921585, '地址：北京市东城区东华门大街'],
+//              [116.412222, 39.912345, '地址：北京市东城区正义路甲5号']
+//            ]
+            console.log(_this)
+            _this.$vux.toast.text('text', 'center')
+            for (var i = 0; i < _this.villageList.length; i++) {
+              var curVillage = _this.villageList[i]
+              var marker = new BMap.Marker(new BMap.Point(curVillage.longitude, curVillage.latitude))  // 创建标注
+              var content = curVillage.villageName
+              map.addOverlay(marker)              // 将标注添加到地图中
+              addClickHandler(content, marker)
+            }
+            function addClickHandler (content, marker) {
+              marker.addEventListener('click', function (e) {
+                openInfo(content, e)
+              })
+            }
+
+            function openInfo (content, e) {
+              var p = e.target
+              var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat)
+              var infoWindow = new BMap.InfoWindow(content, _this.opts)  // 创建信息窗口对象
+              map.openInfoWindow(infoWindow, point) // 开启信息窗口
             }
           })
-          /* eslint-disable no-undef */
-          var map = new BMap.Map('allmap')
-          map.centerAndZoom(new BMap.Point(this.longitude, this.latitude), 15)
-          var dataInfo = [[116.417854, 39.921988, '地址：北京市东城区王府井大街88号乐天银泰百货八层'],
-            [116.406605, 39.921585, '地址：北京市东城区东华门大街'],
-            [116.412222, 39.912345, '地址：北京市东城区正义路甲5号']
-          ]
-          var opts = {
-            width: 250,     // 信息窗口宽度
-            height: 40,     // 信息窗口高度
-            title: '', // 信息窗口标题
-            enableMessage: true// 设置允许信息窗发送短息
-          }
-          for (var i = 0; i < dataInfo.length; i++) {
-            var marker = new BMap.Marker(new BMap.Point(dataInfo[i][0], dataInfo[i][1]))  // 创建标注
-            var content = dataInfo[i][2]
-            map.addOverlay(marker)              // 将标注添加到地图中
-            addClickHandler(content, marker)
-          }
-          function addClickHandler (content, marker) {
-            marker.addEventListener('click', function (e) {
-              openInfo(content, e)
-            })
-          }
-
-          function openInfo (content, e) {
-            var p = e.target
-            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat)
-            var infoWindow = new BMap.InfoWindow(content, opts)  // 创建信息窗口对象
-            map.openInfoWindow(infoWindow, point) // 开启信息窗口
-          }
         })
       })
     },
     methods: {
-      // 获取当前位置信息
-      getPosition () {
-        var _this = this
-        /* eslint-disable no-undef */
-        console.log(222)
-        MP().then(BMap => {
-          var geolocation = new BMap.Geolocation()
-          geolocation.getCurrentPosition(function (r) {
-            console.log(this.getStatus())
-            if (this.getStatus() === BMAP_STATUS_SUCCESS) {
-              _this.userlocation = {
-                lng: r.point.lng,
-                lat: r.point.lat
-              }
-              console.log(22221)
-              var c = JSON.stringify(_this.userlocation)
-              console.log(_this.userlocation)
-              _this.getNearVillage()
-              localStorage.setItem('m-userlocation', c)
-            }
-          })
-        }, function (v) {
-          console.log(v)
-        })
-      },
       // 获取附近小区
       getNearVillage () {
         this.post('/village/villageList', {
@@ -166,6 +163,7 @@
 //            this.nearVillageList = res.data.villageList
 //            this.areaList.push(nearObj)
             this.nearVillageList = res.data.villageList
+            this.villageList = res.data.villageList
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'center')
@@ -174,6 +172,7 @@
             this.$vux.toast.text(res.data.msg, 'center')
             localStorage.removeItem('m-token')
           }
+          this.villageList.length > 0 ? this.noVillageFlag = false : this.noVillageFlag = true
         })
       },
       // 获取长沙所有区域的小区
@@ -184,17 +183,47 @@
             this.areaList = res.data.areaList
 //            this.areaList = this.areaList.concat(res.data.areaList)
             console.log(this.areaList)
+            this.noVillageFlag = true
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
           }
           this.$nextTick(() => {
             this._initVillageScroll()
           })
         })
       },
-      changeList (item) {
-        this.nearVillageList = item.villageList
+      nearChange () {
+        this.villageList = this.nearVillageList
+        this.ind = -1
+        this.villageList.length > 0 ? this.noVillageFlag = false : this.noVillageFlag = true
         this.$nextTick(() => {
           this.villageScroll.refresh()
         })
+      },
+      changeList (item, index) {
+        this.ind = index
+        this.villageList = item.villageList
+        console.log(this.villageList)
+        this.villageList.length > 0 ? this.noVillageFlag = false : this.noVillageFlag = true
+        this.$nextTick(() => {
+          this.villageScroll.refresh()
+        })
+      },
+      // 选择小区
+      chooseVillage (item) {
+        console.log(item)
+        this.$store.commit('edtAddress', item)
+        this.$router.push({path: this.$store.state.mapBackPath})
+      },
+      // 去搜索页面
+      goSearch () {
+        this.$store.commit('saveSearchVillagePath', '/Bmap')
+        this.$router.push('/searchVillage')
       },
       _initVillageScroll () {
         this.villageScroll = new BScroll(this.$refs.villageList, {click: true})
@@ -306,6 +335,21 @@
             .pr(10);
             border-radius: 5px;
           }
+        }
+      }
+      .no-village {
+        margin-top: 40%;
+        .text {
+          .mb(80);
+        }
+        .bt {
+          .w(320);
+          .h(75);
+          .lh(75);
+          border-radius: 18px;
+          margin: 0 auto;
+          color: #fff;
+          background: @theme-color;
         }
       }
     }

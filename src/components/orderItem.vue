@@ -16,11 +16,11 @@
             <div class="pic d-ib pos-re" v-for="(goodsItem,index) in item.goodsList" :key="index">
               <!--<img v-lazy="goodsItem.goodsImgUrl" alt="" width="100%" height="100%">-->
               <!--<lazy-image-->
-                <!--:src='goodsItem.goodsImgUrl'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--width="100%"-->
-                <!--height="100%"-->
+              <!--:src='goodsItem.goodsImgUrl'-->
+              <!--:placeholder='$store.state.defaultImg'-->
+              <!--:events="['touchmove']"-->
+              <!--width="100%"-->
+              <!--height="100%"-->
               <!--&gt;</lazy-image>-->
               <img src="" alt="" v-lazy="goodsItem.goodsImgUrl" width="100%" height="100%">
               <div class="pos-ab" :class="{'daigou':goodsItem.goodsType===2}"></div>
@@ -233,6 +233,12 @@
       // 点击按钮事件
       onBt (item, index) {
         if (item.status === 1) { // 去支付
+          // 及时送且不在营业时间
+          if (item.shopType === 2 && item.shopStatus !== 0) {
+            this.$vux.toast.text('亲，不再营业时间中', 'center')
+            return
+          }
+          this.$store.commit('savePayOrder', item)
           this.$router.push({path: '/goPay'})
           return
         }
@@ -391,12 +397,15 @@
     color: #444;
     background-color: #fff;
   }
-  .font-mind{
+
+  .font-mind {
     .fs(25);
   }
-  .font-small{
+
+  .font-small {
     .fs(25);
   }
+
   .order-item:last-child {
     margin-bottom: 0;
   }

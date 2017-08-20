@@ -1,6 +1,6 @@
 <template>
   <div class="shop-cart-wrap" @click="add($el,goods)">
-    <i class="iconfont shop-car" ref="icon" v-if="goods.status===1">&#xe613;</i>
+    <i class="iconfont shop-car" ref="icon" v-if="goods.status===1" :class="{'shop-status':shopStatus!==0}">&#xe613;</i>
     <div v-if="goods.status!==1" class="no-goods">已售罄</div>
   </div>
 </template>
@@ -9,7 +9,12 @@
   import { bus } from '../util/util'
   export default {
     props: {
-      goods: Object
+      goods: Object,
+      // 店铺状态
+      shopStatus: {
+        type: Number,
+        default: 0
+      }
     },
     components: {
       bus
@@ -26,6 +31,11 @@
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
           this.$router.push({path: '/login'})
+          return
+        }
+        // 店铺状态
+        if (this.shopStatus !== 0) {
+          this.$vux.toast.text('门店休息中，不接收订单', 'center')
           return
         }
         if (item.status !== 1) {
@@ -87,6 +97,10 @@
       background: #ddd;
       border-radius: 10px;
       color: #fff;
+    }
+    .shop-status {
+      color: #ddd !important;
+      border-color: #ddd !important;
     }
   }
 

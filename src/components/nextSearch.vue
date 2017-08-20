@@ -17,7 +17,7 @@
     },
     methods: {
       searchText () {
-        this.$router.push({path: '/searchText', query: {search: this.search}})
+        this.$router.push({path: '/searchText', query: {shopType: 1, storeId: Number(localStorage.getItem('m-depotId'))}})
       }
     }
   }
@@ -40,7 +40,7 @@
       .fs(32);
     }
     .input {
-     width: 100%;
+      width: 100%;
       height: 100%;
       border-radius: 30px/2;
       input {

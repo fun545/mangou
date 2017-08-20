@@ -1,7 +1,7 @@
 <template>
   <div class="address" @touchmove.prevent>
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.push('/user')" slot="icon">&#xe600;</span>
     </m-header>
     <div class="address-list">
       <div class="item" v-for="(item,index) in addressList" :key="index">
@@ -22,14 +22,14 @@
             </div>
             <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
           </div>
-          <div class="right" @click="$router.push({path:'/edit_address',query:{curEdt:item}})">
+          <div class="right" @click="goEdt(item)">
             <i class="iconfont">&#xe602;</i>
             编辑
           </div>
         </div>
       </div>
     </div>
-    <div class="add-address t-c" @click="$router.push({path:'addAddress'})">
+    <div class="add-address t-c" @click="goAddAddress">
       新增收货地址
     </div>
   </div>
@@ -65,6 +65,7 @@
           }
         })
       },
+      // 设置默认地址
       async setDefault (item) {
         await this.post('/shipping/updateAddress', {
           token: this.token,
@@ -82,6 +83,17 @@
           }
         })
         this.getAddress()
+      },
+      // 去编辑页面
+      goEdt (item) {
+        this.$store.commit('saveAddress', item)
+        this.$store.commit('saveMapBackPath', '/edit_address')
+        this.$router.push('/edit_address')
+      },
+      // 去新增页面
+      goAddAddress () {
+        this.$store.commit('saveAddAddress', '/address')
+        this.$router.push({path: '/addAddress'})
       }
     }
   }

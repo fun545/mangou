@@ -107,6 +107,7 @@ export default {
           function (res) {
             console.log(res, '2')
             if (res.err_msg === 'get_brand_wcpay_request:ok') {
+              Vue.$store.commit('saveTotalPay', totalFee)
               Vue.$router.push('/okPay')
             } else {
               _this.$vux.toast.text(res.err_msg, 'bottom')

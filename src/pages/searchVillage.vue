@@ -10,7 +10,7 @@
           <input type="text" placeholder="请输入小区名称" v-model="keyName">
         </div>
       </div>
-      <span class="back" @click="$router.push('/location')">取消</span>
+      <span class="back" @click="$router.push($store.state.SearchVillagePath)">取消</span>
     </div>
     <div class="content">
       <div class="item" v-for="(item,index) in list" :key="index" @click="curVillage(item)">
@@ -64,12 +64,15 @@
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
 //        this.$router.push({path: '/home'})
-        if (!this.$route.query.path) {
-          this.$router.replace('/home')
+//        if (!this.$route.query.path) {
+//          this.$router.replace('/home')
+//          window.location.reload()
+//        }
+        this.$store.commit('edtAddress', data)
+        this.$router.replace(this.$store.state.selectVillagePath)
+        if (this.$store.state.selectVillagePath === '/home' || this.$store.state.selectVillagePath === '/this') {
           window.location.reload()
         }
-        this.$router.replace(this.$route.query.path)
-        window.location.reload()
       }
     },
     watch: {

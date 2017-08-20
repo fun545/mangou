@@ -1,26 +1,26 @@
 <template>
   <div class="selectAddress">
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.push('/confirmOrder')" slot="icon">&#xe600;</span>
     </m-header>
     <div class="address-list">
-      <div class="item" v-for="(item,index) in addressList" :key="index">
-        <div class="top">
+      <div class="item" v-for="(item,index) in addressList" :key="index" @click="chooseAddress(item)">
+        <div class="top"
+             :class="{'disable-color':(item.areaId!==localAreaId)||(item.cityId!==localCityId)||(item.villageId!==localVillageId)}">
           <div class="user-msg">
             <span>{{item.shippingName}}</span>
             <span class="tel">{{item.shippingPhone}}</span>
           </div>
           <div class="address">
-            {{item.address}}
+            <span v-if="item.isDefault===1">默认地址</span>
+            {{item.cityName + item.areaName + item.villageName + item.address}}
           </div>
         </div>
       </div>
     </div>
-    <div class="add-address t-c" @click="$router.push({path:'addAddress'})">
+    <div class="add-address t-c" @click="goAddAddress">
       新增收货地址
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-           :text="msg" width="10em" class="toast"></toast>
   </div>
   </div>
 </template>
@@ -37,40 +37,54 @@
     data () {
       return {
         title: '收货地址',
-        defaultFlag: false,
+//        defaultFlag: false,
         addressList: [],
-        msg: '',
-        code: '',
-        showPositionValue: false
+        localCityId: Number(localStorage.getItem('m-cityId')),
+        localAreaId: Number(localStorage.getItem('m-areaId')),
+        localVillageId: Number(localStorage.getItem('m-villageId'))
+//        msg: '',
+//        code: '',
+//        showPositionValue: false
       }
     },
     async created () {
       await this.post('/shipping/getAddressList', {
         token: localStorage.getItem('m-token')
       }).then((res) => {
-        this.code = res.data.code
+//        this.code = res.data.code
         if (res.data.code === 100) {
+          console.log(res.data)
           this.addressList = res.data.shippingAddressList
         }
         if (res.data.code === 101) {
-          this.msg = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'center')
         }
         if (res.data.code === 102) {
-          this.msg = '请重新登录'
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'center')
+          localStorage.removeItem('m-token')
         }
       })
-      // 异常处理
-      if (this.code === 102 || this.code === 101) {
-        this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
-          if (res.data.code === 100) {
-            localStorage.removeItem('m-token')
-          }
-          if (res.data.code === 102) {
-            localStorage.removeItem('m-token')
-          }
-        })
+      // 可用地址排前
+//      this.addressList.forEach((item, index) => {
+//        if ((item.areaId !== this.localAreaId) || (item.cityId !== this.localCityId) || (item.villageId !== this.localVillageId)) {
+//          this.addressList.splice(index, 1)
+//        }
+//      })
+    },
+    methods: {
+      // 跳转添加地址
+      goAddAddress () {
+        this.$store.commit('saveAddAddress', '/selecteAddress')
+        this.$router.push('/addAddress')
+      },
+      // 选择收货地址
+      chooseAddress (item) {
+        if ((item.areaId !== this.localAreaId) || (item.cityId !== this.localCityId) || (item.villageId !== this.localVillageId)) {
+          this.$vux.toast.text('亲，超出配上范围啦')
+        } else {
+          this.$store.commit('saveShippingInfo', item)
+          this.$router.push('/confirmOrder')
+        }
       }
     }
   }
@@ -95,7 +109,7 @@
     }
     .address-list {
       .mt(92);
-      .fs(32);
+      .fs(27);
       .lh(32);
       color: #222;
       .item {
@@ -112,13 +126,13 @@
           .user-msg {
             display: flex;
             justify-content: space-between;
-            .tel {
-
-            }
           }
           .address {
             .lh(80);
           }
+        }
+        .disable-color {
+          color: #d2d2d2;
         }
         .bt {
           box-sizing: border-box;

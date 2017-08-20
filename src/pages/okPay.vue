@@ -1,12 +1,75 @@
 <template>
-<div>支付成功</div>
+  <div class="ok-pay">
+    <m-header title="支付成功" class="header">
+      <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
+    </m-header>
+    <div class="top">
+      <div class="logo"><img src="" alt=""></div>
+    </div>
+    <div class="money t-c">
+      支付金额¥33元
+    </div>
+    <div class="bt t-c" @click="$router.push('/next')">
+      继续购物
+    </div>
+  </div>
 </template>
 
 <script>
-
-  export default {}
+  import mHeader from '../components/header'
+  export default {
+    components: {
+      mHeader
+    }
+  }
 </script>
 
-<style>
+<style lang="less" scoped>
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
+  .ok-pay {
+    .cp-header {
+      position: inherit;
+      color: #fff;
+      background: @theme-color;
+      border-bottom: none;
+      .back {
+        color: #fff;
+      }
+    }
+    .top {
+      position: relative;
+      .h(260);
+      background: @theme-color;
+      .logo {
+        position: absolute;
+        .w(210);
+        .h(210);
+        border-radius: 50%;
+        background: #fff;
+        .b(-105);
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    .money {
+      .mt(250);
+      .h(58);
+      .lh(58);
+      .fs(38);
+      color: @theme-color;
+    }
+    .bt {
+      margin: 0 auto;
+      .mt(150);
+      .w(640);
+      .h(95);
+      .lh(95);
+      border-radius: 8px;
+      background: @theme-color;
+      color: #fff;
+      .fs(32);
+    }
+  }
 </style>

@@ -3,7 +3,7 @@
     <div class="header">
       <!-- 搜索框 -->
       <div class="search-box">
-        <next-search @click.native="goSearch"></next-search>
+        <next-search></next-search>
         <instruction></instruction>
       </div>
       <!-- 弹窗内容 -->
@@ -130,9 +130,9 @@
     },
     methods: {
       // 跳转搜索
-      goSearch () {
-        this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
-      },
+//      goSearch () {
+//        this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
+//      },
       searchText () {
         if (!this.search) {
           this.$vux.alert.show({

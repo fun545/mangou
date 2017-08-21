@@ -1,36 +1,41 @@
 <template>
   <div class="address" @touchmove.prevent>
-    <m-header :title="title">
-      <span class="back iconfont" @click="$router.push('/user')" slot="icon">&#xe600;</span>
-    </m-header>
-    <div class="address-list">
-      <div class="item" v-for="(item,index) in addressList" :key="index">
-        <div class="top">
-          <div class="user-msg">
-            <span>{{item.shippingName}}</span>
-            <span class="tel">{{item.shippingPhone}}</span>
-          </div>
-          <div class="address">
-            {{item.cityName + item.areaName + item.villageName + item.address}}
-          </div>
-        </div>
-        <div class="bt">
-          <div class="left f-l" @click="setDefault(item)">
-            <div class="icon d-ib">
-              <i class="iconfont" v-if="item.isDefault!==1">&#xe635;</i>
-              <i class="iconfont selected" v-if="item.isDefault===1">&#xe634;</i>
+    <div>
+      <m-header :title="title">
+        <span class="back iconfont" @click="$router.push('/user')" slot="icon">&#xe600;</span>
+      </m-header>
+      <div class="address-list">
+        <div class="item" v-for="(item,index) in addressList" :key="index">
+          <div class="top">
+            <div class="user-msg">
+              <span>{{item.shippingName}}</span>
+              <span class="tel">{{item.shippingPhone}}</span>
             </div>
-            <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
+            <div class="address">
+              {{item.cityName + item.areaName + item.villageName + item.address}}
+            </div>
           </div>
-          <div class="right" @click="goEdt(item)">
-            <i class="iconfont">&#xe602;</i>
-            编辑
+          <div class="bt">
+            <div class="left f-l" @click="setDefault(item)">
+              <div class="icon d-ib">
+                <i class="iconfont" v-if="item.isDefault!==1">&#xe635;</i>
+                <i class="iconfont selected" v-if="item.isDefault===1">&#xe634;</i>
+              </div>
+              <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
+            </div>
+            <div class="right" @click="goEdt(item)">
+              <i class="iconfont">&#xe602;</i>
+              编辑
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="add-address t-c" @click="goAddAddress">
-      新增收货地址
+      <div class="add-address t-c" @click="goAddAddress">
+        新增收货地址
+      </div>
+      <div class="no-address" v-if="addressList.length===0">
+
+      </div>
     </div>
   </div>
 </template>
@@ -186,5 +191,16 @@
     color: #fff;
     .fs(34);
     border-radius: 5px;
+    z-index: 2;
+  }
+
+  .no-address {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .t(92);
+    background: url("../assets/no-way.png") no-repeat center center;
+    background-size: 50% 30%;
   }
 </style>

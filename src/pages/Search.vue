@@ -234,6 +234,7 @@
       },
       // 去搜索
       async goSearch (type) {
+        console.log(this.shopType)
         if (type && (type === 1) && this.keyName) {
           this.goSearchFlag = true
         }
@@ -281,7 +282,10 @@
         }
       },
       hotSearch (value, type) {
+        this.shopType = Number(this.$route.query.shopType)
+        this.storeId = Number(this.$route.query.storeId)
         this.keyName = value.keyword
+        // 历史搜索关键词
         if (type === 2) {
           this.keyName = value.historyName
         }

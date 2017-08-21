@@ -53,7 +53,7 @@
             </div>
           </div>
           <div class="text d-ib">
-            合计：<span>￥{{detailInfo.totalPrice}}</span>
+            合计：<span>￥{{totalPrice}}</span>
           </div>
         </div>
         <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt"
@@ -184,11 +184,12 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
-//          console.log(res.data)
+          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.detailInfo = res.data
             this.$store.commit('increment', res.data.totalBuyCount)
+            this.$store.commit('changeTotalPrice', res.data.totalPrice)
             this.goodsList = res.data.listGoods
             this.swiperList = res.data.goodsDetail.imagesList
             this.computedSwiperLength()
@@ -217,7 +218,9 @@
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.detailInfo = res.data
+            console.log(this.detailInfo)
             this.$store.commit('increment', res.data.totalBuyCount)
+            this.$store.commit('changeTotalPrice', res.data.totalPrice)
             this.goodsList = res.data.listGoods
             this.swiperList = res.data.goodsDetail.imagesList
             this.computedSwiperLength()
@@ -309,10 +312,11 @@
             villageId: localStorage.getItem('m-villageId'),
             storeId: this.storeId
           }).then((res) => {
-//            console.log(res.data)
+            console.log(res.data)
             if (res.data.code === 100) {
+              this.detailInfo.totalPrice = res.data.totalPrice
+              this.$store.commit('changeTotalPrice', res.data.totalPrice)
               bus.$emit('drop', this.$refs.cartBt)
-//              console.log(res.data)
               this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
@@ -406,6 +410,9 @@
     computed: {
       totalBuyCount () {
         return this.$store.state.totalBuyCount
+      },
+      totalPrice () {
+        return this.$store.state.totalPrice
       }
     }
   }

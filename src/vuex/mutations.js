@@ -7,6 +7,10 @@ export default {
     state.totalBuyCount = count
     // console.log(state.totalBuyCount)
   },
+  // 改变购物车总价
+  changeTotalPrice (state, val) {
+    state.totalPrice = val
+  },
   // 减少购物车数量
   totalBuyCountReduce (state, count) {
     state.totalBuyCount = state.totalBuyCount - count

@@ -33,6 +33,9 @@
   import TabbarItem from './TabbarItem'
   //  import ball from '../components/ball'
   export default {
+    props: {
+      totalCount: Number
+    },
     components: {
       ViewBox,
       Tabbar,
@@ -50,8 +53,18 @@
       console.log('footer')
     },
     computed: {
-      totalBuyCount () {
-        return parseInt(this.$store.state.totalBuyCount)
+      totalBuyCount: {
+//        console.log(this.$store.state.totalBuyCount)
+//      return parseInt(this.$store.state.totalBuyCount)
+        set () {
+          console.log('set')
+          console.log(this.totalCount)
+          return this.totalCount
+        },
+        get () {
+          console.log('get')
+          return parseInt(this.$store.state.totalBuyCount)
+        }
       }
     }
   }

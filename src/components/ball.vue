@@ -36,7 +36,8 @@
     },
     props: {
       goods: Object,
-      type: Number
+      type: Number,
+      totalCount: Number
     },
     data () {
       return {
@@ -102,8 +103,17 @@
       }
     },
     computed: {
-      totalBuyCount () {
-        return parseInt(this.$store.state.totalBuyCount)
+      totalBuyCount: {
+//        console.log(this.$store.state.totalBuyCount)
+//      return parseInt(this.$store.state.totalBuyCount)
+        set () {
+          console.log('set')
+          return parseInt(this.$store.state.totalBuyCount)
+        },
+        get () {
+          console.log('get')
+          return parseInt(this.$store.state.totalBuyCount)
+        }
       }
     }
   }

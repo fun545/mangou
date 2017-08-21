@@ -1,6 +1,6 @@
 <template>
-  <div class="search">
-    <span class="iconfont icon" @click="searchText()">&#xe639;</span>
+  <div class="search" @click="goSearch">
+    <span class="iconfont icon">&#xe639;</span>
     <div class="input" @click="$router.push({path:'/search'})">
       <input type="search" v-model="search" placeholder="搜索商品">
     </div>
@@ -16,8 +16,8 @@
       }
     },
     methods: {
-      searchText () {
-        this.$router.push({path: '/searchText', query: {shopType: 1, storeId: Number(localStorage.getItem('m-depotId'))}})
+      goSearch () {
+        this.$router.push({path: '/search', query: {shopType: 1, storeId: Number(localStorage.getItem('m-depotId'))}})
       }
     }
   }

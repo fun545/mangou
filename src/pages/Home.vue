@@ -162,7 +162,7 @@
         </div>
       </div>
     </div>
-    <m-footer></m-footer>
+    <m-footer :totalCount="totalBuyCount"></m-footer>
     <ball></ball>
     <to-top v-if="scrollTop>=800" :scrollObj="homeSroll"></to-top>
   </div>
@@ -228,7 +228,8 @@
           autoplay: 3000,
           pagination: '.swiper-pagination'
         },
-        homeSroll: {}
+        homeSroll: {},
+        totalBuyCount: 1
       }
     },
     async created () {
@@ -245,7 +246,10 @@
         source: 1
       }).then((res) => {
         if (res.data.code === 100) {
+          console.log(res.data)
           this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+          this.totalBuyCount = res.data.firstInfo.totalBuyCount
+//          this.$store.commit('changeTotalPrice', res.data.firstInfo.totalBuyCount)
           /* 轮播图数据 */
           this.swiperList = res.data.firstInfo.imgList
           /* 店铺数据 */
@@ -368,6 +372,7 @@
       },
       /* 无限加载 */
       loadMore () {
+        console.log('daodila')
         if (!this.scrollDisable) {
           this.scrollDisable = true
           this.pageIndex += 1
@@ -411,11 +416,14 @@
           const homeView = this.$refs.homeView
           let homeViewHeight = homeView.offsetHeight
           let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
-          if (this.scrollTop >= 800) {
-            console.log('toTop')
-            this.homeSroll.scrollY = 0
-          }
+          console.log(wrapperHeight)
+//          if (this.scrollTop >= 800) {
+//           console.log('toTop')
+//          this.homeSroll.scrollY = 0
+//          }
+          console.log(this.scrollTop)
           if (this.scrollTop + homeViewHeight >= wrapperHeight) {
+            console.log(2222222)
             this.loadMore()
           }
         })

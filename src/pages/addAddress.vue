@@ -1,26 +1,28 @@
 <template>
   <div class="add-address">
-    <m-header :title="title">
-      <span class="back iconfont" @click="$router.push($store.state.addAddressBackPath)" slot="icon">&#xe600;</span>
-    </m-header>
-    <group class="userInfo">
-      <x-input title="收货人" name="username" is-type="china-name" v-model="shippingName" placeholder="请填写"></x-input>
-      <x-input title="手机号码" name="mobile" keyboard="number" placeholder="请填写"
-               v-model="shippingPhone"></x-input>
-      <cell title="选择小区" is-link value-align="left"
-            @click.native="goMap">
-        <div slot="default" class="village">
-          {{addressInfo.villageName}}
-        </div>
-      </cell>
-      <x-textarea title="详细地址" :show-counter="false" :rows="2"
-                  autosize v-model="address" placeholder="例如5号楼202室"></x-textarea>
-    </group>
-    <group class="setDefault">
-      <x-switch title="设为默认地址" v-model="defaultFlag" @on-change="setDefault"></x-switch>
-    </group>
-    <div class="delet t-c" @click="saveAddress">
-      保存
+    <div>
+      <m-header :title="title">
+        <span class="back iconfont" @click="$router.push($store.state.addAddressBackPath)" slot="icon">&#xe600;</span>
+      </m-header>
+      <group class="userInfo">
+        <x-input title="收货人" name="username" is-type="china-name" v-model="shippingName" placeholder="请填写"></x-input>
+        <x-input title="手机号码" name="mobile" keyboard="number" placeholder="请填写"
+                 v-model="shippingPhone"></x-input>
+        <cell title="选择小区" is-link value-align="left"
+              @click.native="goMap">
+          <div slot="default" class="village">
+            {{addressInfo.villageName}}
+          </div>
+        </cell>
+        <x-textarea title="详细地址" :show-counter="false" :rows="2"
+                    autosize v-model="address" placeholder="例如5号楼202室"></x-textarea>
+      </group>
+      <group class="setDefault">
+        <x-switch title="设为默认地址" v-model="defaultFlag" @on-change="setDefault"></x-switch>
+      </group>
+      <div class="delet t-c" @click="saveAddress">
+        保存
+      </div>
     </div>
   </div>
 </template>
@@ -142,6 +144,15 @@
       background: @theme-color;
       .fs(36);
       border-radius: 5px;
+    }
+    .no-address {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      .t(92);
+      background: url("../assets/no-way.png") no-repeat center;
+      background-size: 50% 50%;
     }
   }
 

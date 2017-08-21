@@ -94,7 +94,8 @@
           cityId: this.addressInfo.cityId,
           areaId: this.addressInfo.areaId,
           address: this.addressInfo.address,
-          shippingId: this.addressInfo.shippingId
+          shippingId: this.addressInfo.shippingId,
+          isDefault: this.addressInfo.isDefault
         }).then(res => {
           if (res.data.code === 100) {
             this.$router.push('/address')

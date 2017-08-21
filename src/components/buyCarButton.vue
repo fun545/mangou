@@ -61,6 +61,7 @@
             if (res.data.code === 100) {
               bus.$emit('drop', el)
               this.$store.commit('increment', res.data.totalBuyCount)
+              this.$store.commit('changeTotalPrice', res.data.totalPrice)
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'top')

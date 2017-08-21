@@ -36,6 +36,11 @@
           <one-column v-if="listFlag" :goodsList="list"></one-column>
           <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
         </div>
+        <load-more
+          :tip="loadText"
+          :show-loading="moreIconFlag"
+          background-color="#f7f7f7"
+          class="load-more" v-if="loadMoreFlag"></load-more>
         <loading :loadingFlag="loadingFlag"></loading>
       </div>
       <ball :type="3" v-if="list.length>0"></ball>
@@ -55,9 +60,11 @@
   import loading from '../components/loading'
   import ball from '../components/ball'
   import toTop from '../components/toTop'
+  import { loadMoreMehod } from '../util/util'
+  import { LoadMore } from 'vux'
   export default {
     name: 'nextList1',
-    components: {instruction, nextSearch, BScroll, twoColumn, noPage, loading, ball, oneColumn},
+    components: {instruction, nextSearch, BScroll, twoColumn, noPage, ball, oneColumn, loading, LoadMore},
     data () {
       return {
         list: [],
@@ -68,11 +75,18 @@
         secondId: '',
         listFlag: false,
         isActive: true,
-        loadingFlag: true,
         listScroll: {},
         ball,
         toTop,
-        scrollTop: ''
+        scrollTop: '',
+        scrollDisable: false,
+        loadText: '正在加载',
+        moreIconFlag: true,
+        pageIndex: 1,
+        loadingFlag: false,
+        storeId: localStorage.getItem('m-depotId'),
+        LoadMore,
+        loadMoreFlag: true
       }
     },
     created () {
@@ -91,15 +105,21 @@
         })
       },
       _initScroll () {
-        this.listScroll = new BScroll(this.$refs.listWrap, {click: true})
-        this.listScroll.on('scroll', (pos) => {
-          this.scrollTop = Math.abs(pos.y)
+        this.listScroll = new BScroll(this.$refs.listWrap, {
+          click: true,
+          disableMouse: true,
+          disablePointer: false,
+          probeType: 3
         })
+//        this.listScroll.on('scroll', (pos) => {
+//          this.scrollTop = Math.abs(pos.y)
+//        })
+        loadMoreMehod(this.listScroll, this.$refs.listWrap, this.loadMore)
       },
       getGoods (id) {
         this.post('/goods/goodsList', {
           secondClassifyId: id,
-          storeId: 1,
+          storeId: this.storeId,
           softType: this.softType
         }).then((res) => {
           console.log(res.data)
@@ -146,6 +166,43 @@
         this.softType = 5
         this.getGoods(this.secondId)
         this.sortSelectIndex = 1
+      },
+      loadMore () {
+        this.loadMoreFlag = true
+        if (!this.scrollDisable) {
+          this.scrollDisable = true
+          this.pageIndex += 1
+          this.post('/goods/goodsList', {
+            secondClassifyId: this.secondId,
+            storeId: this.storeId,
+            softType: this.softType,
+            pageIndex: this.pageIndex,
+            pageSize: 10
+          }).then((res) => {
+            if (res.data.code === 100) {
+              let newList = res.data.goodsList
+              for (let i = 0; i < newList.length; i++) {
+                this.list.push(newList[i])
+              }
+              if (newList.length > 0) {
+                setTimeout(() => {
+                  this.listScroll.refresh()
+                }, 50)
+              } else {
+//                this.loadText = '到底啦~'
+                this.moreIconFlag = false
+                this.$vux.toast.text('没有跟多商品了', 'center')
+                this.loadMoreFlag = false
+              }
+              this.scrollDisable = false
+            }
+          })
+        }
+      }
+    },
+    computed: {
+      totalPrice () {
+        return this.$store.state.totalBuyCount
       }
     }
   }

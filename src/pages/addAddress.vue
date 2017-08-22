@@ -87,21 +87,19 @@
           isDefault: this.isDefault,
           address: this.address
         }).then(res => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.$router.replace(this.$store.state.addAddressBackPath)
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
       },
       setDefault (val) {
-        console.log(val)
         val ? this.isDefault = 1 : this.isDefault = 0
       }
     },
@@ -118,14 +116,6 @@
   @import "../common/style/varlable";
 
   .add-address {
-    .cp-header {
-      color: #222;
-      z-index: 103;
-      background: #f9f9f9;
-      .back {
-        color: #222;
-      }
-    }
     .userInfo {
       .mt(92);
       .village {

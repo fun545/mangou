@@ -41,11 +41,6 @@ export default new Router({
       component: require('../pages/Location')
     },
     {
-      /* 定位页面手动搜索 */
-      path: '/manualLocation',
-      component: require('../pages/manualLocation.vue')
-    },
-    {
       /* 选择小区 */
       path: '/village',
       component: require('../pages/Village')

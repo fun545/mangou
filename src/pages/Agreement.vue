@@ -1,5 +1,5 @@
 <template>
-  <div @touchmove.prevent>
+  <div>
     <m-header title="软件许可及服务协议">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>

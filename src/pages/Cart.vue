@@ -235,14 +235,12 @@
       <!--加载动画-->
       <loading v-if="token" :loadingFlag="loadingFlag"></loading>
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask :position="position"
-           :text="toastText" :width="toastWidth" class="toast"></toast>
     <m-footer></m-footer>
   </div>
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem, Confirm, Toast, Alert } from 'vux'
+  import { XHeader, Checker, CheckerItem, Confirm, Alert } from 'vux'
   import mFooter from '../components/footer'
   import BScroll from 'better-scroll'
   import loading from '../components/loading'
@@ -256,7 +254,6 @@
       CheckerItem,
       BScroll,
       Confirm,
-      Toast,
       Alert,
       loading
     },
@@ -281,10 +278,6 @@
         comfirmGoods: '',      // 弹出提示商品
         comfirmGoodsIndex: '', // 弹出提示商品索引
         comfirmGoodsList: '',  // 弹出提示商品列表
-        showPositionValue: false, // Toast默认flag
-        toastText: '',  // Toast提示文本
-        toastWidth: '',  // Toast提示文本宽度
-        position: 'middle',  // Toast提示显示位置
         Thisfreight: '',     // 运费 及时送
         Nextfreight: '',     // 运费 次日达
         nextFreightShow: false,  // 次日达运费默认flag
@@ -306,7 +299,6 @@
           token: this.token,
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-          console.log(res.data)
           this.$store.state.cartInfo = res.data
           if (res.data.code === 100) {
             // 商品列表 及时送
@@ -332,36 +324,47 @@
             this.shopStatusMethods(this.thisShop.shopStatus)
             // 购物车数量
             this.$store.commit('increment', res.data.totalBuyCount)
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'top')
-            localStorage.removeItem('m-token')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'top')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
-            this.$router.push({path: '/login'})
           }
         })
         this.loadingFlag = false
         // 初始化默认配送方式
         this.$store.state.sendWay = {key: '1', value: '客户自取'}
-        this.$nextTick(() => {
-          this._initScroll()
-        })
       }
     },
-    activated () {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.contentScroll.refresh()
-        }, 1000)
-      })
+//    activated () {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.contentScroll.refresh()
+//        }, 1000)
+//      })
+//    },
+    watch: {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.homeSroll.refresh()
+//        }, 1000)
+//      })
+      '$route' (to, from) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.contentScroll.refresh()
+          }, 1000)
+        })
+      }
     },
     methods: {
       // 判断商铺营业状态
       shopStatusMethods (status) {
-        console.log(status)
         // 放假中
         if (status === 1) {
           this.alertText = '门店放假中'
@@ -417,14 +420,11 @@
                 this.$store.commit('increment', res.data.totalBuyCount)
               }
               if (res.data.code === 101) {
-                // 提示失败信息
-                this.toastWidth = '10em'
-                this.toastText = res.data.msg
-                this.showPositionValue = true
+                this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                // 请登录
-                this.$router.push({path: 'login'})
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -453,13 +453,11 @@
                 this.$store.commit('increment', res.data.totalBuyCount)
               }
               if (res.data.code === 101) {
-                // 提示失败信息
-                this.$vux.toast.text(res.data.msg, 'center')
-                this.fastClick = false
+                this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'center')
-                // 跳转重载页面
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -503,17 +501,18 @@
             this.$store.commit('increment', res.data.totalBuyCount)
           }
           if (res.data.code === 101) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {click: true, probeType: 3})
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true
+        })
       },
       // 提示框确认回调(减号减少到0时)
       onConfirm () {
@@ -531,12 +530,11 @@
             return
           }
           if (res.data.code === 101) {
-            // 提示失败信息
-            return
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            // 跳转重载页面
-            return
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -552,11 +550,14 @@
               if (res.data.code === 100) {
                 this.thisGoodsList.splice(i, 1)
                 i--
-                console.log(res.data.totalBuyCount)
                 this.$store.commit('totalBuyCountReduce', 1)
               }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
               if (res.data.code === 102) {
-                this.$router.push({path: '/login'})
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -570,8 +571,12 @@
                 i--
                 this.$store.commit('totalBuyCountReduce', 1)
               }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
               if (res.data.code === 102) {
-                this.$router.push({path: '/login'})
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -588,8 +593,12 @@
                 i--
                 this.$store.commit('totalBuyCountReduce', 1)
               }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
               if (res.data.code === 102) {
-                this.$router.push({path: '/login'})
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -603,8 +612,12 @@
                 i--
                 this.$store.commit('totalBuyCountReduce', 1)
               }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
               if (res.data.code === 102) {
-                this.$router.push({path: '/login'})
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -689,11 +702,9 @@
       },
       // 选择商品 单选
       selectedGoods (item) {
-        console.log(this.thisShop.shopStatus)
         if (item.shopType === 2 && this.thisShop.shopStatus !== 0) {
           return
         }
-        console.log(item)
         if (typeof item.checked === 'undefined') {
           this.$set(item, 'checked', true)
         } else {

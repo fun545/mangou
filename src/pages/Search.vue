@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="footer" v-if="token">
-        <div class="buy-car">
+        <div class="buy-car" @click="$router.push('/cart')">
           <div class="icon d-ib">
             <i class="iconfont center">&#xe613;</i>
             <div class="badge">
@@ -92,7 +92,7 @@
             </div>
           </div>
           <div class="text d-ib">
-            合计：<span>￥50.55</span>
+            合计：<span>￥{{totalPrice}}</span>
           </div>
         </div>
         <div class="button t-c" @click="$router.push({path:'/cart'})">
@@ -166,27 +166,34 @@
       }
     },
     created () {
-      console.log(this.$store.state.totalBuyCount)
       // 搜索关键词
       this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
           this.KeyWords = res.data.KeyWords
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
       // 搜索历史记录
       this.post('/goods/searchHistory', {token: this.token}).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
           this.historyWords = res.data.KeyHistory
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
     },
     methods: {
-//      goSearch () {
-//        this.$router.push({path: 'search'})
-//        this.$router.go(0)
-//      },
       // 返回搜索输入
       backSearch () {
         this.goSearchFlag = false
@@ -217,7 +224,6 @@
           }
           if (typeof this.nextScroll.refresh === 'function') {
             this.nextScroll.refresh()
-            console.log('thisrefresh')
           }
         } else {
           this.storeId = localStorage.getItem('m-shopId')
@@ -226,7 +232,6 @@
           if (this.ThisGoodsList.length === 0) {
             this.goSearch()
           }
-          console.log(this.ThisGoodsList.length)
           if (typeof this.thisScroll.refresh === 'function') {
             this.thisScroll.refresh()
           }
@@ -234,7 +239,6 @@
       },
       // 去搜索
       async goSearch (type) {
-        console.log(this.shopType)
         if (type && (type === 1) && this.keyName) {
           this.goSearchFlag = true
         }
@@ -242,12 +246,16 @@
           return this.$vux.alert.show({content: '搜索内容不能为空'})
         }
         this.addHistory(this.keyName)
-        await this.post('/goods/searchGoods', {
-          storeId: this.storeId,
-          shopType: this.shopType,
-          keyName: this.keyName
-        }).then((res) => {
+        var paramas = {}
+        paramas.storeId = this.storeId
+        paramas.shopType = this.shopType
+        paramas.keyName = this.keyName
+        if (this.token) {
+          paramas.token = this.token
+        }
+        await this.post('/goods/searchGoods', paramas).then((res) => {
           if (res.data.code === 100) {
+            this.$store.commit('changeTotalPrice', res.data.totalPrice)
 //            if (res.data.goodsInfo.goodsList === 0) {
 //              this.noPageFlag = true
 //            }
@@ -267,7 +275,6 @@
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'bottom')
-            localStorage.removeItem('m-token')
           }
           if (res.data.code === 102) {
             this.$vux.toast.text(res.data.msg, 'bottom')
@@ -340,11 +347,10 @@
               this.scrollDisableNext = false
             }
             if (res.data.code === 101) {
-              this.$vux.toast.text(res.data.msg, 'bottom')
-              localStorage.removeItem('m-token')
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
-              this.$vux.toast.text(res.data.msg, 'bottom')
+              this.$vux.toast.text(res.data.msg, 'middle')
               localStorage.removeItem('m-token')
             }
             this.scrollDisableNext = false
@@ -380,11 +386,10 @@
               this.scrollDisableThis = false
             }
             if (res.data.code === 101) {
-              this.$vux.toast.text(res.data.msg, 'bottom')
-              localStorage.removeItem('m-token')
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
-              this.$vux.toast.text(res.data.msg, 'bottom')
+              this.$vux.toast.text(res.data.msg, 'middle')
               localStorage.removeItem('m-token')
             }
             this.scrollDisableThis = false
@@ -403,9 +408,7 @@
           token: this.token,
           keyName: keyName,
           storeId: this.storeId
-        }).then((res) => {
-          console.log(res, '增加搜索记录')
-        })
+        }).then((res) => {})
       },
       // 删除搜索记录
       deletHistory () {
@@ -420,6 +423,13 @@
             }).then((res) => {
               if (res.data.code === 100) {
                 _this.historyWords = []
+              }
+              if (res.data.code === 101) {
+                _this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                _this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -438,6 +448,14 @@
           return '次日达'
         } else {
           return '即时送'
+        }
+      },
+      totalPrice: {
+        set () {
+          return parseInt(this.$store.state.totalPrice)
+        },
+        get () {
+          return parseInt(this.$store.state.totalPrice)
         }
       }
     },

@@ -162,7 +162,6 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
-//          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             if (res.data.goodsDetail.isCollect === 1) {
@@ -171,10 +170,12 @@
               this.collectFlag = false
             }
           }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
           if (res.data.code === 102) {
-            this.$router.push({
-              path: '/login'
-            })
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -184,7 +185,6 @@
           token: localStorage.getItem('m-token'),
           villageId: this.villageId
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.detailInfo = res.data
@@ -203,10 +203,12 @@
             })
             this.loadingFlag = false
           }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
           if (res.data.code === 102) {
-            this.$router.push({
-              path: '/login'
-            })
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -218,7 +220,6 @@
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.detailInfo = res.data
-            console.log(this.detailInfo)
             this.$store.commit('increment', res.data.totalBuyCount)
             this.$store.commit('changeTotalPrice', res.data.totalPrice)
             this.goodsList = res.data.listGoods
@@ -233,6 +234,13 @@
               this._initScroll()
             })
             this.loadingFlag = false
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
           this.loadingFlag = false
           this.login = false
@@ -252,6 +260,13 @@
               this.collectId = res.data.collectId
               this.collectFlag = true
             }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
           })
         } else {
           this.post('/collect/insertCollect', {
@@ -262,7 +277,16 @@
             shopType: this.goodsDetail.shopType,
             collectId: this.goodsDetail.collectId
           }).then((res) => {
-            this.collectFlag = false
+            if (res.data.code === 100) {
+              this.collectFlag = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
           })
         }
       },
@@ -283,7 +307,6 @@
         })
       },
       addCart (item) {
-//        console.log(item)
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
@@ -312,7 +335,6 @@
             villageId: localStorage.getItem('m-villageId'),
             storeId: this.storeId
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.detailInfo.totalPrice = res.data.totalPrice
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
@@ -320,10 +342,11 @@
               this.$store.commit('increment', res.data.totalBuyCount)
             }
             if (res.data.code === 101) {
-              this.$vux.toast.text(res.data.msg, 'top')
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
-              this.$vux.toast.text(res.data.msg, 'top')
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
           setTimeout(() => {
@@ -363,7 +386,6 @@
         }
       },
       async goBuy () {
-//        console.log(this.goodsDetail)
         // 加入购物车
         if (this.goodsDetail.kucun <= 0) {
           this.$vux.toast.text('库存不足', 'center')
@@ -378,14 +400,12 @@
           type: 3,
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-//          console.log(res.data)
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'top')
-            localStorage.removeItem('m-token')
+            this.$vux.toast.text(res.data.msg, 'middle')
             return
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'top')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
             return
           }
@@ -398,11 +418,24 @@
           shopType: this.goodsDetail.shopType,
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
-//            bus.$emit('fastBuyGoodsDetail', 1212121)
+            // 判断没有收获地址
+            if (!res.data.shippingInfo) {
+              this.$vux.toast.text('当前无可用收货地址，请填写', 'center')
+              this.$router.push('/address')
+              return
+            }
             this.$store.commit('getFastBuyInfo', res.data.carMap)
             this.$router.push({path: '/confirmOrder', query: {fastBuy: 'fastBuy'}})
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            return
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+            return
           }
         })
       }

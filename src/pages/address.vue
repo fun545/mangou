@@ -1,31 +1,33 @@
 <template>
-  <div class="address" @touchmove.prevent>
+  <div class="address">
     <div>
       <m-header :title="title">
         <span class="back iconfont" @click="$router.push('/user')" slot="icon">&#xe600;</span>
       </m-header>
-      <div class="address-list">
-        <div class="item" v-for="(item,index) in addressList" :key="index">
-          <div class="top">
-            <div class="user-msg">
-              <span>{{item.shippingName}}</span>
-              <span class="tel">{{item.shippingPhone}}</span>
-            </div>
-            <div class="address">
-              {{item.cityName + item.areaName + item.villageName + item.address}}
-            </div>
-          </div>
-          <div class="bt">
-            <div class="left f-l" @click="setDefault(item)">
-              <div class="icon d-ib">
-                <i class="iconfont" v-if="item.isDefault!==1">&#xe635;</i>
-                <i class="iconfont selected" v-if="item.isDefault===1">&#xe634;</i>
+      <div class="address-list" ref="content">
+        <div>
+          <div class="item" v-for="(item,index) in addressList" :key="index">
+            <div class="top">
+              <div class="user-msg">
+                <span>{{item.shippingName}}</span>
+                <span class="tel">{{item.shippingPhone}}</span>
               </div>
-              <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
+              <div class="address">
+                {{item.cityName + item.areaName + item.villageName + item.address}}
+              </div>
             </div>
-            <div class="right" @click="goEdt(item)">
-              <i class="iconfont">&#xe602;</i>
-              编辑
+            <div class="bt">
+              <div class="left f-l" @click="setDefault(item)">
+                <div class="icon d-ib">
+                  <i class="iconfont" v-if="item.isDefault!==1">&#xe635;</i>
+                  <i class="iconfont selected" v-if="item.isDefault===1">&#xe634;</i>
+                </div>
+                <span :class="{'theme-color':item.isDefault===1}">设为默认</span>
+              </div>
+              <div class="right" @click="goEdt(item)">
+                <i class="iconfont">&#xe602;</i>
+                编辑
+              </div>
             </div>
           </div>
         </div>
@@ -42,10 +44,12 @@
 
 <script>
   import mHeader from '../components/header'
+  import BScroll from 'better-scroll'
   export default {
     name: 'address',
     components: {
-      mHeader
+      mHeader,
+      BScroll
     },
     data () {
       return {
@@ -64,9 +68,18 @@
         this.post('/shipping/getAddressList', {
           token: this.token
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.addressList = res.data.shippingAddressList
+            this.$nextTick(() => {
+              this._initScroll()
+            })
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -77,13 +90,11 @@
           isDefault: 1,
           shippingId: item.shippingId
         }).then((res) => {
-          console.log(res.data)
-          if (res.data.code === 100) {}
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
@@ -99,6 +110,12 @@
       goAddAddress () {
         this.$store.commit('saveAddAddress', '/address')
         this.$router.push({path: '/addAddress'})
+      },
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
+        })
       }
     }
   }
@@ -113,16 +130,12 @@
   }
 
   .address {
-    .cp-header {
-      color: #222;
-      z-index: 103;
-      background: #f9f9f9;
-      .back {
-        color: #222;
-      }
-    }
     .address-list {
-      .mt(92);
+      position: absolute;
+      left: 0;
+      right: 0;
+      .t(92);
+      .b(120);
       .fs(32);
       .lh(32);
       color: #222;

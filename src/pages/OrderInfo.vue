@@ -249,13 +249,13 @@
         <!--列表标题-->
         <OrderGoodsList
           :goodsList="orderDetail.goodsList"
-          :goodsTotalCount="orderDetail.buyTotalCount"
+          :goodsTotalCount="Number(orderDetail.buyTotalCount)"
           :scrollObj="contentScrll"
           :shopType="orderDetail.shopType"
-          :totalPrice="orderDetail.totalPrice"
+          :totalPrice="Number(orderDetail.totalPrice)"
           :freight="freight"
           :discount="discount"
-          :goodsTotalPrice="orderDetail.goodsTotalPrice.toFixed(1)"
+          :goodsTotalPrice="goodsTotalPrice"
         ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
         <div v-if="logist">
@@ -313,14 +313,12 @@
       </div>
       <!--申请退款 已付款-->
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-           :text="toastText" width="10em" class="toast"></toast>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
-  import { XHeader, Timeline, TimelineItem, Toast } from 'vux'
+  import { XHeader, Timeline, TimelineItem } from 'vux'
   import BScroll from 'better-scroll'
   import OrderGoodsList from '../components/orderGoodsList'
   export default{
@@ -331,13 +329,10 @@
       TimelineItem,
       mHeader,
       BScroll,
-      Toast,
       OrderGoodsList
     },
     data () {
       return {
-        toastText: '',
-        showPositionValue: false, // 透明提示Flag
         orderDetail: '', // 订单详情
         contentScrll: {},
         freight: 3,
@@ -345,7 +340,8 @@
         logist: '', // 物流信息
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
         nextShop: this.$store.state.nextShop,
-        loadingFlag: true
+        loadingFlag: true,
+        goodsTotalPrice: 0
       }
     },
     async created () {
@@ -354,8 +350,8 @@
         orderId: this.$store.state.orderId
       }).then((res) => {
         if (res.data.code === 100) {
-          console.log(res.data)
           this.orderDetail = res.data.orderDetail
+          this.goodsTotalPrice = res.data.orderDetail.goodsTotalPrice
           // 运费 如果是没传freight字段则代表运费为0
           if (!this.orderDetail.freight) {
             this.freight = 0
@@ -365,12 +361,11 @@
           return
         }
         if (res.data.code === 101) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
         if (res.data.code === 102) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
       await this.post('/orders/viewLogistics', {
@@ -380,15 +375,13 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.logist = res.data
-          console.log(this.logist)
         }
         if (res.data.code === 101) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
         if (res.data.code === 102) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
       this.$nextTick(() => {
@@ -402,18 +395,15 @@
           token: localStorage.getItem('m-token'),
           orderNum: detail.orderNum
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
-            this.toastText = '提醒发货成功'
-            this.showPositionValue = true
+            this.$vux.toast.text('提醒发货成功', 'middle')
           }
           if (res.data.code === 101) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -429,18 +419,16 @@
               orderId: detail.orderId,
               opts: 1
             }).then((res) => {
-              console.log(res.data)
               if (res.data.code === 100) {
                 _this.$router.push({path: '/order_list'})
                 return
               }
               if (res.data.code === 101) {
-                _this.toastText = res.data.msg
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                _this.toastText = res.data.msg
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }
@@ -458,18 +446,16 @@
               orderId: detail.orderId,
               opts: 2
             }).then((res) => {
-              console.log(res.data)
               if (res.data.code === 100) {
                 _this.$router.push({path: '/order_list'})
                 return
               }
               if (res.data.code === 101) {
-                _this.toastText = res.data.msg
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                _this.toastText = res.data.msg
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }

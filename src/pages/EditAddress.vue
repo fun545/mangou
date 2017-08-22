@@ -47,15 +47,6 @@
         token: localStorage.getItem('m-token')
       }
     },
-    created () {
-//      this.curAddress = this.$route.query.curEdt
-//      console.log(this.curAddress.shippingId)
-//      this.name = this.curAddress.shippingName
-//      this.phone = this.curAddress.shippingPhone
-//      this.village = this.curAddress.villageName
-//      this.detailAddrss = this.curAddress.address
-//      console.log(this.$route.query.curEdt)
-    },
     methods: {
       // 删除地址
       deleteAddress () {
@@ -68,16 +59,14 @@
               token: _this.token,
               shippingId: _this.addressInfo.shippingId
             }).then(res => {
-              console.log(res.data)
               if (res.data.code === 100) {
-//                console.log(_this.$store.state.mapBackPath)
                 _this.$router.push('/address')
               }
               if (res.data.code === 101) {
-                _this.$vux.toast.text(res.data.msg, 'center')
+                this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                _this.$vux.toast.text(res.data.msg, 'center')
+                this.$vux.toast.text(res.data.msg, 'middle')
                 localStorage.removeItem('m-token')
               }
             })
@@ -101,36 +90,28 @@
             this.$router.push('/address')
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
       },
       // 设置默认地址
       setDefault (val) {
-//        console.log(val)
-        console.log(val)
         val ? this.addressInfo.isDefault = 1 : this.addressInfo.isDefault = 0
-//        if (val) {
-//          var defaultVal = 1
-//        } else {
-//          defaultVal = 0
-//        }
         this.post('/shipping/updateAddress', {
           token: this.token,
           isDefault: this.addressInfo.isDefault,
           shippingId: this.addressInfo.shippingId
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {}
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
@@ -161,12 +142,6 @@
 
   .edit-address {
     .cp-header {
-      color: #222;
-      z-index: 103;
-      background: #f9f9f9;
-      .back {
-        color: #222;
-      }
       .save {
         position: absolute;
         .r(36);

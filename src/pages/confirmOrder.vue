@@ -218,7 +218,7 @@
       合计： <span
       class="theme-color">{{totalPrice}}</span>
       <!--@click="confirm"-->
-      <div class="bt f-r t-c">
+      <div class="bt f-r t-c" @click="confirm">
         确认下单
       </div>
     </div>
@@ -268,57 +268,17 @@
       }
     },
     created () {
-//      var info = this.$store.state.fastBuyInfo
-//      console.log(info)
-//      this.thisGoodsList = info.carList[0].shandianShop.goodsList
-//      console.log(this.thisGoodsList)
-//      this.Thisfreight = info.carList[0].shandianShop.freight
-//      this.shippingInfo = info.shippingInfo
-//      this.selectedTotalCountThis = info.totalBuyCount
-//      this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
-      // 初始化Bscroll
-//      bus.$on('fastBuyGoodsDetail', () => {
-//        console.log(333333)
-//        var info = this.$store.state.fastBuyInfo
-//        console.log(info)
-//        this.thisGoodsList = info.carList[0].shandianShop.goodsList
-//        console.log(this.thisGoodsList)
-//        this.Thisfreight = info.carList[0].shandianShop.freight
-//        this.shippingInfo = info.shippingInfo
-//        this.selectedTotalCountThis = info.totalBuyCount
-//        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
-//      })
-//      console.log(this.$route.query)
       if (this.$route.query.fastBuy === 'fastBuy') {
-//        console.log(val)
         var info = this.$store.state.fastBuyInfo
-        console.log(info)
         this.thisGoodsList = info.carList[0].shandianShop.goodsList
-        console.log(this.thisGoodsList)
         this.Thisfreight = info.carList[0].shandianShop.freight
         this.shippingInfo = info.shippingInfo
         this.selectedTotalCountThis = info.totalBuyCount
         this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
       }
-//      bus.$on('fastBuyGoodsDetail', (val) => {
-//        console.log(val)
-//        var info = this.$store.state.fastBuyInfo
-//        console.log(info)
-//        this.thisGoodsList = info.carList[0].shandianShop.goodsList
-//        console.log(this.thisGoodsList)
-//        this.Thisfreight = info.carList[0].shandianShop.freight
-//        this.shippingInfo = info.shippingInfo
-//        this.selectedTotalCountThis = info.totalBuyCount
-//        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
-//      })
       this.$nextTick(() => {
         this._initScroll()
       })
-    },
-    mounted () {
-//      this.$nextTick(() => {
-//        this._initScroll()
-//      })
     },
     methods: {
       _initScroll () {
@@ -358,6 +318,12 @@
         this.payType = type
       },
       confirm () {
+        // 送货上门判断有无收获地址
+        if (!this.shippingInfo) {
+          this.$router.push('/address')
+          this.$vux.toast.text('当前无可用收获地址，请新增', 'center')
+          return
+        }
         let orderJsonObj = {}
         this.orderList = []
         // 及时送
@@ -413,43 +379,26 @@
             nextOrder.qujianName = this.userInfo.userName
             nextOrder.qujianPhone = this.userInfo.phone
           }
-//          console.log(this.nextShop)
           this.orderList.push(nextOrder)
         }
         orderJsonObj.orderList = this.orderList
         let orderJsonStr = JSON.stringify(orderJsonObj)
-//        console.log(orderJsonStr)
         this.post('/orders/submitOrders_new', {
           token: localStorage.getItem('m-token'),
           orderStr: orderJsonStr
         }).then((res) => {
-//          console.log(res.data)
-//          console.log(res.data)
           if (res.data.code === 100) {
             this.$store.commit('saveOrderNumList', res.data.orderNumList)
-            // 储存支付总金额
-//            this.$store.commit('saveTotalPay', this.totalPrice)
-            /* this.weichatPost(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
-             .then((res) => {
-             console.log(res.data, 'weichatPost')
-             if (res.data.code === 100) {
-             this.weixinxiaochengxu = res.data.weixinxiaochengxu
-             wxConfig(this.weixinxiaochengxu.timeStamp,
-             this.weixinxiaochengxu.nonceStr,
-             this.weixinxiaochengxu.prepayid,
-             this.weixinxiaochengxu.paySign,
-             this.wxPayCallBack)
-             }
-             }) */
-            this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList)
+            this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList, this)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
-      },
-      wxPayCallBack (res) {
-//        console.log(res, 'callbal')
-      },
-      fastBuyGoodsDetail (val) {
-        console.log(val)
       }
     },
     computed: {
@@ -462,9 +411,35 @@
         return this.NextGoodsList.slice(0, this.limitNumberNext)
       },
       // 合计
-      totalPrice () {
-        let total = (Number(this.totalPriceThis) + Number(this.Thisfreight) + Number(this.totalPriceNext) + Number(this.Nextfreight) - Number(this.discount)).toFixed(1)
-        return total
+      totalPrice: {
+        set () {
+          if (this.thisGoodsList.length > 0) {
+            var thisFreight = Number(this.Thisfreight)
+          } else {
+            thisFreight = 0
+          }
+          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
+            var nextFreight = Number(this.Nextfreight)
+          } else {
+            nextFreight = 0
+          }
+          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
+          return total
+        },
+        get () {
+          if (this.thisGoodsList.length > 0) {
+            var thisFreight = Number(this.Thisfreight)
+          } else {
+            thisFreight = 0
+          }
+          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
+            var nextFreight = Number(this.Nextfreight)
+          } else {
+            nextFreight = 0
+          }
+          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
+          return total
+        }
       }
     }
   }
@@ -483,6 +458,7 @@
   }
 
   .theme-color {
+
     color: @theme-color;
   }
 

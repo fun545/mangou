@@ -4,7 +4,7 @@
       <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
     </m-header>
     <div class="top">
-      <div class="logo"><img src="" alt=""></div>
+      <div class="logo"><img src="../assets/okPay.png" alt="" width="100%" height="100%"></div>
     </div>
     <div class="money t-c">
       支付金额¥33元

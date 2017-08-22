@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem, XTextarea, Group, Toast } from 'vux'
+  import { XHeader, Checker, CheckerItem, XTextarea, Group } from 'vux'
   import mHeader from '../components/header'
 
   export default {
@@ -42,8 +42,7 @@
       CheckerItem,
       mHeader,
       XTextarea,
-      Group,
-      Toast
+      Group
     },
     data () {
       return {
@@ -62,9 +61,7 @@
           value: '其他'
         }],
         reason: '',
-        reasonFlag: false,
-        toastText: '',
-        showPositionValue: false
+        reasonFlag: false
       }
     },
     methods: {
@@ -78,19 +75,18 @@
           refundAmount: this.$route.query.totalPrice
         }).then((res) => {
           if (res.data.code === 100) {
-            this.toastText = '正在审核中'
+            this.$vux.toast.text('正在审核中', 'middle')
             setTimeout(() => {
               this.$router.push({path: '/user'})
             }, 3000)
             return
           }
           if (res.data.code === 101) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.toastText = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
         this.$vux.alert.show({content: '退款成功'})

@@ -9,6 +9,7 @@ Vue.http.options.emulateJSON = true
 const config = {
   secret: '4f1da0c72ccaaed85eaac488b19795ba',
   url: 'http://121.41.122.141:8090/slowbuy' // 老蒋
+  // url: 'http://121.41.122.141/slowbuy' // 老蒋
   // url: 'http://192.168.0.134:8099/slowbuy'
   // url: '/api'
   // url: 'http://www.kmilife.com/slowbuy'
@@ -51,8 +52,7 @@ export default {
       state: 'abs#wechat_redirect'
     })
   },
-  weixinPay (attach, totalFee, outTradenNo) {
-    var _this = this
+  weixinPay (attach, totalFee, outTradenNo, _this) {
     // 服务器接口
     var url = config.url
     var path = '/wx/toPay'
@@ -103,17 +103,34 @@ export default {
             'package': 'prepay_id=' + weixinxiaochengxu.prepayid,
             'signType': 'MD5',         // 微信签名方式
             'paySign': weixinxiaochengxu.paySign // 微信签名
-          },
-          function (res) {
+          }, function (res) {
             console.log(res, '2')
-            if (res.err_msg === 'get_brand_wcpay_request:ok') {
-              Vue.$store.commit('saveTotalPay', totalFee)
-              Vue.$router.push('/okPay')
-            } else {
-              _this.$vux.toast.text(res.err_msg, 'bottom')
-            }  // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠
-          }
-        )
+            /* eslint-disable eqeqeq */
+            if (res.err_msg == 'get_brand_wcpay_request:ok') {
+              _this.$store.commit('saveTotalPay', totalFee)
+              _this.$router.push('/okPay')
+            }
+            /* eslint-disable eqeqeq */
+            if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+              _this.$router.push('/order_pay_list')
+            }
+            /* eslint-disable eqeqeq */
+            if (res.err_msg == 'get_brand_wcpay_request:fail') {
+              _this.$router.push('/order_pay_list')
+            }
+            // _this.$vux.toast.text(res.err_msg, 'bottom')
+            // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠
+          })
+        // if (typeof WeixinJSBridge === 'undefined') {
+        //   if (document.addEventListener) {
+        //     document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false)
+        //   } else if (document.attachEvent) {
+        //     document.attachEvent('WeixinJSBridgeReady', onBridgeReady)
+        //     document.attachEvent('onWeixinJSBridgeReady', onBridgeReady)
+        //   }
+        // } else {
+        //   onBridgeReady()
+        // }
       }
     })
     // }

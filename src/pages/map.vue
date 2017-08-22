@@ -98,14 +98,12 @@
               /* eslint-disable no-undef */
               var geolocation = new BMap.Geolocation()
               geolocation.getCurrentPosition(function (r) {
-                console.log(this.getStatus())
                 if (this.getStatus() === BMAP_STATUS_SUCCESS) {
                   _this.userlocation = {
                     lng: r.point.lng,
                     lat: r.point.lat
                   }
                   var c = JSON.stringify(_this.userlocation)
-                  console.log(_this.userlocation)
                   _this.getNearVillage()
                   localStorage.setItem('m-userlocation', c)
                   resolve(_this.userlocation)
@@ -123,7 +121,6 @@
 //              [116.406605, 39.921585, '地址：北京市东城区东华门大街'],
 //              [116.412222, 39.912345, '地址：北京市东城区正义路甲5号']
 //            ]
-            console.log(_this)
             _this.$vux.toast.text('text', 'center')
             for (var i = 0; i < _this.villageList.length; i++) {
               var curVillage = _this.villageList[i]
@@ -157,19 +154,14 @@
           source: 1
         }).then((res) => {
           if (res.data.code === 100) {
-//            console.log(res.data)
-//            var nearObj = res.data
-//            nearObj.areaName = '附近'
-//            this.nearVillageList = res.data.villageList
-//            this.areaList.push(nearObj)
             this.nearVillageList = res.data.villageList
             this.villageList = res.data.villageList
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
           this.villageList.length > 0 ? this.noVillageFlag = false : this.noVillageFlag = true
@@ -178,18 +170,15 @@
       // 获取长沙所有区域的小区
       getAreaList () {
         this.post('/village/getAllData', {}).then((res) => {
-//          console.log(res.data)
           if (res.data.code === 100) {
             this.areaList = res.data.areaList
-//            this.areaList = this.areaList.concat(res.data.areaList)
-            console.log(this.areaList)
             this.noVillageFlag = true
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
           this.$nextTick(() => {
@@ -208,7 +197,6 @@
       changeList (item, index) {
         this.ind = index
         this.villageList = item.villageList
-        console.log(this.villageList)
         this.villageList.length > 0 ? this.noVillageFlag = false : this.noVillageFlag = true
         this.$nextTick(() => {
           this.villageScroll.refresh()
@@ -216,7 +204,6 @@
       },
       // 选择小区
       chooseVillage (item) {
-        console.log(item)
         this.$store.commit('edtAddress', item)
         this.$router.push({path: this.$store.state.mapBackPath})
       },

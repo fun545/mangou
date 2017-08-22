@@ -1,3 +1,4 @@
+<script src="../../dist/static/js/app.9ff4a719fae97e928814.js"></script>
 <template>
   <div class="home-wrap" @touchmove.prevent>
     <div class="location-search-box" ref="header">
@@ -215,7 +216,7 @@
         saleGoods: [],
         saleImagelist: [],
         moreRecommendList: [],
-        pageIndex: 1,
+        pageIndex: 0,
         pageSize: 10,
         loading: false,
         scrollDisable: false,
@@ -232,73 +233,90 @@
         totalBuyCount: 1
       }
     },
-    async created () {
+    created () {
+//      localStorage.removeItem('m-villageName')
+      this.$store.commit('saveSelectVillagePath', '/home')
       if (!localStorage.getItem('m-villageName')) {
         this.$router.push({path: '/chooseCity'})
+        return
       } else {
         this.villageName = localStorage.getItem('m-villageName')
       }
+      // _iscroll初始化flag
       // 获取首页数据
-      await this.post('/first/getFirst', {
-        cityId: this.cityId,
-        areaId: this.areaId,
-        villageId: this.villageId,
-        source: 1
-      }).then((res) => {
-        if (res.data.code === 100) {
-          console.log(res.data)
-          this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-          this.totalBuyCount = res.data.firstInfo.totalBuyCount
-//          this.$store.commit('changeTotalPrice', res.data.firstInfo.totalBuyCount)
-          /* 轮播图数据 */
-          this.swiperList = res.data.firstInfo.imgList
-          /* 店铺数据 */
-          this.storeList = res.data.firstInfo.storeList
-          localStorage.setItem('m-depotId', this.storeList[0].storeId)
-          localStorage.setItem('m-shopId', this.storeList[1].storeId)
+      var getFirstPromise = new Promise((resolve) => {
+        var paramas = {}
+        paramas.cityId = this.cityId
+        paramas.areaId = this.areaId
+        paramas.villageId = this.villageId
+        paramas.source = 1
+        if (this.token) {
+          paramas.token = this.token
         }
+        this.post('/first/getFirst', paramas).then((res) => {
+          if (res.data.code === 100) {
+            // 保存购物车数量
+            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+            this.totalBuyCount = res.data.firstInfo.totalBuyCount
+            /* 轮播图数据 */
+            this.swiperList = res.data.firstInfo.imgList
+            /* 店铺数据 */
+            this.storeList = res.data.firstInfo.storeList
+            localStorage.setItem('m-depotId', this.storeList[0].storeId)
+            localStorage.setItem('m-shopId', this.storeList[1].storeId)
+            resolve()
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
       })
-      /* 首页数据数据 */
-      await this.post('/first/getFirstGoods', {
-        storeId: this.storeList[0].storeId,
-        villageId: this.villageId
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.mapTitleTips = res.data.goodsList.mapTitleTips
-          this.ystgWords = res.data.goodsList.ystgWords
-          this.serchKey = res.data.goodsList.serchKey
-          this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
-          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
-          this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
-          console.log(this.tuijianImagesList.length)
-          this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
-          this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
-          this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
-          this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
-          this.computedSwiperLength()
-          this.$nextTick(() => {
-            this._initScroll()
-          })
-        }
-      })
-      /* 无限加载初始位置 */
-      await this.post('/first/unlimitedLoading', {
-        storeId: this.storeList[0].storeId,
-        villageId: this.villageId,
-        pageIndex: 1,
-        pageSize: 10
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.moreRecommendList = res.data.goodsList
-        }
+      getFirstPromise.then(() => {
+        /* 首页数据数据 */
+        this.post('/first/getFirstGoods', {
+          storeId: this.storeList[0].storeId,
+          villageId: this.villageId
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.mapTitleTips = res.data.goodsList.mapTitleTips
+            this.ystgWords = res.data.goodsList.ystgWords
+            this.serchKey = res.data.goodsList.serchKey
+            this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
+            this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
+            this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
+            this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
+            this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
+            this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
+            this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
+            this.computedSwiperLength()
+            this.$nextTick(() => {
+              this._initScroll()
+            })
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
       })
     },
-    activated () {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.homeSroll.refresh()
-        }, 1000)
-      })
+    watch: {
+      '$route' (to, from) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            if (typeof this.homeSroll.refresh === 'function') {
+              this.homeSroll.refresh()
+            }
+          }, 1000)
+        })
+      }
     },
     methods: {
       goLocation () {
@@ -316,12 +334,12 @@
               token: _this.token,
               userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
             }).then((res) => {
-              console.log(res.data)
               if (res.data.code === 101) {
-                _this.$vux.toast.text(res.data.msg, 'center')
+                this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                _this.$vux.toast.text(res.data.msg, 'center')
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
             _this.$store.commit('saveSelectVillagePath', '/home')
@@ -372,7 +390,6 @@
       },
       /* 无限加载 */
       loadMore () {
-        console.log('daodila')
         if (!this.scrollDisable) {
           this.scrollDisable = true
           this.pageIndex += 1
@@ -390,11 +407,18 @@
               if (newList.length > 0) {
                 setTimeout(() => {
                   this.homeSroll.refresh()
-                }, 50)
+                }, 100)
               } else {
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
               }
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
             this.scrollDisable = false
           })
@@ -416,14 +440,7 @@
           const homeView = this.$refs.homeView
           let homeViewHeight = homeView.offsetHeight
           let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
-          console.log(wrapperHeight)
-//          if (this.scrollTop >= 800) {
-//           console.log('toTop')
-//          this.homeSroll.scrollY = 0
-//          }
-          console.log(this.scrollTop)
           if (this.scrollTop + homeViewHeight >= wrapperHeight) {
-            console.log(2222222)
             this.loadMore()
           }
         })

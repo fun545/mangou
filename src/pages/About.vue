@@ -31,15 +31,10 @@
           this.about = res.data.content
         }
         if (res.data.code === 101) {
-          this.$vux.toast.show({
-            text: res.data.msg
-          })
-          localStorage.removeItem('m-token')
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
         if (res.data.code === 102) {
-          this.$vux.toast.show({
-            text: res.data.msg
-          })
+          this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
       })

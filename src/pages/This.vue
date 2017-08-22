@@ -186,11 +186,17 @@
       await this.post('/basic/getStoreMsg', {
         storeId: localStorage.getItem('m-shopId')
       }).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
           this.storeMsg = res.data.storeInfo
           this.shopStatus = res.data.storeInfo.shopStatus
           this.shopStatusMethods(res.data.storeInfo.shopStatus)
+        }
+        if (res.data.code === 101) {
+          this.toast.text(res.data.msg, 'center')
+        }
+        if (res.data.code === 101) {
+          this.toast.text(res.data.msg, 'center')
+          localStorage.removeItem('m-token')
         }
       })
       // 一级菜单
@@ -207,6 +213,13 @@
           this.sortType = 1
           console.log(res.data)
         }
+        if (res.data.code === 101) {
+          this.toast.text(res.data.msg, 'center')
+        }
+        if (res.data.code === 101) {
+          this.toast.text(res.data.msg, 'center')
+          localStorage.removeItem('m-token')
+        }
       })
       // 速选商品列表 如果bt===2 则有速选商品
       if (this.sideList[0].bt === 2) {
@@ -221,6 +234,13 @@
             this.goodsList = this.fastSortGoodsList
             this.loadingFlag = false
           }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
         })
       }
       // 商品列表
@@ -231,7 +251,16 @@
           storeId: localStorage.getItem('m-shopId'),
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-          this.secondMenuList = res.data.secondClassifyList
+          if (res.data.code === 100) {
+            this.secondMenuList = res.data.secondClassifyList
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
         })
         await this.post('/goods/goodsList', {
           firstClassifyId: this.firstId,
@@ -245,6 +274,13 @@
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
           }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
         })
       }
 
@@ -252,13 +288,28 @@
         this._initScroll()
       })
     },
-    activated () {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.listSroll.refresh()
-          this.menuSroll.refresh()
-        }, 1000)
-      })
+//    activated () {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.listSroll.refresh()
+//          this.menuSroll.refresh()
+//        }, 1000)
+//      })
+//    },
+    watch: {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.homeSroll.refresh()
+//        }, 1000)
+//      })
+      '$route' (to, from) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.listSroll.refresh()
+            this.menuSroll.refresh()
+          }, 500)
+        })
+      }
     },
     methods: {
       // 判断商铺营业状态
@@ -280,26 +331,28 @@
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
       goLocation () {
-        var _this = this
-        this.$vux.confirm.show({
-          title: '提示',
-          content: '切换小区会清空购物车中即时送商品，您确定切换么？',
-          onConfirm () {
-            _this.post('/car/deleteUserCarJs', {
-              token: _this.token,
-              userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
-            }).then((res) => {
-              console.log(res.data)
-              if (res.data.code === 101) {
-                _this.$vux.toast.text(res.data.msg, 'center')
-              }
-              if (res.data.code === 102) {
-                _this.$vux.toast.text(res.data.msg, 'center')
-              }
-            })
-            _this.$router.push({path: '/location', query: {path: '/this'}})
-          }
-        })
+        if (localStorage.getItem('m-token')) {
+          var _this = this
+          this.$vux.confirm.show({
+            title: '提示',
+            content: '切换小区会清空购物车中即时送商品，您确定切换么？',
+            onConfirm () {
+              _this.post('/car/deleteUserCarJs', {
+                token: _this.token,
+                userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
+              }).then((res) => {
+                if (res.data.code === 101) {
+                  _this.$vux.toast.text(res.data.msg, 'center')
+                }
+                if (res.data.code === 102) {
+                  _this.$vux.toast.text(res.data.msg, 'center')
+                }
+              })
+            }
+          })
+        }
+        this.$store.commit('saveSelectVillagePath', '/this')
+        this.$router.push({path: '/location', query: {path: '/this'}})
       },
 //      getSecondMenu (id) {
 //        this.post('/classify/secondClassifyList', {
@@ -422,15 +475,10 @@
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrap, {
-          click: true,
-          disableMouse: true,
-          disablePointer: false,
-          probeType: 3
+          click: true
         })
         this.listSroll = new BScroll(this.$refs.goodsListWrap, {
           click: true,
-          disableMouse: true,
-          disablePointer: false,
           probeType: 3
         })
         // 加载更多
@@ -479,6 +527,13 @@
                 this.loadMoreFlag = false
               }
               this.scrollDisable = false
+            }
+            if (res.data.code === 101) {
+              this.toast.text(res.data.msg, 'center')
+            }
+            if (res.data.code === 101) {
+              this.toast.text(res.data.msg, 'center')
+              localStorage.removeItem('m-token')
             }
           })
         }

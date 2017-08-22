@@ -1,37 +1,39 @@
 <template>
-  <div>
+  <div class="active">
     <div>
       <m-header :title="title">
         <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
       </m-header>
-      <div class="scroll" v-if="isActive">
-        <div class="activePic">
-          <img v-lazy="keyBanleImages" alt="">
-          <!--<lazy-image-->
-          <!--:src='keyBanleImages'-->
-          <!--:placeholder='$store.state.defaultImg'-->
-          <!--:events="['touchmove']"-->
-          <!--&gt;</lazy-image>-->
-        </div>
-        <div class="content">
-          <div class="item" v-for="(item ,index) in goodsList" :key="index">
-            <div class="pic f-l"  @click="$router.push({
+      <div class="scroll" v-if="isActive" ref="content">
+        <div>
+          <div class="activePic">
+            <img v-lazy="keyBanleImages" alt="">
+            <!--<lazy-image-->
+            <!--:src='keyBanleImages'-->
+            <!--:placeholder='$store.state.defaultImg'-->
+            <!--:events="['touchmove']"-->
+            <!--&gt;</lazy-image>-->
+          </div>
+          <div class="content">
+            <div class="item" v-for="(item ,index) in goodsList" :key="index">
+              <div class="pic f-l" @click="$router.push({
           path: '/goods_detail',
           query: {goodsId: item.goodsId}
         })">
-              <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
-              <!--<lazy-image-->
-              <!--:src='item.goodsImgUrl'-->
-              <!--:placeholder='$store.state.defaultImg'-->
-              <!--:events="['touchmove']"-->
-              <!--class="lazy-pic"-->
-              <!--&gt;</lazy-image>-->
-            </div>
-            <div class="des f-l">
-              <h3 class="name">{{item.goodsName}}</h3>
-              <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-              <!--<div class="iconfont shop-car t-c">&#xe613;</div>-->
-              <shop-car-button :goods="item"></shop-car-button>
+                <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
+                <!--<lazy-image-->
+                <!--:src='item.goodsImgUrl'-->
+                <!--:placeholder='$store.state.defaultImg'-->
+                <!--:events="['touchmove']"-->
+                <!--class="lazy-pic"-->
+                <!--&gt;</lazy-image>-->
+              </div>
+              <div class="des f-l">
+                <h3 class="name">{{item.goodsName}}</h3>
+                <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                <!--<div class="iconfont shop-car t-c">&#xe613;</div>-->
+                <shop-car-button :goods="item"></shop-car-button>
+              </div>
             </div>
           </div>
         </div>
@@ -58,29 +60,53 @@
   import loading from '../components/loading'
   import ball from '../components/ball'
   import shopCarButton from '../components/buyCarButton'
+  import BScroll from 'better-scroll'
   export default {
     name: 'active',
-    components: {mHeader, noPage, loading, ball, shopCarButton, Badge},
+    components: {mHeader, noPage, loading, ball, shopCarButton, Badge, BScroll},
     data () {
       return {
         goodsList: [],
         title: this.$route.query.remarks,
         isActive: true,
         keyBanleImages: this.$route.query.keyBanleImages,
-        loadingFlag: true
+        loadingFlag: true,
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
-      this.post('/goods/getLabelGoods', {keyWordId: this.$route.query.keyId}).then((res) => {
+      var parmas = {}
+      if (this.token) {
+        parmas.token = this.token
+      }
+      parmas.keyWordId = this.$route.query.keyId
+      this.post('/goods/getLabelGoods', parmas).then((res) => {
         if (res.data.code === 100) {
           this.goodsList = res.data.goodsList
+          this.$nextTick(() => {
+            this._initScroll()
+          })
           if (this.goodsList.length === 0) {
             this.isActive = false
-            console.log(this.isActive)
           }
           this.loadingFlag = false
         }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
+        }
       })
+    },
+    methods: {
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
+        })
+      }
     },
     computed: {
       totalBuyCount () {
@@ -94,25 +120,9 @@
   @import "../common/style/sum";
   @import "../common/style/varlable";
 
-  .header {
-    position: absolute;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    right: 0;
-    .h(92);
-    .lh(92);
-    .fs(40);
-    background: #fff;
-    color: #3d3634;
-    .back {
-      position: absolute;
-      .t(50%);
-      .mt(-17.5);
-      .l(30);
-      .fs(35);
-      color: #07b3e0;
-    }
+  .active {
+    height: 100% !important;
+    width: 100%;
   }
 
   .scroll {
@@ -121,8 +131,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    overflow-y: scroll;
-    z-index: 101;
+    overflow: hidden;
     .activePic {
       width: 100%;
       .h(314);
@@ -202,42 +211,4 @@
     .t(92);
   }
 
-  /*.buy-cart {
-     position: fixed;
-     .l(600);
-     .b(44);
-     .w(68);
-     .h(68);
-     z-index: 999;
-     .wrap {
-       position: relative;
-       .ml(20);
-       color: @theme-color;
-       .t(16);
-       background: #07b3e0;
-       background: rgba(7, 179, 224, .6);
-       .w(68);
-       .h(68);
-       border-radius: 50%;
-       .iconfont {
-         .fs(38);
-         color: #fff;
-       }
-       .badge {
-         position: absolute;
-         .h(30);
-         .r(20);
-         .t(0);
-         .vux-badge {
-           position: absolute;
-           .fs(22);
-           .pl(4);
-           .pr(4);
-           .h(30);
-           .lh(30);
-           border: 1px solid #fff;
-         }
-       }
-     }
-   }*/
 </style>

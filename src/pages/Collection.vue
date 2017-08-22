@@ -108,7 +108,6 @@
           }
           if (typeof this.nextScroll.refresh === 'function') {
             this.nextScroll.refresh()
-            console.log('thisrefresh')
           }
         } else {
           this.storeId = localStorage.getItem('m-shopId')
@@ -117,7 +116,6 @@
           if (this.ThisGoodsList.length === 0) {
             this.goSearch()
           }
-          console.log(this.ThisGoodsList.length)
           if (typeof this.thisScroll.refresh === 'function') {
             this.thisScroll.refresh()
           }
@@ -217,7 +215,6 @@
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'bottom')
-              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'bottom')
@@ -257,7 +254,6 @@
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'bottom')
-              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'bottom')

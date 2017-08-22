@@ -177,7 +177,10 @@
         this.$router.push({path: '/setting'})
       },
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {click: true})
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
+        })
       },
       goPage (url) {
         if (this.token) {

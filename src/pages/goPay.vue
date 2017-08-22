@@ -63,7 +63,6 @@
       goPay () {
         var orderNumList = []
         orderNumList.push(this.order.orderNum)
-//        this.$store.commit('saveTotalPay', this.order.totalPrice)
         this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.order.totalPrice, orderNumList)
       }
     }

@@ -63,11 +63,16 @@
     },
     created () {
       this.orderDetail = this.$route.query
-      console.log(this.$route.query)
       this.post('/goods/searchKeyWord', {statusType: 4}).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
           this.keyWords = res.data.KeyWords
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
     },
@@ -87,7 +92,6 @@
           businessSrvicePoints: this.rater,
           shopType: this.$route.query.shopType
         }).then((res) => {
-          console.log(res.data)
           this.$vux.alert.show({
             content: '评论成功'
           })

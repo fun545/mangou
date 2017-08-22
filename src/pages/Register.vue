@@ -25,31 +25,24 @@
         agreeFlag: true
       }
     },
-//    created () {},
     methods: {
-//      userMsg (res) {
-//        console.log(res)
-//      },
       postAjax (tel, code, pass) {
-        console.log(tel, code, pass)
         this.post('/user/insertUser', {
-//          token: this.token,
           phone: tel,
           userPwd: pass,
           type: 1,
           cityId: localStorage.getItem('m-cityId'),
           code: md5(code)
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.$vux.toast.text('注册成功', 'center')
             this.$router.push('/user')
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })

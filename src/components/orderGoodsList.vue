@@ -11,12 +11,12 @@
         <div class="pic">
           <!--<img v-lazy="item.goodsImgUrl" alt="">-->
           <lazy-image
-          :src='item.goodsImgUrl'
-          :placeholder='$store.state.defaultImg'
-          :events="['touchmove']"
-          width="100%"
-          height="100%"
-        ></lazy-image>
+            :src='item.goodsImgUrl'
+            :placeholder='$store.state.defaultImg'
+            :events="['touchmove']"
+            width="100%"
+            height="100%"
+          ></lazy-image>
         </div>
         <div class="des">
           <p class="name">{{item.goodsName}}</p>
@@ -73,10 +73,16 @@
       goodsTotalCount: Number, // 商品总数
       scrollObj: Object, // scroll实例
       shopType: Number,
-      totalPrice: Number,
+      totalPrice: {
+        type: Number,
+        default: 0
+      },
       freight: Number,
       discount: Number,
-      goodsTotalPrice: Number // 商品总价
+      goodsTotalPrice: {
+        type: Number,
+        default: 0
+      } // 商品总价
     },
     data () {
       return {

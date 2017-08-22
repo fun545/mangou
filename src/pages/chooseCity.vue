@@ -35,7 +35,6 @@
     methods: {
       getCity () {
         this.post('/village/cityList_new', {}).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.cityList = res.data.cityList
           }
@@ -48,8 +47,6 @@
         }
         if (item.isopen === 1) {
           localStorage.setItem('m-cityId', item.cityId)
-          console.log(localStorage.getItem('m-cityId'))
-          console.log(localStorage.setItem('m-cityName', item.cityName))
           if (this.$route.query.path) {
             this.$router.push(this.$route.query.path)
             return

@@ -111,9 +111,6 @@
           disablePointer: false,
           probeType: 3
         })
-//        this.listScroll.on('scroll', (pos) => {
-//          this.scrollTop = Math.abs(pos.y)
-//        })
         loadMoreMehod(this.listScroll, this.$refs.listWrap, this.loadMore)
       },
       getGoods (id) {
@@ -122,19 +119,24 @@
           storeId: this.storeId,
           softType: this.softType
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             if (res.data.goodsList.length === 0) {
               this.isActive = false
             }
             this.list = res.data.goodsList
-            console.log(this.list)
             if (this.list.length !== 0) {
               this.$nextTick(() => {
                 this._initScroll()
               })
             }
             this.loadingFlag = false
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -195,6 +197,13 @@
                 this.loadMoreFlag = false
               }
               this.scrollDisable = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
         }

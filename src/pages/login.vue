@@ -58,17 +58,15 @@
         </div>
       </div>
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-           :text="text" width="10em" class="toast"></toast>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, md5, Toast } from 'vux'
+  import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, md5 } from 'vux'
   import getCode from '../components/_getCode'
   export default {
     name: 'login',
-    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5, Toast},
+    components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5},
     data () {
       return {
         pass: '', // 默认快速登录密码
@@ -77,8 +75,6 @@
         agreeFlag: true,
         type: 3,
         code: '',
-        showPositionValue: false,
-        text: '验证码错误',
         loginType: 2, // 默认2 快速登录 1 账号登录
         userPassword: ''
       }
@@ -115,9 +111,7 @@
           cityId: localStorage.getItem('m-cityId'),
           areaId: localStorage.getItem('m-areaId')
         }).then((res) => {
-          console.log(this.tel, this.pass)
           if (res.data.code === 100) {
-            console.log(res.data)
             // vuex存储 token
             localStorage.setItem('m-token', res.data.userInfo.token)
             // 本地存储 token
@@ -127,13 +121,15 @@
             // 存储 购物车总数
             this.$store.commit('increment', res.data.userInfo.totalBuyCount)
             this.$store.state.login = true
-            console.log(JSON.parse(localStorage.getItem('m-userInfo')))
             // 登录成功跳转个人中心
             this.$router.push({path: '/user'})
           }
           if (res.data.code === 101) {
-            this.text = res.data.msg
-            this.showPositionValue = true
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       }
@@ -154,7 +150,7 @@
     bottom: 0;
     overflow: hidden;
     background-size: 100%;
-    .bg-image('../../assets/BG');
+    background-image: url("../assets/loginBG@2x.png.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     .register {

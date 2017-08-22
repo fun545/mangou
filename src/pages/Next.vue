@@ -106,15 +106,37 @@
             this.loadingFlag = false
           })
         }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
+        }
       })
     },
-    activated () {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.listSroll.refresh()
-          this.menuSroll.refresh()
-        }, 1000)
-      })
+//    activated () {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.listSroll.refresh()
+//          this.menuSroll.refresh()
+//        }, 1000)
+//      })
+//    },
+    watch: {
+//      this.$nextTick(() => {
+//        setTimeout(() => {
+//          this.homeSroll.refresh()
+//        }, 1000)
+//      })
+      '$route' (to, from) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.listSroll.refresh()
+            this.menuSroll.refresh()
+          }, 1000)
+        })
+      }
     },
     computed: {
       currentIndex () {
@@ -129,24 +151,6 @@
       }
     },
     methods: {
-      // 跳转搜索
-//      goSearch () {
-//        this.$router.push({path: '/search', query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}})
-//      },
-      searchText () {
-        if (!this.search) {
-          this.$vux.alert.show({
-            content: '请输入搜索内容'
-          })
-          return
-        }
-        this.$router.push({
-          path: '/searchText',
-          query: {
-            search: this.search
-          }
-        })
-      },
       goSecondList (id) {
         this.$router.push({
           path: '/list1',

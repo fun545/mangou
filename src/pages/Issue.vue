@@ -33,9 +33,7 @@
       }
     },
     created () {
-//      var tempArr = []
       this.post('/goods/searchKeyWord', {statusType: 5}).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
 //          this.popupArray = res.data.KeyWords
           res.data.KeyWords.forEach((item) => {
@@ -44,6 +42,13 @@
             obj.value = item.keyword
             this.popupArray.push(obj)
           })
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
         }
       })
     },
@@ -61,15 +66,22 @@
           this.toastTip('请输入合法的手机号码')
           flag = false
         }
-//        console.log(this.issueType)
         if (flag) {
           this.post('/orders/feedBack', {
             token: localStorage.getItem('m-token'),
             feedContext: this.text,
             feedType: this.issueType
           }).then((res) => {
-            console.log(res.data)
-            this.$router.push('/user')
+            if (res.data.code === 100) {
+              this.$router.push('/user')
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
           })
           this.$vux.alert.show({content: '提交问题成功'})
         }

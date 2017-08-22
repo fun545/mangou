@@ -72,7 +72,9 @@
     async created () {
       // 获取当前位置
       await this.getPosition()
-      console.log(this.userlocation, 'test')
+      this.$nextTick(() => {
+        this._initScroll()
+      })
       if (this.token) {
         this.getAddress()
       }
@@ -96,7 +98,9 @@
 //          window.location.reload()
 //        }
         this.$router.replace(this.$store.state.selectVillagePath)
-        window.location.reload()
+        setTimeout(() => {
+          this.$router.go(0)
+        })
       },
 //      searchLocation () {
 //        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
@@ -124,7 +128,6 @@
                 lat: r.point.lat
               }
               var c = JSON.stringify(_this.userlocation)
-//              console.log(_this.userlocation)
               _this.goCurrentVillage()
               localStorage.setItem('m-userlocation', c)
             }
@@ -149,20 +152,15 @@
           source: 1
         }).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             this.villageList = res.data.villageList
-            console.log(this.villageList)
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
-          this.$nextTick(() => {
-            this._initScroll()
-          })
         })
       },
       // 获取收货地址
@@ -170,9 +168,15 @@
         this.post('/shipping/getAddressList', {
           token: this.token
         }).then((res) => {
-          console.log(res)
           if (res.data.code === 100) {
             this.addressList = res.data.shippingAddressList
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -190,7 +194,13 @@
             this.storeList = res.data.firstInfo.storeList
             localStorage.setItem('m-depotId', this.storeList[0].storeId)
             localStorage.setItem('m-shopId', this.storeList[1].storeId)
-            console.log(this.storeList)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },
@@ -209,7 +219,6 @@
     width: 100%;
     height: 100%;
     .cp-header {
-      /*position: inherit;*/
       .right {
         position: absolute;
         .r(30);

@@ -20,7 +20,7 @@
     },
     methods: {
       share () {
-        this.$vux.alert.show({content: '分享弹窗触发'})
+//        this.$vux.alert.show({content: '分享弹窗触发'})
       }
     }
   }

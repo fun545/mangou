@@ -40,29 +40,13 @@
       ViewBox,
       Tabbar,
       TabbarItem
-//      ball
-    },
-//    data () {
-//      return {
-//        total: -1
-//      }
-//    },
-    created () {
-//      this.$store.commit('increment', localStorage.getItem('m-totalBuyCount'))
-//      this.total = this.$store.state.totalBuyCount
-      console.log('footer')
     },
     computed: {
       totalBuyCount: {
-//        console.log(this.$store.state.totalBuyCount)
-//      return parseInt(this.$store.state.totalBuyCount)
         set () {
-          console.log('set')
-          console.log(this.totalCount)
           return this.totalCount
         },
         get () {
-          console.log('get')
           return parseInt(this.$store.state.totalBuyCount)
         }
       }

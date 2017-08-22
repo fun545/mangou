@@ -38,9 +38,6 @@
     created () {
       this.cityId = localStorage.getItem('m-cityId')
       this.cityName = localStorage.getItem('m-cityName')
-      console.log(this.cityId, this.cityName)
-//      this.post('/village/villageList', {})
-//      this.getCity()
     },
     methods: {
       searchVillage () {
@@ -51,9 +48,15 @@
           cityId: this.cityId,
           keyName: this.keyName
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.list = res.data.villageList
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       },

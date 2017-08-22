@@ -1,171 +1,175 @@
-<script src="../../dist/static/js/app.9ff4a719fae97e928814.js"></script>
+<!--<script src="../../dist/static/js/app.9ff4a719fae97e928814.js"></script>-->
 <template>
   <div class="home-wrap" @touchmove.prevent>
-    <div class="location-search-box" ref="header">
-      <a class="location" @click="goLocation">{{villageName}}</a>
-      <a class="search iconfont" @click="goSearch">&#xe639;</a>
-    </div>
-    <div class="home-view" ref="homeView">
-      <div class="wrap">
-        <!-- banner-->
-        <swiper :options="swiperOption" ref="mySwiper" class="banner">
-          <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
-            <img :src="item.imageUrl">
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
-        <!-- 次日达/即时达 -->
-        <div class="link-box">
-          <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
-          <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
-        </div>
-        <div class="active-box">
-          <!-- 预售团购 -->
-          <div class="group-buy" v-if="mapTitleTips[0]">
-            <home-title :title="mapTitleTips[0].name">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
-            </home-title>
-            <div class="content clearfix">
-              <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
-                <!--<lazy-image-->
-                <!--:src='item.keyword'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--&gt;</lazy-image>-->
-                <img v-lazy="item.keyword" alt="" width="100%" height="100%">
-              </div>
-            </div>
-          </div>
-          <!-- 原地直供 -->
-          <div class="origin-directly" v-if="mapTitleTips[1]">
-            <home-title :title="mapTitleTips[1].name">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
-            </home-title>
-            <div class="content">
-              <div class="left f-l" @click="goSerchKey(serchKey)">
-                <!--<lazy-image-->
-                <!--:src='serchKey.keyword'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--&gt;</lazy-image>-->
-                <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
-              </div>
-              <div class="right f-l">
-                <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
-                  <div class="des f-l">
-                    <h3 class="title ui-ellipsis-clamp-2">{{specialPriceGoodsList[0].goodsName}}</h3>
-                    <p class="this-price">即时价：<span class="s1">¥</span><span
-                      class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
-                    <p class="next-price">次日价：<span class="s1">¥</span><span
-                      class="number">{{specialPriceGoodsList[0].price}}</span></p>
-                  </div>
-                  <div class="pic f-l">
-                    <!--<lazy-image-->
-                    <!--:src='specialPriceGoodsList[0].goodsImgUrl'-->
-                    <!--:placeholder='$store.state.defaultImg'-->
-                    <!--:events="['touchmove']"-->
-                    <!--&gt;</lazy-image>-->
-                    <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
-                  </div>
-                </div>
-                <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
-                  <div class="des f-l">
-                    <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
-                    <p class="this-price">即时价：<span class="s1">¥</span><span
-                      class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
-                    <p class="next-price">次日价：<span class="s1">¥</span><span
-                      class="number">{{specialPriceGoodsList[1].price}}</span></p>
-                  </div>
-                  <div class="pic f-l">
-                    <!--<lazy-image-->
-                    <!--:src='specialPriceGoodsList[1].goodsImgUrl'-->
-                    <!--:placeholder='$store.state.defaultImg'-->
-                    <!--:events="['touchmove']"-->
-                    <!--&gt;</lazy-image>-->
-                    <img v-lazy="specialPriceGoodsList[1].goodsImgUrl">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 优品精品 -->
-          <swiper :options="swiperOption" ref="YouSwiper" class="activeSwiper">
-            <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
+    <div v-if="!reloadFlag">
+      <div class="location-search-box" ref="header">
+        <a class="location" @click="goLocation">{{villageName}}</a>
+        <a class="search iconfont" @click="goSearch">&#xe639;</a>
+      </div>
+      <div class="home-view" ref="homeView">
+        <div class="wrap">
+          <!-- banner-->
+          <swiper :options="swiperOption" ref="mySwiper" class="banner">
+            <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
               <img :src="item.imageUrl">
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
-          <div class="recommend" v-if="mapTitleTips[2]">
-            <home-title :title="mapTitleTips[2].name">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
-            </home-title>
-            <div class="content clearfix">
-              <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
-                <div class="top" @click="goDetail(item.goodsId)">
-                  <div class="pic">
-                    <!--<lazy-image-->
-                    <!--:src='item.goodsImgUrl'-->
-                    <!--:placeholder='$store.state.defaultImg'-->
-                    <!--:events="['touchmove']"-->
-                    <!--@click.native="goDetail(item.goodsId)"-->
-                    <!--&gt;</lazy-image>-->
-                    <img v-lazy="item.goodsImgUrl" alt="">
-                  </div>
-                  <div class="des">
-                    <h3 class="title">{{item.goodsName}}</h3>
-                    <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                    <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span>
-                    </p>
-                  </div>
+          <!-- 次日达/即时达 -->
+          <div class="link-box">
+            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
+            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+          </div>
+          <div class="active-box">
+            <!-- 预售团购 -->
+            <div class="group-buy" v-if="mapTitleTips[0]">
+              <home-title :title="mapTitleTips[0].name">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+              </home-title>
+              <div class="content clearfix">
+                <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
+                  <!--<lazy-image-->
+                  <!--:src='item.keyword'-->
+                  <!--:placeholder='$store.state.defaultImg'-->
+                  <!--:events="['touchmove']"-->
+                  <!--&gt;</lazy-image>-->
+                  <img v-lazy="item.keyword" alt="" width="100%" height="100%">
                 </div>
-                <buy-car-button :goods="item"></buy-car-button>
               </div>
             </div>
+            <!-- 原地直供 -->
+            <div class="origin-directly" v-if="mapTitleTips[1]">
+              <home-title :title="mapTitleTips[1].name">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[0].other">
+              </home-title>
+              <div class="content">
+                <div class="left f-l" @click="goSerchKey(serchKey)">
+                  <!--<lazy-image-->
+                  <!--:src='serchKey.keyword'-->
+                  <!--:placeholder='$store.state.defaultImg'-->
+                  <!--:events="['touchmove']"-->
+                  <!--&gt;</lazy-image>-->
+                  <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
+                </div>
+                <div class="right f-l">
+                  <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
+                    <div class="des f-l">
+                      <h3 class="title ui-ellipsis-clamp-2">{{specialPriceGoodsList[0].goodsName}}</h3>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span
+                        class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
+                      <p class="next-price">次日价：<span class="s1">¥</span><span
+                        class="number">{{specialPriceGoodsList[0].price}}</span></p>
+                    </div>
+                    <div class="pic f-l">
+                      <!--<lazy-image-->
+                      <!--:src='specialPriceGoodsList[0].goodsImgUrl'-->
+                      <!--:placeholder='$store.state.defaultImg'-->
+                      <!--:events="['touchmove']"-->
+                      <!--&gt;</lazy-image>-->
+                      <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
+                    </div>
+                  </div>
+                  <div class="item" @click="goOriginDetail(specialPriceGoodsList[0].goodsId)">
+                    <div class="des f-l">
+                      <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span
+                        class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
+                      <p class="next-price">次日价：<span class="s1">¥</span><span
+                        class="number">{{specialPriceGoodsList[1].price}}</span></p>
+                    </div>
+                    <div class="pic f-l">
+                      <!--<lazy-image-->
+                      <!--:src='specialPriceGoodsList[1].goodsImgUrl'-->
+                      <!--:placeholder='$store.state.defaultImg'-->
+                      <!--:events="['touchmove']"-->
+                      <!--&gt;</lazy-image>-->
+                      <img v-lazy="specialPriceGoodsList[1].goodsImgUrl">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 优品精品 -->
+            <swiper :options="swiperOption" ref="YouSwiper" class="activeSwiper">
+              <swiper-slide class="swiper-img" v-for="(item, index) in tuijianImagesList" :key="index">
+                <img :src="item.imageUrl">
+              </swiper-slide>
+              <div class="swiper-pagination" slot="pagination"></div>
+            </swiper>
+            <div class="recommend" v-if="mapTitleTips[2]">
+              <home-title :title="mapTitleTips[2].name">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[2].other">
+              </home-title>
+              <div class="content clearfix">
+                <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
+                  <div class="top" @click="goDetail(item.goodsId)">
+                    <div class="pic">
+                      <!--<lazy-image-->
+                      <!--:src='item.goodsImgUrl'-->
+                      <!--:placeholder='$store.state.defaultImg'-->
+                      <!--:events="['touchmove']"-->
+                      <!--@click.native="goDetail(item.goodsId)"-->
+                      <!--&gt;</lazy-image>-->
+                      <img v-lazy="item.goodsImgUrl" alt="">
+                    </div>
+                    <div class="des">
+                      <h3 class="title">{{item.goodsName}}</h3>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                      <p class="next-price">次日价：<span class="s1">¥</span><span
+                        class="number">{{item.canKaoPrice}}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <buy-car-button :goods="item"></buy-car-button>
+                </div>
+              </div>
+            </div>
+            <!-- 热销 -->
+            <swiper :options="swiperOption" ref="SaleSwiper" class="activeSwiper">
+              <swiper-slide class="swiper-img" v-for="(item, index) in saleImagelist" :key="index">
+                <img :src="item.imageUrl">
+              </swiper-slide>
+              <div class="swiper-pagination" slot="pagination"></div>
+            </swiper>
+            <div class="new-goods">
+              <home-title :title="mapTitleTips[4].name" v-if="mapTitleTips[4]">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[4].other">
+              </home-title>
+              <new-goods :goodsList="saleGoods"></new-goods>
+            </div>
+            <!-- 新品上架 -->
+            <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
+              <swiper-slide class="swiper-img" v-for="(item, index) in newImageList" :key="index">
+                <img :src="item.imageUrl">
+              </swiper-slide>
+              <div class="swiper-pagination" slot="pagination"></div>
+            </swiper>
+            <div class="sale">
+              <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
+              </home-title>
+              <two-column :goodsList="newGoodsList"></two-column>
+            </div>
+            <!-- 实时推荐 -->
+            <div class="moreRecommend">
+              <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
+                <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
+              </home-title>
+              <two-column :goodsList="moreRecommendList"></two-column>
+            </div>
+            <load-more
+              :tip="loadText"
+              :show-loading="moreIconFlag"
+              background-color="#f7f7f7"
+              class="load-more"></load-more>
           </div>
-          <!-- 热销 -->
-          <swiper :options="swiperOption" ref="SaleSwiper" class="activeSwiper">
-            <swiper-slide class="swiper-img" v-for="(item, index) in saleImagelist" :key="index">
-              <img :src="item.imageUrl">
-            </swiper-slide>
-            <div class="swiper-pagination" slot="pagination"></div>
-          </swiper>
-          <div class="new-goods">
-            <home-title :title="mapTitleTips[4].name" v-if="mapTitleTips[4]">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[4].other">
-            </home-title>
-            <new-goods :goodsList="saleGoods"></new-goods>
-          </div>
-          <!-- 新品上架 -->
-          <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
-            <swiper-slide class="swiper-img" v-for="(item, index) in newImageList" :key="index">
-              <img :src="item.imageUrl">
-            </swiper-slide>
-            <div class="swiper-pagination" slot="pagination"></div>
-          </swiper>
-          <div class="sale">
-            <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
-            </home-title>
-            <two-column :goodsList="newGoodsList"></two-column>
-          </div>
-          <!-- 实时推荐 -->
-          <div class="moreRecommend">
-            <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
-              <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
-            </home-title>
-            <two-column :goodsList="moreRecommendList"></two-column>
-          </div>
-          <load-more
-            :tip="loadText"
-            :show-loading="moreIconFlag"
-            background-color="#f7f7f7"
-            class="load-more"></load-more>
         </div>
       </div>
     </div>
     <m-footer :totalCount="totalBuyCount"></m-footer>
     <ball></ball>
     <to-top v-if="scrollTop>=800" :scrollObj="homeSroll"></to-top>
+    <load-fail v-if="reloadFlag"></load-fail>
   </div>
 </template>
 
@@ -180,6 +184,7 @@
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
   import toTop from '../components/toTop'
+  import loadFail from '../components/loadFail.vue'
   export default {
     name: 'home',
     components: {
@@ -193,7 +198,8 @@
       LoadMore,
       buyCarButton,
       ball,
-      toTop
+      toTop,
+      loadFail
     },
     data () {
       return {
@@ -230,7 +236,8 @@
           pagination: '.swiper-pagination'
         },
         homeSroll: {},
-        totalBuyCount: 1
+        totalBuyCount: 1,
+        reloadFlag: false
       }
     },
     created () {
@@ -270,8 +277,9 @@
             this.$vux.toast.text(res.data.msg, 'middle')
           }
           if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
+            this.reloadFlag = true
+            return
           }
         })
       })
@@ -469,7 +477,7 @@
     display: flex;
     align-items: center;
     position: absolute;
-    z-index: 500;
+    z-index: 100;
     top: 0;
     right: 0;
     left: 0;

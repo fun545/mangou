@@ -59,7 +59,6 @@
         var telReg = /^1[0-9]{10}$/
         // 密码正则
         var passReg = /^[a-zA-Z_0-9]{6,10}$/
-        console.log(telReg.test(this.userAccount))
         if (!telReg.test(this.userAccount)) {
           this.$vux.toast.text('请输入正确手机号')
           return

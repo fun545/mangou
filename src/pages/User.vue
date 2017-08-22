@@ -163,11 +163,25 @@
           if (res.data.code === 100) {
             this.userFirst = res.data.userFirst
           }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
         })
         // 注册XX天消费XX钱
         this.post('/user/userRegDay', {token: localStorage.getItem('m-token')}).then((res) => {
           if (res.data.code === 100) {
             this.userReg = res.data.userReg
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
           }
         })
       }

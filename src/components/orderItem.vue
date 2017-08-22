@@ -188,20 +188,15 @@
           <span class="btn this-btn" @click="onBt(item,index)">{{item | btText}}</span>
         </div>
       </div>
-      <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-             :text="toastText" width="10em" class="toast"></toast>
     </div>
     <slot name="loadMoreIcon"></slot>
   </div>
 </template>
 
 <script>
-  import { Toast, Confirm } from 'vux'
   import BScroll from 'better-scroll'
   export default {
     components: {
-      Toast,
-      Confirm,
       BScroll
     },
     props: {
@@ -210,25 +205,10 @@
     },
     data () {
       return {
-        showPositionValue: false,
-        toastText: '',
         delOrder: '', // 待删除订单
         index: '' // 待删除订单index
       }
     },
-//    created () {
-//      this.$nextTick(() => {
-//        console.log(this.$refs.swiper)
-//      })
-//    },
-//    watch: {
-//      orderList () {
-//        console.log(this.$refs.swiper)
-//        this.$nextTick(() => {
-//          this._initSwiperScroll()
-//        })
-//      }
-//    },
     methods: {
       // 点击按钮事件
       onBt (item, index) {
@@ -246,20 +226,15 @@
           this.post('/orders/promptShipment', {token: localStorage.getItem('m-token'), orderNum: item.orderNum})
             .then((res) => {
               if (res.data.code === 100) {
-                this.toastText = '提醒发货成功'
-                this.showPositionValue = true
+                this.$vux.toast.text('提醒发货成功', 'middle')
                 return
               }
               if (res.data.code === 101) {
-                this.toastWidth = '10em'
-                this.toastText = res.data.msg
-                this.showPositionValue = true
-                return
+                this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                this.toastText = '请登录'
-                this.showPositionValue = true
-                return
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           return
@@ -287,7 +262,6 @@
           // 确认删除回调
           onConfirm () {
             // 删除订单
-            console.log()
             _this.post('/orders/delOrUpOrders', {
               token: localStorage.getItem('m-token'),
               orderId: _this.delOrder.orderId,
@@ -300,12 +274,11 @@
                 })
               }
               if (res.data.code === 101) {
-                _this.toastText = res.data.msg
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
               }
               if (res.data.code === 102) {
-                _this.toastText = '请登录'
-                _this.showPositionValue = true
+                _this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
               }
             })
           }

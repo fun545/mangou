@@ -38,9 +38,7 @@
         }
         if (!this.hasSendFlag) {
           this.post('/user/getCode', {phone: this.tel, type: this.codeType}).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
-              console.log(22222)
               this.hasSendFlag = true
               this.timer = setInterval(() => {
                 this.time--
@@ -52,12 +50,11 @@
               }, 1000)
             }
             if (res.data.code === 101) {
-              this.$vux.toast.text(res.data.msg, 'center')
-              return
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
-              this.$vux.toast.text(res.data.msg, 'center')
-              return
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
         }

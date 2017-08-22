@@ -41,29 +41,14 @@ export default new Router({
       component: require('../pages/Location')
     },
     {
-      /* 选择小区 */
-      path: '/village',
-      component: require('../pages/Village')
-    },
-    {
       /* 搜索页面 */
       path: '/search',
       component: require('../pages/Search')
     },
     {
-      /* 搜索内容页面 */
-      path: '/search_text',
-      component: require('../pages/SearchText')
-    },
-    {
       /* 商品详情 */
       path: '/goods_detail',
       component: require('../pages/GoodsDetail')
-    },
-    {
-      /* 即时送 - 专区页面 */
-      path: '/zhuanqu',
-      component: require('../pages/ZhuanQu')
     },
     {
       /* 收获地址 */

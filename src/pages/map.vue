@@ -203,9 +203,43 @@
         })
       },
       // 选择小区
-      chooseVillage (item) {
+      async chooseVillage (item) {
         this.$store.commit('edtAddress', item)
-        this.$router.push({path: this.$store.state.mapBackPath})
+        if (this.$store.state.mapBackPath === '/this') {
+          localStorage.setItem('m-cityId', item.cityId)
+          localStorage.setItem('m-areaId', item.areaId)
+          localStorage.setItem('m-villageId', item.villageId)
+          localStorage.setItem('m-villageName', item.villageName)
+          // 更新storeId
+          await this.getStoreId()
+          setTimeout(() => {
+            window.location.reload()
+          }, 100)
+        }
+        this.$router.replace({path: this.$store.state.mapBackPath})
+      },
+      getStoreId () {
+        this.post('/first/getFirst', {
+          cityId: localStorage.getItem('m-cityId'),
+          areaId: localStorage.getItem('m-areaId'),
+          villageId: localStorage.getItem('m-villageId'),
+          source: 1
+        }).then((res) => {
+          if (res.data.code === 100) {
+//            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+            /* 店铺数据 */
+            this.storeList = res.data.firstInfo.storeList
+            localStorage.setItem('m-depotId', this.storeList[0].storeId)
+            localStorage.setItem('m-shopId', this.storeList[1].storeId)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
       },
       // 去搜索页面
       goSearch () {

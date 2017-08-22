@@ -82,11 +82,6 @@
           .l(50);
           color: #443d39;
         }
-        /* .des {
-           color: #888;
-           .fs(24);
-           .lh(30);
-         }*/
       }
       .bt {
         position: relative;

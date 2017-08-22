@@ -192,10 +192,10 @@
           this.shopStatusMethods(res.data.storeInfo.shopStatus)
         }
         if (res.data.code === 101) {
-          this.toast.text(res.data.msg, 'center')
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
-        if (res.data.code === 101) {
-          this.toast.text(res.data.msg, 'center')
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
       })
@@ -211,7 +211,6 @@
           this.firstId = this.sideList[0].classifyId
           this.sortId = this.sideList[0].classifyId
           this.sortType = 1
-          console.log(res.data)
         }
         if (res.data.code === 101) {
           this.toast.text(res.data.msg, 'center')
@@ -228,17 +227,16 @@
           keyWordId: 7,
           softType: 3
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.fastSortGoodsList = res.data.goodsList
             this.goodsList = this.fastSortGoodsList
             this.loadingFlag = false
           }
           if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
-          if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
@@ -255,10 +253,10 @@
             this.secondMenuList = res.data.secondClassifyList
           }
           if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
-          if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
@@ -275,10 +273,10 @@
             this.loadingFlag = false
           }
           if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+            this.$vux.toast.text(res.data.msg, 'middle')
           }
-          if (res.data.code === 101) {
-            this.toast.text(res.data.msg, 'center')
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
         })
@@ -288,20 +286,7 @@
         this._initScroll()
       })
     },
-//    activated () {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.listSroll.refresh()
-//          this.menuSroll.refresh()
-//        }, 1000)
-//      })
-//    },
     watch: {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.homeSroll.refresh()
-//        }, 1000)
-//      })
       '$route' (to, from) {
         this.$nextTick(() => {
           setTimeout(() => {
@@ -314,7 +299,6 @@
     methods: {
       // 判断商铺营业状态
       shopStatusMethods (status) {
-        console.log(status)
         // 放假中
         if (status === 1) {
           this.alertText = '门店放假中'
@@ -331,40 +315,35 @@
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
       goLocation () {
-        if (localStorage.getItem('m-token')) {
-          var _this = this
-          this.$vux.confirm.show({
-            title: '提示',
-            content: '切换小区会清空购物车中即时送商品，您确定切换么？',
-            onConfirm () {
+        if (!this.token) {
+          this.$store.commit('saveSelectVillagePath', '/home')
+          this.$router.push({path: '/location'})
+          return
+        }
+        var _this = this
+        this.$vux.confirm.show({
+          title: '提示',
+          content: '切换小区会清空购物车中即时送商品，您确定切换么？',
+          onConfirm () {
+            _this.$store.commit('saveMapBackPath', '/this')
+            if (localStorage.getItem('m-token')) {
               _this.post('/car/deleteUserCarJs', {
                 token: _this.token,
                 userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
               }).then((res) => {
                 if (res.data.code === 101) {
-                  _this.$vux.toast.text(res.data.msg, 'center')
+                  _this.$vux.toast.text(res.data.msg, 'middle')
                 }
                 if (res.data.code === 102) {
-                  _this.$vux.toast.text(res.data.msg, 'center')
+                  _this.$vux.toast.text(res.data.msg, 'middle')
+                  localStorage.removeItem('m-token')
                 }
               })
             }
-          })
-        }
-        this.$store.commit('saveSelectVillagePath', '/this')
-        this.$router.push({path: '/location', query: {path: '/this'}})
+            _this.$router.push('/Bmap')
+          }
+        })
       },
-//      getSecondMenu (id) {
-//        this.post('/classify/secondClassifyList', {
-//          classifyId: this.firstId,
-//          storeId: localStorage.getItem('m-shopId'),
-//          villageId: localStorage.getItem('m-villageId')
-//        }).then((res) => {
-//          console.log(res.data)
-//          this.secondMenuList = res.data.secondClassifyList
-//          console.log(this.secondMenuList)
-//        })
-//      },
       // 请求商品列表
       async getGoods (id, type) {
         var params = {}
@@ -387,17 +366,30 @@
             keyWordId: 7,
             softType: this.softType
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.fastSortGoodsList = res.data.goodsList
               this.goodsList = this.fastSortGoodsList
               this.loadingFlag = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
         } else {
           await this.post('/goods/goodsList', params).then((res) => {
             if (res.data.code === 100) {
               this.goodsList = res.data.goodsList
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
         }
@@ -438,7 +430,16 @@
           storeId: localStorage.getItem('m-shopId'),
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
-          this.secondMenuList = res.data.secondClassifyList
+          if (res.data.code === 100) {
+            this.secondMenuList = res.data.secondClassifyList
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
         })
       },
       // 综合排序
@@ -529,10 +530,10 @@
               this.scrollDisable = false
             }
             if (res.data.code === 101) {
-              this.toast.text(res.data.msg, 'center')
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
-            if (res.data.code === 101) {
-              this.toast.text(res.data.msg, 'center')
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
               localStorage.removeItem('m-token')
             }
           })
@@ -549,7 +550,6 @@
         this.scrollTop = scrollTop
       },
       goDetail (id) {
-//        console.log(22)
         this.$router.push({
           path: '/goods_detail',
           query: {goodsId: id, shopStatus: this.shopStatus}
@@ -630,15 +630,6 @@
         .r(28);
         color: #e4ffe5;
       }
-      /*.search:before {
-        content: '\e639';
-        color: #fff;
-        font: 12px/1 'iconfont';
-        .fs(25);
-        position: absolute;
-        .t(20);
-        .l(30);
-      }*/
     }
     .scroll-active {
       .t(92) !important;

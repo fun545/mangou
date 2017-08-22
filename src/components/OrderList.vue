@@ -15,14 +15,12 @@
       </order-list>
       <loading :loadingFlag="loadingFlag"></loading>
     </div>
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask position="middle"
-           :text="toastText" width="10em" class="toast"></toast>
     <to-top v-if="scrollTop>=800" :scrollObj="contentScroll"></to-top>
   </div>
 </template>
 
 <script>
-  import { Toast, LoadMore } from 'vux'
+  import { LoadMore } from 'vux'
   import mHeader from './header'
   import orderList from './orderItem.vue'
   import BScroll from 'better-scroll'
@@ -34,7 +32,6 @@
       mHeader,
       orderList,
       BScroll,
-      Toast,
       LoadMore,
       loading,
       toTop
@@ -46,8 +43,6 @@
     data () {
       return {
         orderList: [1],
-        toastText: '',
-        showPositionValue: false,
         scrollDisable: false,
         pageIndex: 1,
         loadText: '正在加载更多数据',
@@ -72,13 +67,10 @@
           return
         }
         if (res.data.code === 101) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
-          localStorage.removeItem('m-token')
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
         if (res.data.code === 102) {
-          this.toastText = res.data.msg
-          this.showPositionValue = true
+          this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
       })
@@ -113,7 +105,6 @@
             villageId: localStorage.getItem('m-villageId'),
             status: this.status
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               let newList = res.data.orderList
               newList.forEach((item, index) => {
@@ -126,18 +117,16 @@
               } else {
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
-                console.log('到底了')
               }
               this.scrollDisable = false
               return
             }
             if (res.data.code === 101) {
-              this.toastText = res.data.msg
-              this.showPositionValue = true
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
-              this.toastText = res.data.msg
-              this.showPositionValue = true
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
             }
           })
         }

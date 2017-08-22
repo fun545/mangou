@@ -112,6 +112,7 @@
           areaId: localStorage.getItem('m-areaId')
         }).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data)
             // vuex存储 token
             localStorage.setItem('m-token', res.data.userInfo.token)
             // 本地存储 token
@@ -121,6 +122,7 @@
             // 存储 购物车总数
             this.$store.commit('increment', res.data.userInfo.totalBuyCount)
             this.$store.state.login = true
+            console.log(JSON.parse(localStorage.getItem('m-userInfo')))
             // 登录成功跳转个人中心
             this.$router.push({path: '/user'})
           }

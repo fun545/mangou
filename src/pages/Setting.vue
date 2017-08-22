@@ -36,13 +36,19 @@
         if (res.data.code === 100) {
           this.number = res.data.versionInfo.number
         }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
+        }
       })
     },
     methods: {
       async go () {
         if (this.loginFlg) {
           await this.post('/user/loginOut', {token: localStorage.getItem('m-token')}).then((res) => {
-            console.log('退出登录接口返回：')
             if (res.data.code === 100) {
               localStorage.removeItem('m-token')
               localStorage.removeItem('m-userInfo')
@@ -50,7 +56,6 @@
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'bottom')
-              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'bottom')

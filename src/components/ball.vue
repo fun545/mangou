@@ -67,7 +67,6 @@
         }
         this.ball.show = true
         this.ball.el = el
-        console.log(this.element)
       },
       beforeDrop (el) { // 这个方法的执行是因为这是一个vue的监听事件
         if (this.ball.show) {
@@ -104,14 +103,10 @@
     },
     computed: {
       totalBuyCount: {
-//        console.log(this.$store.state.totalBuyCount)
-//      return parseInt(this.$store.state.totalBuyCount)
         set () {
-          console.log('set')
           return parseInt(this.$store.state.totalBuyCount)
         },
         get () {
-          console.log('get')
           return parseInt(this.$store.state.totalBuyCount)
         }
       }

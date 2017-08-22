@@ -22,7 +22,6 @@
       新增收货地址
     </div>
   </div>
-  </div>
 </template>
 
 <script>
@@ -42,25 +41,20 @@
         localCityId: Number(localStorage.getItem('m-cityId')),
         localAreaId: Number(localStorage.getItem('m-areaId')),
         localVillageId: Number(localStorage.getItem('m-villageId'))
-//        msg: '',
-//        code: '',
-//        showPositionValue: false
       }
     },
     async created () {
       await this.post('/shipping/getAddressList', {
         token: localStorage.getItem('m-token')
       }).then((res) => {
-//        this.code = res.data.code
         if (res.data.code === 100) {
-          console.log(res.data)
           this.addressList = res.data.shippingAddressList
         }
         if (res.data.code === 101) {
-          this.$vux.toast.text(res.data.msg, 'center')
+          this.$vux.toast.text(res.data.msg, 'middle')
         }
         if (res.data.code === 102) {
-          this.$vux.toast.text(res.data.msg, 'center')
+          this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
       })

@@ -17,11 +17,11 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.eot');
-    src: url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.woff') format('woff'),
-    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_284244_f92xg77pp8bmx6r.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_284244_819mucsgk9ms4i.eot');
+    src: url('//at.alicdn.com/t/font_284244_819mucsgk9ms4i.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_284244_819mucsgk9ms4i.woff') format('woff'),
+    url('//at.alicdn.com/t/font_284244_819mucsgk9ms4i.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_284244_819mucsgk9ms4i.svg#iconfont') format('svg');
   }
 
   .weui-tab__panel {
@@ -88,8 +88,12 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     color: @theme-color;
   }
 
+  .theme-bg-color {
+    background-color: @theme-color;
+  }
+
   /*.disabled-color {*/
-    /*color: #d2d2d2 !important;*/
+  /*color: #d2d2d2 !important;*/
   /*}*/
 
   /*.daigou {*/

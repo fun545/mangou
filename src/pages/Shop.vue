@@ -121,13 +121,11 @@
             address: this.address,
             remark: this.msg
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.$vux.alert.show({content: '提交申请成功！'})
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'top')
-              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'top')

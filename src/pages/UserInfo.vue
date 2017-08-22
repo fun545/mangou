@@ -100,15 +100,7 @@
     },
     methods: {
       submit () {
-        this.$vux.alert.show({content: '提交信息成功'})
-      },
-      save () {
-//        this.post('/user/updateUser', {
-//          token: localStorage.getItem('m-token'),
-//          userName:userInfo.userName,
-//          userImages:
-//        }).then()
-        console.log(this.userInfo)
+//        this.$vux.alert.show({content: '提交信息成功'})
       }
     }
   }

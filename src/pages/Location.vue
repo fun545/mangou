@@ -15,9 +15,12 @@
           </div>
         </div>
         <!--定位当前-->
-        <div class="current-position t-c" @click="curVillage(villageList[0],1)">
-          <span class="iconfont">&#xe656;</span>
-          定位到当前位置
+        <div class="current-position t-c" @click="curVillage(villageList,1)">
+          <div v-if="villageList.length>0">
+            <span class="iconfont">&#xe656;</span>
+            定位到当前位置
+          </div>
+          <div v-if="villageList.length===0">附近无服务小区或定位失败，请点击选择更多</div>
         </div>
         <!--常用收获地址-->
         <div class="current-address" v-if="token">
@@ -83,7 +86,8 @@
       // 选择当前小区
       async curVillage (data, type) {
         if (this.village.length === 0 && type === 1) {
-          this.$vux.toast.text('当前区域暂时没有开通服务', 'center')
+          this.$store.commit('saveMapBackPath', '/home')
+          this.$router.push('/Bmap')
           return
         }
         this.village = data.villageName
@@ -93,14 +97,7 @@
         localStorage.setItem('m-villageName', data.villageName)
         // 更新storeId
         await this.getStoreId()
-//        if (!this.$route.query.path) {
-//          this.$router.replace(this.$store.state.selectVillagePath)
-//          window.location.reload()
-//        }
-        this.$router.replace(this.$store.state.selectVillagePath)
-        setTimeout(() => {
-          this.$router.go(0)
-        })
+        this.$router.push(this.$store.state.selectVillagePath)
       },
 //      searchLocation () {
 //        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
@@ -181,8 +178,8 @@
         })
       },
       // 更新storeId
-      async getStoreId () {
-        await this.post('/first/getFirst', {
+      getStoreId () {
+        this.post('/first/getFirst', {
           cityId: localStorage.getItem('m-cityId'),
           areaId: localStorage.getItem('m-areaId'),
           villageId: localStorage.getItem('m-villageId'),

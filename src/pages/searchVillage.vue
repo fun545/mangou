@@ -60,22 +60,39 @@
           }
         })
       },
-      curVillage (data) {
+      async curVillage (data) {
         this.village = data.villageName
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
-//        this.$router.push({path: '/home'})
-//        if (!this.$route.query.path) {
-//          this.$router.replace('/home')
-//          window.location.reload()
-//        }
         this.$store.commit('edtAddress', data)
-        this.$router.replace(this.$store.state.selectVillagePath)
-        if (this.$store.state.selectVillagePath === '/home' || this.$store.state.selectVillagePath === '/this') {
-          window.location.reload()
-        }
+        this.$router.push(this.$store.state.selectVillagePath)
+        await this.getStoreId()
+        this.$router.push(this.$store.state.selectVillagePath)
+      },
+      getStoreId () {
+        this.post('/first/getFirst', {
+          cityId: localStorage.getItem('m-cityId'),
+          areaId: localStorage.getItem('m-areaId'),
+          villageId: localStorage.getItem('m-villageId'),
+          source: 1
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+            /* 店铺数据 */
+            this.storeList = res.data.firstInfo.storeList
+            localStorage.setItem('m-depotId', this.storeList[0].storeId)
+            localStorage.setItem('m-shopId', this.storeList[1].storeId)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
       }
     },
     watch: {

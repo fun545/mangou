@@ -65,7 +65,6 @@
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'top')
-              localStorage.removeItem('m-token')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'top')

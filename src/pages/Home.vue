@@ -205,11 +205,11 @@
       return {
         villageName: '',
         swiperList: [],
-        cityId: localStorage.getItem('m-cityId'),
-        areaId: localStorage.getItem('m-areaId'),
-        villageId: localStorage.getItem('m-villageId'),
+        cityId: '',
+        areaId: '',
+        villageId: '',
         storeList: [],
-        token: localStorage.getItem('m-token'),
+        token: '',
         mapTitleTips: [],
         ystgWords: [],
         serchKey: '',
@@ -241,24 +241,40 @@
       }
     },
     created () {
-//      localStorage.removeItem('m-villageName')
-      this.$store.commit('saveSelectVillagePath', '/home')
-      if (!localStorage.getItem('m-villageName')) {
-        this.$router.push({path: '/chooseCity'})
-        return
-      } else {
-        this.villageName = localStorage.getItem('m-villageName')
+      this.createdMethods()
+    },
+    watch: {
+      '$route' (to, from) {
+        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
+          this.createdMethods()
+        }
+        this.$nextTick(() => {
+          setTimeout(() => {
+            if (typeof this.homeSroll.refresh === 'function') {
+              this.homeSroll.refresh()
+            }
+          }, 1000)
+        })
       }
-      // _iscroll初始化flag
-      // 获取首页数据
-      var getFirstPromise = new Promise((resolve) => {
+    },
+    methods: {
+      createdMethods () {
+        //      localStorage.removeItem('m-villageName')
+        // 进首页如果之前没有选过小区则跳转选择
+        if (!localStorage.getItem('m-villageName')) {
+          this.$router.push({path: '/chooseCity'})
+          return
+        }
+        this.villageName = localStorage.getItem('m-villageName')
+        // _iscroll初始化flag
+        // 获取首页数据
         var paramas = {}
-        paramas.cityId = this.cityId
-        paramas.areaId = this.areaId
-        paramas.villageId = this.villageId
+        paramas.cityId = localStorage.getItem('m-cityId')
+        paramas.areaId = localStorage.getItem('m-areaId')
+        paramas.villageId = localStorage.getItem('m-villageId')
         paramas.source = 1
-        if (this.token) {
-          paramas.token = this.token
+        if (localStorage.getItem('m-token')) {
+          paramas.token = localStorage.getItem('m-token')
         }
         this.post('/first/getFirst', paramas).then((res) => {
           if (res.data.code === 100) {
@@ -271,7 +287,6 @@
             this.storeList = res.data.firstInfo.storeList
             localStorage.setItem('m-depotId', this.storeList[0].storeId)
             localStorage.setItem('m-shopId', this.storeList[1].storeId)
-            resolve()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -282,11 +297,9 @@
             return
           }
         })
-      })
-      getFirstPromise.then(() => {
         /* 首页数据数据 */
         this.post('/first/getFirstGoods', {
-          storeId: this.storeList[0].storeId,
+          storeId: localStorage.getItem('m-depotId'),
           villageId: this.villageId
         }).then((res) => {
           if (res.data.code === 100) {
@@ -313,22 +326,10 @@
             localStorage.removeItem('m-token')
           }
         })
-      })
-    },
-    watch: {
-      '$route' (to, from) {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            if (typeof this.homeSroll.refresh === 'function') {
-              this.homeSroll.refresh()
-            }
-          }, 1000)
-        })
-      }
-    },
-    methods: {
+      },
       goLocation () {
-        if (!this.token) {
+        this.$store.commit('saveSelectVillagePath', '/home')
+        if (!localStorage.getItem('m-token')) {
           this.$store.commit('saveSelectVillagePath', '/home')
           this.$router.push({path: '/location'})
           return
@@ -339,7 +340,7 @@
           content: '切换小区会清空购物车中即时送商品，您确定切换么？',
           onConfirm () {
             _this.post('/car/deleteUserCarJs', {
-              token: _this.token,
+              token: localStorage.getItem('m-token'),
               userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
             }).then((res) => {
               if (res.data.code === 101) {

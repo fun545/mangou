@@ -205,18 +205,13 @@
       // 选择小区
       async chooseVillage (item) {
         this.$store.commit('edtAddress', item)
-        if (this.$store.state.mapBackPath === '/this') {
-          localStorage.setItem('m-cityId', item.cityId)
-          localStorage.setItem('m-areaId', item.areaId)
-          localStorage.setItem('m-villageId', item.villageId)
-          localStorage.setItem('m-villageName', item.villageName)
-          // 更新storeId
-          await this.getStoreId()
-          setTimeout(() => {
-            window.location.reload()
-          }, 100)
-        }
-        this.$router.replace({path: this.$store.state.mapBackPath})
+        localStorage.setItem('m-cityId', item.cityId)
+        localStorage.setItem('m-areaId', item.areaId)
+        localStorage.setItem('m-villageId', item.villageId)
+        localStorage.setItem('m-villageName', item.villageName)
+        // 更新storeId
+        await this.getStoreId()
+        this.$router.push({path: this.$store.state.mapBackPath})
       },
       getStoreId () {
         this.post('/first/getFirst', {

@@ -148,7 +148,7 @@
     },
     data () {
       return {
-        token: localStorage.getItem('m-token'),
+        token: '',
         scrollTop: '',
         sideList: [],
         storeMsg: [],
@@ -164,7 +164,7 @@
         saleSortFlag: false,
         listSroll: {},
         scrollFlag: false,
-        villageName: localStorage.getItem('m-villageName'),
+        villageName: '',
         pageSize: 10,
         sortId: '', // 当前排序Id
         sortType: '', // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
@@ -181,113 +181,15 @@
         shopStatus: '' // 门店状态
       }
     },
-    async created () {
-      // 店铺信息
-      await this.post('/basic/getStoreMsg', {
-        storeId: localStorage.getItem('m-shopId')
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.storeMsg = res.data.storeInfo
-          this.shopStatus = res.data.storeInfo.shopStatus
-          this.shopStatusMethods(res.data.storeInfo.shopStatus)
-        }
-        if (res.data.code === 101) {
-          this.$vux.toast.text(res.data.msg, 'middle')
-        }
-        if (res.data.code === 102) {
-          this.$vux.toast.text(res.data.msg, 'middle')
-          localStorage.removeItem('m-token')
-        }
-      })
-      // 一级菜单
-      await this.post('/classify/firstClassifyList_new_js', {
-        storeId: localStorage.getItem('m-shopId'),
-        villageId: localStorage.getItem('m-villageId'),
-        shopType: 2
-      }).then((res) => {
-        if (res.data.code === 100) {
-          this.sideList = res.data.firstClassifyList
-          // 默认对应数组第一项为classifyId
-          this.firstId = this.sideList[0].classifyId
-          this.sortId = this.sideList[0].classifyId
-          this.sortType = 1
-        }
-        if (res.data.code === 101) {
-          this.toast.text(res.data.msg, 'center')
-        }
-        if (res.data.code === 101) {
-          this.toast.text(res.data.msg, 'center')
-          localStorage.removeItem('m-token')
-        }
-      })
-      // 速选商品列表 如果bt===2 则有速选商品
-      if (this.sideList[0].bt === 2) {
-        this.fastSortFlag = true
-        await this.post('/goods/getLabelGoods', {
-          keyWordId: 7,
-          softType: 3
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.fastSortGoodsList = res.data.goodsList
-            this.goodsList = this.fastSortGoodsList
-            this.loadingFlag = false
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-      }
-      // 商品列表
-      if (this.sideList[0].bt !== 2) {
-        // 二级菜单
-        await this.post('/classify/secondClassifyList', {
-          classifyId: this.firstId,
-          storeId: localStorage.getItem('m-shopId'),
-          villageId: localStorage.getItem('m-villageId')
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.secondMenuList = res.data.secondClassifyList
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-        await this.post('/goods/goodsList', {
-          firstClassifyId: this.firstId,
-          storeId: localStorage.getItem('m-shopId'),
-          softType: this.softType,
-          villageId: localStorage.getItem('m-villageId'),
-          pageIndex: 1,
-          pageSize: 10
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.goodsList = res.data.goodsList
-            this.loadingFlag = false
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-      }
-
-      this.$nextTick(() => {
-        this._initScroll()
-      })
+    created () {
+      this.createdMethods()
     },
     watch: {
       '$route' (to, from) {
+        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
+          this.createdMethods()
+          console.log(233)
+        }
         this.$nextTick(() => {
           setTimeout(() => {
             this.listSroll.refresh()
@@ -297,6 +199,116 @@
       }
     },
     methods: {
+      async createdMethods () {
+        this.token = localStorage.getItem('m-token')
+        this.villageName = localStorage.getItem('m-villageName')
+        // 店铺信息
+        await this.post('/basic/getStoreMsg', {
+          storeId: localStorage.getItem('m-shopId')
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.storeMsg = res.data.storeInfo
+            console.log(res.data.storeInfo)
+            this.shopStatus = res.data.storeInfo.shopStatus
+            this.shopStatusMethods(res.data.storeInfo.shopStatus)
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
+        // 一级菜单
+        await this.post('/classify/firstClassifyList_new_js', {
+          storeId: localStorage.getItem('m-shopId'),
+          villageId: localStorage.getItem('m-villageId'),
+          shopType: 2
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.sideList = res.data.firstClassifyList
+            // 默认对应数组第一项为classifyId
+            this.firstId = this.sideList[0].classifyId
+            this.sortId = this.sideList[0].classifyId
+            this.sortType = 1
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+          }
+          if (res.data.code === 101) {
+            this.toast.text(res.data.msg, 'center')
+            localStorage.removeItem('m-token')
+          }
+        })
+        // 速选商品列表 如果bt===2 则有速选商品
+        if (this.sideList[0].bt === 2) {
+          this.fastSortFlag = true
+          await
+            this.post('/goods/getLabelGoods', {
+              keyWordId: 7,
+              softType: 3
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.fastSortGoodsList = res.data.goodsList
+                this.goodsList = this.fastSortGoodsList
+                this.loadingFlag = false
+              }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
+              }
+            })
+        }
+        // 商品列表
+        if (this.sideList[0].bt !== 2) {
+          // 二级菜单
+          await
+            this.post('/classify/secondClassifyList', {
+              classifyId: this.firstId,
+              storeId: localStorage.getItem('m-shopId'),
+              villageId: localStorage.getItem('m-villageId')
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.secondMenuList = res.data.secondClassifyList
+              }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
+              }
+            })
+          await
+            this.post('/goods/goodsList', {
+              firstClassifyId: this.firstId,
+              storeId: localStorage.getItem('m-shopId'),
+              softType: this.softType,
+              villageId: localStorage.getItem('m-villageId'),
+              pageIndex: 1,
+              pageSize: 10
+            }).then((res) => {
+              if (res.data.code === 100) {
+                this.goodsList = res.data.goodsList
+                this.loadingFlag = false
+              }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
+              }
+            })
+        }
+        this.$nextTick(() => {
+          this._initScroll()
+        })
+      },
       // 判断商铺营业状态
       shopStatusMethods (status) {
         // 放假中
@@ -314,10 +326,11 @@
       goSearch () {
         this.$router.push({path: '/search', query: {shopType: 2, storeId: localStorage.getItem('m-shopId')}})
       },
+      // 切换小区
       goLocation () {
         if (!this.token) {
           this.$store.commit('saveSelectVillagePath', '/home')
-          this.$router.push({path: '/location'})
+          this.$router.push({path: '/Bmap'})
           return
         }
         var _this = this
@@ -326,20 +339,18 @@
           content: '切换小区会清空购物车中即时送商品，您确定切换么？',
           onConfirm () {
             _this.$store.commit('saveMapBackPath', '/this')
-            if (localStorage.getItem('m-token')) {
-              _this.post('/car/deleteUserCarJs', {
-                token: _this.token,
-                userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
-              }).then((res) => {
-                if (res.data.code === 101) {
-                  _this.$vux.toast.text(res.data.msg, 'middle')
-                }
-                if (res.data.code === 102) {
-                  _this.$vux.toast.text(res.data.msg, 'middle')
-                  localStorage.removeItem('m-token')
-                }
-              })
-            }
+            _this.post('/car/deleteUserCarJs', {
+              token: _this.token,
+              userId: JSON.parse(localStorage.getItem('m-userInfo')).userId
+            }).then((res) => {
+              if (res.data.code === 101) {
+                _this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                _this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
+              }
+            })
             _this.$router.push('/Bmap')
           }
         })
@@ -485,14 +496,6 @@
         // 加载更多
         loadMoreMehod(this.listSroll, this.$refs.goodsListWrap, this.loadMore, this.onScroll)
       },
-//      _initListScroll () {
-//        this.listSroll = new BScroll(this.$refs.goodsListWrap, {
-//          click: true,
-//          disableMouse: true,
-//          disablePointer: false,
-//          probeType: 3
-//        })
-//      },
       loadMore () {
         this.loadMoreFlag = true
         if (!this.scrollDisable) {

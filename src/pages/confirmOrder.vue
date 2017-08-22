@@ -228,14 +228,12 @@
 <script>
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
-  import { wxConfig, bus } from '../util/util'
+  //  import { wxConfig, bus } from '../util/util'
   export default{
     name: 'confirmOrder',
     components: {
       mHeader,
-      BScroll,
-      wxConfig,
-      bus
+      BScroll
     },
     data () {
       return {

@@ -2,7 +2,9 @@
   <div>
     <div class="detail-wrap">
       <m-header :title="title" ref="header"></m-header>
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe654;</span>
+      <div class="back-wrap" @click="$router.back(-1)">
+        <span class="back iconfont d-ib" slot="icon">&#xe654;</span>
+      </div>
       <div class="content" ref="content">
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
@@ -259,6 +261,7 @@
             if (res.data.code === 100) {
               this.collectId = res.data.collectId
               this.collectFlag = true
+              this.$vux.toast.text('收藏成功', 'middle')
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -421,7 +424,7 @@
           if (res.data.code === 100) {
             // 判断没有收获地址
             if (!res.data.shippingInfo) {
-              this.$vux.toast.text('当前无可用收货地址，请填写', 'center')
+              this.$vux.toast.text('当前无可用收货地址，请填写', 'middle')
               this.$router.push('/address')
               return
             }
@@ -463,18 +466,26 @@
       color: @font-color-m;
       z-index: 103;
     }
-    .back {
+    .back-wrap {
       position: fixed;
+      top: 0;
+      .w(120);
+      .h(92);
+      .lh(92);
+      z-index: 10000;
+      text-align: center;
+      /*.pt(20);
+      .pb(20);
+      .pr(20);
+      .pl(20);*/
+    }
+    .back {
       .w(50);
       .h(50);
       .lh(50);
       border-radius: 50%;
-      text-align: center;
       background: rgba(0, 0, 0, .4);
       color: #fff;
-      .t(23);
-      .l(40);
-      z-index: 10000;
       .fs(28);
     }
     .content {

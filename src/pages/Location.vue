@@ -15,12 +15,15 @@
           </div>
         </div>
         <!--定位当前-->
-        <div class="current-position t-c" @click="curVillage(villageList,1)">
-          <div v-if="villageList.length>0">
+        <div class="current-position t-c" @click="curVillage(villageList[0])">
+          <div v-if="villageList.length>0&&!positionLoading">
             <span class="iconfont">&#xe656;</span>
             定位到当前位置
           </div>
-          <div v-if="villageList.length===0">附近无服务小区或定位失败，请点击选择更多</div>
+          <div v-if="villageList.length===0&&!positionLoading">附近无服务小区或定位失败，请点击选择更多</div>
+          <div v-if="positionLoading">
+            定位中
+          </div>
         </div>
         <!--常用收获地址-->
         <div class="current-address" v-if="token">
@@ -59,6 +62,7 @@
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
   import { MP } from '../util/map'
+  import { getStoreInfo } from '../util/util'
   export default {
     name: 'location',
     components: {Alert, mHeader, Group, Cell, BScroll},
@@ -66,38 +70,43 @@
       return {
         search: '',
         villageList: '',
-        village: '',
         token: localStorage.getItem('m-token'),
         userlocation: {lng: '', lat: ''}, // 用户位置
-        addressList: [] // 收获地址
+        addressList: [], // 收获地址
+        positionLoading: true
       }
     },
     async created () {
       // 获取当前位置
       await this.getPosition()
-      this.$nextTick(() => {
-        this._initScroll()
-      })
       if (this.token) {
         this.getAddress()
       }
     },
     methods: {
       // 选择当前小区
-      async curVillage (data, type) {
-        if (this.village.length === 0 && type === 1) {
+      async curVillage (data) {
+        // 点击定位当前   如果定位失败或者附近无小区则跳地图
+        if (this.villageList.length === 0 && !this.positionLoading && this.addressList.length === 0) {
           this.$store.commit('saveMapBackPath', '/home')
+          this.$store.commit('saveSearchVillagePath', '/home')
           this.$router.push('/Bmap')
           return
         }
-        this.village = data.villageName
+        console.log(data.villageName, 'location')
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
         // 更新storeId
-        await this.getStoreId()
-        this.$router.push(this.$store.state.selectVillagePath)
+        // 如果是跳转到首页的则不需要获取storeId
+        if (!(this.$store.state.selectVillagePath === '/home')) {
+          await getStoreInfo(this)
+        }
+        this.$router.replace('/home')
+        setTimeout(() => {
+          window.location.reload()
+        })
       },
 //      searchLocation () {
 //        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
@@ -109,7 +118,8 @@
 //      },
       // 跳转搜索
       goSearch () {
-        this.$store.commit('saveSearchVillagePath', '/location')
+        this.$store.commit('saveSelectVillagePath', '/home')
+        console.log(this.$store.state.selectVillagePath)
         this.$router.push('/searchVillage')
       },
       // 获取当前位置信息
@@ -150,6 +160,10 @@
         }).then((res) => {
           if (res.data.code === 100) {
             this.villageList = res.data.villageList
+            this.positionLoading = false
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -178,31 +192,11 @@
         })
       },
       // 更新storeId
-      getStoreId () {
-        this.post('/first/getFirst', {
-          cityId: localStorage.getItem('m-cityId'),
-          areaId: localStorage.getItem('m-areaId'),
-          villageId: localStorage.getItem('m-villageId'),
-          source: 1
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            /* 店铺数据 */
-            this.storeList = res.data.firstInfo.storeList
-            localStorage.setItem('m-depotId', this.storeList[0].storeId)
-            localStorage.setItem('m-shopId', this.storeList[1].storeId)
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-      },
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {click: true})
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
+        })
       }
     }
   }

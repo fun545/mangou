@@ -19,17 +19,18 @@
           <!--收货地址 及时送-->
           <div class="adress" @click="$router.push({path:'/selecteAddress'})">
             <div class="iconfont icon f-l">&#xe638;</div>
-            <div class="adress-info f-l">
+            <div class="adress-info f-l" :class="{'disable-color':disabledAddressFlag}">
               <div class="receiver-info">
-                <span class="color-444">收货人： </span>{{shippingInfo.shippingName}}
+                <span class="color-444"
+                      :class="{'disable-color':disabledAddressFlag}">收货人： </span>{{shippingInfo.shippingName}}
                 <span class="tel">{{shippingInfo.shippingPhone}}</span>
               </div>
               <div class="receiver-info">
-                <span class="color-444">收货地址： </span>
+                <span class="color-444" :class="{'disable-color':disabledAddressFlag}">收货地址： </span>
                 {{shippingInfo.cityName + shippingInfo.areaName + shippingInfo.villageName + shippingInfo.address}}
               </div>
             </div>
-            <div class="iconfont icon-right f-l">&#xe601;</div>
+            <div class="iconfont icon-right f-l" :class="{'disable-color':disabledAddressFlag}">&#xe601;</div>
           </div>
           <!--列表标题-->
           <div class="goods-list-title">
@@ -119,17 +120,18 @@
           <!--收货地址 次日达 送货上门-->
           <div class="adress" @click="$router.push({path:'/selecteAddress'})" v-if="sendWay.key==='2'">
             <div class="iconfont icon f-l">&#xe638;</div>
-            <div class="adress-info f-l">
+            <div class="adress-info f-l" :class="{'disable-color':disabledAddressFlag}">
               <div class="receiver-info">
-                <span class="color-444">收货人： </span>{{shippingInfo.shippingName}}
+                <span class="color-444"
+                      :class="{'disable-color':disabledAddressFlag}">收货人： </span>{{shippingInfo.shippingName}}
                 <span class="tel">{{shippingInfo.shippingPhone}}</span>
               </div>
               <div class="receiver-info">
-                <span class="color-444">收货地址： </span>
+                <span class="color-444" :class="{'disable-color':disabledAddressFlag}">收货地址： </span>
                 {{shippingInfo.cityName + shippingInfo.areaName + shippingInfo.villageName + shippingInfo.address}}
               </div>
             </div>
-            <div class="iconfont icon-right f-l">&#xe601;</div>
+            <div class="iconfont icon-right f-l" :class="{'disable-color':disabledAddressFlag}">&#xe601;</div>
           </div>
           <!--列表标题 次日达-->
           <div class="goods-list-title">
@@ -262,10 +264,14 @@
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
         orderList: '',
         thisShop: this.$store.state.thisShop, // 购物车及时送相关信息
-        nextShop: this.$store.state.nextShop // 购物车次日达相关信息
+        nextShop: this.$store.state.nextShop, // 购物车次日达相关信息
+        localCityId: Number(localStorage.getItem('m-cityId')),
+        localAreaId: Number(localStorage.getItem('m-areaId')),
+        localVillageId: Number(localStorage.getItem('m-villageId'))
       }
     },
     created () {
+      // 快速购买
       if (this.$route.query.fastBuy === 'fastBuy') {
         var info = this.$store.state.fastBuyInfo
         this.thisGoodsList = info.carList[0].shandianShop.goodsList
@@ -316,87 +322,94 @@
         this.payType = type
       },
       confirm () {
-        // 送货上门判断有无收获地址
-        if (!this.shippingInfo) {
-          this.$router.push('/address')
-          this.$vux.toast.text('当前无可用收获地址，请新增', 'center')
+        // 如果收获地址不在服务范围内
+        if (this.disabledAddressFlag && !(this.sendWay.key === '1' && (this.thisGoodsList.length === 0))) {
+          this.$vux.toast.text('亲，当前收货地址超出服务范围，请切换收货地址', 'middle')
           return
         }
-        let orderJsonObj = {}
-        this.orderList = []
-        // 及时送
-        if (this.thisGoodsList.length > 0) {
-          let thisOrder = {}
-          thisOrder.cityId = this.thisShop.cityId
-          thisOrder.areaId = this.thisShop.areaId
-          thisOrder.goodsList = []
-          this.thisGoodsList.forEach((item, index) => {
-            let obj = {}
-            obj.carId = item.carId
-            obj.goodsId = item.goodsId
-            thisOrder.goodsList.push(obj)
+        // 规避快速点击
+        var flag = false
+        if (!flag) {
+          flag = true
+          let orderJsonObj = {}
+          this.orderList = []
+          // 及时送
+          if (this.thisGoodsList.length > 0) {
+            let thisOrder = {}
+            thisOrder.cityId = this.thisShop.cityId
+            thisOrder.areaId = this.thisShop.areaId
+            thisOrder.goodsList = []
+            this.thisGoodsList.forEach((item, index) => {
+              let obj = {}
+              obj.carId = item.carId
+              obj.goodsId = item.goodsId
+              thisOrder.goodsList.push(obj)
+            })
+            thisOrder.payType = this.payType
+            thisOrder.remarks = this.leaveMsgThis
+            // 配送方式:1自取 2配送上门
+            thisOrder.sendType = 2
+            thisOrder.shippingId = this.shippingInfo.shippingId
+            thisOrder.shopType = this.thisShop.shopType
+            thisOrder.storeId = this.thisShop.storeId
+            thisOrder.villageId = this.thisShop.villageId
+            this.orderList.push(thisOrder)
+          }
+          // 次日达
+          if (this.NextGoodsList.length > 0) {
+            let nextOrder = {}
+            nextOrder.cityId = this.nextShop.cityId
+            nextOrder.areaId = this.nextShop.areaId
+            nextOrder.goodsList = []
+            this.NextGoodsList.forEach((item, index) => {
+              let obj = {}
+              obj.carId = item.carId
+              obj.goodsId = item.goodsId
+              nextOrder.goodsList.push(obj)
+            })
+            nextOrder.payType = this.payType
+            nextOrder.remarks = this.leaveMsgNext
+            nextOrder.shopType = this.nextShop.shopType
+            nextOrder.storeId = this.nextShop.storeId
+            nextOrder.villageId = this.nextShop.villageId
+            // 配送方式:1自取 2配送上门
+            nextOrder.sendType = parseInt(this.sendWay.key)
+            if (nextOrder.sendType === 2) {
+              nextOrder.shippingId = this.shippingInfo.shippingId
+              nextOrder.pointAddress = ''
+              nextOrder.qujianName = ''
+              nextOrder.qujianPhone = ''
+            }
+            if (nextOrder.sendType === 1) {
+              nextOrder.shippingId = ''
+              nextOrder.pointAddress = this.nextShop.pointAddress
+              nextOrder.qujianName = this.userInfo.userName
+              nextOrder.qujianPhone = this.userInfo.phone
+            }
+            this.orderList.push(nextOrder)
+          }
+          orderJsonObj.orderList = this.orderList
+          let orderJsonStr = JSON.stringify(orderJsonObj)
+          this.post('/orders/submitOrders_new', {
+            token: localStorage.getItem('m-token'),
+            orderStr: orderJsonStr
+          }).then((res) => {
+            if (res.data.code === 100) {
+              this.$store.commit('saveOrderNumList', res.data.orderNumList)
+              this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList, this)
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+            setTimeout(() => {
+              flag = false
+            }, 1500)
           })
-          thisOrder.payType = this.payType
-          thisOrder.remarks = this.leaveMsgThis
-          // 配送方式:1自取 2配送上门
-          thisOrder.sendType = 2
-          thisOrder.shippingId = this.shippingInfo.shippingId
-          thisOrder.shopType = this.thisShop.shopType
-          thisOrder.storeId = this.thisShop.storeId
-          thisOrder.villageId = this.thisShop.villageId
-          this.orderList.push(thisOrder)
         }
-        // 次日达
-        if (this.NextGoodsList.length > 0) {
-          let nextOrder = {}
-          nextOrder.cityId = this.nextShop.cityId
-          nextOrder.areaId = this.nextShop.areaId
-          nextOrder.goodsList = []
-          this.NextGoodsList.forEach((item, index) => {
-            let obj = {}
-            obj.carId = item.carId
-            obj.goodsId = item.goodsId
-            nextOrder.goodsList.push(obj)
-          })
-          nextOrder.payType = this.payType
-          nextOrder.remarks = this.leaveMsgNext
-          nextOrder.shopType = this.nextShop.shopType
-          nextOrder.storeId = this.nextShop.storeId
-          nextOrder.villageId = this.nextShop.villageId
-          // 配送方式:1自取 2配送上门
-          nextOrder.sendType = parseInt(this.sendWay.key)
-          if (nextOrder.sendType === 2) {
-            nextOrder.shippingId = this.shippingInfo.shippingId
-            nextOrder.pointAddress = ''
-            nextOrder.qujianName = ''
-            nextOrder.qujianPhone = ''
-          }
-          if (nextOrder.sendType === 1) {
-            nextOrder.shippingId = ''
-            nextOrder.pointAddress = this.nextShop.pointAddress
-            nextOrder.qujianName = this.userInfo.userName
-            nextOrder.qujianPhone = this.userInfo.phone
-          }
-          this.orderList.push(nextOrder)
-        }
-        orderJsonObj.orderList = this.orderList
-        let orderJsonStr = JSON.stringify(orderJsonObj)
-        this.post('/orders/submitOrders_new', {
-          token: localStorage.getItem('m-token'),
-          orderStr: orderJsonStr
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.$store.commit('saveOrderNumList', res.data.orderNumList)
-            this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList, this)
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
       }
     },
     computed: {
@@ -438,6 +451,18 @@
           let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
           return total
         }
+      },
+      disabledAddressFlag: {
+        set () {
+          // 判断当前收获地址是否可用
+          var disabledAddressFlag = (this.shippingInfo.areaId !== this.localAreaId) || (this.shippingInfo.cityId !== this.localCityId) || (this.shippingInfo.villageId !== this.localVillageId)
+          return disabledAddressFlag
+        },
+        get () {
+          // 判断当前收获地址是否可用
+          var disabledAddressFlag = (this.shippingInfo.areaId !== this.localAreaId) || (this.shippingInfo.cityId !== this.localCityId) || (this.shippingInfo.villageId !== this.localVillageId)
+          return disabledAddressFlag
+        }
       }
     }
   }
@@ -458,6 +483,10 @@
   .theme-color {
 
     color: @theme-color;
+  }
+
+  .disable-color {
+    color: #d2d2d2 !important;
   }
 
   .order {

@@ -23,6 +23,36 @@ export const loadMoreMehod = (scrollObj, element, callBack, otherCallBack) => {
  */
 import Vue from 'vue'
 export const bus = new Vue()
+
+/**
+ * 获取storeInfo
+ */
+
+export const getStoreInfo = (_this) => {
+  _this.post('/first/getFirst', {
+    cityId: localStorage.getItem('m-cityId'),
+    areaId: localStorage.getItem('m-areaId'),
+    villageId: localStorage.getItem('m-villageId'),
+    source: 1
+  }).then((res) => {
+    if (res.data.code === 100) {
+      console.log(res.data)
+      _this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+      /* 店铺数据 */
+      var storeList = res.data.firstInfo.storeList
+      _this.$store.commit('saveStoreInfo', storeList)
+      localStorage.setItem('m-depotId', storeList[0].storeId)
+      localStorage.setItem('m-shopId', storeList[1].storeId)
+    }
+    if (res.data.code === 101) {
+      _this.$vux.toast.text(res.data.msg, 'middle')
+    }
+    if (res.data.code === 102) {
+      _this.$vux.toast.text(res.data.msg, 'middle')
+      localStorage.removeItem('m-token')
+    }
+  })
+}
 /**
  *wx.config 微信sdk
  */

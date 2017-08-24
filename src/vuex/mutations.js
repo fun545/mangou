@@ -1,4 +1,9 @@
 export default {
+  // 储存次日达和即时送storeInfo
+  saveStoreInfo (state, storeList) {
+    state.depotInfo = storeList[0]
+    state.shopInfo = storeList[1]
+  },
   // 购物车总数
   increment (state, count) {
     // vuex储存m-totalBuyCount
@@ -46,7 +51,7 @@ export default {
   getFastBuyInfo (state, val) {
     state.fastBuyInfo = val
   },
-  // 保存编辑地址
+  // 保存新增编辑地址
   saveAddress (state, val) {
     state.addressInfo = val
   },
@@ -80,5 +85,8 @@ export default {
   // 储存支付总金额
   saveTotalPay (state, val) {
     state.totalPay = val
+  },
+  saveOkPayBackPath (state, val) {
+    state.oKPayBackPath = val
   }
 }

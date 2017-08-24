@@ -203,7 +203,7 @@
     },
     data () {
       return {
-        villageName: '',
+        villageName: localStorage.getItem('m-villageName'),
         swiperList: [],
         cityId: '',
         areaId: '',
@@ -245,9 +245,7 @@
     },
     watch: {
       '$route' (to, from) {
-        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
-          this.createdMethods()
-        }
+//        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {}
         this.$nextTick(() => {
           setTimeout(() => {
             if (typeof this.homeSroll.refresh === 'function') {
@@ -259,13 +257,19 @@
     },
     methods: {
       createdMethods () {
+//        localStorage.removeItem('m-villageName')
+//        this.$vux.confirm.show({
+//          title: '温馨提示',
+//          content: '此版本为测试版本，请勿下单！！'
+//        })
         //      localStorage.removeItem('m-villageName')
         // 进首页如果之前没有选过小区则跳转选择
-        if (!localStorage.getItem('m-villageName')) {
+        console.log(this.villageName, 'home')
+        if (!this.villageName) {
           this.$router.push({path: '/chooseCity'})
           return
         }
-        this.villageName = localStorage.getItem('m-villageName')
+//        this.villageName = localStorage.getItem('m-villageName')
         // _iscroll初始化flag
         // 获取首页数据
         var paramas = {}
@@ -277,16 +281,27 @@
           paramas.token = localStorage.getItem('m-token')
         }
         this.post('/first/getFirst', paramas).then((res) => {
+//          console.log(res.data)
           if (res.data.code === 100) {
             // 保存购物车数量
+            console.log(res.data.firstInfo.totalBuyCount)
             this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            this.totalBuyCount = res.data.firstInfo.totalBuyCount
+            if (localStorage.getItem('m-token')) {
+              this.totalBuyCount = res.data.firstInfo.totalBuyCount
+            }
             /* 轮播图数据 */
+            // 规避有时候后台不给imgList
+            if (!res.data.firstInfo.imgList) {
+              this.reloadFlag = true
+              return
+            }
             this.swiperList = res.data.firstInfo.imgList
             /* 店铺数据 */
-            this.storeList = res.data.firstInfo.storeList
-            localStorage.setItem('m-depotId', this.storeList[0].storeId)
-            localStorage.setItem('m-shopId', this.storeList[1].storeId)
+//            this.storeList = res.data.firstInfo.storeList
+            var storeList = res.data.firstInfo.storeList
+            this.$store.commit('saveStoreInfo', storeList)
+            localStorage.setItem('m-depotId', storeList[0].storeId)
+            localStorage.setItem('m-shopId', storeList[1].storeId)
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -300,7 +315,7 @@
         /* 首页数据数据 */
         this.post('/first/getFirstGoods', {
           storeId: localStorage.getItem('m-depotId'),
-          villageId: this.villageId
+          villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
           if (res.data.code === 100) {
             this.mapTitleTips = res.data.goodsList.mapTitleTips
@@ -403,8 +418,8 @@
           this.scrollDisable = true
           this.pageIndex += 1
           this.post('/first/unlimitedLoading', {
-            storeId: this.storeList[0].storeId,
-            villageId: this.villageId,
+            storeId: localStorage.getItem('m-depotId'),
+            villageId: localStorage.getItem('m-villageId'),
             pageIndex: this.pageIndex,
             pageSize: 10
           }).then((res) => {
@@ -484,12 +499,10 @@
     left: 0;
     opacity: 1;
     .location {
-      width: calc(~'(100% - 10px)/2');
+      /*width: calc(~'(100% - 10px)/2');*/
+      .w(400);
       .mr(10);
-      padding: 0 15px;
-      .pl(30);
       .pr(20);
-      text-align: center;
       box-sizing: border-box;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -501,38 +514,31 @@
     .location:before {
       content: '送至：';
       .fs(25);
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      display: inline-block;
     }
     .location:after {
+      .ml(20);
       content: '';
       .w(10);
       .h(10);
       border-width: 0 1px 1px 0;
       border-style: solid;
       border-color: #fff;
-      position: absolute;
-      top: 50%;
-      .r(30);
+      display: inline-block;
       transform: translate(-20%, -80%) rotate(45deg);
     }
     .search {
-      .fs(28);
       position: absolute;
-      .r(28);
+      top: 0;
+      right: 0;
+      .w(80);
+      .h(86);
+      .lh(86);
+      .pr(30);
+      .fs(29);
+      text-align: right;
       color: #e4ffe5;
     }
-    /*.search:before {
-      content: '\e639';
-      color: #fff;
-      font: 12px/1 'iconfont';
-      .fs(25);
-      position: absolute;
-      .t(20);
-      .l(30);
-    }*/
   }
 
   .banner {

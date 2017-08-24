@@ -38,14 +38,6 @@
           </div>
         </div>
       </div>
-      <div class="buy-cart">
-        <div class="wrap">
-          <i class="iconfont center">&#xe613;</i>
-          <div class="badge">
-            <badge :text="totalBuyCount"></badge>
-          </div>
-        </div>
-      </div>
       <no-page :isActive="isActive"></no-page>
     </div>
     <loading :loadingFlag="loadingFlag" class="loading"></loading>

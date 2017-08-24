@@ -24,10 +24,6 @@
       color: #666666;
       text-align: center;
       transition: all 400ms;
-      .iconfont {
-        margin-right: 5px;
-        color: #d3b7b3;
-      }
     }
 
     .active {

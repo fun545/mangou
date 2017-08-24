@@ -9,14 +9,14 @@
     <div class="goods-list">
       <div class="item" v-for="(item, index) in filterList" :key="index">
         <div class="pic">
-          <!--<img v-lazy="item.goodsImgUrl" alt="">-->
-          <lazy-image
-            :src='item.goodsImgUrl'
-            :placeholder='$store.state.defaultImg'
-            :events="['touchmove']"
-            width="100%"
-            height="100%"
-          ></lazy-image>
+          <img v-lazy="item.goodsImgUrl" alt="">
+          <!--<lazy-image-->
+            <!--:src='item.goodsImgUrl'-->
+            <!--:placeholder='$store.state.defaultImg'-->
+            <!--:events="['touchmove']"-->
+            <!--width="100%"-->
+            <!--height="100%"-->
+          <!--&gt;</lazy-image>-->
         </div>
         <div class="des">
           <p class="name">{{item.goodsName}}</p>

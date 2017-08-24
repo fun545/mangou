@@ -13,7 +13,7 @@
         <side-bar>
           <side-item ref="sideItem" v-for="(item,index) in AllFirstClassify" :key="index"
                      :classifyId="item.classifyId"
-                     @click.native="memuChange(item.classifyId,index,$event)" :class="{'active':index===currentIndex}">
+                     @click.native="memuChange(index)" :class="{'active':index===currentIndex}">
             <span v-html="item.classifyName"></span>
           </side-item>
         </side-bar>
@@ -50,7 +50,7 @@
       <loading :loadingFlag="loadingFlag"></loading>
     </div>
     <m-footer></m-footer>
-    <to-top :scrollObj="listSroll" v-if="scrollTop>=800"></to-top>
+    <to-top :scrollObj="listSroll" v-if="scrollY>=800"></to-top>
   </div>
 </template>
 
@@ -82,7 +82,7 @@
         token: localStorage.getItem('m-token'),
         search: '',
         typeIndex: 0,
-        ind: '',
+        currentIndex: 0,
         AllFirstClassify: [],
         AllSecondClassify: [],
         listHeight: [],
@@ -91,8 +91,7 @@
         isLoad: true,
         menuSroll: {},
         listSroll: {},
-        loadingFlag: true,
-        scrollTop: ''
+        loadingFlag: true
       }
     },
     created () {
@@ -115,40 +114,42 @@
         }
       })
     },
-//    activated () {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.listSroll.refresh()
-//          this.menuSroll.refresh()
-//        }, 1000)
-//      })
-//    },
     watch: {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.homeSroll.refresh()
-//        }, 1000)
-//      })
       '$route' (to, from) {
         this.$nextTick(() => {
           setTimeout(() => {
-            this.listSroll.refresh()
-            this.menuSroll.refresh()
-          }, 1000)
+            if (typeof this.listSroll.refresh === 'function') {
+              this.listSroll.refresh()
+            }
+            if (typeof this.menuSroll.refresh === 'function') {
+              this.menuSroll.refresh()
+            }
+          }, 700)
         })
-      }
-    },
-    computed: {
-      currentIndex () {
+      },
+      scrollY (to, from) {
         for (let i = 0; i < this.listHeight.length; i++) {
           let height1 = this.listHeight[i]
           let height2 = this.listHeight[i + 1]
           if (!height2 || (this.scrollY < height2 && this.scrollY >= height1)) {
-            return i
+            this.currentIndex = i
+            return
           }
         }
-        return 0
+        this.currentIndex = 0
       }
+    },
+    computed: {
+//      currentIndex () {
+//        for (let i = 0; i < this.listHeight.length; i++) {
+//          let height1 = this.listHeight[i]
+//          let height2 = this.listHeight[i + 1]
+//          if (!height2 || (this.scrollY < height2 && this.scrollY >= height1)) {
+//            return i
+//          }
+//        }
+//        return 0
+//      }
     },
     methods: {
       goSecondList (id) {
@@ -158,8 +159,12 @@
         })
         this.$router.go(0)
       },
-      memuChange (id, index, event) {
+      memuChange (index) {
+        this.ind = index
         this.listSroll.scrollToElement(this.lists[index], 300)
+        setTimeout(() => {
+          this.currentIndex = index
+        }, 400)
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrapper, {
@@ -171,7 +176,6 @@
         })
         this.listSroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
-          this.scrollTop = Math.abs(Math.round(pos.y))
         })
       },
       _calculateHeight () {
@@ -179,7 +183,7 @@
         let height = 0
         this.listHeight.push(height)
         for (let i = 0; i < this.lists.length; i++) {
-          height += this.lists[i].clientHeight
+          height += this.lists[i].offsetHeight
           this.listHeight.push(height)
         }
       }

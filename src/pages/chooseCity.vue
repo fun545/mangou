@@ -30,6 +30,10 @@
       }
     },
     created () {
+      // 第一次登陆没有选过小区的选择小区跳首页
+      if (!localStorage.getItem('m-villageName')) {
+        this.$store.commit('saveSelectVillagePath', '/home')
+      }
       this.getCity()
     },
     methods: {

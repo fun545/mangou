@@ -32,8 +32,10 @@
           </div>
         </div>
       </div>
-      <div class="add-address t-c" @click="goAddAddress">
-        新增收货地址
+      <div class="bt-wrap">
+        <div class="add-address t-c" @click="goAddAddress">
+          新增收货地址
+        </div>
       </div>
       <div class="no-address" v-if="addressList.length===0">
 
@@ -143,9 +145,9 @@
         .mb(22);
         background: #fff;
         .top {
-          box-sizing: border-box;
+          /* box-sizing: border-box;*/
           border-top: 1px solid #eee;
-          .h(131);
+          /* .h(131);*/
           .pl(30);
           .pr(40);
           .pt(24);
@@ -153,12 +155,11 @@
           .user-msg {
             display: flex;
             justify-content: space-between;
-            .tel {
-
-            }
+            .mb(20);
           }
           .address {
-            .lh(80);
+            /*.lh(80);*/
+            line-height: 1.3;
           }
         }
         .bt {
@@ -193,18 +194,24 @@
     }
   }
 
-  .add-address {
+  .bt-wrap {
     position: absolute;
-    .l(25);
-    .r(25);
-    .b(30);
-    .h(90);
-    .lh(90);
-    background: @theme-color;
-    color: #fff;
-    .fs(34);
-    border-radius: 5px;
-    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .h(120);
+    z-index: 3;
+    background-color: @bg-color;
+    .add-address {
+      .w(700);
+      margin: 0 auto;
+      .h(90);
+      .lh(90);
+      background: @theme-color;
+      color: #fff;
+      .fs(34);
+      border-radius: 5px;
+    }
   }
 
   .no-address {

@@ -29,7 +29,7 @@
       postAjax (tel, code, pass) {
         this.post('/user/insertUser', {
           phone: tel,
-          userPwd: pass,
+          userPwd: md5(pass),
           type: 1,
           cityId: localStorage.getItem('m-cityId'),
           code: md5(code)

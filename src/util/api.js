@@ -8,12 +8,13 @@ import { md5 } from 'vux'
 Vue.http.options.emulateJSON = true
 const config = {
   secret: '4f1da0c72ccaaed85eaac488b19795ba',
-  url: 'http://121.41.122.141:8090/slowbuy' // 老蒋
+  // url: 'http://121.41.122.141:8090/slowbuy' // 老蒋
   // url: 'http://121.41.122.141/slowbuy' // 老蒋
   // url: 'http://192.168.0.134:8099/slowbuy'
   // url: '/api'
   // url: 'http://www.kmilife.com/slowbuy'
   // url: 'http://www.zhaimangou.com/slowbuy'
+  url: 'http://www.jiangmoxuan.cn'
 }
 function getAppkey (data) {
   var res = ''
@@ -79,15 +80,16 @@ export default {
             /* eslint-disable eqeqeq */
             if (res.err_msg == 'get_brand_wcpay_request:ok') {
               _this.$store.commit('saveTotalPay', totalFee)
-              _this.$router.push('/okPay')
+              _this.$store.commit('saveOkPayBackPath', '/OrderPayList')
+              _this.$router.replace('/okPay')
             }
             /* eslint-disable eqeqeq */
             if (res.err_msg == 'get_brand_wcpay_request:cancel') {
-              _this.$router.push('/order_pay_list')
+              _this.$router.replace('/order_pay_list')
             }
             /* eslint-disable eqeqeq */
             if (res.err_msg == 'get_brand_wcpay_request:fail') {
-              _this.$router.push('/order_pay_list')
+              _this.$router.replace('/order_pay_list')
             }
             // _this.$vux.toast.text(res.err_msg, 'bottom')
             // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠

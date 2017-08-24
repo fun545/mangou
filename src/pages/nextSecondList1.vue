@@ -193,7 +193,7 @@
               } else {
 //                this.loadText = '到底啦~'
                 this.moreIconFlag = false
-                this.$vux.toast.text('没有跟多商品了', 'center')
+                this.$vux.toast.text('没有更多商品了', 'middle')
                 this.loadMoreFlag = false
               }
               this.scrollDisable = false
@@ -210,8 +210,13 @@
       }
     },
     computed: {
-      totalPrice () {
-        return this.$store.state.totalBuyCount
+      totalPrice: {
+        set () {
+          return this.$store.state.totalBuyCount
+        },
+        get () {
+          return this.$store.state.totalBuyCount
+        }
       }
     }
   }
@@ -266,11 +271,14 @@
       }
       .back {
         position: absolute;
-        .t(50%);
-        .mt(-17.5);
-        .l(30);
+        top: 0;
+        left: 0;
         .fs(35);
         color: #fff;
+        .h(100);
+        .lh(100);
+        .w(100);
+        text-align: center;
       }
       .change {
         position: absolute;

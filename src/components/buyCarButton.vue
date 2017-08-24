@@ -35,7 +35,7 @@
         }
         // 店铺状态
         if (this.shopStatus !== 0) {
-          this.$vux.toast.text('门店休息中，不接收订单', 'center')
+          this.$vux.toast.text('门店休息中，不接收订单', 'middle')
           return
         }
         if (item.status !== 1) {

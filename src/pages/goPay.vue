@@ -63,7 +63,7 @@
       goPay () {
         var orderNumList = []
         orderNumList.push(this.order.orderNum)
-        this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.order.totalPrice, orderNumList)
+        this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.order.totalPrice, orderNumList, this)
       }
     }
   }

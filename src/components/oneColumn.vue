@@ -22,7 +22,7 @@
           <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
         </div>
       </div>
-      <buyCarButton :goods="item" v-if="!isCollect"></buyCarButton>
+      <buyCarButton :goods="item" v-if="!isCollect" :shopStatus="shopStatus"></buyCarButton>
     </li>
   </ul>
 </template>
@@ -39,6 +39,10 @@
       isCollect: {
         type: Boolean,
         default: false
+      },
+      shopStatus: {
+        type: Number,
+        default: 0 // 正常
       }
     },
     components: {buyCarButton},
@@ -59,13 +63,14 @@
   /*@import "../common/style/mlxin";*/
   .item {
     .h(233);
-    box-sizing: border-box;
-    .pt(16);
+  /*  box-sizing: border-box;*/
+    .pt(10);
+    .pb(10);
     .pl(33);
     position: relative;
     border-bottom: 1px solid @input-border;
     .pic {
-      .w(226);
+      .w(210);
       .h(210);
       img {
         display: block;

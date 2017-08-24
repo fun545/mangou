@@ -186,14 +186,18 @@
     },
     watch: {
       '$route' (to, from) {
-        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
-          this.createdMethods()
-          console.log(233)
-        }
+//        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
+//          this.createdMethods()
+//          console.log(233)
+//        }
         this.$nextTick(() => {
           setTimeout(() => {
-            this.listSroll.refresh()
-            this.menuSroll.refresh()
+            if (typeof this.listSroll.refresh === 'function') {
+              this.listSroll.refresh()
+            }
+            if (typeof this.menuSroll.refresh === 'function') {
+              this.menuSroll.refresh()
+            }
           }, 500)
         })
       }
@@ -220,6 +224,7 @@
             localStorage.removeItem('m-token')
           }
         })
+        console.log(23333)
         // 一级菜单
         await this.post('/classify/firstClassifyList_new_js', {
           storeId: localStorage.getItem('m-shopId'),
@@ -567,17 +572,6 @@
   @import "../common/style/sum";
 
   .this {
-    /*.strong {
-      span {
-        .pt(10);
-        .pb(10);
-        .pl(10);
-        .pr(10);
-        background: #5abbf6;
-        border-radius: 5px;
-        color: #fff;
-      }
-    }*/
     .location-search-box {
       background-color: @theme-color-blue;
       .pt(25);
@@ -593,12 +587,10 @@
       left: 0;
       opacity: 1;
       .location {
-        width: calc(~'(100% - 10px)/2');
+        /*width: calc(~'(100% - 10px)/2');*/
+        .w(400);
         .mr(10);
-        padding: 0 15px;
-        .pl(30);
         .pr(20);
-        text-align: center;
         box-sizing: border-box;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -610,27 +602,29 @@
       .location:before {
         content: '送至：';
         .fs(25);
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
+        display: inline-block;
       }
       .location:after {
+        .ml(20);
         content: '';
         .w(10);
         .h(10);
         border-width: 0 1px 1px 0;
         border-style: solid;
         border-color: #fff;
-        position: absolute;
-        top: 50%;
-        .r(30);
+        display: inline-block;
         transform: translate(-20%, -80%) rotate(45deg);
       }
       .search {
-        .fs(28);
         position: absolute;
-        .r(28);
+        top: 0;
+        right: 0;
+        .w(80);
+        .h(86);
+        .lh(86);
+        .pr(30);
+        .fs(29);
+        text-align: right;
         color: #e4ffe5;
       }
     }
@@ -815,6 +809,9 @@
       .right {
         .w(578);
         height: 100%;
+        .loading {
+          z-index: 2;
+        }
       }
       .goods-sort {
         background: #fff;

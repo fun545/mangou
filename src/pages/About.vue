@@ -6,20 +6,25 @@
     </m-header>
     <!-- 页面内容 -->
     <div class="content-scroller" ref="content">
-      <div v-html="about"></div>
+      <div v-if="flag">
+        <div v-html="about"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
+  import BScroll from 'better-scroll'
   export default {
     components: {
-      mHeader
+      mHeader,
+      BScroll
     },
     data () {
       return {
-        about: ''
+        about: '',
+        flag: false
       }
     },
     created () {
@@ -29,6 +34,12 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.about = res.data.content
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this._initScroll()
+            }, 500)
+            this.flag = true
+          })
         }
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
@@ -38,6 +49,14 @@
           localStorage.removeItem('m-token')
         }
       })
+    },
+    methods: {
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
+        })
+      }
     }
   }
 </script>
@@ -54,7 +73,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      overflow: scroll;
+      overflow: hidden;
     }
   }
 </style>

@@ -48,35 +48,35 @@
             <div class="entry-item" @click="goPage('/order_pay_list')">
               <div class="icon">
                 <i class="iconfont">&#xe62c;</i>
-                <span v-if="token&&userFirst.nofukuanCount>0">{{userFirst.nofukuanCount}}</span>
+                <span v-if="token&&userFirst.nofukuanCount">{{userFirst.nofukuanCount}}</span>
               </div>
               <div class="text">待付款</div>
             </div>
             <div class="entry-item" @click="goPage('/order_send_list')">
               <div class="icon">
                 <i class="iconfont">&#xe620;</i>
-                <span v-if="userFirst.nofahuoCount>0&&token">{{userFirst.nofahuoCount}}</span>
+                <span v-if="userFirst.nofahuoCount&&token">{{userFirst.nofahuoCount}}</span>
               </div>
               <div class="text">待发货</div>
             </div>
             <div class="entry-item" @click="goPage('/order_shipping_list')">
               <div class="icon">
                 <i class="iconfont">&#xe60b;</i>
-                <span v-if="userFirst.peisongzhong>0&&token">{{userFirst.peisongzhong}}</span>
+                <span v-if="userFirst.peisongzhong&&token">{{userFirst.peisongzhong}}</span>
               </div>
               <div class="text">配送中</div>
             </div>
             <div class="entry-item" @click="goPage('/order_rater_list')">
               <div class="icon">
                 <i class="iconfont">&#xe645;</i>
-                <span v-if="userFirst.nopingjia>0&&token">{{userFirst.nopingjia}}</span>
+                <span v-if="userFirst.nopingjia&&token">{{userFirst.nopingjia}}</span>
               </div>
               <div class="text">待评价</div>
             </div>
             <div class="entry-item" @click="goPage('/order_after_sale_list')">
               <div class="icon">
                 <i class="iconfont">&#xe630;</i>
-                <span v-if="userFirst.refundCount>0&&token">{{userFirst.refundCount}}</span>
+                <span v-if="userFirst.refundCount&&token">{{userFirst.refundCount}}</span>
               </div>
               <div class="text">退款/售后</div>
             </div>

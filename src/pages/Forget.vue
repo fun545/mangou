@@ -14,10 +14,12 @@
       postAjax (tel, code, pass) {
         this.post('/user/insertUser', {
           phone: tel,
-          userPwd: pass,
+          userPwd: md5(pass),
           type: 3,
           cityId: localStorage.getItem('m-cityId'),
-          code: md5(code)
+          areaId: localStorage.getItem('m-areaId'),
+          code: md5(code),
+          villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
           if (res.data.code === 100) {
             this.$vux.toast.text('密码修改成功', 'center')

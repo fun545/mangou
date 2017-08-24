@@ -10,7 +10,7 @@
           <input type="text" placeholder="请输入小区名称">
         </div>
       </div>
-      <span class="back" @click="$router.push($store.state.mapBackPath)">取消</span>
+      <span class="back" @click="$router.back()">取消</span>
     </div>
     <div id="allmap" class="map"></div>
     <div class="village-box clearfix">
@@ -43,7 +43,7 @@
 </template>
 <script>
   import { MP } from '../util/map'
-  //  import { getPosition } from '../util/util'
+  import { getStoreInfo } from '../util/util'
   import BScroll from 'better-scroll'
   export default {
     components: {BScroll},
@@ -121,7 +121,7 @@
 //              [116.406605, 39.921585, '地址：北京市东城区东华门大街'],
 //              [116.412222, 39.912345, '地址：北京市东城区正义路甲5号']
 //            ]
-            _this.$vux.toast.text('text', 'center')
+//            _this.$vux.toast.text('text', 'center')
             for (var i = 0; i < _this.villageList.length; i++) {
               var curVillage = _this.villageList[i]
               var marker = new BMap.Marker(new BMap.Point(curVillage.longitude, curVillage.latitude))  // 创建标注
@@ -204,36 +204,25 @@
       },
       // 选择小区
       async chooseVillage (item) {
+        // 如果是确认下单页面下新增的地址，不保存village和更新storeId
+        if (this.$store.state.addAddressBackPath === '/selecteAddress') {
+          this.$store.commit('saveAddress', item)
+          this.$router.push({path: this.$store.state.mapBackPath})
+          return
+        }
+        // 更新storeId 和 village
         this.$store.commit('edtAddress', item)
         localStorage.setItem('m-cityId', item.cityId)
         localStorage.setItem('m-areaId', item.areaId)
         localStorage.setItem('m-villageId', item.villageId)
         localStorage.setItem('m-villageName', item.villageName)
-        // 更新storeId
-        await this.getStoreId()
+        if (!(this.$store.state.selectVillagePath === '/home')) {
+          await getStoreInfo(this)
+        }
+        // 选择后跳转
         this.$router.push({path: this.$store.state.mapBackPath})
-      },
-      getStoreId () {
-        this.post('/first/getFirst', {
-          cityId: localStorage.getItem('m-cityId'),
-          areaId: localStorage.getItem('m-areaId'),
-          villageId: localStorage.getItem('m-villageId'),
-          source: 1
-        }).then((res) => {
-          if (res.data.code === 100) {
-//            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            /* 店铺数据 */
-            this.storeList = res.data.firstInfo.storeList
-            localStorage.setItem('m-depotId', this.storeList[0].storeId)
-            localStorage.setItem('m-shopId', this.storeList[1].storeId)
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
+        setTimeout(() => {
+          window.location.reload()
         })
       },
       // 去搜索页面

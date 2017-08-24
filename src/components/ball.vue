@@ -191,8 +191,8 @@
         }
       }
       .inner {
-        .w(20);
-        .h(20);
+        .w(30);
+        .h(30);
         border-radius: 50%;
         background: @theme-color;
         transition: all .4s linear;

@@ -30,13 +30,22 @@
     .fs(40);
     background: #fff;
     color: @font-color-m;
+    .back-wrap {
+      .w(100);
+      .h(92);
+      display: inline-block;
+    }
     .back {
       position: absolute;
-      .t(50%);
-      .mt(-17.5);
-      .l(30);
+      /*.t(50%);
+      .mt(-17.5);*/
+      top: 0;
+      left: 0;
       .fs(35);
       color: @font-color-m;
+      .h(92);
+      .lh(92);
+      .w(100);
     }
   }
 </style>

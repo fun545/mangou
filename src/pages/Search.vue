@@ -71,7 +71,8 @@
           <!--及时送-->
           <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
             <div>
-              <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"></one-column>
+              <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"
+                          :shopStatus="shopStatus"></one-column>
               <load-more
                 :tip="loadText"
                 :show-loading="moreIconFlagThis"
@@ -162,7 +163,8 @@
         noGoodsFlagNext: false,
         goSearchFlag: false,
         scrollTopThis: '',
-        scrollTopNext: ''
+        scrollTopNext: '',
+        shopStatus: 0
       }
     },
     created () {
@@ -219,6 +221,8 @@
           this.storeId = localStorage.getItem('m-depotId')
           this.thisTabFlag = true
           this.shopType = 1
+          this.noGoodsFlagThis = false
+          console.log(this.NextGoodsList.length)
           if (this.NextGoodsList.length === 0) {
             this.goSearch()
           }
@@ -229,6 +233,7 @@
           this.storeId = localStorage.getItem('m-shopId')
           this.nextTabFlag = true
           this.shopType = 2
+          this.noGoodsFlagNext = false
           if (this.ThisGoodsList.length === 0) {
             this.goSearch()
           }
@@ -255,11 +260,16 @@
         }
         await this.post('/goods/searchGoods', paramas).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data)
+            if (res.data.goodsInfo.goodsList.length > 0) {
+              this.shopStatus = res.data.goodsInfo.goodsList[0].shopStatus
+            }
             this.$store.commit('changeTotalPrice', res.data.totalPrice)
 //            if (res.data.goodsInfo.goodsList === 0) {
 //              this.noPageFlag = true
 //            }
             // 如果是及时送
+            console.log(this.shopType, 'shopType')
             if (this.shopType === 2) {
               this.ThisGoodsList = res.data.goodsInfo.goodsList
               if (this.ThisGoodsList.length === 0) {
@@ -268,6 +278,7 @@
               // 如果是次日达
             } else {
               this.NextGoodsList = res.data.goodsInfo.goodsList
+              console.log(this.NextGoodsList, 'no')
               if (this.NextGoodsList.length === 0) {
                 this.noGoodsFlagNext = true
               }
@@ -481,7 +492,10 @@
   }
 
   .no-goods {
-    background: url("../assets/noneGoods.png") no-repeat center center;
+    /*background: url("../assets/noneGoods.png") no-repeat center center;*/
+    background-image: url("../assets/noneGoods.png");
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: 50% 50%;
   }
 
@@ -497,20 +511,24 @@
     display: flex;
     align-items: center;
     background-color: #fff;
+    box-sizing: border-box;
+    .h(90);
     .pt(15);
     .pb(15);
     .search-left {
-      padding-left: 10px;
+      .w(60);
+      .pl(20);
       /* font: 16px/1 'iconfont';*/
       .fs(40);
-      .lh(40);
+      .h(90);
+      .lh(90);
       font-family: 'iconfont';
     }
 
     .search-box {
       margin-top: auto;
       margin-bottom: auto;
-      .ml(20);
+      /*.ml(20);*/
       .mr(20);
       .pt(10);
       .pb(10);
@@ -643,7 +661,9 @@
     overflow: hidden;
     position: absolute;
     top: 0;
-    opacity: 0;
+    opacity: 1;
+    /*background: #fff;*/
+    /*  background-color: #fff;*/
     .content {
       background: #fff;
     }
@@ -657,8 +677,9 @@
   /*z-index: 101;*/
   /*}*/
   .active {
-    z-index: 102;
+    z-index: 103;
     opacity: 1;
+    background-color: #fff;
   }
 
   .footer {

@@ -13,8 +13,10 @@
           <span class="text" :class="{'active':index===3}" @click="sort(1,3)">价格</span>
         </div>
       </div>
-      <div class="content">
-        <origin-list :goodsList="goodsList"></origin-list>
+      <div class="content" ref="content">
+        <div>
+          <origin-list :goodsList="goodsList"></origin-list>
+        </div>
       </div>
     </div>
     <loading :loadingFlag="loadingFlag"></loading>
@@ -25,8 +27,9 @@
   import mHeader from '../components/header'
   import originList from '../components/twocolumn'
   import loading from '../components/loading'
+  import BScroll from 'better-scroll'
   export default {
-    components: {mHeader, originList, loading},
+    components: {mHeader, originList, loading, BScroll},
     name: 'originActive',
     data () {
       return {
@@ -47,6 +50,9 @@
           if (res.data.code === 100) {
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -55,6 +61,12 @@
             this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
+        })
+      },
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {
+          click: true,
+          disableMouse: true
         })
       }
     }

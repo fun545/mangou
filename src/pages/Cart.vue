@@ -18,8 +18,8 @@
               <div class="this-wrap" v-if="thisGoodsList.length">
                 <div class="flex-box this">
                   <!-- 全选按钮 及时送-->
-                  <div class="flex-item">
-                    <div class="select-all-icon d-ib" @click="thisCheckAll(thisGoodsList)">
+                  <div class="flex-item check-all" @click="thisCheckAll(thisGoodsList)">
+                    <div class="select-all-icon d-ib">
                       <i class="iconfont selected-color circle" v-if="thisAllChecked">&#xe634;</i>
                       <i class="iconfont circle" v-if="!thisAllChecked">&#xe635;</i>
                     </div>
@@ -100,8 +100,8 @@
               <div class="next-wrap" v-if="NextGoodsList.length">
                 <div class="flex-box this">
                   <!-- 全选按钮 次日达-->
-                  <div class="flex-item">
-                    <div class="select-all-icon d-ib" @click="nextCheckAll(NextGoodsList)">
+                  <div class="flex-item check-all" @click="nextCheckAll(NextGoodsList)">
+                    <div class="select-all-icon d-ib">
                       <i class="iconfont selected-color circle" v-if="nextAllChecked">&#xe634;</i>
                       <i class="iconfont circle" v-if="!nextAllChecked">&#xe635;</i>
                     </div>
@@ -196,21 +196,24 @@
                    @on-confirm="delConfirm">
             <p style="text-align:center;">{{comfirmText}}</p>
           </confirm>
-          <alert v-model="showAlert" button-text="我知道了">
-            <p class="alert-title" slot="title">{{alertText}}</p>
-            <div class="alert-content" name="content">
-              <p class="p1">暂不接受新的订单</p>
-              <p class="p2">(门店营业时间：{{thisShop.shopHours}})</p>
-            </div>
-          </alert>
+          <!-- 营业时间弹窗暂时关闭-->
+          <!-- <alert v-model="showAlert" button-text="我知道了">
+             <p class="alert-title" slot="title">{{alertText}}</p>
+             <div class="alert-content" name="content">
+               <p class="p1">暂不接受新的订单</p>
+               <p class="p2">(门店营业时间：{{thisShop.shopHours}})</p>
+             </div>
+           </alert>-->
           <!-- 页面底部 -->
           <div class="count-box" v-if="!(thisGoodsList.length===0&&NextGoodsList.length===0)">
             <!--<input type="checkbox" class="input-checkbox">-->
-            <div class="select-all-icon d-ib" @click="selectAll()">
-              <i class="iconfont selected-color circle" v-if="allChecked">&#xe634;</i>
-              <i class="iconfont circle" v-if="!allChecked">&#xe635;</i>
+            <div @click="selectAll()">
+              <div class="select-all-icon d-ib">
+                <i class="iconfont selected-color circle" v-if="allChecked">&#xe634;</i>
+                <i class="iconfont circle" v-if="!allChecked">&#xe635;</i>
+              </div>
+              <span class="label-checkbox">全选</span>
             </div>
-            <span class="label-checkbox">全选</span>
             <div class="col">
               <!--次日达及时送总合计-->
               <div v-if="editShow">
@@ -240,7 +243,7 @@
 </template>
 
 <script>
-  import { XHeader, Checker, CheckerItem, Confirm, Alert } from 'vux'
+  import { XHeader, Checker, CheckerItem, Confirm } from 'vux'
   import mFooter from '../components/footer'
   import BScroll from 'better-scroll'
   import loading from '../components/loading'
@@ -254,7 +257,7 @@
       CheckerItem,
       BScroll,
       Confirm,
-      Alert,
+//      Alert,
       loading
     },
     data () {
@@ -341,23 +344,13 @@
         this.$store.state.sendWay = {key: '1', value: '客户自取'}
       }
     },
-//    activated () {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.contentScroll.refresh()
-//        }, 1000)
-//      })
-//    },
     watch: {
-//      this.$nextTick(() => {
-//        setTimeout(() => {
-//          this.homeSroll.refresh()
-//        }, 1000)
-//      })
       '$route' (to, from) {
         this.$nextTick(() => {
           setTimeout(() => {
-            this.contentScroll.refresh()
+            if (typeof this.contentScroll.refresh === 'function') {
+              this.contentScroll.refresh()
+            }
           }, 1000)
         })
       }
@@ -625,6 +618,10 @@
       },
       // 选中商品 全选
       thisCheckAll (list) {
+        // 非营业时间无法选择
+        if (this.showAlert) {
+          return
+        }
         this.thisAllChecked = !this.thisAllChecked
         list.forEach((item, index) => {
           if (typeof item.checked === 'undefined') {
@@ -667,8 +664,25 @@
       // 全选 及时送和次日达
       selectAll () {
         this.allChecked = !this.allChecked
-        this.thisAllChecked = this.allChecked
         this.nextAllChecked = this.allChecked
+        this.NextGoodsList.forEach((item, index) => {
+          if (typeof item.checked === 'undefined') {
+            this.$set(item, 'checked', this.allChecked)
+            if (item.status !== 1) {
+              item.checked = false
+            }
+          } else {
+            item.checked = this.allChecked
+            if (item.status !== 1) {
+              item.checked = false
+            }
+          }
+        })
+        // 非营业时间无法选择
+        if (this.showAlert) {
+          return
+        }
+        this.thisAllChecked = this.allChecked
         this.thisGoodsList.forEach((item, index) => {
           if (typeof item.checked === 'undefined') {
             this.$set(item, 'checked', this.allChecked)
@@ -684,19 +698,6 @@
               item.NoGoods = this.allChecked
             }
             item.checked = false
-          }
-        })
-        this.NextGoodsList.forEach((item, index) => {
-          if (typeof item.checked === 'undefined') {
-            this.$set(item, 'checked', this.allChecked)
-            if (item.status !== 1) {
-              item.checked = false
-            }
-          } else {
-            item.checked = this.allChecked
-            if (item.status !== 1) {
-              item.checked = false
-            }
           }
         })
       },
@@ -747,14 +748,15 @@
             }
           })
           if (thisGoodsList.length === 0 && nextGoodsList.length === 0) {
-            this.toastWidth = '12em'
-            this.toastText = '请您先选择商品'
-            this.showPositionValue = true
+            this.$vux.toast.text('请您先选择商品', 'middle')
           } else {
-            // 如果用户没有填收货信息，跳转收货地址
-            if (!this.$store.state.shippingInfo) {
-              this.$router.push({path: '/address'})
-              this.$vux.toast.text('请填写收货地址', 'bottom')
+            // 送货上门判断有无收获地址
+            var hasNext = nextGoodsList.length > 0 && (this.demo11.key === '2') // 次日达且是送货上门
+            var hasThis = thisGoodsList.length > 0 // 及时送
+            var noShippingInfo = !this.$store.state.shippingInfo
+            if (noShippingInfo && (hasNext || hasThis)) {
+              this.$router.push('/address')
+              this.$vux.toast.text('当前无可用收获地址，请新增', 'middle')
               return
             }
             // 确认订单所选商品 及时送
@@ -768,7 +770,11 @@
             // 配送费 及时送
             this.$store.state.Thisfreight = parseInt(this.Thisfreight).toFixed(1)
             // 配送费 次日达
-            this.$store.state.Nextfreight = parseInt(this.Nextfreight).toFixed(1)
+            if (this.demo11.key === '1') {
+              this.$store.state.Nextfreight = 0
+            } else {
+              this.$store.state.Nextfreight = parseInt(this.Nextfreight).toFixed(1)
+            }
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
           }
@@ -787,9 +793,7 @@
             }
           })
           if (!thisFlag && !nextFlag) {
-            this.toastWidth = '15em'
-            this.toastText = '请选择您要删除的商品'
-            this.showPositionValue = true
+            this.$vux.toast.text('请选择您要删除的商品', 'middle')
           } else {
             this.showComfirmDel = true
           }
@@ -1089,6 +1093,8 @@
   }
 
   .checked-icon-wrap {
+    .pt(60);
+    .h(120);
     .w(80);
     .mr(10);
   }
@@ -1100,7 +1106,7 @@
     .t(92);
     .b(100);
     background: url("../assets/carNoGoods.png") no-repeat center 20%;
-    background-size: 53% 53%;
+    background-size: 50% 60%;
     .bt {
       position: absolute;
       .w(212);
@@ -1152,6 +1158,15 @@
         box-sizing: border-box;
         .h(100);
       }
+      &.this-goods {
+        .h(188);
+        box-sizing: border-box;
+      }
+      /*.check-all {*/
+      /*.select-all-icon {*/
+
+      /*}*/
+      /*}*/
     }
 
     .cart-view .content-view-scroller .default-checker {
@@ -1367,11 +1382,17 @@
     .h(100);
     .b(100);
     display: flex;
-    .pl(20);
+    .pl(30);
     .fs(28);
     background-color: #fff;
     align-items: center;
-
+    .select-all-icon {
+      .mr(0);
+      .w(45);
+      .iconfont {
+        margin-right: 0;
+      }
+    }
     .input-checkbox:checked, span {
       color: #ff5500;
     }

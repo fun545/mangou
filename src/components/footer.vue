@@ -82,7 +82,7 @@
     color: #fff;
     background: linear-gradient(#fa9f7a, #f75439);
     border-radius: 100px;
-    animation: itemChange 300ms;
+   /* animation: itemChange 300ms;*/
     position: relative;
     z-index: 999;
   }

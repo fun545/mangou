@@ -10,7 +10,7 @@
           <input type="text" placeholder="请输入小区名称" v-model="keyName">
         </div>
       </div>
-      <span class="back" @click="$router.push($store.state.SearchVillagePath)">取消</span>
+      <span class="back" @click="$router.back()">取消</span>
     </div>
     <div class="content">
       <div class="item" v-for="(item,index) in list" :key="index" @click="curVillage(item)">
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-
+  import { getStoreInfo } from '../util/util'
   export default {
     name: 'searchVillage',
     data () {
@@ -61,37 +61,25 @@
         })
       },
       async curVillage (data) {
-        this.village = data.villageName
+        // 如果是确认下单页面下新增的地址，不保存village和更新storeId
+        if (this.$store.state.addAddressBackPath === '/selecteAddress') {
+          this.$store.commit('saveAddress', data)
+          this.$router.push({path: this.$store.state.mapBackPath})
+          return
+        }
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
         this.$store.commit('edtAddress', data)
+        if (!(this.$store.state.selectVillagePath === '/home')) {
+          await getStoreInfo(this)
+        }
+        this.$store.commit('edtAddress', data)
+        console.log(this.$store.state.selectVillagePath)
         this.$router.push(this.$store.state.selectVillagePath)
-        await this.getStoreId()
-        this.$router.push(this.$store.state.selectVillagePath)
-      },
-      getStoreId () {
-        this.post('/first/getFirst', {
-          cityId: localStorage.getItem('m-cityId'),
-          areaId: localStorage.getItem('m-areaId'),
-          villageId: localStorage.getItem('m-villageId'),
-          source: 1
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            /* 店铺数据 */
-            this.storeList = res.data.firstInfo.storeList
-            localStorage.setItem('m-depotId', this.storeList[0].storeId)
-            localStorage.setItem('m-shopId', this.storeList[1].storeId)
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
+        setTimeout(() => {
+          window.location.reload()
         })
       }
     },

@@ -6,7 +6,7 @@
     </m-header>
     <div class="content-wrap" ref="content" :class="{'noOrderList':orderList.length===0}">
       <!-- 订单列表 及时送  -->
-      <order-list :orderList="orderList" :_initScroll="contentScroll" ref="orderList">
+      <order-list :orderList="orderList" :_initScroll="contentScroll" ref="orderList" v-if="!loadingFlag">
         <load-more
           :tip="loadText"
           :show-loading="moreIconFlag"
@@ -53,8 +53,8 @@
         scrollTop: ''
       }
     },
-    async created () {
-      await this.post('/orders/getOrderList', {
+    created () {
+      this.post('/orders/getOrderList', {
         token: localStorage.getItem('m-token'),
         pageSize: 10,
         pageIndex: 1,
@@ -64,6 +64,9 @@
         if (res.data.code === 100) {
           this.orderList = res.data.orderList
           this.loadingFlag = false
+          this.$nextTick(() => {
+            this._initScroll()
+          })
           return
         }
         if (res.data.code === 101) {
@@ -73,9 +76,6 @@
           this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
-      })
-      this.$nextTick(() => {
-        this._initScroll()
       })
     },
     methods: {

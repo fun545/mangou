@@ -111,13 +111,19 @@
   }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
   @import "../common/style/sum";
   @import "../common/style/varlable";
 
   .add-address {
+    .cp-header {
+    /*  position: inherit;*/
+    }
     .userInfo {
       .mt(92);
+      .weui-cells {
+        margin-top: 0 !important;
+      }
       .village {
         text-align: left;
         color: #000;

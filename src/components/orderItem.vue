@@ -12,7 +12,7 @@
         </div>
         <!-- 订单商品 -->
         <div class="swiper" ref="swiper">
-          <div class="scroller-box" @click="goOrderInfo(item)" :style="{width:item.goodsList.length*2.66666667+'rem'}">
+          <div class="scroller-box" @click="goOrderInfo(item)">
             <div class="pic d-ib pos-re" v-for="(goodsItem,index) in item.goodsList" :key="index">
               <!--<img v-lazy="goodsItem.goodsImgUrl" alt="" width="100%" height="100%">-->
               <!--<lazy-image-->
@@ -268,7 +268,7 @@
               opts: 1
             }).then((res) => {
               if (res.data.code === 100) {
-                _this.orderList.splice(this.index, 1)
+                _this.orderList.splice(_this.index, 1)
                 _this.$nextTick(() => {
                   _this._initScroll.refresh()
                 })

@@ -1,6 +1,6 @@
 <template>
   <div class="shop-cart-wrap" @click="add($el,goods)">
-    <i class="iconfont shop-car" ref="icon" v-if="goods.status===1" :class="{'shop-status':shopStatus!==0}">&#xe613;</i>
+    <i class="iconfont shop-car" ref="icon" v-if="goods.status===1" :class="{'shop-status':shopStatus!==0}">&#xe658;</i>
     <div v-if="goods.status!==1" class="no-goods">已售罄</div>
   </div>
 </template>
@@ -107,15 +107,16 @@
   .iconfont.shop-car {
     .w(50);
     .h(50);
-    .lh(39);
-    .fs(30);
+    .lh(49);
+    .fs(25);
+    display: inline-block;
     text-align: center;
     color: @theme-color;
     border: 1px solid @theme-color;
     border-radius: 50%;
-    .pl(6);
-    .pr(6);
-    .pt(5);
-    .pb(5);
+    /*.pl(10);
+    .pr(10);
+    .pt(10);
+    .pb(10);*/
   }
 </style>

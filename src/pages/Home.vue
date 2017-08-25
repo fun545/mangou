@@ -114,10 +114,10 @@
                     </div>
                     <div class="des">
                       <h3 class="title">{{item.goodsName}}</h3>
-                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
                         class="number">{{item.canKaoPrice}}</span>
                       </p>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
                     </div>
                   </div>
                   <buy-car-button :goods="item"></buy-car-button>
@@ -458,7 +458,7 @@
         this.homeSroll.on('scroll', (pos) => {
           // 搜索部分背景渐现效果
           let scrollTop1 = -Math.round(pos.y)
-          this.$refs.header.style.backgroundColor = `rgba(249,91,67,${scrollTop1 / 300})`
+          this.$refs.header.style.backgroundColor = `rgba(1,166,98,${scrollTop1 / 300})`
           // 监听无限加载滚动
           this.scrollTop = Math.abs(Math.round(pos.y))
           const homeView = this.$refs.homeView
@@ -703,7 +703,7 @@
               .mb(10);
             }
             .this-price {
-              color: @theme-color;
+              color: @font-color-input;
               .fs(22);
               .lh(29);
               .s1 {
@@ -714,7 +714,7 @@
               }
             }
             .next-price {
-              color: #888;
+              color: @theme-color-price;
               .fs(26);
               .s1 {
                 .fs(26);
@@ -727,8 +727,8 @@
           .shop-cart-wrap {
             position: absolute;
             left: 50%;
-            .ml(-56);
-            .b(10);
+            transform: translateX(-50%);
+            bottom: 0;
           }
           .iconfont.shop-car {
           }

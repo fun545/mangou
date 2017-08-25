@@ -70,11 +70,11 @@
     data () {
       return {
         pass: '', // 默认快速登录密码
-        tel: '',
+        tel: localStorage.getItem('m-phone'),
         loginMethodFlag: true,
         agreeFlag: true,
         type: 3,
-        code: '',
+        code: '', // 验证码
         loginType: 2, // 默认2 快速登录 1 账号登录
         userPassword: ''
       }
@@ -84,23 +84,28 @@
         if (index === 0) {
           this.loginType = 2
           this.loginMethodFlag = true
+          this.pass = this.code
         } else {
           this.loginMethodFlag = false
           this.loginType = 1
+          this.pass = localStorage.getItem('m-passWord')
+          this.userPassword = localStorage.getItem('m-passWord')
         }
       },
       receiveCode (code) {
+        this.code = code
         this.pass = code
       },
       inPut () {
         if (this.userPassword.trim()) {
           this.pass = this.userPassword
+//          // 记住用户密码
+//          localStorage.setItem('m-passWord', this.userPassword)
         }
       },
       login () {
         if (!/^1\d{10}$/.test(this.tel)) {
-          this.text = '手机号码错误'
-          this.showPositionValue = true
+          this.$vux.toast.text('手机号码错误', 'top')
           return
         }
         this.post('/user/login', {
@@ -121,10 +126,12 @@
             this.$store.commit('getUserInfo', res.data.userInfo)
             // 存储 购物车总数
             this.$store.commit('increment', res.data.userInfo.totalBuyCount)
+            // 记住用户手机号
+            localStorage.setItem('m-phone', this.tel)
             this.$store.state.login = true
             console.log(JSON.parse(localStorage.getItem('m-userInfo')))
             // 登录成功跳转个人中心
-            this.$router.push({path: '/user'})
+            this.$router.back()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')

@@ -67,6 +67,7 @@
           立即购买
         </div>
       </div>
+      <no-login-footer v-if="!login"></no-login-footer>
       <!--立即下单-->
       <div class="fast-buy" v-if="close">
         <div class="inner">
@@ -99,7 +100,6 @@
           </div>
         </div>
       </div>
-      <no-login-footer v-if="!login"></no-login-footer>
       <ball :type="2"></ball>
     </div>
   </div>
@@ -603,7 +603,7 @@
           position: relative;
           float: left;
           .t(16);
-          background: #fc5050;
+          background: @theme-color;
           .w(68);
           .h(68);
           border-radius: 50%;
@@ -633,9 +633,8 @@
           .h(100);
           .lh(100);
           .fs(30);
-          color: @font-color-m;
+          color: @theme-color-price;
           span {
-            color: @theme-color;
             .fs(33);
           }
         }
@@ -646,13 +645,13 @@
         .w(185);
         .h(100);
         .lh(100);
-        background: #fc5050;
+        background: @theme-color;
         color: #fff;
         .fs(32);
       }
       .buy {
         .r(185);
-        background: #ffae00;
+        background: @theme-color;
       }
       .disabled-color {
         background: #d2d2d2;

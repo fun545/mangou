@@ -23,7 +23,7 @@
         }).then((res) => {
           if (res.data.code === 100) {
             this.$vux.toast.text('密码修改成功', 'center')
-            this.$router.push('/user')
+            this.$router.back()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')

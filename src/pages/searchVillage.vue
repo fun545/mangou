@@ -71,16 +71,20 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
+        this.$store.commit('saveVillageInfo', data)
         this.$store.commit('edtAddress', data)
         if (!(this.$store.state.selectVillagePath === '/home')) {
           await getStoreInfo(this)
         }
         this.$store.commit('edtAddress', data)
-        console.log(this.$store.state.selectVillagePath)
-        this.$router.push(this.$store.state.selectVillagePath)
-        setTimeout(() => {
-          window.location.reload()
-        })
+        // 选择后跳转
+        this.$router.replace({path: this.$store.state.selectVillagePath})
+        // 回跳首页或者及时送才需要刷新页面
+        if (this.$store.state.selectVillagePath === '/home' || this.$store.state.mapBackPath === '/this') {
+          setTimeout(() => {
+            window.location.reload()
+          })
+        }
       }
     },
     watch: {

@@ -115,6 +115,13 @@
   .active {
     height: 100% !important;
     width: 100%;
+    .cp-header {
+      background: @theme-color;
+      color: #fff;
+      .back {
+        color: #fff;
+      }
+    }
   }
 
   .scroll {
@@ -174,11 +181,11 @@
             color: #0191a6;
             .fs(28);
             .s1 {
-              color: #ff0000;
+              color: @theme-color-price;
             }
             .number {
               .fs(38);
-              color: #ff0000;
+              color: @theme-color-price;
             }
           }
           .shop-cart-wrap {

@@ -8,7 +8,7 @@
       </tabbar-item>
       <tabbar-item link="/this" active-class="item-active">
         <div class="icon-this" slot="icon"/>
-        <div class="item-label" slot="label">即时达</div>
+        <div class="item-label" slot="label">即时送</div>
       </tabbar-item>
       <tabbar-item link="/next" active-class="item-active" transition-class="transition-item">
         <div class="iconfont" slot="icon">&#xe60a;</div>
@@ -55,7 +55,8 @@
 </script>
 
 <style lang="less">
-  @import "../common/style/sum.less";
+  @import "../common/style/sum";
+  @import "../common/style/varlable";
 
   .footer {
     .h(100);
@@ -80,9 +81,9 @@
     .mb(-20);
     .pt(20);
     color: #fff;
-    background: linear-gradient(#fa9f7a, #f75439);
+    background:@theme-color;
     border-radius: 100px;
-   /* animation: itemChange 300ms;*/
+
     position: relative;
     z-index: 999;
   }

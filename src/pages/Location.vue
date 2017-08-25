@@ -26,7 +26,7 @@
           </div>
         </div>
         <!--常用收获地址-->
-        <div class="current-address" v-if="token">
+        <div class="current-address" v-if="token&&addressList.length>0">
           <div class="title">
             常用收获地址
           </div>
@@ -86,8 +86,12 @@
     methods: {
       // 选择当前小区
       async curVillage (data) {
+        // 定位中不能点击定位当前
+        if (this.positionLoading) {
+          return
+        }
         // 点击定位当前   如果定位失败或者附近无小区则跳地图
-        if (this.villageList.length === 0 && !this.positionLoading && this.addressList.length === 0) {
+        if (this.villageList.length === 0 && !this.positionLoading) {
           this.$store.commit('saveMapBackPath', '/home')
           this.$store.commit('saveSearchVillagePath', '/home')
           this.$router.push('/Bmap')
@@ -98,6 +102,7 @@
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
+        this.$store.commit('saveVillageInfo', data)
         // 更新storeId
         // 如果是跳转到首页的则不需要获取storeId
         if (!(this.$store.state.selectVillagePath === '/home')) {
@@ -144,7 +149,7 @@
       // 跳转添加收货地址
       goAddAddress () {
         if (!this.token) {
-          this.$router.push('/login')
+          this.$vux.toast.text('请登录', 'top')
           return
         }
         this.$store.commit('saveAddAddress', '/location')

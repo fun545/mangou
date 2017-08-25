@@ -216,14 +216,21 @@
         localStorage.setItem('m-areaId', item.areaId)
         localStorage.setItem('m-villageId', item.villageId)
         localStorage.setItem('m-villageName', item.villageName)
+        this.$store.commit('saveVillageInfo', item)
         if (!(this.$store.state.selectVillagePath === '/home')) {
           await getStoreInfo(this)
         }
+        if (this.$store.state.mapBackPath === '/this') {
+          await getStoreInfo(this)
+        }
         // 选择后跳转
-        this.$router.push({path: this.$store.state.mapBackPath})
-        setTimeout(() => {
-          window.location.reload()
-        })
+        this.$router.replace({path: this.$store.state.mapBackPath})
+        // 回跳首页或者及时送才需要刷新页面
+        if (this.$store.state.mapBackPath === '/home' || this.$store.state.mapBackPath === '/this') {
+          setTimeout(() => {
+            window.location.reload()
+          })
+        }
       },
       // 去搜索页面
       goSearch () {

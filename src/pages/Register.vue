@@ -35,8 +35,8 @@
           code: md5(code)
         }).then((res) => {
           if (res.data.code === 100) {
-            this.$vux.toast.text('注册成功', 'center')
-            this.$router.push('/user')
+            this.$vux.toast.text('注册成功', 'middle')
+            this.$router.back()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')

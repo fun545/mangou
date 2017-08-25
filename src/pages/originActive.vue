@@ -19,17 +19,22 @@
         </div>
       </div>
     </div>
+    <count-footer :login="!!token"></count-footer>
     <loading :loadingFlag="loadingFlag"></loading>
+    <ball :type="2"></ball>
   </div>
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
   import mHeader from '../components/header'
   import originList from '../components/twocolumn'
   import loading from '../components/loading'
   import BScroll from 'better-scroll'
+  import ball from '../components/ball.vue'
+  import countFooter from '../components/countFooter.vue'
   export default {
-    components: {mHeader, originList, loading, BScroll},
+    components: {mHeader, originList, loading, BScroll, ball, countFooter},
     name: 'originActive',
     data () {
       return {
@@ -37,17 +42,31 @@
         goodsList: [],
         softType: 2,
         index: 1,
-        loadingFlag: true
+        loadingFlag: true,
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
       this.sort(2, 1)
     },
     methods: {
+      ...mapMutations([
+        'SAVE_TOTAL_BUY_COUNT',
+        'SAVE_TOTAL_PRICE'
+      ]),
       sort (softType, index) {
         this.index = index
-        this.post('/goods/getLabelGoods', {keyWordId: this.$route.query.goodsId, softType: softType}).then((res) => {
+        var paramas = {}
+        paramas.keyWordId = this.$route.query.goodsId
+        paramas.softType = softType
+        if (this.token) {
+          paramas.token = this.token
+        }
+        this.post('/goods/getLabelGoods', paramas).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data)
+            this.SAVE_TOTAL_BUY_COUNT(res.data.totalBuyCount)
+            this.SAVE_TOTAL_PRICE(res.data.totalPrice)
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
             this.$nextTick(() => {
@@ -80,15 +99,16 @@
   .origin-active {
     .top {
       .cp-header {
-        color: #3f3f3f;
+        color: #fff;
+        background: @theme-color;
         .back {
-          color: #3f3f3f;
+          color: #fff;
         }
       }
       .title {
-        .h(60);
-        .lh(60);
-        .fs(32);
+        .h(80);
+        .lh(80);
+        .fs(33);
         .mt(92);
         background: #fff;
         color: @font-color-m;
@@ -96,7 +116,7 @@
           .ml(27);
         }
         .active {
-          color: @theme-color-blue;
+          color: @theme-color;
         }
       }
     }
@@ -105,7 +125,7 @@
         .mt(10);
       }
       position: absolute;
-      .t(152);
+      .t(182);
       overflow-y: scroll;
       overflow-x: hidden;
       left: 0;

@@ -3,10 +3,10 @@
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
         <!--<lazy-image-->
-          <!--:src='item.goodsImgUrl'-->
-          <!--:placeholder='$store.state.defaultImg'-->
-          <!--:events="['touchmove']"-->
-          <!--@click.native="goDetail(item.goodsId)"-->
+        <!--:src='item.goodsImgUrl'-->
+        <!--:placeholder='$store.state.defaultImg'-->
+        <!--:events="['touchmove']"-->
+        <!--@click.native="goDetail(item.goodsId)"-->
         <!--&gt;</lazy-image>-->
         <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
       </div>
@@ -97,7 +97,8 @@
 
         }
         .shop-cart-wrap {
-          .t(30);
+          top: 50%;
+          transform: translateY(-50%);
           .r(32);
           .icon-col {
             color: @theme-color;

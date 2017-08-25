@@ -78,9 +78,9 @@
         border-bottom: 1px dashed @input-border;
         .pl(16);
         .title {
-          .fs(28);
+          .fs(31);
           .l(50);
-          color: #443d39;
+          color: @font-color-m;
         }
       }
       .bt {
@@ -91,10 +91,14 @@
         display: flex;
         align-items: center;
         .next-price {
-          color: @theme-color;
+          color: @theme-color-price;
+          .fs(28);
+          font-family: "Microsoft Yahei";
+          font-weight: 600;
         }
         .this-price {
-
+          color: @font-color-input;
+          .fs(26)
         }
         .shop-cart-wrap {
           top: 50%;

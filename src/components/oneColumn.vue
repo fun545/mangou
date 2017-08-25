@@ -63,12 +63,13 @@
   /*@import "../common/style/mlxin";*/
   .item {
     .h(233);
-  /*  box-sizing: border-box;*/
+    /*  box-sizing: border-box;*/
     .pt(10);
     .pb(10);
     .pl(33);
     position: relative;
     border-bottom: 1px solid @input-border;
+    background-color: #fff;
     .pic {
       .w(210);
       .h(210);
@@ -88,24 +89,23 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
         overflow: hidden;
-        color: #443d39;
-        .fs(27);
+        color: @font-color-m;
+        .fs(31);
         .lh(44);
         .mt(12);
         .mb(48);
       }
       .des {
-        color: #888;
         .lh(36);
         .fs(23);
         .mb(46);
       }
       .this-price {
-        color: #888;
-        .fs(22);
-        .lh(29);
+        color: @font-color-input;
+        .fs(26);
+        .lh(40);
         .s1 {
-          .fs(20);
+          .fs(25);
         }
         .number {
           .fs(28);
@@ -113,9 +113,9 @@
       }
 
       .next-price {
-        color: @theme-color;
-        .fs(25);
-        .lh(33);
+        color: @theme-color-price;
+        .fs(30);
+        .lh(50);
         font-weight: bold;
         .s1 {
           .fs(26);

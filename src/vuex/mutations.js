@@ -1,6 +1,6 @@
 import {
-  SAVE_TOTAL_BUY_COUNT,
-  SAVE_TOTAL_PRICE
+  INCREMENT,
+  CHANGE_TOTAL_PRICE
 } from './mutation-types'
 
 export default {
@@ -13,7 +13,7 @@ export default {
     state.villageInfo = val
   },
   // 购物车总数
-  [SAVE_TOTAL_BUY_COUNT] (state, count) {
+  [INCREMENT] (state, count) {
     // vuex储存m-totalBuyCount
     localStorage.setItem('m-totalBuyCount', count)
     // 变更状态
@@ -21,7 +21,7 @@ export default {
     // console.log(state.totalBuyCount)
   },
   // 改变购物车总价
-  [SAVE_TOTAL_PRICE] (state, val) {
+  [CHANGE_TOTAL_PRICE] (state, val) {
     state.totalPrice = val
   },
   shopStatus (state, val) {

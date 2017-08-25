@@ -51,8 +51,8 @@
     },
     methods: {
       ...mapMutations([
-        'SAVE_TOTAL_BUY_COUNT',
-        'SAVE_TOTAL_PRICE'
+        'INCREMENT',
+        'CHANGE_TOTAL_PRICE'
       ]),
       sort (softType, index) {
         this.index = index
@@ -65,8 +65,8 @@
         this.post('/goods/getLabelGoods', paramas).then((res) => {
           if (res.data.code === 100) {
             console.log(res.data)
-            this.SAVE_TOTAL_BUY_COUNT(res.data.totalBuyCount)
-            this.SAVE_TOTAL_PRICE(res.data.totalPrice)
+            this.INCREMENT(res.data.totalBuyCount)
+            this.CHANGE_TOTAL_PRICE(res.data.totalPrice)
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
             this.$nextTick(() => {

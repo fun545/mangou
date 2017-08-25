@@ -224,6 +224,10 @@
       .menu-wrap {
         height: 100%;
         .w(172);
+        .side-bar .side-item.active {
+          color: @theme-color;
+          border-left: 3px solid @theme-color;
+        }
       }
       .list-wrap {
         height: 100%;

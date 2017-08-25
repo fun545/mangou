@@ -83,7 +83,7 @@
                       <!--:placeholder='$store.state.defaultImg'-->
                       <!--:events="['touchmove']"-->
                       <!--&gt;</lazy-image>-->
-                      <img v-lazy="specialPriceGoodsList[1].goodsImgUrl">
+                      <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" width="100%" height="100%">
                     </div>
                   </div>
                 </div>
@@ -624,15 +624,15 @@
               .h(178);
               .title {
                 overflow: hidden;
-                color: #443d39;
-                .fs(28);
+                color: @font-color-m;
+                .fs(29);
                 .h(70);
                 .mb(10);
                 .lh(36);
               }
               .this-price {
                 color: @theme-color;
-                .fs(22);
+                .fs(25);
                 .lh(29);
                 .s1 {
                   .fs(20);
@@ -642,13 +642,15 @@
                 }
               }
               .next-price {
-                color: #888;
-                .fs(26);
+                color: @theme-color-price;
+                .fs(27);
+                font-weight: 600;
+
                 .s1 {
                   .fs(26);
                 }
                 .number {
-                  .fs(30);
+                  .fs(28);
                 }
               }
             }
@@ -679,7 +681,7 @@
           .pic {
             box-sizing: border-box;
             .h(256);
-            .pt(30);
+            .pt(10);
             img {
               margin: 0 auto;
               .w(226);
@@ -688,7 +690,7 @@
           }
           .des {
             .h(120);
-            .mt(26);
+            .mt(10);
             .pl(18);
             position: relative;
             .title {
@@ -698,14 +700,14 @@
               overflow: hidden;
               overflow: hidden;
               color: #443d39;
-              .fs(28);
+              .fs(31);
               .lh(39);
               .mb(10);
             }
             .this-price {
               color: @font-color-input;
-              .fs(22);
-              .lh(29);
+              .fs(25);
+              .lh(30);
               .s1 {
                 .fs(20);
               }
@@ -715,7 +717,10 @@
             }
             .next-price {
               color: @theme-color-price;
-              .fs(26);
+              .fs(28);
+              font-family: "Microsoft Yahei";
+              font-weight: 600;
+              color: @theme-color-price;
               .s1 {
                 .fs(26);
               }
@@ -760,6 +765,9 @@
             }
             .next-price {
               .fs(30);
+              /* font-family: "Microsoft Yahei";
+               font-weight: 600;
+               color: @theme-color-price;*/
               .s1 {
                 .fs(26);
               }

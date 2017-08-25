@@ -534,7 +534,7 @@
           .lh(84);
           border-bottom: 1px solid #dfdedc;
           .this-price {
-            color: #888;
+            color: @font-color-input;
             .fs(28);
             .lh(54);
             .s1 {
@@ -545,7 +545,7 @@
             }
           }
           .next-price {
-            color: @theme-color;
+            color: @theme-color-price;
             .fs(36);
             .lh(33);
             font-weight: bold;
@@ -563,7 +563,7 @@
           .pt(9);
           .pl(26);
           color: #666;
-          .fs(26);
+          .fs(28);
           .size {
             .h(56);
             .lh(56);
@@ -651,7 +651,7 @@
       }
       .buy {
         .r(185);
-        background: @theme-color;
+        background: #fe5739;
       }
       .disabled-color {
         background: #d2d2d2;

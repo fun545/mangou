@@ -34,7 +34,7 @@
     .icon {
       display: table;
       .lh(60);
-      color: #f9d2cd;
+      color: #fff;
       position: absolute;
       .l(25);
       .fs(32);
@@ -46,7 +46,7 @@
       input {
         width: 100%;
         height: 100%;
-        background-color: #f28d7d;
+        background-color: #6dbe95;
         border-radius: 30px/2;
         border: none;
         color: #ffffff;
@@ -54,7 +54,7 @@
         .pl(57);
         .fs(28);
         &::-webkit-input-placeholder {
-          color: #f9d2cd;
+          color: #fff;
         }
       }
     }

@@ -805,6 +805,13 @@
         .w(172);
         height: 100%;
         overflow: hidden;
+        .side-bar {
+          .side-item.active {
+            background-color: #ffffff;
+            color: #089cf6;
+            border-left: 3px solid @theme-color-blue;
+          }
+        }
       }
       .right {
         .w(578);
@@ -820,7 +827,7 @@
         .w(578);
         .h(91);
         .lh(91);
-        .fs(24);
+        .fs(30);
         border-bottom: 1px solid #eee;
         .active {
           color: #089cf6;
@@ -828,7 +835,7 @@
         .sort-item {
           display: inline-block;
           position: relative;
-          .ml(70);
+          .ml(50);
           .sort-icon {
             .w(12);
             .h(20);
@@ -861,11 +868,11 @@
       .pt(12);
       .second-menu {
         width: 100%;
-        .pl(40);
+        .pl(30);
         .pr(56);
         border-bottom: 1px solid #eee;
         .item {
-          .w(146);
+          .w(150);
           .h(45);
           .lh(45);
           background: #f7f7f7;
@@ -900,7 +907,7 @@
           p {
             text-indent: 0;
           }
-          .ml(18);
+          .ml(12);
           .w(330);
           .h(227);
           float: left;
@@ -909,26 +916,28 @@
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
             overflow: hidden;
-            color: #443d39;
-            .fs(26);
+            color: @font-color-m;
+            .fs(31);
             .lh(72);
-            .mb(40);
+            .mb(45);
           }
           .this-price {
-            color: @theme-color;
-            .fs(22);
-            .lh(29);
+            color: @theme-color-price;
+            .fs(28);
+            .lh(40);
+            font-weight: 600;
             .s1 {
-              .fs(20);
+              .fs(23);
             }
             .number {
-              .fs(26);
+              .fs(29);
             }
           }
 
           .next-price {
             color: #888;
             .fs(26);
+            .lh(50);
             .s1 {
               .fs(26);
             }

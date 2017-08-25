@@ -105,14 +105,14 @@
   }
 
   .iconfont.shop-car {
-    .w(50);
-    .h(50);
-    .lh(49);
+    .w(60);
+    .h(60);
+    .lh(58);
     .fs(25);
     display: inline-block;
     text-align: center;
     color: @theme-color;
-    border: 1px solid @theme-color;
+    border: 1px solid @disabled-color;
     border-radius: 50%;
     /*.pl(10);
     .pr(10);

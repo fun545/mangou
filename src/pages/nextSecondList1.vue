@@ -312,7 +312,7 @@
         z-index: 10;
         .h(81);
         .lh(81);
-        .fs(28);
+        .fs(30);
         .pl(85);
         background: #fff;
         color: #666;
@@ -324,6 +324,7 @@
           display: inline-block;
           position: relative;
           .ml(60);
+          .fs(31);
           .sort-icon {
             .w(12);
             .h(20);

@@ -343,7 +343,7 @@
         })
       },
       goLocation () {
-        this.$store.commit('saveSelectVillagePath', '/home')
+//        this.$store.commit('saveSelectVillagePath', '/home')
         if (!localStorage.getItem('m-token')) {
           this.$store.commit('saveSelectVillagePath', '/home')
           this.$router.push({path: '/location'})
@@ -354,6 +354,7 @@
           title: '提示',
           content: '切换小区会清空购物车中即时送商品，您确定切换么？',
           onConfirm () {
+            _this.$store.commit('saveSelectVillagePath', '/home')
             _this.post('/car/deleteUserCarJs', {
               token: localStorage.getItem('m-token'),
               userId: JSON.parse(localStorage.getItem('m-userInfo')).userId

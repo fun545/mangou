@@ -204,37 +204,31 @@
       },
       // 选择小区
       async chooseVillage (item) {
-        // 如果是确认下单页面下新增的地址，不保存village和更新storeId
-        if (this.$store.state.addAddressBackPath === '/selecteAddress') {
-          this.$store.commit('saveAddress', item)
-          this.$router.push({path: this.$store.state.mapBackPath})
+        // 除了选择或者切换小区外，不保存village和更新storeId
+        if (this.$store.state.selectVillagePath !== '/home' || this.$store.state.selectVillagePath !== '/this') {
+          if (this.$store.state.selectVillagePath === '/edit_address') {
+            this.$store.commit('edtAddress', item)
+          } else {
+            this.$store.commit('saveAddress', item)
+          }
+          this.$router.push({path: this.$store.state.selectVillagePath})
           return
         }
-        // 更新storeId 和 village
-        this.$store.commit('edtAddress', item)
+        // 选择或切换小区   更新storeId 和 village
         localStorage.setItem('m-cityId', item.cityId)
         localStorage.setItem('m-areaId', item.areaId)
         localStorage.setItem('m-villageId', item.villageId)
         localStorage.setItem('m-villageName', item.villageName)
         this.$store.commit('saveVillageInfo', item)
-        if (!(this.$store.state.selectVillagePath === '/home')) {
-          await getStoreInfo(this)
-        }
-        if (this.$store.state.mapBackPath === '/this') {
-          await getStoreInfo(this)
-        }
+        await getStoreInfo(this)
         // 选择后跳转
-        this.$router.replace({path: this.$store.state.mapBackPath})
-        // 回跳首页或者及时送才需要刷新页面
-        if (this.$store.state.mapBackPath === '/home' || this.$store.state.mapBackPath === '/this') {
-          setTimeout(() => {
-            window.location.reload()
-          })
-        }
+        this.$router.replace({path: this.$store.state.selectVillagePath})
+        setTimeout(() => {
+          window.location.reload()
+        })
       },
       // 去搜索页面
       goSearch () {
-        this.$store.commit('saveSearchVillagePath', '/Bmap')
         this.$router.push('/searchVillage')
       },
       _initVillageScroll () {

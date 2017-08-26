@@ -57,7 +57,7 @@
     methods: {
       goMap () {
         this.$store.commit('saveSelectVillagePath', '/addAddress')
-        this.$store.commit('saveMapBackPath', '/addAddress')
+//        this.$store.commit('saveMapBackPath', '/addAddress')
         this.$router.push({path: '/Bmap'})
       },
       saveAddress () {

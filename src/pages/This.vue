@@ -343,7 +343,7 @@
           title: '提示',
           content: '切换小区会清空购物车中即时送商品，您确定切换么？',
           onConfirm () {
-            _this.$store.commit('saveMapBackPath', '/this')
+            _this.$store.commit('saveSelectVillagePath', '/this')
             _this.post('/car/deleteUserCarJs', {
               token: _this.token,
               userId: JSON.parse(localStorage.getItem('m-userInfo')).userId

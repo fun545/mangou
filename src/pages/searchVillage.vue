@@ -60,31 +60,29 @@
           }
         })
       },
-      async curVillage (data) {
-        // 如果是确认下单页面下新增的地址，不保存village和更新storeId
-        if (this.$store.state.addAddressBackPath === '/selecteAddress') {
-          this.$store.commit('saveAddress', data)
-          this.$router.push({path: this.$store.state.mapBackPath})
+      async curVillage (item) {
+        // 除了选择或者切换小区外，不保存village和更新storeId
+        if (this.$store.state.selectVillagePath !== '/home' || this.$store.state.selectVillagePath !== '/this') {
+          if (this.$store.state.selectVillagePath === '/edit_address') {
+            this.$store.commit('edtAddress', item)
+          } else {
+            this.$store.commit('saveAddress', item)
+          }
+          this.$router.push({path: this.$store.state.selectVillagePath})
           return
         }
-        localStorage.setItem('m-cityId', data.cityId)
-        localStorage.setItem('m-areaId', data.areaId)
-        localStorage.setItem('m-villageId', data.villageId)
-        localStorage.setItem('m-villageName', data.villageName)
-        this.$store.commit('saveVillageInfo', data)
-        this.$store.commit('edtAddress', data)
-        if (!(this.$store.state.selectVillagePath === '/home')) {
-          await getStoreInfo(this)
-        }
-        this.$store.commit('edtAddress', data)
+        // 选择或切换小区   更新storeId 和 village
+        localStorage.setItem('m-cityId', item.cityId)
+        localStorage.setItem('m-areaId', item.areaId)
+        localStorage.setItem('m-villageId', item.villageId)
+        localStorage.setItem('m-villageName', item.villageName)
+        this.$store.commit('saveVillageInfo', item)
+        await getStoreInfo(this)
         // 选择后跳转
         this.$router.replace({path: this.$store.state.selectVillagePath})
-        // 回跳首页或者及时送才需要刷新页面
-        if (this.$store.state.selectVillagePath === '/home' || this.$store.state.mapBackPath === '/this') {
-          setTimeout(() => {
-            window.location.reload()
-          })
-        }
+        setTimeout(() => {
+          window.location.reload()
+        })
       }
     },
     watch: {

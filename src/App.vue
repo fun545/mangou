@@ -96,6 +96,11 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     color: @disabled-color !important;
   }
 
+  .disabled {
+    background-color: #d2d2d2 !important;
+    color: #fff !important;
+  }
+
   .disabled-bg-color {
     background-color: @disabled-color !important;
   }

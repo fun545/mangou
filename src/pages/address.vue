@@ -2,8 +2,8 @@
   <div class="address">
     <div>
       <m-header :title="title">
-        <span class="back iconfont" @click="$router.push('/user')" slot="icon">&#xe600;</span>
-      </m-header>
+        <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
+      </m-header>x
       <div class="address-list" ref="content">
         <div>
           <div class="item" v-for="(item,index) in addressList" :key="index">

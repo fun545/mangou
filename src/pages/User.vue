@@ -224,7 +224,8 @@
     height: 100%;
     .top {
       height: 100px;
-      background: linear-gradient(#f46f4b, #fa9f5a);
+      /*background: linear-gradient(#f46f4b, #fa9f5a);*/
+      background-color: @theme-color;
       position: absolute;
       top: 0;
       right: 0;
@@ -291,7 +292,7 @@
             .mr(20);
             .w(8);
             .h(20);
-            background-color: #fc5050;
+            background-color: @theme-color;
           }
         }
 
@@ -423,7 +424,7 @@
           position: relative;
 
           .iconfont {
-            color: #c08556;
+            color: @theme-color;
             .fs(44);
           }
 
@@ -435,11 +436,15 @@
             border-radius: 14px/2;
             .fs(25);
             color: #ffffff;
-            background-color: red;
+            background-color: @theme-color-price;
             transform: translate(65%, -15%);
             position: absolute;
             top: 0;
             right: 0;
+            /*.pl(1);
+            .pr(1);
+            .pt(1);
+            .pb(1);*/
           }
         }
 
@@ -466,7 +471,7 @@
         border-bottom: 1px solid #e4e4e4;
 
         .iconfont {
-          color: #f75439;
+          color: @theme-color;
           .fs(56);
         }
 

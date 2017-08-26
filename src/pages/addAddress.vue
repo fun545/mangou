@@ -88,7 +88,7 @@
           address: this.address
         }).then(res => {
           if (res.data.code === 100) {
-            this.$router.replace(this.$store.state.addAddressBackPath)
+            this.$router.back()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -128,6 +128,7 @@
         text-align: left;
         color: #000;
         .pl(30);
+        overflow-y: scroll;
       }
     }
     .delet {

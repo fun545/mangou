@@ -5,7 +5,7 @@
     <!--v-model.trim="searchWord"-->
     <div v-if="!goSearchFlag">
       <div class="top-search-box">
-        <div class="search-left" @click="$router.back()">&#xe600;</div>
+        <div class="search-left" @click="$router.go(-2)">&#xe600;</div>
         <div class="search-box">
           <input type="search" placeholder="搜索内容" @keyup.enter="goSearch(1)" v-focus v-model="keyName">
         </div>

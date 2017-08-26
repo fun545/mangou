@@ -59,11 +59,11 @@
           </div>
         </div>
         <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt"
-             :class="{'disabled-color':shopStatus!==0}">
+             :class="{'disabled':shopStatus!==0}">
           加入购物车
         </div>
-        <div class="button t-c buy" @click="goFastBuy" v-if="goodsDetail.shopType===2"
-             :class="{'disabled-color':shopStatus!==0}">
+        <div class="button t-c buy" @click="goFastBuy" v-if="goodsDetail.shopType===2&&shopStatus===0"
+             :class="{'disabled':shopStatus!==0}">
           立即购买
         </div>
       </div>
@@ -652,9 +652,6 @@
       .buy {
         .r(185);
         background: #fe5739;
-      }
-      .disabled-color {
-        background: #d2d2d2;
       }
     }
     .fast-buy {

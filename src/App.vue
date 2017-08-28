@@ -92,6 +92,18 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     background-color: @theme-color;
   }
 
+  .theme-color-this {
+    color: @theme-color-this;
+  }
+
+  .theme-bg-color-this {
+    background-color: @theme-color-this;
+  }
+
+  .theme-color-price {
+    color: #fe3526;
+  }
+
   .disabled-color {
     color: @disabled-color !important;
   }

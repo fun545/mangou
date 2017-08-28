@@ -2,7 +2,7 @@
   <div class="add-address">
     <div>
       <m-header :title="title">
-        <span class="back iconfont" @click="$router.push($store.state.addAddressBackPath)" slot="icon">&#xe600;</span>
+        <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
       </m-header>
       <group class="userInfo">
         <x-input title="收货人" name="username" is-type="china-name" v-model="shippingName" placeholder="请填写"></x-input>
@@ -57,8 +57,7 @@
     methods: {
       goMap () {
         this.$store.commit('saveSelectVillagePath', '/addAddress')
-//        this.$store.commit('saveMapBackPath', '/addAddress')
-        this.$router.push({path: '/Bmap'})
+        this.$router.replace({path: '/Bmap'})
       },
       saveAddress () {
         // 验证名字
@@ -117,7 +116,7 @@
 
   .add-address {
     .cp-header {
-    /*  position: inherit;*/
+      /*  position: inherit;*/
     }
     .userInfo {
       .mt(92);
@@ -148,8 +147,8 @@
       right: 0;
       bottom: 0;
       .t(92);
-      background: url("../assets/no-way.png") no-repeat center;
-      background-size: 50% 50%;
+      background: url("../assets/no-address.png") no-repeat center;
+      background-size: 5.6rem 5.6rem;
     }
   }
 

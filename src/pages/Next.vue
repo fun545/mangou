@@ -157,7 +157,7 @@
           path: '/list1',
           query: {secondId: id}
         })
-        this.$router.go(0)
+//        this.$router.go(0)
       },
       memuChange (index) {
         this.ind = index

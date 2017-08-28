@@ -266,7 +266,7 @@
     },
     computed: {
       activeColor () {
-        return this.index ? '#07a4f6' : '#fc7070'
+        return this.index ? '#2697d9' : '#01a662'
       },
       totalBuyCount () {
         return this.$store.state.totalBuyCount
@@ -303,7 +303,7 @@
 
   .no-goods {
     background: url("../assets/noneGoods.png") no-repeat center center;
-    background-size: 50% 50%;
+    background-size:  4rem 5.733rem;
   }
 
   .search-view .title-box {

@@ -157,7 +157,7 @@
     }
     .noOrderList {
       background: url("../assets/noOrderList.png") no-repeat center center;
-      background-size: 50% 50%;
+      background-size: 6.866667rem 8.12rem;
     }
     .load-more {
       color: @font-color-m;

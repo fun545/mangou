@@ -5,7 +5,7 @@
     <!--v-model.trim="searchWord"-->
     <div v-if="!goSearchFlag">
       <div class="top-search-box">
-        <div class="search-left" @click="$router.go(-2)">&#xe600;</div>
+        <div class="search-left" @click="$router.back()">&#xe600;</div>
         <div class="search-box">
           <input type="search" placeholder="搜索内容" @keyup.enter="goSearch(1)" v-focus v-model="keyName">
         </div>
@@ -449,7 +449,7 @@
     },
     computed: {
       activeColor () {
-        return this.index ? '#07a4f6' : '#fc7070'
+        return this.index ? '#2697d9' : '#01a662'
       },
       totalBuyCount () {
         return this.$store.state.totalBuyCount
@@ -496,7 +496,7 @@
     background-image: url("../assets/noneGoods.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 50% 50%;
+    background-size: 4rem 5.733rem;
   }
 
   .search-text {

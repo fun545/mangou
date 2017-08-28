@@ -1,7 +1,7 @@
 <template>
   <div class="edit-address" @touchmove.prevent>
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.push('/address')" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
       <span slot="right" class="save" @click="deleteAddress">删除</span>
     </m-header>
     <group class="userInfo">
@@ -87,7 +87,7 @@
           isDefault: this.addressInfo.isDefault
         }).then(res => {
           if (res.data.code === 100) {
-            this.$router.push('/address')
+            this.$router.back()
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -118,7 +118,7 @@
       },
       goMap () {
         this.$store.commit('saveSelectVillagePath', '/edit_address')
-        this.$router.push({path: '/Bmap'})
+        this.$router.replace({path: '/Bmap'})
       }
     },
     computed: {

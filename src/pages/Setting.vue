@@ -114,7 +114,7 @@
       display: block;
       margin: 0 auto;
       color: #fff;
-      background-color: #f95d43;
+      background-color: @theme-color;
       .lh(40);
       .pt(20);
       .pb(20);

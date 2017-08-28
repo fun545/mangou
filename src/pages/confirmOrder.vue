@@ -88,7 +88,7 @@
             <!--实际付款 及时送-->
             <div class="pay-count">
               实际付款
-              <span class="f-r count">￥{{parseFloat(totalPriceThis) + parseFloat(Thisfreight)}}</span>
+              <span class="f-r count">￥{{totalPriceThis + Thisfreight}}</span>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@
             </div>
             <div class="right">
               <!--商品总价 次日达-->
-              <p class="s2">￥{{totalPriceNext}}</p>
+              <p class="s2">￥{{totalPriceNext.toFixed(1)}}</p>
               <div class="s1">
                 <span>-</span>
                 <!--优惠金额 次日达-->
@@ -198,7 +198,7 @@
             <div class="pay-count">
               实际付款
               <span
-                class="f-r count">￥{{parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)}}</span>
+                class="f-r count">￥{{(parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)).toFixed(1)}}</span>
             </div>
           </div>
         </div>
@@ -249,8 +249,8 @@
         // pointInfo: this.$store.state.shippingInfo, // 收货相关信息 自取
         selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
         selectedTotalCountNext: this.$store.state.selectedTotalCountNext, // 商品数量 次日达
-        totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
-        totalPriceNext: this.$store.state.totalPriceNext, // 商品总价 次日达
+//        totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
+//        totalPriceNext: this.$store.state.totalPriceNext, // 商品总价 次日达
         showMoreThis: true,  // 显示更多FLag 及时送
         showMoreNext: true,   // 显示更多FLag 次日达
         limitNumberThis: 2,    // 显示更多默认显示商品数量 及时送
@@ -263,8 +263,6 @@
         cartInfo: this.$store.state.cartInfo, // 购物车信息
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
         orderList: '',
-        thisShop: this.$store.state.thisShop, // 购物车及时送相关信息
-        nextShop: this.$store.state.nextShop, // 购物车次日达相关信息
         localCityId: Number(localStorage.getItem('m-cityId')),
         localAreaId: Number(localStorage.getItem('m-areaId')),
         localVillageId: Number(localStorage.getItem('m-villageId'))
@@ -274,10 +272,11 @@
       // 快速购买
       if (this.$route.query.fastBuy === 'fastBuy') {
         var info = this.$store.state.fastBuyInfo
+        this.$store.commit('saveThisShop', info.carList[0])
         this.thisGoodsList = info.carList[0].shandianShop.goodsList
-        this.Thisfreight = info.carList[0].shandianShop.freight
         this.shippingInfo = info.shippingInfo
         this.selectedTotalCountThis = info.totalBuyCount
+        this.CThisfreight(info.carList[0].shandianShop.freight)
         this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
       }
       this.$nextTick(() => {
@@ -285,6 +284,14 @@
       })
     },
     methods: {
+      // 快速购买运费计算
+      CThisfreight (freight) {
+        if (this.totalPriceThis >= this.thisShop.startPrice) {
+          this.Thisfreight = 0
+        } else {
+          this.Thisfreight = freight.toFixed(1)
+        }
+      },
       _initScroll () {
         this.contentScroll = new BScroll(this.$refs.content, {click: true})
       },
@@ -463,6 +470,18 @@
           var disabledAddressFlag = (this.shippingInfo.areaId !== this.localAreaId) || (this.shippingInfo.cityId !== this.localCityId) || (this.shippingInfo.villageId !== this.localVillageId)
           return disabledAddressFlag
         }
+      },
+      thisShop () {
+        return this.$store.state.thisShop
+      },
+      nextShop () {
+        return this.$store.state.thisShop
+      },
+      totalPriceThis () {
+        return this.$store.state.totalPriceThis
+      },
+      totalPriceNext () {
+        return this.$store.state.totalPriceNext
       }
     }
   }

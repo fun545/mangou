@@ -3,7 +3,8 @@
     <div>
       <m-header :title="title">
         <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
-      </m-header>x
+      </m-header>
+      x
       <div class="address-list" ref="content">
         <div>
           <div class="item" v-for="(item,index) in addressList" :key="index">
@@ -37,7 +38,7 @@
           新增收货地址
         </div>
       </div>
-      <div class="no-address" v-if="addressList.length===0">
+      <div class="no-address" v-if="noAddressFlag">
 
       </div>
     </div>
@@ -58,7 +59,8 @@
         title: '收货地址',
         defaultFlag: false,
         addressList: [],
-        token: localStorage.getItem('m-token')
+        token: localStorage.getItem('m-token'),
+        noAddressFlag: false
       }
     },
     created () {
@@ -72,6 +74,11 @@
         }).then((res) => {
           if (res.data.code === 100) {
             this.addressList = res.data.shippingAddressList
+            if (this.addressList.length > 0) {
+              this.noAddressFlag = false
+            } else {
+              this.noAddressFlag = true
+            }
             this.$nextTick(() => {
               this._initScroll()
             })
@@ -220,7 +227,7 @@
     right: 0;
     bottom: 0;
     .t(92);
-    background: url("../assets/no-way.png") no-repeat center center;
-    background-size: 50% 30%;
+    background: url("../assets/no-address.png") no-repeat center center;
+    background-size: 5.6rem 5.6rem;
   }
 </style>

@@ -8,19 +8,19 @@
       <div>
         <!--<search placeholder="请输入小区名字" @on-focus="goSearch"></search>-->
         <!--搜索框-->
-        <div class="search-box" @click="goSearch">
+        <div class="search-box" @click="goMap">
           <div class="search">
             <i class="iconfont">&#xe639;</i>
             请输入小区名称
           </div>
         </div>
         <!--定位当前-->
-        <div class="current-position t-c" @click="curVillage(villageList[0])">
-          <div v-if="villageList.length>0&&!positionLoading">
+        <div class="current-position t-c">
+          <div v-if="villageList.length>0&&!positionLoading" @click="curVillage(villageList[0])">
             <span class="iconfont">&#xe656;</span>
             定位到当前位置
           </div>
-          <div v-if="villageList.length===0&&!positionLoading">附近无服务小区或定位失败，请点击选择更多</div>
+          <div v-if="villageList.length===0&&!positionLoading" @click="goMap">附近无服务小区或定位失败，请点击选择更多</div>
           <div v-if="positionLoading">
             定位中
           </div>
@@ -62,7 +62,6 @@
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
   import { MP } from '../util/map'
-  import { getStoreInfo } from '../util/util'
   export default {
     name: 'location',
     components: {Alert, mHeader, Group, Cell, BScroll},
@@ -85,44 +84,20 @@
     },
     methods: {
       // 选择当前小区
-      async curVillage (data) {
-        // 定位中不能点击定位当前
-        if (this.positionLoading) {
-          return
-        }
-        // 点击定位当前   如果定位失败或者附近无小区则跳地图
-        if (this.villageList.length === 0 && !this.positionLoading) {
-          this.$store.commit('saveMapBackPath', '/home')
-          this.$store.commit('saveSearchVillagePath', '/home')
-          this.$router.push('/Bmap')
-          return
-        }
-        console.log(data.villageName, 'location')
+      curVillage (data) {
         localStorage.setItem('m-cityId', data.cityId)
         localStorage.setItem('m-areaId', data.areaId)
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
         this.$store.commit('saveVillageInfo', data)
-        // 更新storeId
-        // 如果是跳转到首页的则不需要获取storeId
-        if (!(this.$store.state.selectVillagePath === '/home')) {
-          await getStoreInfo(this)
-        }
         this.$router.replace('/home')
         setTimeout(() => {
           window.location.reload()
         })
       },
-//      searchLocation () {
-//        if (!this.search) return this.$vux.alert.show({content: '搜索内容不能为空'})
-//
-//        this.$vux.alert.show({content: `您的搜索内容是${this.search}`})
-//      },
-//      go () {
-//        this.$router.push({path: '/manualLocation', query: this.$route.query})
-//      },
-      // 跳转搜索
-      goSearch () {
+
+      // 跳转地图
+      goMap () {
         this.$store.commit('saveSelectVillagePath', '/home')
         console.log(this.$store.state.selectVillagePath)
         this.$router.push('/Bmap')

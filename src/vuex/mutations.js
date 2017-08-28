@@ -53,6 +53,22 @@ export default {
   saveShippingInfo (state, val) {
     state.shippingInfo = val
   },
+  // 购物车选中商品总价 及时送
+  saveTotalPriceThis (state, val) {
+    state.totalPriceThis = Number(val).toFixed(1)
+  },
+  // 购物车选中商品总价 次日达
+  saveTotalPriceNext (state, val) {
+    state.totalPriceNext = Number(val).toFixed(1)
+  },
+  // 确认订单所选商品 及时送
+  SaveCarOrderThisGoodsList (state, val) {
+    state.carOrderThisGoodsList = val
+  },
+  // 确认订单所选商品 次日达
+  SaveCarOrderNextGoodsList (state, val) {
+    state.carOrderNextGoodsList = val
+  },
   // 存储用户信息
   getUserInfo (state, val) {
     state.userInfo = val

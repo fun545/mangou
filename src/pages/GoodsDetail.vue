@@ -2,7 +2,7 @@
   <div>
     <div class="detail-wrap">
       <m-header :title="title" ref="header"></m-header>
-      <div class="back-wrap" @click="$router.back(-1)">
+      <div class="back-wrap" @click="$router.back()">
         <span class="back iconfont d-ib" slot="icon">&#xe654;</span>
       </div>
       <div class="content" ref="content">
@@ -145,7 +145,7 @@
     },
     created () {
       if (this.$route.query.shopStatus) {
-        this.shopStatus = this.$route.query.shopStatus
+        this.shopStatus = Number(this.$route.query.shopStatus)
       }
       if (!this.token) {
         this.noLogin()
@@ -422,10 +422,11 @@
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
           if (res.data.code === 100) {
+            console.log(res.data.carMap)
             // 判断没有收获地址
-            if (!res.data.shippingInfo) {
+            if (!res.data.carMap.shippingInfo) {
               this.$vux.toast.text('当前无可用收货地址，请填写', 'middle')
-              this.$router.push('/address')
+              this.$router.push('/selecteAddress')
               return
             }
             this.$store.commit('getFastBuyInfo', res.data.carMap)

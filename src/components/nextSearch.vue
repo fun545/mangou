@@ -1,7 +1,7 @@
 <template>
   <div class="search" @click="goSearch">
     <span class="iconfont icon">&#xe639;</span>
-    <div class="input" @click="$router.push({path:'/search'})">
+    <div class="input">
       <input type="search" v-model="search" placeholder="搜索商品">
     </div>
   </div>

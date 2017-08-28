@@ -5,7 +5,12 @@
         <!-- 订单类型 -->
         <div class="bottom-line flex-box item-center">
           <!--标题-->
-          <div class="flex-col title color-058bed" :class="{'theme-color':item.shopType===1}">{{item.shopType | title}}
+          <div class="flex-col title" :class="{'theme-color':item.shopType===1,'theme-color-this':item.shopType===2}">
+            <!--及时送-->
+            <i class="iconfont" v-if="item.shopType===2">&#xe61f;</i>
+            <!--次日达-->
+            <i class="iconfont next-icon" v-if="item.shopType===1">&#xe60a;</i>
+            {{item.shopType | title}}
           </div>
           <!--订单创建时间-->
           <div class="font-mind color-999">{{item.orderTime | formatTime}}</div>
@@ -179,7 +184,7 @@
             </div>
           </div>
           <div class="text-center">
-            <div class="font-small">合计：<span class="color-058bed">¥{{item.totalPrice}}</span></div>
+            <div class="font-small">合计：<span class="theme-color-price">¥{{item.totalPrice}}</span></div>
             <div class="font-mind color-999">({{item.sendType | sendType}})</div>
           </div>
         </div>
@@ -351,14 +356,6 @@
     overflow: auto;
   }
 
-  .theme-color {
-    color: @theme-color !important;
-  }
-
-  .theme-color-blue {
-    color: @theme-color-blue;
-  }
-
   .order-item {
     width: 100%;
     box-sizing: border-box;
@@ -383,14 +380,6 @@
     margin-bottom: 0;
   }
 
-  .color-058bed {
-    color: #058bed;
-  }
-
-  .color-fc766d {
-    color: #fc766d;
-  }
-
   .color-999 {
     color: #999;
   }
@@ -403,6 +392,10 @@
     font: italic bold 16px/20px 'Microsoft Yahei';
     .fs(34);
     .lh(40);
+    .ml(10);
+    .iconfont {
+      .mr(5);
+    }
   }
 
   .btn {

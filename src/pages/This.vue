@@ -182,6 +182,9 @@
       }
     },
     created () {
+      this.post('/village/getStoreByVillageId', {villageId: localStorage.getItem('m-shopId')}).then((res) => {
+        console.log(res.data)
+      })
       this.createdMethods()
     },
     watch: {
@@ -249,66 +252,63 @@
         // 速选商品列表 如果bt===2 则有速选商品
         if (this.sideList[0].bt === 2) {
           this.fastSortFlag = true
-          await
-            this.post('/goods/getLabelGoods', {
-              keyWordId: 7,
-              softType: 3
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.fastSortGoodsList = res.data.goodsList
-                this.goodsList = this.fastSortGoodsList
-                this.loadingFlag = false
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+          await this.post('/goods/getLabelGoods', {
+            keyWordId: 7,
+            softType: 3
+          }).then((res) => {
+            if (res.data.code === 100) {
+              this.fastSortGoodsList = res.data.goodsList
+              this.goodsList = this.fastSortGoodsList
+              this.loadingFlag = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+          })
         }
         // 商品列表
         if (this.sideList[0].bt !== 2) {
           // 二级菜单
-          await
-            this.post('/classify/secondClassifyList', {
-              classifyId: this.firstId,
-              storeId: localStorage.getItem('m-shopId'),
-              villageId: localStorage.getItem('m-villageId')
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.secondMenuList = res.data.secondClassifyList
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
-          await
-            this.post('/goods/goodsList', {
-              firstClassifyId: this.firstId,
-              storeId: localStorage.getItem('m-shopId'),
-              softType: this.softType,
-              villageId: localStorage.getItem('m-villageId'),
-              pageIndex: 1,
-              pageSize: 10
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.goodsList = res.data.goodsList
-                this.loadingFlag = false
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+          await this.post('/classify/secondClassifyList', {
+            classifyId: this.firstId,
+            storeId: localStorage.getItem('m-shopId'),
+            villageId: localStorage.getItem('m-villageId')
+          }).then((res) => {
+            if (res.data.code === 100) {
+              this.secondMenuList = res.data.secondClassifyList
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+          })
+          await this.post('/goods/goodsList', {
+            firstClassifyId: this.firstId,
+            storeId: localStorage.getItem('m-shopId'),
+            softType: this.softType,
+            villageId: localStorage.getItem('m-villageId'),
+            pageIndex: 1,
+            pageSize: 10
+          }).then((res) => {
+            if (res.data.code === 100) {
+              this.goodsList = res.data.goodsList
+              this.loadingFlag = false
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+          })
         }
         this.$nextTick(() => {
           this._initScroll()
@@ -334,7 +334,7 @@
       // 切换小区
       goLocation () {
         if (!this.token) {
-          this.$store.commit('saveSelectVillagePath', '/home')
+          this.$store.commit('saveSelectVillagePath', '/this')
           this.$router.push({path: '/Bmap'})
           return
         }

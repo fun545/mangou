@@ -60,15 +60,15 @@
           }
         })
       },
-      async curVillage (item) {
+      curVillage (item) {
         // 除了选择或者切换小区外，不保存village和更新storeId
-        if (this.$store.state.selectVillagePath !== '/home' || this.$store.state.selectVillagePath !== '/this') {
+        if (this.$store.state.selectVillagePath !== '/home' && this.$store.state.selectVillagePath !== '/this') {
           if (this.$store.state.selectVillagePath === '/edit_address') {
             this.$store.commit('edtAddress', item)
           } else {
             this.$store.commit('saveAddress', item)
           }
-          this.$router.push({path: this.$store.state.selectVillagePath})
+          this.$router.replace({path: this.$store.state.selectVillagePath})
           return
         }
         // 选择或切换小区   更新storeId 和 village
@@ -77,12 +77,14 @@
         localStorage.setItem('m-villageId', item.villageId)
         localStorage.setItem('m-villageName', item.villageName)
         this.$store.commit('saveVillageInfo', item)
-        await getStoreInfo(this)
-        // 选择后跳转
-        this.$router.replace({path: this.$store.state.selectVillagePath})
-        setTimeout(() => {
-          window.location.reload()
-        })
+        // this 跳转及时送更新storeInfo
+        if (this.$store.state.selectVillagePath === '/this') {
+          getStoreInfo(this)
+          return
+        }
+        // home 选择后跳转
+        this.$router.replace(this.$store.state.selectVillagePath)
+        window.location.reload()
       }
     },
     watch: {

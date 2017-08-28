@@ -217,7 +217,7 @@
             <div class="col">
               <!--次日达及时送总合计-->
               <div v-if="editShow">
-                <p>合计：<span>¥{{(parseFloat(thisTotalPrice) + parseFloat(nextTotalPrice)).toFixed(1)}}</span></p>
+                <p>合计：<span>¥{{thisTotalPrice + nextTotalPrice}}</span></p>
                 <p class="font-mind">为您节省：¥{{Discount}}</p>
               </div>
             </div>
@@ -760,20 +760,18 @@
               return
             }
             // 确认订单所选商品 及时送
-            this.$store.state.carOrderThisGoodsList = thisGoodsList
-            // 确认订单所选商品 次日达
-            this.$store.state.carOrderNextGoodsList = nextGoodsList
-            // 确认订单商品总价 及时送
-            this.$store.state.totalPriceThis = parseFloat(this.thisTotalPrice).toFixed(1)
-            // 确认订单商品总价 次日达
-            this.$store.state.totalPriceNext = parseFloat(this.nextTotalPrice).toFixed(1)
+            this.$store.commit('SaveCarOrderThisGoodsList', thisGoodsList)
+            this.$store.commit('SaveCarOrderNextGoodsList', nextGoodsList)
+//            this.$store.state.carOrderThisGoodsList = thisGoodsList
+//            // 确认订单所选商品 次日达
+//            this.$store.state.carOrderNextGoodsList = nextGoodsList
             // 配送费 及时送
-            this.$store.state.Thisfreight = parseInt(this.Thisfreight).toFixed(1)
+            this.$store.state.Thisfreight = Number(this.Thisfreight).toFixed(1)
             // 配送费 次日达
             if (this.demo11.key === '1') {
               this.$store.state.Nextfreight = 0
             } else {
-              this.$store.state.Nextfreight = parseInt(this.Nextfreight).toFixed(1)
+              this.$store.state.Nextfreight = Number(this.Nextfreight).toFixed(1)
             }
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
@@ -817,6 +815,7 @@
             total += item.canKaoPrice * item.buyCount
           }
         })
+        this.$store.commit('saveTotalPriceThis', total.toFixed(1))
         return total.toFixed(1)
       },
       // 选中商品总价 次日达
@@ -827,6 +826,7 @@
             total += item.price * item.buyCount
           }
         })
+        this.$store.commit('saveTotalPriceNext', total.toFixed(1))
         return total.toFixed(1)
       },
       // 选中商品数量 及时送
@@ -853,7 +853,7 @@
       },
       // 运费计算 及时送
       CThisfreight () {
-        if (this.thisTotalPrice > this.thisShop.startPrice) {
+        if (this.thisTotalPrice >= this.thisShop.startPrice) {
           this.Thisfreight = 0
           return '免运费'
         }
@@ -963,6 +963,12 @@
     .b(100);
   }
 
+  .content-wrapper .content-view-scroller .this-wrap, .content-wrapper .content-view-scroller .next-wrap {
+    .block-title {
+      .ml(138);
+    }
+  }
+
   .car-noLogin {
     position: absolute;
     top: 0;
@@ -970,7 +976,7 @@
     right: 0;
     bottom: 0;
     background: url("../assets/buyCarNoLogin.png") no-repeat center 30%;
-    background-size: 50%;
+    background-size: 5.507rem 7.2667rem;
     .login-bt {
       .w(200);
       .h(70);
@@ -1106,7 +1112,7 @@
     .t(92);
     .b(100);
     background: url("../assets/carNoGoods.png") no-repeat center 20%;
-    background-size: 50% 60%;
+    background-size: 5.507rem 7.2667rem;
     .bt {
       position: absolute;
       .w(212);

@@ -90,6 +90,7 @@
       }
     },
     created () {
+      console.log(this.$store.state.totalBuyCount, 'test')
       this.secondId = this.$route.query.secondId
       this.getGoods(this.secondId)
     },
@@ -117,8 +118,10 @@
         this.post('/goods/goodsList', {
           secondClassifyId: id,
           storeId: this.storeId,
-          softType: this.softType
+          softType: this.softType,
+          villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
+          console.log(this.$store.state.totalBuyCount)
           if (res.data.code === 100) {
             if (res.data.goodsList.length === 0) {
               this.isActive = false

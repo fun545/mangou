@@ -17,8 +17,8 @@
           </swiper>
           <!-- 次日达/即时达 -->
           <div class="link-box">
-            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" alt=""></router-link>
-            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" alt=""></router-link>
+            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt=""></router-link>
+            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt=""></router-link>
           </div>
           <div class="active-box">
             <!-- 预售团购 -->
@@ -264,9 +264,9 @@
 //        })
         //      localStorage.removeItem('m-villageName')
         // 进首页如果之前没有选过小区则跳转选择
-        console.log(this.villageName, 'home')
+//        console.log(this.villageName, 'home')
         if (!this.villageName) {
-          this.$router.push({path: '/chooseCity'})
+          this.$router.replace({path: '/chooseCity'})
           return
         }
 //        this.villageName = localStorage.getItem('m-villageName')
@@ -572,18 +572,18 @@
     overflow: hidden;
     .link-box {
       display: flex;
-      .pt(5);
-      .pb(5);
+     /* .pt(5);
+      .pb(5);*/
       .pic {
         width: 50%;
-        .h(120);
+        .h(135);
         display: inline-block;
       }
       a {
-        .mt(10);
-        .mb(10);
-        .mr(10);
-        .ml(10);
+        .mt(2);
+        .mb(2);
+        /*.mr(10);
+        .ml(10);*/
       }
     }
     .group-buy {

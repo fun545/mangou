@@ -60,7 +60,7 @@
               shippingId: _this.addressInfo.shippingId
             }).then(res => {
               if (res.data.code === 100) {
-                _this.$router.push('/address')
+                _this.$router.replace('/address')
               }
               if (res.data.code === 101) {
                 this.$vux.toast.text(res.data.msg, 'middle')

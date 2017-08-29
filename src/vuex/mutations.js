@@ -1,7 +1,7 @@
-import {
-  INCREMENT,
-  CHANGE_TOTAL_PRICE
-} from './mutation-types'
+// import {
+//   INCREMENT,
+//   CHANGE_TOTAL_PRICE
+// } from './mutation-types'
 
 export default {
   // 储存次日达和即时送storeInfo
@@ -13,7 +13,7 @@ export default {
     state.villageInfo = val
   },
   // 购物车总数
-  [INCREMENT] (state, count) {
+  increment (state, count) {
     // vuex储存m-totalBuyCount
     localStorage.setItem('m-totalBuyCount', count)
     // 变更状态
@@ -21,7 +21,7 @@ export default {
     // console.log(state.totalBuyCount)
   },
   // 改变购物车总价
-  [CHANGE_TOTAL_PRICE] (state, val) {
+  changeTotalPrice (state, val) {
     state.totalPrice = val
   },
   shopStatus (state, val) {
@@ -60,6 +60,14 @@ export default {
   // 购物车选中商品总价 次日达
   saveTotalPriceNext (state, val) {
     state.totalPriceNext = Number(val).toFixed(1)
+  },
+  // 运费
+  saveThisFreight (state, val) {
+    state.Thisfreight = val
+  },
+  // 运费
+  saveNextfreight (state, val) {
+    state.Nextfreight = val
   },
   // 确认订单所选商品 及时送
   SaveCarOrderThisGoodsList (state, val) {

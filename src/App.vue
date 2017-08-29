@@ -3,7 +3,7 @@
     <keep-alive
       exclude="detail,user,about,active,address,cart,collection,confirmOrder,editAddress,forget,goPay,location,login,manualLocation,nextList1,saleList,orderInfo,order_List,orderPayList,orderRater,
 orderRaterList,orderRefund,orderSendList,orderShippingList,originActive,register,search,searchText,selectAddress,
-userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList,setting,collect,searchVillage">
+userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderSendList,setting,collect,searchVillage,Bmap,addAddress">
       <router-view></router-view>
     </keep-alive>
   </div>
@@ -17,11 +17,11 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_284244_w2kesqbxm0rx80k9.eot');
-    src: url('//at.alicdn.com/t/font_284244_w2kesqbxm0rx80k9.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_284244_w2kesqbxm0rx80k9.woff') format('woff'),
-    url('//at.alicdn.com/t/font_284244_w2kesqbxm0rx80k9.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_284244_w2kesqbxm0rx80k9.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.eot');
+    src: url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.woff') format('woff'),
+    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.svg#iconfont') format('svg');
   }
 
   .weui-tab__panel {

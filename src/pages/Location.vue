@@ -90,6 +90,7 @@
         localStorage.setItem('m-villageId', data.villageId)
         localStorage.setItem('m-villageName', data.villageName)
         this.$store.commit('saveVillageInfo', data)
+        this.$store.commit('saveAddress', data)
         this.$router.replace('/home')
         setTimeout(() => {
           window.location.reload()

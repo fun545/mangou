@@ -71,7 +71,7 @@
                   <div class="flex-col">
                     <div class="goods-title">{{item.goodsName}}</div>
                     <div class="flex-box">
-                      <div class="flex-col font-normal price">￥{{item.canKaoPrice}}</div>
+                      <div class="flex-col font-normal price">￥{{item.canKaoPrice.toFixed(1)}}</div>
                       <div class="remove" @click="count(item,2,index,thisGoodsList)"/>
                       <input type="number" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
                       <div class="added" @click="count(item,1)"/>
@@ -147,7 +147,7 @@
                   <div class="flex-col">
                     <div class="goods-title">{{item.goodsName}}</div>
                     <div class="flex-box">
-                      <div class="flex-col font-normal price">￥{{item.price}}</div>
+                      <div class="flex-col font-normal price">￥{{item.price.toFixed(1)}}</div>
                       <div class="remove" @click="count(item,2,index,NextGoodsList)"/>
                       <input type="tel" class="val-box" v-model="item.buyCount" v-on:blur="inputChange(item)"/>
                       <div class="added" @click="count(item,1)"/>
@@ -217,7 +217,7 @@
             <div class="col">
               <!--次日达及时送总合计-->
               <div v-if="editShow">
-                <p>合计：<span>¥{{thisTotalPrice + nextTotalPrice}}</span></p>
+                <p>合计：<span>¥{{(Number(thisTotalPrice) + Number(nextTotalPrice)).toFixed(1)}}</span></p>
                 <p class="font-mind">为您节省：¥{{Discount}}</p>
               </div>
             </div>
@@ -281,7 +281,7 @@
         comfirmGoods: '',      // 弹出提示商品
         comfirmGoodsIndex: '', // 弹出提示商品索引
         comfirmGoodsList: '',  // 弹出提示商品列表
-        Thisfreight: '',     // 运费 及时送
+        Thisfreight: 0,     // 运费 及时送
         Nextfreight: '',     // 运费 次日达
         nextFreightShow: false,  // 次日达运费默认flag
         thisShop: '', // 及时送JOSN数据
@@ -619,7 +619,7 @@
       // 选中商品 全选
       thisCheckAll (list) {
         // 非营业时间无法选择
-        if (this.showAlert) {
+        if (this.showAlert && this.editShow) {
           return
         }
         this.thisAllChecked = !this.thisAllChecked
@@ -679,7 +679,7 @@
           }
         })
         // 非营业时间无法选择
-        if (this.showAlert) {
+        if (this.showAlert && this.editShow) {
           return
         }
         this.thisAllChecked = this.allChecked
@@ -703,7 +703,8 @@
       },
       // 选择商品 单选
       selectedGoods (item) {
-        if (item.shopType === 2 && this.thisShop.shopStatus !== 0) {
+        // 非营业时间无法选择
+        if (item.shopType === 2 && this.thisShop.shopStatus !== 0 && this.editShow) {
           return
         }
         if (typeof item.checked === 'undefined') {
@@ -766,12 +767,14 @@
 //            // 确认订单所选商品 次日达
 //            this.$store.state.carOrderNextGoodsList = nextGoodsList
             // 配送费 及时送
-            this.$store.state.Thisfreight = Number(this.Thisfreight).toFixed(1)
+//            this.$store.state.Thisfreight = Number(this.Thisfreight).toFixed(1)
             // 配送费 次日达
             if (this.demo11.key === '1') {
-              this.$store.state.Nextfreight = 0
-            } else {
-              this.$store.state.Nextfreight = Number(this.Nextfreight).toFixed(1)
+              this.$store.commit('saveNextfreight', 0)
+            }
+            // 次日达且是送货上门
+            if (hasNext) {
+              this.$store.commit('saveNextfreight', Number(this.Nextfreight).toFixed(1))
             }
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
@@ -855,12 +858,15 @@
       CThisfreight () {
         if (this.thisTotalPrice >= this.thisShop.startPrice) {
           this.Thisfreight = 0
+          this.$store.commit('saveThisFreight', this.Thisfreight)
           return '免运费'
         }
         if (parseInt(this.thisTotalPrice) === 0) {
           this.Thisfreight = 0
+          this.$store.commit('saveThisFreight', this.Thisfreight)
           return '￥' + 0
         } else {
+          this.$store.commit('saveThisFreight', this.Thisfreight)
           return '￥' + this.Thisfreight.toFixed(1)
         }
       },

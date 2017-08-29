@@ -61,7 +61,7 @@
             </div>
             <div class="entry-item" @click="goPage('/order_shipping_list')">
               <div class="icon">
-                <i class="iconfont">&#xe60b;</i>
+                <i class="iconfont">&#xe668;</i>
                 <span v-if="userFirst.peisongzhong&&token">{{userFirst.peisongzhong}}</span>
               </div>
               <div class="text">配送中</div>

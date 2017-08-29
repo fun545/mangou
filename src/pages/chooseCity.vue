@@ -52,10 +52,10 @@
         if (item.isopen === 1) {
           localStorage.setItem('m-cityId', item.cityId)
           if (this.$route.query.path) {
-            this.$router.push(this.$route.query.path)
+            this.$router.replace(this.$route.query.path)
             return
           }
-          this.$router.push('/location')
+          this.$router.replace('/location')
         }
       }
     },

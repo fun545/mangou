@@ -1,7 +1,7 @@
 <template>
   <div class="ok-pay">
     <m-header title="支付成功" class="header">
-      <span class="back iconfont" @click="$router.push('/next')" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.replace('/order_list')" slot="icon">&#xe600;</span>
     </m-header>
     <div class="top">
       <div class="logo"><img src="../assets/okPay.png" alt="" width="100%" height="100%"></div>
@@ -9,8 +9,8 @@
     <div class="money t-c">
       支付金额¥{{totalPay}}元
     </div>
-    <div class="bt t-c" @click="$router.push('/next')">
-      继续购物
+    <div class="bt t-c" @click="$router.replace('/order_list')">
+      查看订单
     </div>
   </div>
 </template>
@@ -56,8 +56,6 @@
         position: absolute;
         .w(210);
         .h(210);
-        border-radius: 50%;
-        background: #fff;
         .b(-105);
         left: 50%;
         transform: translateX(-50%);

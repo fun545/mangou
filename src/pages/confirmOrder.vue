@@ -52,7 +52,7 @@
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>
-                <p class="price">￥{{item.canKaoPrice}}</p>
+                <p class="price">￥{{Number(item.canKaoPrice).toFixed(1)}}</p>
               </div>
               <div class="count">
                 x{{item.buyCount}}
@@ -88,7 +88,7 @@
             <!--实际付款 及时送-->
             <div class="pay-count">
               实际付款
-              <span class="f-r count">￥{{totalPriceThis + Thisfreight}}</span>
+              <span class="f-r count">￥{{Number(totalPriceThis) + Number(Thisfreight)}}</span>
             </div>
           </div>
         </div>
@@ -153,7 +153,7 @@
               </div>
               <div class="des">
                 <p class="name">{{item.goodsName}}</p>
-                <p class="price">￥{{item.price}}</p>
+                <p class="price">￥{{Number(item.price).toFixed(1)}}</p>
               </div>
               <div class="count">
                 x{{item.buyCount}}
@@ -174,7 +174,7 @@
             </div>
             <div class="right">
               <!--商品总价 次日达-->
-              <p class="s2">￥{{totalPriceNext.toFixed(1)}}</p>
+              <p class="s2">￥{{totalPriceNext}}</p>
               <div class="s1">
                 <span>-</span>
                 <!--优惠金额 次日达-->
@@ -198,7 +198,7 @@
             <div class="pay-count">
               实际付款
               <span
-                class="f-r count">￥{{(parseFloat(totalPriceNext) + parseFloat(Nextfreight) - parseFloat(discount)).toFixed(1)}}</span>
+                class="f-r count">￥{{(Number(totalPriceNext) + Number(Nextfreight) - Number(discount)).toFixed(1)}}</span>
             </div>
           </div>
         </div>
@@ -240,13 +240,7 @@
     data () {
       return {
         title: '确认下单',
-        thisGoodsList: this.$store.state.carOrderThisGoodsList, // 及时送 商品
-        NextGoodsList: this.$store.state.carOrderNextGoodsList, // 次日达 商品
-        Thisfreight: this.$store.state.Thisfreight, // 运费 及时送
-        Nextfreight: this.$store.state.Nextfreight, // 运费 次日达
         sendWay: this.$store.state.sendWay, // 配送方式  1 自取 2 送货上门
-        shippingInfo: this.$store.state.shippingInfo, // 收货相关信息 送货到家
-        // pointInfo: this.$store.state.shippingInfo, // 收货相关信息 自取
         selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
         selectedTotalCountNext: this.$store.state.selectedTotalCountNext, // 商品数量 次日达
 //        totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
@@ -265,19 +259,21 @@
         orderList: '',
         localCityId: Number(localStorage.getItem('m-cityId')),
         localAreaId: Number(localStorage.getItem('m-areaId')),
-        localVillageId: Number(localStorage.getItem('m-villageId'))
+        localVillageId: Number(localStorage.getItem('m-villageId')),
+        clickFlag: false
       }
     },
     created () {
       // 快速购买
       if (this.$route.query.fastBuy === 'fastBuy') {
-        var info = this.$store.state.fastBuyInfo
-        this.$store.commit('saveThisShop', info.carList[0])
-        this.thisGoodsList = info.carList[0].shandianShop.goodsList
-        this.shippingInfo = info.shippingInfo
+        var info = this.fastBuyInfo
+        this.$store.commit('saveThisShop', info.carList[0].shandianShop)
+        this.$store.commit('SaveCarOrderThisGoodsList', info.carList[0].shandianShop.goodsList)
+        this.$store.commit('SaveCarOrderNextGoodsList', [])
         this.selectedTotalCountThis = info.totalBuyCount
         this.CThisfreight(info.carList[0].shandianShop.freight)
-        this.totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
+        var totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
+        this.$store.commit('saveTotalPriceThis', totalPriceThis)
       }
       this.$nextTick(() => {
         this._initScroll()
@@ -287,9 +283,9 @@
       // 快速购买运费计算
       CThisfreight (freight) {
         if (this.totalPriceThis >= this.thisShop.startPrice) {
-          this.Thisfreight = 0
+          this.$store.commit('saveThisFreight', 0)
         } else {
-          this.Thisfreight = freight.toFixed(1)
+          this.$store.commit('saveThisFreight', freight.toFixed(1))
         }
       },
       _initScroll () {
@@ -335,9 +331,8 @@
           return
         }
         // 规避快速点击
-        var flag = false
-        if (!flag) {
-          flag = true
+        if (!this.clickFlag) {
+          this.clickFlag = true
           let orderJsonObj = {}
           this.orderList = []
           // 及时送
@@ -380,7 +375,7 @@
             nextOrder.storeId = this.nextShop.storeId
             nextOrder.villageId = this.nextShop.villageId
             // 配送方式:1自取 2配送上门
-            nextOrder.sendType = parseInt(this.sendWay.key)
+            nextOrder.sendType = Number(this.sendWay.key)
             if (nextOrder.sendType === 2) {
               nextOrder.shippingId = this.shippingInfo.shippingId
               nextOrder.pointAddress = ''
@@ -412,14 +407,15 @@
               this.$vux.toast.text(res.data.msg, 'middle')
               localStorage.removeItem('m-token')
             }
-            setTimeout(() => {
-              flag = false
-            }, 1500)
+            this.clickFlag = false
           })
         }
       }
     },
     computed: {
+      fastBuyInfo () {
+        return this.$store.state.fastBuyInfo
+      },
       // 显示更多与隐藏商品及时送
       filterListThis () {
         return this.thisGoodsList.slice(0, this.limitNumberThis)
@@ -475,13 +471,30 @@
         return this.$store.state.thisShop
       },
       nextShop () {
-        return this.$store.state.thisShop
+        return this.$store.state.nextShop
       },
       totalPriceThis () {
         return this.$store.state.totalPriceThis
       },
       totalPriceNext () {
         return this.$store.state.totalPriceNext
+      },
+      shippingInfo () {
+        return this.$store.state.shippingInfo
+      },
+      Thisfreight () {
+        return this.$store.state.Thisfreight
+      },
+      Nextfreight () {
+        return this.$store.state.Nextfreight
+      }, // 运费 次日达
+      // 及时送 商品
+      thisGoodsList () {
+        return this.$store.state.carOrderThisGoodsList
+      },
+      // 次日达 商品
+      NextGoodsList () {
+        return this.$store.state.carOrderNextGoodsList
       }
     }
   }

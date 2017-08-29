@@ -1,7 +1,7 @@
 <template>
   <div>
     <m-header title="在线支付">
-      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content">
       <div class="pay-title">次日达支付金额</div>

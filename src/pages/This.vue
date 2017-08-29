@@ -630,6 +630,8 @@
     }
     .scroll-active {
       .t(92) !important;
+     /* transform: translate3d(0, -1.38666667rem, 0);
+      .b(200);*/
     }
     .sort-icon-selected {
       color: @theme-color-blue !important;

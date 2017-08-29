@@ -2,7 +2,7 @@
   <div class="search-village-box" @touchmove.prevent>
     <div class="search-box">
       <div class="input-box d-ib">
-        <div class="city d-ib" @click="$router.push({path:'/chooseCity',query:{path:'/searchVillage'}})">
+        <div class="city d-ib" @click="$router.replace({path:'/chooseCity',query:{path:'/searchVillage'}})">
           长沙<i class="iconfont icon">&#xe674;</i>
         </div>
         <div class="input d-ib">
@@ -10,7 +10,7 @@
           <input type="text" placeholder="请输入小区名称" v-model="keyName">
         </div>
       </div>
-      <span class="back" @click="$router.back()">取消</span>
+      <span class="back" @click="$router.replace('/Bmap')">取消</span>
     </div>
     <div class="content">
       <div class="item" v-for="(item,index) in list" :key="index" @click="curVillage(item)">

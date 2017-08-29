@@ -11,8 +11,8 @@ const state = {
   latitude: '', // 当前位置纬度
   longitude: '', // 当前位置经度
   villageInfo: {},
-  totalBuyCount: '', // 购物车总数
-  totalPrice: '', // 购物车总价
+  totalBuyCount: 0, // 购物车总数
+  totalPrice: 0, // 购物车总价
   cartList: {}, // 加入购物车的商品列表
   shopDetail: null, // 店铺详情信息
   userInfo: null, // 用户信息
@@ -43,10 +43,10 @@ const state = {
   mapBackPath: '', // 进入地图回跳path
   orderDeletFlag: false, // 订单列表子组件删除事件触发
   addressInfo: {
-    cityId: '',
-    areaId: '',
-    villageId: '',
-    villageName: ''
+    cityId: localStorage.getItem('m-cityId'),
+    areaId: localStorage.getItem('m-areaId'),
+    villageId: localStorage.getItem('m-villageId'),
+    villageName: localStorage.getItem('m-villageName')
   }, // 编辑地址信息
   addAddressBackPath: '', // 添加地址回退path
   SearchVillagePath: '', // 搜索小区回退地址

@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "better-scroll": "^0.2.4",
     "fastclick": "^1.0.6",
     "urlencode": "^1.1.0",
     "vue": "^2.2.2",
@@ -25,6 +24,7 @@
     "vue-router": "^2.2.0",
     "vuex": "^2.3.1",
     "vux": "^2.2.1",
+    "better-scroll": "^0.1.15",
     "weixin-js-sdk": "^1.2.0"
   },
   "devDependencies": {

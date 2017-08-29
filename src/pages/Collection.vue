@@ -302,8 +302,8 @@
   }
 
   .no-goods {
-    background: url("../assets/noneGoods.png") no-repeat center center;
-    background-size:  4rem 5.733rem;
+    background: url("../assets/noCollect@2x.png") no-repeat center center;
+    background-size:  4.773rem 5.46667rem;
   }
 
   .search-view .title-box {

@@ -267,7 +267,7 @@
             .h(294);
             .pic {
               width: 100%;
-              .h(230);
+              .h(178);
               display: block;
               border: none;
             }

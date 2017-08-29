@@ -447,7 +447,7 @@
               opts: 2
             }).then((res) => {
               if (res.data.code === 100) {
-                _this.$router.push({path: '/order_list'})
+                _this.$router.replace({path: '/order_list'})
                 return
               }
               if (res.data.code === 101) {

@@ -1,7 +1,7 @@
 <!--<script src="../../dist/static/js/app.9ff4a719fae97e928814.js"></script>-->
 <template>
   <div class="home-wrap" @touchmove.prevent>
-    <div v-if="!reloadFlag">
+    <div v-if="!reloadFlag" class="inner">
       <div class="location-search-box" ref="header">
         <a class="location" @click="goLocation">{{villageName}}</a>
         <a class="search iconfont" @click="goSearch">&#xe639;</a>
@@ -17,8 +17,10 @@
           </swiper>
           <!-- 次日达/即时达 -->
           <div class="link-box">
-            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt=""></router-link>
-            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt=""></router-link>
+            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt="">
+            </router-link>
+            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt="">
+            </router-link>
           </div>
           <div class="active-box">
             <!-- 预售团购 -->
@@ -281,10 +283,9 @@
           paramas.token = localStorage.getItem('m-token')
         }
         this.post('/first/getFirst', paramas).then((res) => {
-//          console.log(res.data)
+          console.log(res.data)
           if (res.data.code === 100) {
             // 保存购物车数量
-            console.log(res.data.firstInfo.totalBuyCount)
             this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
             if (localStorage.getItem('m-token')) {
               this.totalBuyCount = res.data.firstInfo.totalBuyCount
@@ -304,7 +305,9 @@
             localStorage.setItem('m-shopId', storeList[1].storeId)
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
+//            this.$vux.toast.text(res.data.msg, 'middle')
+            this.reloadFlag = true
+            return
           }
           if (res.data.code === 102) {
             localStorage.removeItem('m-token')
@@ -334,7 +337,9 @@
             })
           }
           if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
+//            this.$vux.toast.text(res.data.msg, 'middle')
+            this.reloadFlag = true
+            return
           }
           if (res.data.code === 102) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -453,8 +458,12 @@
       _initScroll () {
         const homeView = this.$refs.homeView
         this.homeSroll = new BScroll(homeView, {
-          click: true,
-          probeType: 3
+//          preventDefault: false,
+          disableMouse: true,
+          probeType: 3,
+          fadeScrollbars: false,
+          disablePointer: true
+//          momentum: false
         })
         this.homeSroll.on('scroll', (pos) => {
           // 搜索部分背景渐现效果
@@ -569,11 +578,16 @@
     left: 0;
     right: 0;
     .b(100);
-    overflow: hidden;
+    /*overflow: scroll;*/
+    .wrap {
+      -webkit-backface-visibility: hidden;
+      -webkit-transform-style: preserve-3d;
+      -webkit-transform: translate3d(0, 0, 0);
+    }
     .link-box {
       display: flex;
-     /* .pt(5);
-      .pb(5);*/
+      /* .pt(5);
+       .pb(5);*/
       .pic {
         width: 50%;
         .h(135);

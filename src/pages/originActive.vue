@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex'
+  //  import { mapMutations } from 'vuex'
   import mHeader from '../components/header'
   import originList from '../components/twocolumn'
   import loading from '../components/loading'
@@ -50,10 +50,10 @@
       this.sort(2, 1)
     },
     methods: {
-      ...mapMutations([
-        'INCREMENT',
-        'CHANGE_TOTAL_PRICE'
-      ]),
+//      ...mapMutations([
+//        'INCREMENT',
+//        'CHANGE_TOTAL_PRICE'
+//      ]),
       sort (softType, index) {
         this.index = index
         var paramas = {}
@@ -64,9 +64,8 @@
         }
         this.post('/goods/getLabelGoods', paramas).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
-            this.INCREMENT(res.data.totalBuyCount)
-            this.CHANGE_TOTAL_PRICE(res.data.totalPrice)
+            this.$store.commit('increment', res.data.totalBuyCount)
+            this.$store.commit('changeTotalPrice', res.data.totalPrice)
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
             this.$nextTick(() => {
@@ -125,12 +124,11 @@
         .mt(10);
       }
       position: absolute;
+      overflow: hidden;
       .t(182);
-      overflow-y: scroll;
-      overflow-x: hidden;
       left: 0;
       right: 0;
-      bottom: 0;
+     .b(100);
     }
   }
 </style>

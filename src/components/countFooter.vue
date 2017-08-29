@@ -12,10 +12,10 @@
         <div v-if="!login" class="disabled-color" @click="$router.push('/login')">去登录</div>
       </div>
     </div>
-    <div class="button t-c" @click="$router.push('/cart')" :class="{'disabled-bg-color':login}">
+    <div class="button t-c" @click="$router.push('/cart')" :class="{'disabled-bg-color':!login}" v-if="login">
       立即结算
     </div>
-    <div class="button t-c" @click="$router.push('/login')" :class="{'disabled-bg-color':!login}">
+    <div class="button t-c" @click="$router.push('/login')" :class="{'disabled-bg-color':!login}" v-if="!login">
       去登录
     </div>
   </div>

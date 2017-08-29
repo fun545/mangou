@@ -1,6 +1,5 @@
 <template>
   <div class="loading t-c" v-if="loadingFlag">
-    <span class="text">正在加载中...</span>
   </div>
 </template>
 
@@ -26,9 +25,9 @@
     height: 100%;
     z-index: 10000;
     .fs(26);
-    background: #eee url("../assets/loading_02.png") no-repeat center;
+    background: #fff url("../assets/loading_02.png") no-repeat center;
     /*background: rgba(0, 0, 0, 0) url("../assets/loading_02.png") no-repeat center;*/
-    background-size: .8rem 1.2rem;
+    background-size: 1.84rem 1.616rem;
     .text {
       position: absolute;
       text-align: center;

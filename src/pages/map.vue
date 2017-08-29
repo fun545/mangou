@@ -2,7 +2,7 @@
   <div class="map-view" @touchmove.prevent>
     <div class="search-box">
       <div class="input-box d-ib">
-        <div class="city d-ib" @click="$router.push({path:'/chooseCity',query:{path:'/Bmap'}})">
+        <div class="city d-ib" @click="$router.replace({path:'/chooseCity',query:{path:'/Bmap'}})">
           长沙<i class="iconfont icon">&#xe674;</i>
         </div>
         <div class="input d-ib" @click="goSearch">
@@ -33,7 +33,7 @@
             <span class="nearest f-r"><span v-if="ind===-1&&index===0">最近</span></span>
           </div>
           <div v-if="noVillageFlag" class="t-c no-village">
-            <span class="text d-ib">该区域未开通</span>
+            <span class="text d-ib"><img src="../assets/noVillage@2x.png" alt="" width="100%" height="100%"></span>
             <div class="bt" @click="$router.push('/shop')">我要开店</div>
           </div>
         </div>
@@ -46,6 +46,7 @@
   import { getStoreInfo } from '../util/util'
   import BScroll from 'better-scroll'
   export default {
+    name: 'Bmap',
     components: {BScroll},
     data () {
       return {
@@ -357,9 +358,11 @@
         }
       }
       .no-village {
-        margin-top: 40%;
+       .mt(200);
         .text {
-          .mb(80);
+          .w(258);
+          .h(258);
+          .mb(40);
         }
         .bt {
           .w(320);

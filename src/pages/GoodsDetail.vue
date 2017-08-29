@@ -23,10 +23,22 @@
           <div class="des">
             <h3 class="title">{{goodsDetail.goodsName}}</h3>
             <div class="price-wrap">
-              <p class="next-price d-ib">次日价：<span class="s1">¥</span><span class="number">{{goodsDetail.price}}</span>
-              </p>
-              <p class="this-price d-ib">即时价：<span class="s1">¥</span><span
-                class="number">{{goodsDetail.canKaoPrice}}</span></p>
+              <!--次日达 价格显示先后顺序-->
+              <div v-if="goodsDetail.shopType===1">
+                <p class="next-price d-ib">次日价：<span class="s1">¥</span><span
+                  class="number">{{goodsDetail.price}}</span>
+                </p>
+                <p class="this-price d-ib">即时价：<span class="s1">¥</span><span
+                  class="number">{{goodsDetail.canKaoPrice}}</span></p>
+              </div>
+              <!--及时送 价格显示先后顺序-->
+              <div v-if="goodsDetail.shopType===2">
+                <p class="next-price d-ib">即时价：<span class="s1">¥</span><span
+                  class="number">{{goodsDetail.canKaoPrice}}</span></p>
+                <p class="this-price d-ib">次日价：<span class="s1">¥</span><span
+                  class="number">{{goodsDetail.price}}</span>
+                </p>
+              </div>
             </div>
             <div class="size-des">
               <p class="size">商品规格：{{goodsDetail.guige}}</p>
@@ -429,6 +441,7 @@
               this.$router.push('/selecteAddress')
               return
             }
+            this.$store.commit('saveShippingInfo', res.data.carMap.shippingInfo)
             this.$store.commit('getFastBuyInfo', res.data.carMap)
             this.$router.push({path: '/confirmOrder', query: {fastBuy: 'fastBuy'}})
           }

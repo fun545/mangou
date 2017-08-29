@@ -219,7 +219,7 @@
       onBt (item, index) {
         if (item.status === 1) { // 去支付
           // 及时送且不在营业时间
-          if (item.shopType === 2 && item.shopStatus !== 0) {
+          if (item.sendType === 2 && item.shopStatus !== 0) {
             this.$vux.toast.text('亲，不再营业时间中', 'center')
             return
           }

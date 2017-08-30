@@ -23,9 +23,9 @@
       <!-- 只显示搜索框 -->
       <!--<div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>-->
     </div>
-    <div class="location-search-box" v-if="scrollFlag">
+    <div class="location-search-box" v-if="scrollFlag||!hasThisShop">
       <a class="location" @click="goLocation">{{villageName}}</a>
-      <a class="search iconfont" @click="goSearch">&#xe639;</a>
+      <a class="search iconfont" @click="goSearch" v-if="hasThisShop">&#xe639;</a>
     </div>
     <!-- 商品列表 -->
     <div class="content" :class="{'scroll-active':scrollFlag}">
@@ -111,6 +111,7 @@
     <m-footer></m-footer>
     <ball></ball>
     <to-top :scrollObj="listSroll" v-if="scrollTop>=800"></to-top>
+    <no-next-shop v-if="!hasThisShop" :hasThisShop="hasThisShop"></no-next-shop>
   </div>
 </template>
 
@@ -127,6 +128,7 @@
   import ball from '../components/ball'
   import loading from '../components/loading'
   import toTop from '../components/toTop'
+  import noNextShop from '../components/noNextShop.vue'
   export default {
     name: 'this',
     components: {
@@ -144,7 +146,8 @@
       loading,
       LoadMore,
       toTop,
-      Alert
+      Alert,
+      noNextShop
     },
     data () {
       return {
@@ -164,7 +167,7 @@
         saleSortFlag: false,
         listSroll: {},
         scrollFlag: false,
-        villageName: '',
+        villageName: localStorage.getItem('m-villageName'),
         pageSize: 10,
         sortId: '', // 当前排序Id
         sortType: '', // 当前排序是通过哪个参数获取的 1:firstClassifyId 2：secondClassifyId
@@ -182,6 +185,9 @@
       }
     },
     created () {
+      if (!this.hasThisShop) {
+        return
+      }
       this.post('/village/getStoreByVillageId', {villageId: localStorage.getItem('m-shopId')}).then((res) => {
         console.log(res.data)
       })
@@ -563,6 +569,11 @@
           query: {goodsId: id, shopStatus: this.shopStatus}
         })
       }
+    },
+    computed: {
+      hasThisShop () {
+        return this.$store.state.hasThisShop
+      }
     }
   }
 </script>
@@ -574,8 +585,8 @@
   .this {
     .location-search-box {
       background-color: @theme-color-blue;
-      .pt(25);
-      .pb(25);
+      .pt(28);
+      .pb(28);
       .pl(20);
       .pr(20);
       display: flex;
@@ -630,8 +641,8 @@
     }
     .scroll-active {
       .t(92) !important;
-     /* transform: translate3d(0, -1.38666667rem, 0);
-      .b(200);*/
+      /* transform: translate3d(0, -1.38666667rem, 0);
+       .b(200);*/
     }
     .sort-icon-selected {
       color: @theme-color-blue !important;

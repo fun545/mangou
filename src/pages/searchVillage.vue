@@ -72,10 +72,6 @@
           return
         }
         // 选择或切换小区   更新storeId 和 village
-        localStorage.setItem('m-cityId', item.cityId)
-        localStorage.setItem('m-areaId', item.areaId)
-        localStorage.setItem('m-villageId', item.villageId)
-        localStorage.setItem('m-villageName', item.villageName)
         this.$store.commit('saveVillageInfo', item)
         // this 跳转及时送更新storeInfo
         if (this.$store.state.selectVillagePath === '/this') {

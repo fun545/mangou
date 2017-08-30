@@ -6,11 +6,55 @@
 export default {
   // 储存次日达和即时送storeInfo
   saveStoreInfo (state, storeList) {
-    state.depotInfo = storeList[0]
-    state.shopInfo = storeList[1]
+    // 及时送和次日达都没有店铺
+    if (storeList.length === 0) {
+      state.hasNextShop = false
+      state.hasThisShop = false
+    }
+    if (storeList.length === 1) {
+      // 只有次日达店铺
+      if (storeList[0].shopType === 1) {
+        state.hasNextShop = true
+        state.hasThisShop = false
+        localStorage.setItem('m-depotId', storeList[0].storeId)
+        state.depotInfo = storeList[0]
+      }
+      // 只有及时送店铺
+      if (storeList[0].shopType === 2) {
+        state.hasNextShop = false
+        state.hasThisShop = true
+        localStorage.setItem('m-shopId', storeList[0].storeId)
+        state.shopInfo = storeList[0]
+      }
+    }
+    // 及时送和次日达都有店铺
+    if (storeList.length === 2) {
+      state.hasNextShop = true
+      state.hasThisShop = true
+      if (storeList[0].shopType === 1) {
+        localStorage.setItem('m-depotId', storeList[0].storeId)
+        localStorage.setItem('m-shopId', storeList[1].storeId)
+        state.depotInfo = storeList[0]
+        state.shopInfo = storeList[1]
+      } else {
+        localStorage.setItem('m-depotId', storeList[1].storeId)
+        localStorage.setItem('m-shopId', storeList[0].storeId)
+        state.depotInfo = storeList[1]
+        state.shopInfo = storeList[0]
+      }
+    }
   },
+  // // 储存次日达和即时送storeInfo
+  // saveStoreInfo (state, storeList) {
+  //   state.depotInfo = storeList[0]
+  //   state.shopInfo = storeList[1]
+  // },
   saveVillageInfo (state, val) {
     state.villageInfo = val
+    localStorage.setItem('m-cityId', val.cityId)
+    localStorage.setItem('m-areaId', val.areaId)
+    localStorage.setItem('m-villageId', val.villageId)
+    localStorage.setItem('m-villageName', val.villageName)
   },
   // 购物车总数
   increment (state, count) {

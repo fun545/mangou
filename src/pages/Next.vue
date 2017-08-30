@@ -3,7 +3,7 @@
     <div class="header">
       <!-- 搜索框 -->
       <div class="search-box">
-        <next-search></next-search>
+        <next-search v-if="hasNextShop"></next-search>
         <instruction></instruction>
       </div>
       <!-- 弹窗内容 -->
@@ -51,6 +51,7 @@
     </div>
     <m-footer></m-footer>
     <to-top :scrollObj="listSroll" v-if="scrollY>=800"></to-top>
+    <no-next-shop v-if="!hasNextShop"></no-next-shop>
   </div>
 </template>
 
@@ -64,6 +65,7 @@
   import SideItem from '../components/SideItem'
   import loading from '../components/loading'
   import toTop from '../components/toTop'
+  import noNextShop from '../components/noNextShop.vue'
   export default {
     name: 'next',
     components: {
@@ -75,7 +77,8 @@
       SideItem,
       BScroll,
       loading,
-      toTop
+      toTop,
+      noNextShop
     },
     data () {
       return {
@@ -95,6 +98,9 @@
       }
     },
     created () {
+      if (!this.hasNextShop) {
+        return
+      }
       this.post('/classify/getClassifyAll', {}).then((res) => {
         if (this.isLoad && (res.data.code === 100)) {
           this.AllFirstClassify = res.data.mapClassify
@@ -140,16 +146,9 @@
       }
     },
     computed: {
-//      currentIndex () {
-//        for (let i = 0; i < this.listHeight.length; i++) {
-//          let height1 = this.listHeight[i]
-//          let height2 = this.listHeight[i + 1]
-//          if (!height2 || (this.scrollY < height2 && this.scrollY >= height1)) {
-//            return i
-//          }
-//        }
-//        return 0
-//      }
+      hasNextShop () {
+        return this.$store.state.hasNextShop
+      }
     },
     methods: {
       goSecondList (id) {
@@ -161,10 +160,10 @@
       },
       memuChange (index) {
         this.ind = index
-        this.listSroll.scrollToElement(this.lists[index], 300)
+        this.listSroll.scrollToElement(this.lists[index], 200)
         setTimeout(() => {
           this.currentIndex = index
-        }, 400)
+        }, 230)
       },
       _initScroll () {
         this.menuSroll = new BScroll(this.$refs.menuWrapper, {

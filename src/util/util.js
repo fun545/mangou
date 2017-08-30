@@ -36,13 +36,10 @@ export const getStoreInfo = (_this) => {
     source: 1
   }).then((res) => {
     if (res.data.code === 100) {
-      console.log(res.data, 'test')
       _this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
       /* 店铺数据 */
       var storeList = res.data.firstInfo.storeList
       _this.$store.commit('saveStoreInfo', storeList)
-      localStorage.setItem('m-depotId', storeList[0].storeId)
-      localStorage.setItem('m-shopId', storeList[1].storeId)
       _this.$router.replace(_this.$store.state.selectVillagePath)
       window.location.reload()
     }

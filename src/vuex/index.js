@@ -17,6 +17,8 @@ const state = {
   shopDetail: null, // 店铺详情信息
   userInfo: null, // 用户信息
   storeId: null, // 商铺id
+  hasThisShop: true,
+  hasNextShop: true,
   orderDetail: null, // 订单详情
   login: false, // 是否登录
   removeAddress: [], // 移除地址

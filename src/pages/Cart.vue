@@ -312,6 +312,7 @@
             this.Nextfreight = res.data.carList[0].storeShop.freight
             // 运费 及时送
             this.Thisfreight = res.data.carList[1].shandianShop.freight
+            console.log(this.Thisfreight)
             // 及时送相关信息
             this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
             this.thisShop = res.data.carList[1].shandianShop
@@ -756,7 +757,7 @@
             var hasThis = thisGoodsList.length > 0 // 及时送
             var noShippingInfo = !this.$store.state.shippingInfo
             if (noShippingInfo && (hasNext || hasThis)) {
-              this.$router.push('/address')
+              this.$router.push('/selecteAddress')
               this.$vux.toast.text('当前无可用收获地址，请新增', 'middle')
               return
             }
@@ -856,16 +857,16 @@
       },
       // 运费计算 及时送
       CThisfreight () {
+        console.log(this.thisTotalPrice, this.thisShop.startPrice)
         if (this.thisTotalPrice >= this.thisShop.startPrice) {
-          this.Thisfreight = 0
-          this.$store.commit('saveThisFreight', this.Thisfreight)
+          this.$store.commit('saveThisFreight', 0)
           return '免运费'
         }
-        if (parseInt(this.thisTotalPrice) === 0) {
-          this.Thisfreight = 0
-          this.$store.commit('saveThisFreight', this.Thisfreight)
+        if (Number(this.thisTotalPrice) === 0) {
+          this.$store.commit('saveThisFreight', 0)
           return '￥' + 0
-        } else {
+        }
+        if (this.thisTotalPrice < this.thisShop.startPrice) {
           this.$store.commit('saveThisFreight', this.Thisfreight)
           return '￥' + this.Thisfreight.toFixed(1)
         }
@@ -874,10 +875,9 @@
       singlePriceThis () {
         if (this.thisTotalPrice < this.thisShop.startPrice) {
           var count = this.thisShop.startPrice - this.thisTotalPrice
-          return count
+          return count.toFixed(1)
         } else {
           this.singleShowThis = false
-          return
         }
       },
       // 优惠金额

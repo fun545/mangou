@@ -2,9 +2,11 @@
 <template>
   <div class="home-wrap" @touchmove.prevent>
     <div v-if="!reloadFlag" class="inner">
-      <div class="location-search-box" ref="header">
+      <div class="location-search-box" ref="header" :class="{'header-bg':!hasNextShop}">
         <a class="location" @click="goLocation">{{villageName}}</a>
-        <a class="search iconfont" @click="goSearch">&#xe639;</a>
+        <a class="search iconfont" @click="goSearch" v-if="hasNextShop">&#xe639;</a>
+        <!--isWeiXinFlag&&hasNextShop-->
+        <i class="iconfont scan" @click="scan" v-if="true">&#xe661;</i>
       </div>
       <div class="home-view" ref="homeView">
         <div class="wrap">
@@ -172,6 +174,7 @@
     <ball></ball>
     <to-top v-if="scrollTop>=800" :scrollObj="homeSroll"></to-top>
     <load-fail v-if="reloadFlag"></load-fail>
+    <no-next-shop v-if="!hasNextShop"></no-next-shop>
   </div>
 </template>
 
@@ -187,6 +190,8 @@
   import ball from '../components/ball'
   import toTop from '../components/toTop'
   import loadFail from '../components/loadFail.vue'
+  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
+  import noNextShop from '../components/noNextShop.vue'
   export default {
     name: 'home',
     components: {
@@ -201,7 +206,8 @@
       buyCarButton,
       ball,
       toTop,
-      loadFail
+      loadFail,
+      noNextShop
     },
     data () {
       return {
@@ -238,8 +244,8 @@
           pagination: '.swiper-pagination'
         },
         homeSroll: {},
-        totalBuyCount: 1,
-        reloadFlag: false
+        reloadFlag: false,
+        isWeiXinFlag: isWeiXinFlag
       }
     },
     created () {
@@ -267,7 +273,7 @@
         //      localStorage.removeItem('m-villageName')
         // 进首页如果之前没有选过小区则跳转选择
 //        console.log(this.villageName, 'home')
-        if (!this.villageName) {
+        if (!this.villageName || !localStorage.getItem('m-cityId') || !localStorage.getItem('m-areaId') || !localStorage.getItem('m-villageId')) {
           this.$router.replace({path: '/chooseCity'})
           return
         }
@@ -285,24 +291,21 @@
         this.post('/first/getFirst', paramas).then((res) => {
           console.log(res.data)
           if (res.data.code === 100) {
+            // 店铺信息
+            this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
+            // 及时送和次日达都没有开通
+            if (!this.hasNextShop) {
+              return
+            }
             // 保存购物车数量
             this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            if (localStorage.getItem('m-token')) {
-              this.totalBuyCount = res.data.firstInfo.totalBuyCount
-            }
             /* 轮播图数据 */
             // 规避有时候后台不给imgList
             if (!res.data.firstInfo.imgList) {
-              this.reloadFlag = true
+              window.location.reload()
               return
             }
             this.swiperList = res.data.firstInfo.imgList
-            /* 店铺数据 */
-//            this.storeList = res.data.firstInfo.storeList
-            var storeList = res.data.firstInfo.storeList
-            this.$store.commit('saveStoreInfo', storeList)
-            localStorage.setItem('m-depotId', storeList[0].storeId)
-            localStorage.setItem('m-shopId', storeList[1].storeId)
           }
           if (res.data.code === 101) {
 //            this.$vux.toast.text(res.data.msg, 'middle')
@@ -311,7 +314,7 @@
           }
           if (res.data.code === 102) {
             localStorage.removeItem('m-token')
-            this.reloadFlag = true
+            window.location.reload()
             return
           }
         })
@@ -381,6 +384,21 @@
         this.$router.push({
           path: '/search',
           query: {shopType: 1, storeId: localStorage.getItem('m-depotId')}
+        })
+      },
+//      扫一扫
+      scan () {
+        console.log(1222)
+//        let _this = this
+        wxObj.scanQRCode({
+          needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+          success: function (res) {
+            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+            console.log(result, 'result')
+            console.log(res, 'res')
+//            _this.$router.push({path:'/goodsDetail',query:{id:}})
+          }
         })
       },
       goActive (item) {
@@ -479,6 +497,14 @@
           }
         })
       }
+    },
+    computed: {
+      totalBuyCount () {
+        return this.$store.state.totalBuyCount
+      },
+      hasNextShop () {
+        return this.$store.state.hasNextShop
+      }
     }
   }
 </script>
@@ -496,8 +522,8 @@
   }
 
   .location-search-box {
-    .pt(25);
-    .pb(25);
+    .pt(28);
+    .pb(28);
     .pl(20);
     .pr(20);
     display: flex;
@@ -508,6 +534,9 @@
     right: 0;
     left: 0;
     opacity: 1;
+    &.header-bg {
+      background-color: @theme-color;
+    }
     .location {
       /*width: calc(~'(100% - 10px)/2');*/
       .w(400);
@@ -546,6 +575,19 @@
       .lh(86);
       .pr(30);
       .fs(29);
+      text-align: right;
+      color: #e4ffe5;
+    }
+    .scan {
+      text-align: center;
+      position: absolute;
+      top: 0;
+      .r(118);
+      .w(80);
+      .h(86);
+      .lh(86);
+      .fs(28);
+      .pr(20);
       text-align: right;
       color: #e4ffe5;
     }

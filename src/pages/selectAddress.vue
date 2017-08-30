@@ -1,7 +1,7 @@
 <template>
   <div class="selectAddress">
     <m-header :title="title">
-      <span class="back iconfont" @click="$router.push('/confirmOrder')" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="address-list" ref="content">
       <div>

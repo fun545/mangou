@@ -5,7 +5,7 @@
     <!--v-model.trim="searchWord"-->
     <div v-if="!goSearchFlag">
       <div class="top-search-box">
-        <div class="search-left" @click="$router.back()">&#xe600;</div>
+        <div class="search-left" @click="$router.back(-1)">&#xe600;</div>
         <div class="search-box">
           <input type="search" placeholder="搜索内容" @keyup.enter="goSearch(1)" v-focus v-model="keyName">
         </div>
@@ -182,18 +182,20 @@
         }
       })
       // 搜索历史记录
-      this.post('/goods/searchHistory', {token: this.token}).then((res) => {
-        if (res.data.code === 100) {
-          this.historyWords = res.data.KeyHistory
-        }
-        if (res.data.code === 101) {
-          this.$vux.toast.text(res.data.msg, 'middle')
-        }
-        if (res.data.code === 102) {
-          this.$vux.toast.text(res.data.msg, 'middle')
-          localStorage.removeItem('m-token')
-        }
-      })
+      if (this.token) {
+        this.post('/goods/searchHistory', {token: this.token}).then((res) => {
+          if (res.data.code === 100) {
+            this.historyWords = res.data.KeyHistory
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
+      }
     },
     methods: {
       // 返回搜索输入

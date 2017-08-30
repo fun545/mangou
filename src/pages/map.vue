@@ -216,10 +216,6 @@
           return
         }
         // 选择或切换小区   更新storeId 和 village
-        localStorage.setItem('m-cityId', item.cityId)
-        localStorage.setItem('m-areaId', item.areaId)
-        localStorage.setItem('m-villageId', item.villageId)
-        localStorage.setItem('m-villageName', item.villageName)
         this.$store.commit('saveVillageInfo', item)
         // this 跳转及时送更新storeInfo
         if (this.$store.state.selectVillagePath === '/this') {
@@ -230,17 +226,17 @@
         this.$router.replace(this.$store.state.selectVillagePath)
         window.location.reload()
       },
-      curVillage (data) {
-        localStorage.setItem('m-cityId', data.cityId)
-        localStorage.setItem('m-areaId', data.areaId)
-        localStorage.setItem('m-villageId', data.villageId)
-        localStorage.setItem('m-villageName', data.villageName)
-        this.$store.commit('saveVillageInfo', data)
-        this.$router.replace('/home')
-        setTimeout(() => {
-          window.location.reload()
-        })
-      },
+//      curVillage (data) {
+//        localStorage.setItem('m-cityId', data.cityId)
+//        localStorage.setItem('m-areaId', data.areaId)
+//        localStorage.setItem('m-villageId', data.villageId)
+//        localStorage.setItem('m-villageName', data.villageName)
+//        this.$store.commit('saveVillageInfo', data)
+//        this.$router.replace('/home')
+//        setTimeout(() => {
+//          window.location.reload()
+//        })
+//      },
       // 去搜索页面
       goSearch () {
         this.$router.replace('/searchVillage')

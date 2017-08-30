@@ -17,11 +17,11 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
 
   @font-face {
     font-family: 'iconfont';  /* project id 284244 */
-    src: url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.eot');
-    src: url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.woff') format('woff'),
-    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_284244_om1mbsdtj8257b9.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_284244_g59zdcf5qtqbmx6r.eot');
+    src: url('//at.alicdn.com/t/font_284244_g59zdcf5qtqbmx6r.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_284244_g59zdcf5qtqbmx6r.woff') format('woff'),
+    url('//at.alicdn.com/t/font_284244_g59zdcf5qtqbmx6r.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_284244_g59zdcf5qtqbmx6r.svg#iconfont') format('svg');
   }
 
   .weui-tab__panel {

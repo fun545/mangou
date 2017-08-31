@@ -15,11 +15,13 @@
 
 <script>
   import mHeader from '../components/header'
-  import BScroll from 'better-scroll'
+  //  import BScroll from 'better-scroll'
+  import JRoll from 'jroll'
   export default {
     components: {
       mHeader,
-      BScroll
+//      BScroll
+      JRoll
     },
     data () {
       return {
@@ -52,10 +54,7 @@
     },
     methods: {
       _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
-        })
+        this.contentScroll = new JRoll(this.$refs.content, {})
       }
     }
   }

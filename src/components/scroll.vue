@@ -52,13 +52,13 @@
       pullDown: {
         type: Boolean,
         default: false
-      },
+      }
     },
     mounted () {
       // 保证在DOM渲染完毕后初始化better-scroll
       setTimeout(() => {
         this._initScroll()
-      }, 20)
+      }, 1000)
     },
     methods: {
       _initScroll () {
@@ -77,16 +77,15 @@
           })
         }
         if (this.pullDown) {
-
+          this.scroll.on('scrollEnd', function () {
+            if (this.y === this.maxScrollY) {
+              console.log('已滑动到底部')
+              _this.$emit('scrollToEnd')
+            }
+          })
         }
-        this.scroll.on("scrollEnd", function () {
-          if (this.y === this.maxScrollY) {
-            console.log("已滑动到底部")
-            _this.$emit('scrollToEnd')
-          }
-        })
       },
-      refresh() {
+      refresh () {
         // 代理jRoll的refresh方法
         this.scroll && this.scroll.refresh()
       },

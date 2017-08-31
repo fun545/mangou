@@ -5,23 +5,25 @@
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <!-- 页面内容 -->
-    <div class="content-scroller" ref="content">
-      <div v-if="flag">
+    <scroll class="content-scroller">
+      <div>
         <div v-html="about"></div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
   //  import BScroll from 'better-scroll'
-  import JRoll from 'jroll'
+//  import JRoll from 'jroll'
+//  import scroll from '../components/scroll'
   export default {
     components: {
-      mHeader,
+      mHeader
 //      BScroll
-      JRoll
+//      JRoll,
+//      scroll
     },
     data () {
       return {
@@ -36,12 +38,6 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.about = res.data.content
-          this.$nextTick(() => {
-            setTimeout(() => {
-              this._initScroll()
-            }, 500)
-            this.flag = true
-          })
         }
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
@@ -51,11 +47,6 @@
           localStorage.removeItem('m-token')
         }
       })
-    },
-    methods: {
-      _initScroll () {
-        this.contentScroll = new JRoll(this.$refs.content, {})
-      }
     }
   }
 </script>

@@ -10,7 +10,8 @@ import { AlertPlugin, ToastPlugin, ConfirmPlugin } from 'vux'
 Vue.use(AlertPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
-
+import scroll from 'components/scroll'
+Vue.component('scroll', scroll)
 // 懒加载插件
 import VueLazyload from 'vue-lazyload'
 

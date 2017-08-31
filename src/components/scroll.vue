@@ -76,7 +76,8 @@
         }
         // better-scroll的初始化
         this.scroll = new JRoll(this.$refs.wrapper, {
-          scrollX: this.scrollX
+          scrollX: this.scrollX,
+          bounce: false
         })
         // 是否派发滚动事件
         if (this.listenScroll) {

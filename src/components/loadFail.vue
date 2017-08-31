@@ -30,7 +30,7 @@
     left: 0;
     right: 0;
     .b(100);
-    z-index: 10000;
+    z-index: 10001;
     .icon {
       .fs(220);
       .mt(220);

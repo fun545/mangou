@@ -105,13 +105,13 @@
             <p class="p2">(门店营业时间：{{this.storeMsg.shopHours}})</p>
           </div>
         </alert>
-        <loading :loadingFlag="loadingFlag"></loading>
       </div>
     </div>
     <m-footer></m-footer>
     <ball></ball>
     <to-top :scrollObj="listSroll" v-if="scrollTop>=800"></to-top>
     <no-next-shop v-if="!hasThisShop" :hasThisShop="hasThisShop"></no-next-shop>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -186,6 +186,7 @@
     },
     created () {
       if (!this.hasThisShop) {
+        this.loadingFlag = false
         return
       }
       this.post('/village/getStoreByVillageId', {villageId: localStorage.getItem('m-shopId')}).then((res) => {
@@ -265,7 +266,6 @@
             if (res.data.code === 100) {
               this.fastSortGoodsList = res.data.goodsList
               this.goodsList = this.fastSortGoodsList
-              this.loadingFlag = false
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -274,6 +274,7 @@
               this.$vux.toast.text(res.data.msg, 'middle')
               localStorage.removeItem('m-token')
             }
+            this.loadingFlag = false
           })
         }
         // 商品列表
@@ -583,6 +584,20 @@
   @import "../common/style/sum";
 
   .this {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    .b(100);
+    .loading {
+      position: absolute;
+      .t(0);
+      .b(100);
+      /*z-index: 9;*/
+    }
+    .no-next-shop{
+      bottom: 0;
+    }
     .location-search-box {
       background-color: @theme-color-blue;
       .pt(28);
@@ -592,7 +607,7 @@
       display: flex;
       align-items: center;
       position: absolute;
-      z-index: 500;
+      z-index: 9;
       top: 0;
       right: 0;
       left: 0;
@@ -812,7 +827,7 @@
       .t(190);
       left: 0;
       right: 0;
-      .b(100);
+      bottom: 0;
       overflow: hidden;
       .menu-wrap {
         .w(172);

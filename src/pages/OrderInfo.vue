@@ -348,6 +348,7 @@
         orderId: this.$store.state.orderId
       }).then((res) => {
         if (res.data.code === 100) {
+          console.log(res.data)
           this.orderDetail = res.data.orderDetail
           this.goodsTotalPrice = res.data.orderDetail.goodsTotalPrice
           // 运费 如果是没传freight字段则代表运费为0
@@ -442,7 +443,7 @@
               opts: 2
             }).then((res) => {
               if (res.data.code === 100) {
-                _this.$router.replace({path: '/order_list'})
+                _this.$router.back(-1)
                 return
               }
               if (res.data.code === 101) {
@@ -464,6 +465,17 @@
           title: '电话',
           content: _this.logist.flowStr.keFuphone
         })
+      },
+      // 去支付
+      goPay () {
+        // 及时送且不在营业时间
+        if (this.orderDetail.sendType === 2 && this.orderDetail.shopStatus !== 0) {
+          this.$vux.toast.text('亲，不再营业时间中', 'center')
+          return
+        }
+        this.$store.commit('savePayOrder', this.orderDetail)
+        this.$router.push({path: '/goPay'})
+        return
       }
     },
     filters: {

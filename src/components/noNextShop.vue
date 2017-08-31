@@ -24,7 +24,7 @@
 
   .no-next-shop {
     position: absolute;
-    z-index: 10001;
+    z-index: 10;
     .t(92);
     .b(100);
     left: 0;

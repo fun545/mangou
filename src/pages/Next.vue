@@ -99,6 +99,7 @@
     },
     created () {
       if (!this.hasNextShop) {
+        this.loadingFlag = false
         return
       }
       this.post('/classify/getClassifyAll', {}).then((res) => {

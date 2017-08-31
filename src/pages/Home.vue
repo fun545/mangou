@@ -6,7 +6,7 @@
         <a class="location" @click="goLocation">{{villageName}}</a>
         <a class="search iconfont" @click="goSearch" v-if="hasNextShop">&#xe639;</a>
         <!--isWeiXinFlag&&hasNextShop-->
-        <i class="iconfont scan" @click="scan" v-if="true">&#xe661;</i>
+        <!--<i class="iconfont scan" @click="scan" v-if="true">&#xe661;</i>-->
       </div>
       <scroll class="home-view"
               :data="loadMoreNum"
@@ -179,6 +179,7 @@
     <ball></ball>
     <load-fail v-if="reloadFlag"></load-fail>
     <no-next-shop v-if="!hasNextShop"></no-next-shop>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -193,8 +194,9 @@
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
   import loadFail from '../components/loadFail.vue'
-  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
+  //  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
+  import loading from '../components/loading'
   export default {
     name: 'home',
     components: {
@@ -209,7 +211,8 @@
       buyCarButton,
       ball,
       loadFail,
-      noNextShop
+      noNextShop,
+      loading
     },
     data () {
       return {
@@ -247,91 +250,96 @@
         },
         homeSroll: {},
         reloadFlag: false,
-        isWeiXinFlag: isWeiXinFlag,
+//        isWeiXinFlag: isWeiXinFlag,
         newList: [],
-        loadMoreNum: 0
+        loadMoreNum: 0,
+        loadingFlag: true
       }
     },
-    created () {
-      this.createdMethods()
-    },
-    methods: {
-      createdMethods () {
-        //      localStorage.removeItem('m-villageName')
-        // 进首页如果之前没有选过小区则跳转选择
-        if (!this.villageName || !localStorage.getItem('m-cityId') || !localStorage.getItem('m-areaId') || !localStorage.getItem('m-villageId')) {
-          this.$router.replace({path: '/chooseCity'})
-          return
-        }
-        // _iscroll初始化flag
-        // 获取首页数据
-        var paramas = {}
-        paramas.cityId = localStorage.getItem('m-cityId')
-        paramas.areaId = localStorage.getItem('m-areaId')
-        paramas.villageId = localStorage.getItem('m-villageId')
-        paramas.source = 1
-        if (localStorage.getItem('m-token')) {
-          paramas.token = localStorage.getItem('m-token')
-        }
-        this.post('/first/getFirst', paramas).then((res) => {
-          if (res.data.code === 100) {
-            // 店铺信息
-            this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
-            // 及时送和次日达都没有开通
-            if (!this.hasNextShop) {
-              return
-            }
-            // 保存购物车数量
-            this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
-            /* 轮播图数据 */
-            // 规避有时候后台不给imgList
-            if (!res.data.firstInfo.imgList) {
-              window.location.reload()
-              return
-            }
-            this.swiperList = res.data.firstInfo.imgList
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            this.reloadFlag = true
-            return
-          }
-          if (res.data.code === 102) {
-            localStorage.removeItem('m-token')
+    async created () {
+      //        localStorage.removeItem('m-villageName')
+      // 进首页如果之前没有选过小区则跳转选择
+      if (!localStorage.getItem('m-villageName') || !localStorage.getItem('m-cityId') || !localStorage.getItem('m-areaId') || !localStorage.getItem('m-villageId') || !localStorage.getItem('m-villageId')) {
+        this.$router.replace({path: '/chooseCity'})
+        return
+      }
+      // _iscroll初始化flag
+      // 获取首页数据
+      var paramas = {}
+      paramas.cityId = localStorage.getItem('m-cityId')
+      paramas.areaId = localStorage.getItem('m-areaId')
+      paramas.villageId = localStorage.getItem('m-villageId')
+      paramas.source = 1
+      if (localStorage.getItem('m-token')) {
+        paramas.token = localStorage.getItem('m-token')
+      }
+      await this.post('/first/getFirst', paramas).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          // 店铺信息
+          this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
+          // 及时送和次日达都没有开通
+//            if (!this.hasNextShop) {
+//              return
+//            }
+          // 保存购物车数量
+          this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
+          /* 轮播图数据 */
+          // 规避有时候后台不给imgList
+          if (!res.data.firstInfo.imgList) {
             window.location.reload()
             return
           }
-        })
-        /* 首页数据数据 */
-        this.post('/first/getFirstGoods', {
-          storeId: localStorage.getItem('m-depotId'),
-          villageId: localStorage.getItem('m-villageId')
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.mapTitleTips = res.data.goodsList.mapTitleTips
-            this.ystgWords = res.data.goodsList.ystgWords
-            this.serchKey = res.data.goodsList.serchKey
-            this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
-            this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
-            this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
-            this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
-            this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
-            this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
-            this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
-            this.computedSwiperLength()
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            this.reloadFlag = true
-            return
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-            this.reloadFlag = true
-          }
-        })
-      },
+          this.swiperList = res.data.firstInfo.imgList
+        }
+        if (res.data.code === 101) {
+          this.loadingFlag = false
+          this.$vux.toast.text(res.data.msg, 'middle')
+          this.reloadFlag = true
+          return
+        }
+        if (res.data.code === 102) {
+          this.loadingFlag = false
+          localStorage.removeItem('m-token')
+          window.location.reload()
+          return
+        }
+      })
+      /* 首页数据数据 */
+      this.post('/first/getFirstGoods', {
+        storeId: localStorage.getItem('m-depotId'),
+        villageId: localStorage.getItem('m-villageId')
+      }).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 100) {
+          this.mapTitleTips = res.data.goodsList.mapTitleTips
+          this.ystgWords = res.data.goodsList.ystgWords
+          this.serchKey = res.data.goodsList.serchKey
+          this.specialPriceGoodsList = res.data.goodsList.specialPriceGoodsList
+          this.tuijianGoodsList = res.data.goodsList.tuijianGoodsInfo.tuijianGoodsList
+          this.tuijianImagesList = res.data.goodsList.tuijianGoodsInfo.tuijianImagesList
+          this.newGoodsList = res.data.goodsList.newGoodsInfo.newGoodsList
+          this.newImageList = res.data.goodsList.newGoodsInfo.newImageList
+          this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
+          this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
+          this.computedSwiperLength()
+        }
+        if (res.data.code === 101) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          this.reloadFlag = true
+          return
+        }
+        if (res.data.code === 102) {
+          this.$vux.toast.text(res.data.msg, 'middle')
+          localStorage.removeItem('m-token')
+          this.reloadFlag = true
+        }
+        this.loadingFlag = false
+      })
+    },
+    methods: {
+//      async createdMethods () {
+//      },
       goLocation () {
         if (!localStorage.getItem('m-token')) {
           this.$store.commit('saveSelectVillagePath', '/home')
@@ -368,19 +376,19 @@
         })
       },
 //      扫一扫
-      scan () {
+//      scan () {
 //        let _this = this
-        wxObj.scanQRCode({
-          needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-          success: function (res) {
-            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-            console.log(result, 'result')
-            console.log(res, 'res')
+//        wxObj.scanQRCode({
+//          needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+//          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+//          success: function (res) {
+//            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+//            console.log(result, 'result')
+//            console.log(res, 'res')
 //            _this.$router.push({path:'/goodsDetail',query:{id:}})
-          }
-        })
-      },
+//          }
+//        })
+//      },
       goActive (item) {
         this.$router.push({
           path: '/active',
@@ -474,6 +482,9 @@
 
   .home-wrap {
     height: 100%;
+    .loading {
+      z-index: 101;
+    }
   }
 
   .swiper-container {
@@ -488,7 +499,7 @@
     display: flex;
     align-items: center;
     position: absolute;
-    z-index: 100;
+    z-index: 2;
     top: 0;
     right: 0;
     left: 0;

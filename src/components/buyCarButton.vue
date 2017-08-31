@@ -26,7 +26,7 @@
       }
     },
     methods: {
-      async add (el, item) {
+      add (el, item) {
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
@@ -49,7 +49,7 @@
           } else {
             this.storeId = localStorage.getItem('m-shopId')
           }
-          await this.post('/car/addCar', {
+          this.post('/car/addCar', {
             token: localStorage.getItem('m-token'),
             goodsId: item.goodsId,
             buyCount: 1,
@@ -59,9 +59,9 @@
             storeId: this.storeId
           }).then((res) => {
             if (res.data.code === 100) {
-              bus.$emit('drop', el)
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
+              bus.$emit('drop', el)
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'top')

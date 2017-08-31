@@ -471,7 +471,7 @@
     .back-wrap {
       position: fixed;
       top: 0;
-      .w(120);
+      .w(148);
       .h(92);
       .lh(92);
       z-index: 10000;
@@ -480,15 +480,17 @@
       .pb(20);
       .pr(20);
       .pl(20);*/
+      .pb(58);
+      .pr(58);
     }
     .back {
-      .w(50);
-      .h(50);
-      .lh(50);
+      .w(58);
+      .h(58);
+      .lh(58);
       border-radius: 50%;
       background: rgba(0, 0, 0, .4);
       color: #fff;
-      .fs(28);
+      .fs(32);
     }
     .content {
       .DetailSwiper {

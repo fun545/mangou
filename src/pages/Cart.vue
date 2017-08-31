@@ -236,7 +236,7 @@
         </div>
       </div>
       <!--加载动画-->
-      <loading v-if="token" :loadingFlag="loadingFlag"></loading>
+      <loading v-if="token" :loadingFlag="loadingFlag" :class="{'loading-bg-color':loadingBgColorFlag}"></loading>
     </div>
     <m-footer></m-footer>
   </div>
@@ -249,7 +249,7 @@
   import loading from '../components/loading'
 
   export default {
-    name: 'cart',
+//    name: 'cart',
     components: {
       mFooter,
       XHeader,
@@ -292,61 +292,18 @@
         ToCountText: '去结算',
         token: localStorage.getItem('m-token'),
         loadingFlag: true, // 加载页面
-        fastClick: false
+        fastClick: false,
+        loadingBgColorFlag: false
       }
     },
-    async created () {
-      // 获取购物车列表数据
-      if (this.token) {
-        await this.post('/car/getUserCar', {
-          token: this.token,
-          villageId: localStorage.getItem('m-villageId')
-        }).then((res) => {
-          this.$store.state.cartInfo = res.data
-          if (res.data.code === 100) {
-            // 商品列表 及时送
-            this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
-            // 商品列表 次日达
-            this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-            // 运费 次日达
-            this.Nextfreight = res.data.carList[0].storeShop.freight
-            // 运费 及时送
-            this.Thisfreight = res.data.carList[1].shandianShop.freight
-            console.log(this.Thisfreight)
-            // 及时送相关信息
-            this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
-            this.thisShop = res.data.carList[1].shandianShop
-            // 次日达相关信息
-            this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
-            this.nextShop = res.data.carList[0].storeShop
-//            this.$store.state.thisShop = res.data.carList[1].shandianShop
-//            this.$store.state.nextShop = res.data.carList[0].storeShop
-            // 收货相关信息
-//            this.$store.state.shippingInfo = res.data.shippingInfo
-            this.$store.commit('saveShippingInfo', res.data.shippingInfo)
-            // 判断店铺营业状态
-            this.shopStatusMethods(this.thisShop.shopStatus)
-            // 购物车数量
-            this.$store.commit('increment', res.data.totalBuyCount)
-            this.$nextTick(() => {
-              this._initScroll()
-            })
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-        this.loadingFlag = false
-        // 初始化默认配送方式
-        this.$store.state.sendWay = {key: '1', value: '客户自取'}
-      }
+    created () {
+      this.createdMethod()
     },
     watch: {
       '$route' (to, from) {
+        this.loadingFlag = true
+        this.loadingBgColorFlag = true
+        this.createdMethod()
         this.$nextTick(() => {
           setTimeout(() => {
             if (typeof this.contentScroll.refresh === 'function') {
@@ -357,6 +314,56 @@
       }
     },
     methods: {
+      createdMethod () {
+        // 获取购物车列表数据
+        if (this.token) {
+          this.post('/car/getUserCar', {
+            token: this.token,
+            villageId: localStorage.getItem('m-villageId')
+          }).then((res) => {
+            this.$store.state.cartInfo = res.data
+            if (res.data.code === 100) {
+              this.loadingFlag = false
+              // 商品列表 及时送
+              this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+              // 商品列表 次日达
+              this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+              // 运费 次日达
+              this.Nextfreight = res.data.carList[0].storeShop.freight
+              // 运费 及时送
+              this.Thisfreight = res.data.carList[1].shandianShop.freight
+              console.log(this.Thisfreight)
+              // 及时送相关信息
+              this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
+              this.thisShop = res.data.carList[1].shandianShop
+              // 次日达相关信息
+              this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
+              this.nextShop = res.data.carList[0].storeShop
+//            this.$store.state.thisShop = res.data.carList[1].shandianShop
+//            this.$store.state.nextShop = res.data.carList[0].storeShop
+              // 收货相关信息
+//            this.$store.state.shippingInfo = res.data.shippingInfo
+              this.$store.commit('saveShippingInfo', res.data.shippingInfo)
+              // 判断店铺营业状态
+              this.shopStatusMethods(this.thisShop.shopStatus)
+              // 购物车数量
+              this.$store.commit('increment', res.data.totalBuyCount)
+              this.$nextTick(() => {
+                this._initScroll()
+              })
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+          })
+          // 初始化默认配送方式
+          this.$store.state.sendWay = {key: '1', value: '客户自取'}
+        }
+      },
       // 判断商铺营业状态
       shopStatusMethods (status) {
         // 放假中
@@ -967,6 +974,11 @@
     right: 0;
     .t(92);
     .b(100);
+    .loading {
+      &.loading-bg-color {
+        background-color: rgba(0, 0, 0, 0);
+      }
+    }
   }
 
   .content-wrapper .content-view-scroller .this-wrap, .content-wrapper .content-view-scroller .next-wrap {

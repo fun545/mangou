@@ -275,9 +275,6 @@
         var totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
         this.$store.commit('saveTotalPriceThis', totalPriceThis)
       }
-      this.$nextTick(() => {
-        this._initScroll()
-      })
     },
     methods: {
       // 快速购买运费计算
@@ -287,9 +284,6 @@
         } else {
           this.$store.commit('saveThisFreight', freight.toFixed(1))
         }
-      },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {click: true})
       },
       // 点击显示更多与隐藏 togle 及时送
       setCountThis () {

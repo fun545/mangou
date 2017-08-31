@@ -15,15 +15,9 @@
 
 <script>
   import mHeader from '../components/header'
-  //  import BScroll from 'better-scroll'
-//  import JRoll from 'jroll'
-//  import scroll from '../components/scroll'
   export default {
     components: {
       mHeader
-//      BScroll
-//      JRoll,
-//      scroll
     },
     data () {
       return {

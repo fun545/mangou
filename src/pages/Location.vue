@@ -4,7 +4,7 @@
       <span class="back iconfont" @click="$router.push('/home')" slot="icon">&#xe600;</span>
       <span class="right" slot="right" @click="goAddAddress">新增地址</span>
     </m-header>
-    <div class="content" ref="content">
+    <scroll class="content">
       <div>
         <!--<search placeholder="请输入小区名字" @on-focus="goSearch"></search>-->
         <!--搜索框-->
@@ -53,18 +53,17 @@
           登录查看已有收获地址
         </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
   import { Alert, Group, Cell } from 'vux'
   import mHeader from '../components/header'
-  import BScroll from 'better-scroll'
   import { MP } from '../util/map'
   export default {
     name: 'location',
-    components: {Alert, mHeader, Group, Cell, BScroll},
+    components: {Alert, mHeader, Group, Cell},
     data () {
       return {
         search: '',
@@ -142,9 +141,6 @@
           if (res.data.code === 100) {
             this.villageList = res.data.villageList
             this.positionLoading = false
-            this.$nextTick(() => {
-              this._initScroll()
-            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -170,13 +166,6 @@
             this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
-        })
-      },
-      // 更新storeId
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
         })
       }
     }

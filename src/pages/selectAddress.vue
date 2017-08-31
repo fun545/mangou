@@ -3,7 +3,7 @@
     <m-header :title="title">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
-    <div class="address-list" ref="content">
+    <scroll class="address-list">
       <div>
         <div class="item" v-for="(item,index) in addressList" :key="index" @click="chooseAddress(item)">
           <div class="top"
@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </scroll>
     <div class="bt">
       <div class="add-address t-c" @click="goAddAddress">
         新增收货地址
@@ -31,13 +31,11 @@
 <script>
   import mHeader from '../components/header'
   import { Toast } from 'vux'
-  import BScroll from 'better-scroll'
   export default {
     name: 'selectAddress',
     components: {
       mHeader,
-      Toast,
-      BScroll
+      Toast
     },
     data () {
       return {
@@ -55,9 +53,6 @@
       }).then((res) => {
         if (res.data.code === 100) {
           this.addressList = res.data.shippingAddressList
-          this.$nextTick(() => {
-            this._initScroll()
-          })
         }
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
@@ -88,12 +83,6 @@
           this.$store.commit('saveShippingInfo', item)
           this.$router.back()
         }
-      },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
-        })
       }
     }
   }

@@ -8,7 +8,12 @@
         <!--isWeiXinFlag&&hasNextShop-->
         <i class="iconfont scan" @click="scan" v-if="true">&#xe661;</i>
       </div>
-      <div class="home-view" ref="homeView">
+      <scroll class="home-view"
+              :data="loadMoreNum"
+              :pullUp="true"
+              @scrollToEnd="loadMore"
+              @scroll="onScroll"
+              :listenScroll="true">
         <div class="wrap">
           <!-- banner-->
           <swiper :options="swiperOption" ref="mySwiper" class="banner">
@@ -168,11 +173,10 @@
               class="load-more"></load-more>
           </div>
         </div>
-      </div>
+      </scroll>
     </div>
     <m-footer :totalCount="totalBuyCount"></m-footer>
     <ball></ball>
-    <to-top v-if="scrollTop>=800" :scrollObj="homeSroll"></to-top>
     <load-fail v-if="reloadFlag"></load-fail>
     <no-next-shop v-if="!hasNextShop"></no-next-shop>
   </div>
@@ -188,7 +192,6 @@
   import twoColumn from '../components/twocolumn'
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
-  import toTop from '../components/toTop'
   import loadFail from '../components/loadFail.vue'
   import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
@@ -205,7 +208,6 @@
       LoadMore,
       buyCarButton,
       ball,
-      toTop,
       loadFail,
       noNextShop
     },
@@ -231,7 +233,7 @@
         saleImagelist: [],
         moreRecommendList: [],
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 8,
         loading: false,
         scrollDisable: false,
         scrollTop: '',
@@ -245,39 +247,22 @@
         },
         homeSroll: {},
         reloadFlag: false,
-        isWeiXinFlag: isWeiXinFlag
+        isWeiXinFlag: isWeiXinFlag,
+        newList: [],
+        loadMoreNum: 0
       }
     },
     created () {
       this.createdMethods()
     },
-    watch: {
-      '$route' (to, from) {
-//        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {}
-        this.$nextTick(() => {
-          setTimeout(() => {
-            if (typeof this.homeSroll.refresh === 'function') {
-              this.homeSroll.refresh()
-            }
-          }, 1000)
-        })
-      }
-    },
     methods: {
       createdMethods () {
-//        localStorage.removeItem('m-villageName')
-//        this.$vux.confirm.show({
-//          title: '温馨提示',
-//          content: '此版本为测试版本，请勿下单！！'
-//        })
         //      localStorage.removeItem('m-villageName')
         // 进首页如果之前没有选过小区则跳转选择
-//        console.log(this.villageName, 'home')
         if (!this.villageName || !localStorage.getItem('m-cityId') || !localStorage.getItem('m-areaId') || !localStorage.getItem('m-villageId')) {
           this.$router.replace({path: '/chooseCity'})
           return
         }
-//        this.villageName = localStorage.getItem('m-villageName')
         // _iscroll初始化flag
         // 获取首页数据
         var paramas = {}
@@ -289,7 +274,6 @@
           paramas.token = localStorage.getItem('m-token')
         }
         this.post('/first/getFirst', paramas).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             // 店铺信息
             this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
@@ -308,7 +292,7 @@
             this.swiperList = res.data.firstInfo.imgList
           }
           if (res.data.code === 101) {
-//            this.$vux.toast.text(res.data.msg, 'middle')
+            this.$vux.toast.text(res.data.msg, 'middle')
             this.reloadFlag = true
             return
           }
@@ -335,23 +319,20 @@
             this.saleGoods = res.data.goodsList.saleGoodsInfo.saleGoodsList
             this.saleImagelist = res.data.goodsList.saleGoodsInfo.saleImagelist
             this.computedSwiperLength()
-            this.$nextTick(() => {
-              this._initScroll()
-            })
           }
           if (res.data.code === 101) {
-//            this.$vux.toast.text(res.data.msg, 'middle')
+            this.$vux.toast.text(res.data.msg, 'middle')
             this.reloadFlag = true
             return
           }
           if (res.data.code === 102) {
             this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
+            this.reloadFlag = true
           }
         })
       },
       goLocation () {
-//        this.$store.commit('saveSelectVillagePath', '/home')
         if (!localStorage.getItem('m-token')) {
           this.$store.commit('saveSelectVillagePath', '/home')
           this.$router.push({path: '/location'})
@@ -388,7 +369,6 @@
       },
 //      扫一扫
       scan () {
-        console.log(1222)
 //        let _this = this
         wxObj.scanQRCode({
           needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
@@ -445,17 +425,15 @@
             storeId: localStorage.getItem('m-depotId'),
             villageId: localStorage.getItem('m-villageId'),
             pageIndex: this.pageIndex,
-            pageSize: 10
+            pageSize: this.pageSize
           }).then((res) => {
             if (res.data.code === 100) {
-              let newList = res.data.goodsList
-              for (let i = 0; i < newList.length; i++) {
-                this.moreRecommendList.push(newList[i])
+              this.newList = res.data.goodsList
+              for (let i = 0; i < this.newList.length; i++) {
+                this.moreRecommendList.push(this.newList[i])
               }
-              if (newList.length > 0) {
-                setTimeout(() => {
-                  this.homeSroll.refresh()
-                }, 100)
+              if (this.newList.length > 0) {
+                this.loadMoreNum++
               } else {
                 this.loadText = '到底啦~'
                 this.moreIconFlag = false
@@ -473,29 +451,10 @@
         }
         this.loadMoreFlag = true
       },
-      _initScroll () {
-        const homeView = this.$refs.homeView
-        this.homeSroll = new BScroll(homeView, {
-//          preventDefault: false,
-          disableMouse: true,
-          probeType: 3,
-          fadeScrollbars: false,
-          disablePointer: true
-//          momentum: false
-        })
-        this.homeSroll.on('scroll', (pos) => {
-          // 搜索部分背景渐现效果
-          let scrollTop1 = -Math.round(pos.y)
-          this.$refs.header.style.backgroundColor = `rgba(1,166,98,${scrollTop1 / 300})`
-          // 监听无限加载滚动
-          this.scrollTop = Math.abs(Math.round(pos.y))
-          const homeView = this.$refs.homeView
-          let homeViewHeight = homeView.offsetHeight
-          let wrapperHeight = this.$refs.homeView.getElementsByClassName('wrap')[0].clientHeight
-          if (this.scrollTop + homeViewHeight >= wrapperHeight) {
-            this.loadMore()
-          }
-        })
+      // 搜索部分背景渐现效果
+      onScroll (_this) {
+        let scrollTop = -Math.round(_this.y)
+        this.$refs.header.style.backgroundColor = `rgba(1,166,98,${scrollTop / 300})`
       }
     },
     computed: {
@@ -622,9 +581,6 @@
     .b(100);
     /*overflow: scroll;*/
     .wrap {
-      -webkit-backface-visibility: hidden;
-      -webkit-transform-style: preserve-3d;
-      -webkit-transform: translate3d(0, 0, 0);
     }
     .link-box {
       display: flex;

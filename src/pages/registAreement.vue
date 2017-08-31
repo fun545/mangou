@@ -3,7 +3,7 @@
     <m-header title="软件许可及服务协议">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
-    <div class="content" ref="content">
+    <scroll class="content">
       <div>
         <p style="margin:0pt; orphans:0; text-align:justify; widows:0"><span
           style="font-family:宋体; font-size:14pt; font-weight:bold">一、用户协议：</span><span
@@ -64,7 +64,8 @@
         </p>
         <p style="margin:0pt; orphans:0; text-align:justify; widows:0"><span
           style="font-family:Calibri; font-size:10.5pt; font-weight:normal">5</span><span
-          style="font-family:宋体; font-size:10.5pt; font-weight:normal">、用户不得利用“漫购”移动应用制作、上传、复制、发布、传播或转载如下内容：便利</span></p>
+          style="font-family:宋体; font-size:10.5pt; font-weight:normal">、用户不得利用“漫购”移动应用制作、上传、复制、发布、传播或转载如下内容：便利</span>
+        </p>
         <p style="margin:0pt; orphans:0; text-align:justify; widows:0"><span
           style="font-family:Calibri; font-size:10.5pt">&#xa0;</span>
         </p>
@@ -398,30 +399,20 @@
           style="font-family:Calibri; font-size:10.5pt">&#xa0;</span>
         </p>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
   import mHeader from '../components/header'
-  import BScroll from 'better-scroll'
   export default {
-    components: {BScroll, mHeader},
-    created () {
-      this.$nextTick(() => {
-        this._initScroll()
-      })
-    },
-    methods: {
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content)
-      }
-    }
+    components: {mHeader}
   }
 </script>
 
 <style lang="less" scoped>
   @import "../common/style/sum";
+
   .content {
     position: absolute;
     left: 0;

@@ -5,7 +5,7 @@
         <span class="back iconfont" @click="$router.back()" slot="icon">&#xe600;</span>
       </m-header>
       x
-      <div class="address-list" ref="content">
+      <scroll class="address-list">
         <div>
           <div class="item" v-for="(item,index) in addressList" :key="index">
             <div class="top">
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </scroll>
       <div class="bt-wrap">
         <div class="add-address t-c" @click="goAddAddress">
           新增收货地址
@@ -47,12 +47,10 @@
 
 <script>
   import mHeader from '../components/header'
-  import BScroll from 'better-scroll'
   export default {
     name: 'address',
     components: {
-      mHeader,
-      BScroll
+      mHeader
     },
     data () {
       return {
@@ -79,9 +77,6 @@
             } else {
               this.noAddressFlag = true
             }
-            this.$nextTick(() => {
-              this._initScroll()
-            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -119,12 +114,6 @@
       goAddAddress () {
         this.$store.commit('saveAddAddress', '/address')
         this.$router.push({path: '/addAddress'})
-      },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
-        })
       }
     }
   }

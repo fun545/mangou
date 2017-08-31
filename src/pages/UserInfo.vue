@@ -1,7 +1,7 @@
 <template>
   <div class="user-info-view">
     <!-- 页面标题 -->
-    <m-header title="个人资料" ref="header">
+    <m-header title="个人资料">
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
       <!--<span slot="right" class="right" @click="save">保存</span>-->
     </m-header>

@@ -5,7 +5,7 @@
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <!-- 页面内容 -->
-    <div class="view-content" ref="content">
+    <scroll class="view-content">
       <div>
         <!-- 订单状态-->
         <div class="flex-box top-info-box">
@@ -285,7 +285,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </scroll>
     <!-- 底部按钮 -->
     <div class="view-footer">
       <!--申请退款 已付款 已收货待评价-->
@@ -319,7 +319,6 @@
 <script>
   import mHeader from '../components/header'
   import { XHeader, Timeline, TimelineItem } from 'vux'
-  import BScroll from 'better-scroll'
   import OrderGoodsList from '../components/orderGoodsList'
   export default{
     name: 'orderInfo',
@@ -328,7 +327,6 @@
       Timeline,
       TimelineItem,
       mHeader,
-      BScroll,
       OrderGoodsList
     },
     data () {
@@ -383,9 +381,6 @@
           this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
-      })
-      this.$nextTick(() => {
-        this._initScrll()
       })
     },
     methods: {
@@ -469,12 +464,6 @@
           title: '电话',
           content: _this.logist.flowStr.keFuphone
         })
-      },
-      _initScrll () {
-        this.contentScrll = new BScroll(this.$refs.content, {click: true})
-        setTimeout(() => {
-          this.contentScrll.refresh()
-        }, 100)
       }
     },
     filters: {

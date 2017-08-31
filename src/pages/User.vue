@@ -1,6 +1,6 @@
 <template>
   <div class="user-view" @touchmove.prevent>
-    <div class="content" ref="content">
+    <scroll class="content">
       <div class="inner">
         <div class="top-wrap">
           <div class="top"></div>
@@ -134,16 +134,15 @@
           </div>
         </div>
       </div>
-    </div>
+    </scroll>
     <m-footer></m-footer>
   </div>
 </template>
 <script>
   import mFooter from '../components/footer'
-  import BScroll from 'better-scroll'
   export default {
     name: 'user',
-    components: {mFooter, BScroll},
+    components: {mFooter},
     data () {
       return {
         userFirst: '', // 订单数据
@@ -154,9 +153,6 @@
       }
     },
     created () {
-      this.$nextTick(() => {
-        this._initScroll()
-      })
       if (localStorage.getItem('m-token')) {
         // 我的订单
         this.post('/user/userFirst', {token: localStorage.getItem('m-token')}).then((res) => {
@@ -189,12 +185,6 @@
     methods: {
       go () {
         this.$router.push({path: '/setting'})
-      },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
-        })
       },
       goPage (url) {
         if (this.token) {

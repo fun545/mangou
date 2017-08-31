@@ -5,7 +5,7 @@
       <div class="back-wrap" @click="$router.back()">
         <span class="back iconfont d-ib" slot="icon">&#xe654;</span>
       </div>
-      <div class="content" ref="content">
+      <scroll class="content" :listenScroll="true" @scroll="onScroll">
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
@@ -57,7 +57,7 @@
           </div>
         </div>
         <loading :loadingFlag="loadingFlag" class="loading"></loading>
-      </div>
+      </scroll>
       <div class="footer" v-if="login">
         <div class="buy-car" @click="$router.push('/cart')">
           <div class="icon d-ib">
@@ -121,7 +121,7 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import mHeader from '../components/header'
   import guessList from '../components/twocolumn'
-  import BScroll from 'better-scroll'
+  //  import BScroll from 'better-scroll'
   import { Badge } from 'vux'
   import noLoginFooter from '../components/noLoginBuyFooter'
   import ball from '../components/ball'
@@ -129,7 +129,7 @@
   import loading from '../components/loading'
   export default {
     name: 'detail',
-    components: {swiper, swiperSlide, mHeader, guessList, BScroll, Badge, noLoginFooter, ball, bus, loading},
+    components: {swiper, swiperSlide, mHeader, guessList, Badge, noLoginFooter, ball, bus, loading},
     data () {
       return {
         villageId: localStorage.getItem('m-villageId'),
@@ -212,9 +212,6 @@
             } else {
               this.collectFlag = false
             }
-            this.$nextTick(() => {
-              this._initScroll()
-            })
             this.loadingFlag = false
           }
           if (res.data.code === 101) {
@@ -244,9 +241,6 @@
             } else {
               this.collectFlag = false
             }
-            this.$nextTick(() => {
-              this._initScroll()
-            })
             this.loadingFlag = false
           }
           if (res.data.code === 101) {
@@ -310,16 +304,10 @@
           this.$refs.DetailSwiper.swiper.paginationContainer[0].style.display = 'none'
         }
       },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          probeType: 3
-        })
+      onScroll (_this) {
         // 下滑渐现动画
-        this.contentScroll.on('scroll', (pos) => {
-          let scrollTop = -Math.round(pos.y)
-          this.$refs.header.$el.style.opacity = scrollTop / 300
-        })
+        let scrollTop = -Math.round(_this.y)
+        this.$refs.header.$el.style.opacity = scrollTop / 300
       },
       addCart (item) {
         // 没登录跳转登录

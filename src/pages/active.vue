@@ -4,7 +4,7 @@
       <m-header :title="title">
         <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
       </m-header>
-      <div class="scroll" v-if="isActive" ref="content">
+      <scroll class="scroll" v-if="isActive">
         <div>
           <div class="activePic">
             <img v-lazy="keyBanleImages" alt="">
@@ -37,7 +37,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </scroll>
       <no-page :isActive="isActive"></no-page>
     </div>
     <loading :loadingFlag="loadingFlag" class="loading"></loading>
@@ -52,10 +52,9 @@
   import loading from '../components/loading'
   import ball from '../components/ball'
   import shopCarButton from '../components/buyCarButton'
-  import BScroll from 'better-scroll'
   export default {
     name: 'active',
-    components: {mHeader, noPage, loading, ball, shopCarButton, Badge, BScroll},
+    components: {mHeader, noPage, loading, ball, shopCarButton, Badge},
     data () {
       return {
         goodsList: [],
@@ -75,9 +74,6 @@
       this.post('/goods/getLabelGoods', parmas).then((res) => {
         if (res.data.code === 100) {
           this.goodsList = res.data.goodsList
-          this.$nextTick(() => {
-            this._initScroll()
-          })
           if (this.goodsList.length === 0) {
             this.isActive = false
           }
@@ -91,14 +87,6 @@
           localStorage.removeItem('m-token')
         }
       })
-    },
-    methods: {
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
-        })
-      }
     },
     computed: {
       totalBuyCount () {

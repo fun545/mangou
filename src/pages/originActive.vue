@@ -13,11 +13,11 @@
           <span class="text" :class="{'active':index===3}" @click="sort(1,3)">价格</span>
         </div>
       </div>
-      <div class="content" ref="content">
+      <scroll class="content">
         <div>
           <origin-list :goodsList="goodsList"></origin-list>
         </div>
-      </div>
+      </scroll>
     </div>
     <count-footer :login="!!token"></count-footer>
     <loading :loadingFlag="loadingFlag"></loading>
@@ -30,11 +30,10 @@
   import mHeader from '../components/header'
   import originList from '../components/twocolumn'
   import loading from '../components/loading'
-  import BScroll from 'better-scroll'
   import ball from '../components/ball.vue'
   import countFooter from '../components/countFooter.vue'
   export default {
-    components: {mHeader, originList, loading, BScroll, ball, countFooter},
+    components: {mHeader, originList, loading, ball, countFooter},
     name: 'originActive',
     data () {
       return {
@@ -68,9 +67,6 @@
             this.$store.commit('changeTotalPrice', res.data.totalPrice)
             this.goodsList = res.data.goodsList
             this.loadingFlag = false
-            this.$nextTick(() => {
-              this._initScroll()
-            })
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -79,12 +75,6 @@
             this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
-        })
-      },
-      _initScroll () {
-        this.contentScroll = new BScroll(this.$refs.content, {
-          click: true,
-          disableMouse: true
         })
       }
     }
@@ -128,7 +118,7 @@
       .t(182);
       left: 0;
       right: 0;
-     .b(100);
+      .b(100);
     }
   }
 </style>

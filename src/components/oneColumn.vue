@@ -14,12 +14,12 @@
         <h3 class="title">{{item.goodsName}}</h3>
         <!--<p class="des">{{item.guige}}</p>-->
         <div v-if="shopType===1">
-          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span></p>
         </div>
         <div v-if="shopType===2">
-          <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
-          <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+          <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span></p>
+          <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
         </div>
       </div>
       <buyCarButton :goods="item" v-if="!isCollect" :shopStatus="shopStatus"></buyCarButton>

@@ -73,7 +73,7 @@
         tel: localStorage.getItem('m-phone'),
         loginMethodFlag: true,
         agreeFlag: true,
-        type: 3,
+        type: 4,
         code: '', // 验证码
         loginType: 2, // 默认2 快速登录 1 账号登录
         userPassword: ''

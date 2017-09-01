@@ -118,7 +118,7 @@
   import ball from '../components/ball'
   import toTop from '../components/toTop'
   export default{
-    name: 'search',
+//    name: 'search',
     components: {
       searchHearder,
       Tab,
@@ -216,6 +216,7 @@
         this.loadMoreFlagNext = false
         this.thisTabFlag = false
         this.nextTabFlag = false
+        this.token = localStorage.getItem('m-token')
       },
       // tab切换
       tabClick (index) {
@@ -465,10 +466,50 @@
       },
       totalPrice: {
         set () {
-          return parseInt(this.$store.state.totalPrice)
+          return Number(this.$store.state.totalPrice)
         },
         get () {
-          return parseInt(this.$store.state.totalPrice)
+          return Number(this.$store.state.totalPrice)
+        }
+      }
+    },
+    watch: {
+      '$route' (to, from) {
+        console.log(to, from)
+        // 跟新token
+        if (to.path === '/search') {
+          this.token = localStorage.getItem('m-token')
+        }
+        if (from.path === '/login') {
+          this.goSearch()
+          // 搜索关键词
+          this.post('/goods/searchKeyWord', {storeId: 1, statusType: 1}).then((res) => {
+            if (res.data.code === 100) {
+              this.KeyWords = res.data.KeyWords
+            }
+            if (res.data.code === 101) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+            }
+            if (res.data.code === 102) {
+              this.$vux.toast.text(res.data.msg, 'middle')
+              localStorage.removeItem('m-token')
+            }
+          })
+          // 搜索历史记录
+          if (localStorage.getItem('m-token')) {
+            this.post('/goods/searchHistory', {token: this.token}).then((res) => {
+              if (res.data.code === 100) {
+                this.historyWords = res.data.KeyHistory
+              }
+              if (res.data.code === 101) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+              }
+              if (res.data.code === 102) {
+                this.$vux.toast.text(res.data.msg, 'middle')
+                localStorage.removeItem('m-token')
+              }
+            })
+          }
         }
       }
     },

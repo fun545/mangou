@@ -259,27 +259,36 @@
         ></OrderGoodsList>
         <div class="flex-box title-box">订单信息</div>
         <div v-if="logist">
-          <!--待付款 待发货status===1 status===2-->
-          <div class="time-info-box" v-if="orderDetail.status===1||orderDetail.status===2">
+          <!--待付款 status===1-->
+          <div class="time-info-box" v-if="orderDetail.status===1">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+          </div>
+          <!--待发货 status===2-->
+          <div class="time-info-box" v-if="orderDetail.status===2">
+            <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>付款时间：<span style="color:#666;">{{orderDetail.payTime | formatTime}}</span></p>
           </div>
           <!--已发货status===3-->
           <div class="time-info-box" v-if="orderDetail.status===3">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>付款时间：<span style="color:#666;">{{orderDetail.payTime | formatTime}}</span></p>
             <p>配送时间：<span style="color:#666;">{{logist.timeStr.fahuoTime}}</span></p>
           </div>
           <!--退换货status===4-->
           <div class="time-info-box" v-if="orderDetail.status===4">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>付款时间：<span style="color:#666;">{{orderDetail.payTime | formatTime}}</span></p>
             <p>退款时间：<span style="color:#666;">{{orderDetail.refundTime | formatTime}}</span></p>
           </div>
           <!--已取消 status===5-->
           <div class="time-info-box" v-if="orderDetail.status===5">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>付款时间：<span style="color:#666;">{{orderDetail.payTime | formatTime}}</span></p>
           </div>
           <!--已签收 已评价 status===6status===7-->
           <div class="time-info-box" v-if="orderDetail.status===6||orderDetail.status===7">
             <p>下单时间：<span style="color:#666;">{{logist.timeStr.orderTime}}</span></p>
+            <p>付款时间：<span style="color:#666;">{{orderDetail.payTime | formatTime}}</span></p>
             <p>配送时间：<span style="color:#666;">{{logist.timeStr.okFaHuoTime}}</span></p>
             <p>完成时间：<span style="color:#666;">{{logist.timeStr.finishTime}}</span></p>
           </div>
@@ -313,6 +322,7 @@
       </div>
       <!--申请退款 已付款-->
     </div>
+    <loading :loadingFlag="loadingFlag"></loading>
   </div>
 </template>
 
@@ -320,6 +330,7 @@
   import mHeader from '../components/header'
   import { XHeader, Timeline, TimelineItem } from 'vux'
   import OrderGoodsList from '../components/orderGoodsList'
+  import loading from '../components/loading'
   export default{
     name: 'orderInfo',
     components: {
@@ -327,7 +338,8 @@
       Timeline,
       TimelineItem,
       mHeader,
-      OrderGoodsList
+      OrderGoodsList,
+      loading
     },
     data () {
       return {
@@ -367,13 +379,14 @@
           localStorage.removeItem('m-token')
         }
       })
-      await this.post('/orders/viewLogistics', {
+      this.post('/orders/viewLogistics', {
         token: localStorage.getItem('m-token'),
         orderNum: this.orderDetail.orderNum,
         shopType: this.orderDetail.shopType
       }).then((res) => {
         if (res.data.code === 100) {
           this.logist = res.data
+          console.log(this.logist)
         }
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
@@ -382,6 +395,7 @@
           this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
         }
+        this.loadingFlag = false
       })
     },
     methods: {
@@ -416,7 +430,7 @@
               opts: 1
             }).then((res) => {
               if (res.data.code === 100) {
-                _this.$router.push({path: '/order_list'})
+                _this.$router.replace({path: '/order_list'})
                 return
               }
               if (res.data.code === 101) {
@@ -514,6 +528,16 @@
 
   .theme-color-s1 {
     color: @theme-color !important;
+  }
+
+  .order-info-view {
+    .loading {
+      position: absolute;
+      .t(92);
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
   }
 
   .order-info-view .view-content {

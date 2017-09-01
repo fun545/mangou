@@ -59,6 +59,7 @@
             storeId: this.storeId
           }).then((res) => {
             if (res.data.code === 100) {
+              console.log(res.data.totalPrice)
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
               bus.$emit('drop', el)

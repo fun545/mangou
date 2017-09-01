@@ -2,7 +2,7 @@
   <div class="order" @touchmove.prevent>
     <!--@click.native="confirm"-->
     <m-header :title="title" class="header">
-      <span class="back iconfont" @click="$router.push('/cart')" slot="icon">&#xe600;</span>
+      <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <div class="content" ref="content">
       <div>
@@ -218,7 +218,7 @@
     </div>
     <div class="footer">
       合计： <span
-      class="theme-color">{{totalPrice}}</span>
+      class="theme-color">￥{{totalPrice}}</span>
       <!--@click="confirm"-->
       <div class="bt f-r t-c" @click="confirm">
         确认下单
@@ -260,7 +260,8 @@
         localCityId: Number(localStorage.getItem('m-cityId')),
         localAreaId: Number(localStorage.getItem('m-areaId')),
         localVillageId: Number(localStorage.getItem('m-villageId')),
-        clickFlag: false
+        clickFlag: false,
+        totalPrice: 0
       }
     },
     created () {
@@ -276,7 +277,13 @@
         this.$store.commit('saveTotalPriceThis', totalPriceThis)
       }
     },
+    mounted () {
+      this._initScroll()
+    },
     methods: {
+      _initScroll () {
+        this.contentScroll = new BScroll(this.$refs.content, {click: true})
+      },
       // 快速购买运费计算
       CThisfreight (freight) {
         if (this.totalPriceThis >= this.thisShop.startPrice) {
@@ -404,6 +411,40 @@
             this.clickFlag = false
           })
         }
+      },
+      // 计算总价
+      CtotalPrice () {
+//        if (this.thisGoodsList.length > 0) {
+//          var thisFreight = Number(this.Thisfreight)
+//        } else {
+//          thisFreight = 0
+//        }
+//        // 次日达，自取
+//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '1') {
+//          var nextFreight = 0
+//        }
+//        // 次日达 送货上门
+//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '2') {
+//          nextFreight = Number(this.Nextfreight)
+//        }
+//        let total = Number(this.totalPriceThis) + this.$store.state.Thisfreight + Number(this.totalPriceNext) + this.$store.state.Nextfreight - Number(this.discount)
+//        console.log(total, 'test')
+//        this.totalPrice = total
+//        },
+//        get () {
+//          if (this.thisGoodsList.length > 0) {
+//            var thisFreight = Number(this.Thisfreight)
+//          } else {
+//            thisFreight = 0
+//          }
+//          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
+//            var nextFreight = Number(this.Nextfreight)
+//          } else {
+//            nextFreight = 0
+//          }
+//          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
+//          return total
+//        }
       }
     },
     computed: {
@@ -419,35 +460,38 @@
         return this.NextGoodsList.slice(0, this.limitNumberNext)
       },
       // 合计
-      totalPrice: {
-        set () {
-          if (this.thisGoodsList.length > 0) {
-            var thisFreight = Number(this.Thisfreight)
-          } else {
-            thisFreight = 0
-          }
-          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
-            var nextFreight = Number(this.Nextfreight)
-          } else {
-            nextFreight = 0
-          }
-          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
-          return total
-        },
-        get () {
-          if (this.thisGoodsList.length > 0) {
-            var thisFreight = Number(this.Thisfreight)
-          } else {
-            thisFreight = 0
-          }
-          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
-            var nextFreight = Number(this.Nextfreight)
-          } else {
-            nextFreight = 0
-          }
-          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
-          return total
-        }
+      totalPrice () {
+//        if (this.thisGoodsList.length > 0) {
+//          var thisFreight = Number(this.Thisfreight)
+//        } else {
+//          thisFreight = 0
+//        }
+//        // 次日达，自取
+//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '1') {
+//          var nextFreight = 0
+//        }
+//        // 次日达 送货上门
+//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '2') {
+//          nextFreight = Number(this.Nextfreight)
+//        }
+        let total = Number(this.totalPriceThis) + this.$store.state.Thisfreight + Number(this.totalPriceNext) + this.$store.state.Nextfreight - Number(this.discount)
+        console.log(total, 'test')
+        return total
+//        },
+//        get () {
+//          if (this.thisGoodsList.length > 0) {
+//            var thisFreight = Number(this.Thisfreight)
+//          } else {
+//            thisFreight = 0
+//          }
+//          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
+//            var nextFreight = Number(this.Nextfreight)
+//          } else {
+//            nextFreight = 0
+//          }
+//          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
+//          return total
+//        }
       },
       disabledAddressFlag: {
         set () {

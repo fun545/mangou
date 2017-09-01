@@ -154,6 +154,7 @@
       right: 0;
       bottom: 0;
       overflow: hidden;
+      background-color: #fff;
     }
     .noOrderList {
       background: url("../assets/noOrderList.png") no-repeat center center;

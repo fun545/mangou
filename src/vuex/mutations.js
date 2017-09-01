@@ -66,7 +66,7 @@ export default {
   },
   // 改变购物车总价
   changeTotalPrice (state, val) {
-    state.totalPrice = val
+    state.totalPrice = val.toFixed(1)
   },
   shopStatus (state, val) {
     state.shopStatus = val

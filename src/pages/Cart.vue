@@ -181,7 +181,7 @@
                 </div>
                 <div class="flex-box get-address" v-if="!nextFreightShow">
                   <div class="flex-item">取货地址</div>
-                  <div class="flex-col font-mind text-right color-666 address">{{nextShop.address}}</div>
+                  <div class="flex-col font-mind text-right color-666 address">{{thisShop.address}}</div>
                 </div>
               </div>
             </div>
@@ -249,7 +249,7 @@
   import loading from '../components/loading'
 
   export default {
-//    name: 'cart',
+    name: 'cart',
     components: {
       mFooter,
       XHeader,
@@ -293,26 +293,78 @@
         token: localStorage.getItem('m-token'),
         loadingFlag: true, // 加载页面
         fastClick: false,
-        loadingBgColorFlag: false
+        loadingBgColorFlag: false,
+        Cnextfreight: 0
       }
     },
     created () {
       this.createdMethod()
     },
-    watch: {
-      '$route' (to, from) {
-        this.loadingFlag = true
-        this.loadingBgColorFlag = true
-        this.createdMethod()
-        this.$nextTick(() => {
-          setTimeout(() => {
-            if (typeof this.contentScroll.refresh === 'function') {
-              this.contentScroll.refresh()
-            }
-          }, 1000)
-        })
-      }
-    },
+//    watch: {
+//      '$route' (to, from) {
+//        this.formatData()
+//        if (to.path === '/cart' || from.path === '/cart') {
+//          this.loadingBgColorFlag = true
+//          if (this.token) {
+//            this.post('/car/getUserCar', {
+//              token: this.token,
+//              villageId: localStorage.getItem('m-villageId')
+//            }).then((res) => {
+//              this.$store.state.cartInfo = res.data
+//              if (res.data.code === 100) {
+//                this.nextAllChecked = false
+//                this.thisAllChecked = false
+//                this.allChecked = false
+//                this.loadingFlag = false
+//                // 商品列表 及时送
+//                this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+//                // 商品列表 次日达
+//                this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+//                // 运费 次日达
+//                this.Nextfreight = res.data.carList[0].storeShop.freight
+//                // 运费 及时送
+//                this.Thisfreight = res.data.carList[1].shandianShop.freight
+//                console.log(this.Thisfreight)
+//                // 及时送相关信息
+//                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
+//                this.thisShop = res.data.carList[1].shandianShop
+//                // 次日达相关信息
+//                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
+//                this.nextShop = res.data.carList[0].storeShop
+//            this.$store.state.thisShop = res.data.carList[1].shandianShop
+//            this.$store.state.nextShop = res.data.carList[0].storeShop
+//                // 收货相关信息
+//            this.$store.state.shippingInfo = res.data.shippingInfo
+//                this.$store.commit('saveShippingInfo', res.data.shippingInfo)
+//                // 判断店铺营业状态
+//                this.shopStatusMethods(this.thisShop.shopStatus)
+//                // 购物车数量
+//                this.$store.commit('increment', res.data.totalBuyCount)
+//                this.$nextTick(() => {
+//                  this._initScroll()
+//                })
+//              }
+//              if (res.data.code === 101) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//              }
+//              if (res.data.code === 102) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//                localStorage.removeItem('m-token')
+//              }
+//            })
+//            // 初始化默认配送方式
+//            this.$store.state.sendWay = {key: '1', value: '客户自取'}
+//          }
+//          this.$nextTick(() => {
+//            setTimeout(() => {
+//              if (typeof this.contentScroll.refresh === 'function') {
+//                this.contentScroll.refresh()
+//              }
+//            }, 1000)
+//          })
+//        }
+//      }
+//    },
     methods: {
       createdMethod () {
         // 获取购物车列表数据
@@ -321,7 +373,7 @@
             token: this.token,
             villageId: localStorage.getItem('m-villageId')
           }).then((res) => {
-            this.$store.state.cartInfo = res.data
+            console.log(res.data)
             if (res.data.code === 100) {
               this.loadingFlag = false
               // 商品列表 及时送
@@ -726,9 +778,11 @@
         if (val.key === '1') {
           this.nextFreightShow = false
           this.$store.state.sendWay = val
+          this.Cnextfreight = 0
         } else {
           this.nextFreightShow = true
           this.$store.state.sendWay = val
+          this.Cnextfreight = this.Nextfreight
         }
       },
       // 编辑
@@ -777,13 +831,14 @@
             // 配送费 及时送
 //            this.$store.state.Thisfreight = Number(this.Thisfreight).toFixed(1)
             // 配送费 次日达
-            if (this.demo11.key === '1') {
-              this.$store.commit('saveNextfreight', 0)
-            }
-            // 次日达且是送货上门
-            if (hasNext) {
-              this.$store.commit('saveNextfreight', Number(this.Nextfreight).toFixed(1))
-            }
+//            if (this.demo11.key === '1') {
+//              this.$store.commit('saveNextfreight', 0)
+//            }
+//            // 次日达且是送货上门
+//            if (hasNext) {
+//              this.$store.commit('saveNextfreight', Number(this.Nextfreight).toFixed(1))
+//            }
+            this.$store.commit('saveNextfreight', Number(this.Cnextfreight).toFixed(1))
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
           }
@@ -890,12 +945,24 @@
       // 优惠金额
       Discount () {
         var count = 0
-        this.NextGoodsList.forEach((item, index) => {
+        for (let i = 0; i < this.NextGoodsList.length; i++) {
+          let item = this.NextGoodsList[i]
           if (item.checked) {
-            count += (parseFloat(item.canKaoPrice) - parseFloat(item.price)) * parseInt(item.buyCount)
+            // 规避及时送价格为0
+            if (Number(item.canKaoPrice) === 0) {
+              continue
+            }
+            count += (Number(item.canKaoPrice) - Number(item.price)) * Number(item.buyCount)
           }
-        })
+        }
         return count.toFixed(1)
+//        this.NextGoodsList.forEach((item, index) => {
+//          if (item.checked) {
+//            if (Number(item.canKaoPrice) === 0) {}
+//            count += (Number(item.canKaoPrice) - Number(item.price)) * Number(item.buyCount)
+//          }
+//        })
+//        return count.toFixed(1)
       }
       // 暂时不做
 //      singlePriceNext () {

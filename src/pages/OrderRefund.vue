@@ -77,7 +77,7 @@
           if (res.data.code === 100) {
             this.$vux.toast.text('正在审核中', 'middle')
             setTimeout(() => {
-              this.$router.push({path: '/user'})
+              this.$router.replace({path: '/user'})
             }, 3000)
             return
           }
@@ -89,7 +89,6 @@
             localStorage.removeItem('m-token')
           }
         })
-        this.$vux.alert.show({content: '退款成功'})
       },
       selectReason (val) {
         if (val.key === '4') {

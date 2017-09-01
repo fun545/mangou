@@ -24,9 +24,9 @@
           </swiper>
           <!-- 次日达/即时达 -->
           <div class="link-box">
-            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt="">
-            </router-link>
             <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt="">
+            </router-link>
+            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt="">
             </router-link>
           </div>
           <div class="active-box">
@@ -65,9 +65,9 @@
                     <div class="des f-l">
                       <h3 class="title ui-ellipsis-clamp-2">{{specialPriceGoodsList[0].goodsName}}</h3>
                       <p class="this-price">即时价：<span class="s1">¥</span><span
-                        class="number">{{specialPriceGoodsList[0].canKaoPrice}}</span></p>
+                        class="number">{{specialPriceGoodsList[0].canKaoPrice.toFixed(1)}}</span></p>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
-                        class="number">{{specialPriceGoodsList[0].price}}</span></p>
+                        class="number">{{specialPriceGoodsList[0].price.toFixed(1)}}</span></p>
                     </div>
                     <div class="pic f-l">
                       <!--<lazy-image-->
@@ -82,9 +82,9 @@
                     <div class="des f-l">
                       <h3 class="title">{{specialPriceGoodsList[1].goodsName}}</h3>
                       <p class="this-price">即时价：<span class="s1">¥</span><span
-                        class="number">{{specialPriceGoodsList[1].canKaoPrice}}</span></p>
+                        class="number">{{specialPriceGoodsList[1].canKaoPrice.toFixed(1)}}</span></p>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
-                        class="number">{{specialPriceGoodsList[1].price}}</span></p>
+                        class="number">{{specialPriceGoodsList[1].price.toFixed(1)}}</span></p>
                     </div>
                     <div class="pic f-l">
                       <!--<lazy-image-->
@@ -124,9 +124,9 @@
                     <div class="des">
                       <h3 class="title">{{item.goodsName}}</h3>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
-                        class="number">{{item.canKaoPrice}}</span>
+                        class="number">{{item.canKaoPrice.toFixed(1)}}</span>
                       </p>
-                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
                     </div>
                   </div>
                   <buy-car-button :goods="item"></buy-car-button>

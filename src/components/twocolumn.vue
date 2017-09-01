@@ -15,8 +15,9 @@
       </div>
       <div class="bt">
         <div>
-          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
+          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+          </p>
           <buy-car-button :goods="item"></buy-car-button>
         </div>
       </div>

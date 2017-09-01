@@ -2,7 +2,7 @@
   <div>
     <div class="detail-wrap">
       <m-header :title="title" ref="header"></m-header>
-      <div class="back-wrap" @click="$router.back()">
+      <div class="back-wrap" @click="$router.back(-1)">
         <span class="back iconfont d-ib" slot="icon">&#xe654;</span>
       </div>
       <scroll class="content" :listenScroll="true" @scroll="onScroll">
@@ -44,9 +44,10 @@
               <p class="size">商品规格：{{goodsDetail.guige}}</p>
               <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
             </div>
-            <div class="collet-wrap" @click="collectGoods">
-              <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
-              <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
+            <div class="collet-wrap t-c" @click="collectGoods">
+                <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
+                <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
+                <div>收藏</div>
             </div>
           </div>
           <div class="guess">
@@ -573,10 +574,17 @@
             .lh(56);
           }
         }
-        .collect {
+        .collet-wrap{
           position: absolute;
-          .r(42);
-          .t(94);
+          .r(30);
+          .t(74);
+          .pt(20);
+          .pr(20);
+         /* .pb(20);*/
+          .pl(20);
+          color: @theme-color;
+        }
+        .collect {
           .fs(41);
           color: @theme-color;
         }

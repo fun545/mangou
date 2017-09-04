@@ -37,6 +37,7 @@ const state = {
   Thisfreight: '', // 运费 及时送
   Nextfreight: '', // 运费 次日达
   shippingInfo: '', // 收货相关信息
+  orderTotalPrice: 0, // 订单合计
   selectedTotalCountThis: '', // 订单商品数 及时送
   selectedTotalCountNext: '',  // 订单商品数 次日达
   totalPriceThis: '',   // 确认订单商品总价 及时送

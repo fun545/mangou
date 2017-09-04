@@ -824,21 +824,12 @@
             }
             // 确认订单所选商品 及时送
             this.$store.commit('SaveCarOrderThisGoodsList', thisGoodsList)
+            // 确认订单所选商品 次日达
             this.$store.commit('SaveCarOrderNextGoodsList', nextGoodsList)
-//            this.$store.state.carOrderThisGoodsList = thisGoodsList
-//            // 确认订单所选商品 次日达
-//            this.$store.state.carOrderNextGoodsList = nextGoodsList
-            // 配送费 及时送
-//            this.$store.state.Thisfreight = Number(this.Thisfreight).toFixed(1)
-            // 配送费 次日达
-//            if (this.demo11.key === '1') {
-//              this.$store.commit('saveNextfreight', 0)
-//            }
-//            // 次日达且是送货上门
-//            if (hasNext) {
-//              this.$store.commit('saveNextfreight', Number(this.Nextfreight).toFixed(1))
-//            }
+            // 次日达运费
             this.$store.commit('saveNextfreight', Number(this.Cnextfreight).toFixed(1))
+            // 合计
+            this.$store.commit('saveOrderTotalPrice')
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
           }
@@ -903,7 +894,7 @@
             count += item.buyCount
           }
         })
-        this.$store.state.selectedTotalCountThis = count
+        this.$store.commit('saveSelectedTotalCountThis', count)
         return count
       },
       // 选中商品数量 次日达
@@ -914,7 +905,7 @@
             count += item.buyCount
           }
         })
-        this.$store.state.selectedTotalCountNext = count
+        this.$store.commit('saveSelectedTotalCountNext', count)
         return count
       },
       // 运费计算 及时送
@@ -994,10 +985,12 @@
       color: #000;
       .mb(5);
     }
+
     .p2 {
       color: @theme-color;
       .fs(24);
     }
+
   }
 
   .pic {
@@ -1024,6 +1017,7 @@
     .fs(38);
     color: #fff;
     background: @theme-color;
+
     .edit {
       position: absolute;
       top: 0;
@@ -1033,6 +1027,7 @@
       .lh(92);
       .fs(28);
     }
+
   }
 
   .content-wrapper {
@@ -1041,17 +1036,22 @@
     right: 0;
     .t(92);
     .b(100);
+
     .loading {
+
       &.loading-bg-color {
         background-color: rgba(0, 0, 0, 0);
       }
+
     }
   }
 
   .content-wrapper .content-view-scroller .this-wrap, .content-wrapper .content-view-scroller .next-wrap {
+
     .block-title {
       .ml(138);
     }
+
   }
 
   .car-noLogin {
@@ -1062,6 +1062,7 @@
     bottom: 0;
     background: url("../assets/buyCarNoLogin.png") no-repeat center 30%;
     background-size: 5.507rem 7.2667rem;
+
     .login-bt {
       .w(200);
       .h(70);
@@ -1074,13 +1075,16 @@
       border-radius: 5px;
       text-align: center;
     }
+
   }
 
   .input-checkbox {
+
     &:before {
       .fs(32);
       color: #666;
     }
+
   }
 
   .select-all-icon {
@@ -1152,9 +1156,11 @@
   .send {
     .fs(30);
     color: #666;
+
     .flex-col {
       .fs(26);
     }
+
   }
 
   .send-way-wrap {
@@ -1168,9 +1174,11 @@
   }
 
   .select-way-wrap {
+
     .item {
       .fs(28) !important;
     }
+
   }
 
   .get-address {
@@ -1178,9 +1186,11 @@
     .h(92);
     .fs(30);
     color: #666;
+
     .address {
       .fs(25);
     }
+
   }
 
   .checked-icon-wrap {
@@ -1198,6 +1208,7 @@
     .b(100);
     background: url("../assets/carNoGoods.png") no-repeat center 20%;
     background-size: 5.507rem 7.2667rem;
+
     .bt {
       position: absolute;
       .w(212);
@@ -1209,6 +1220,7 @@
       color: #fff;
       border-radius: 3px;
     }
+
   }
 
   .cart-view {
@@ -1223,6 +1235,7 @@
     [class^=vux-header-] {
       color: #fff;
     }
+
   }
 
   .cart-view .content-view-scroller {
@@ -1233,6 +1246,7 @@
     right: 0;
     .b(100);
     overflow: hidden;
+
     .flex-box {
       align-items: center;
       .pl(30);
@@ -1241,18 +1255,24 @@
       .pb(23);
       background-color: #fff;
       border-bottom: 1px solid #ddd;
+
       img {
         .w(140);
         .h(140);
       }
-      &.this {
+
+      &
+      .this {
         box-sizing: border-box;
         .h(100);
       }
-      &.this-goods {
+
+      &
+      .this-goods {
         .h(188);
         box-sizing: border-box;
       }
+
       /*.check-all {*/
       /*.select-all-icon {*/
 
@@ -1263,11 +1283,13 @@
     .cart-view .content-view-scroller .default-checker {
       .fs(50) !important;
     }
+
     .block-title {
       .ml(150);
       font: italic bold 16px/1 'Microsoft Yahei';
       .fs(38);
       vertical-align: middle;
+
       .iconfont {
         .mr(10);
         display: inline-block;
@@ -1280,6 +1302,7 @@
         .lh(46);
         vertical-align: middle;
       }
+
     }
 
     .font-mind {
@@ -1294,12 +1317,15 @@
       color: #ffffff;
       background-color: #0493ed;
     }
+
     .next {
       .mt(60);
     }
+
     .this {
       position: relative;
     }
+
     [class*=next] .input-checkbox:checked, .color-fc766d {
       color: #fc766d;
     }
@@ -1329,6 +1355,7 @@
       color: #fff;
       background-color: #f75439;
     }
+
     .input-disabel {
       .ml(-10);
       .mr(10);
@@ -1459,10 +1486,12 @@
       vertical-align: middle;
       font: 12px/1.2 'Microsoft Yahei';
       .fs(28);
+
       .iconfont {
         font-size: inherit;
         vertical-align: middle;
       }
+
     }
   }
 
@@ -1477,12 +1506,15 @@
     .fs(28);
     background-color: #fff;
     align-items: center;
+
     .select-all-icon {
       .mr(0);
       .w(45);
+
       .iconfont {
         margin-right: 0;
       }
+
     }
     .input-checkbox:checked, span {
       color: #ff5500;
@@ -1516,6 +1548,7 @@
       color: #fff;
       background-color: #ff5500;
     }
+
   }
 
 

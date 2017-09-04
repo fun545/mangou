@@ -218,7 +218,7 @@
     </div>
     <div class="footer">
       合计： <span
-      class="theme-color">￥{{totalPrice}}</span>
+      class="theme-color">￥{{orderTotalPrice}}</span>
       <!--@click="confirm"-->
       <div class="bt f-r t-c" @click="confirm">
         确认下单
@@ -231,7 +231,7 @@
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
   //  import { wxConfig, bus } from '../util/util'
-  export default{
+  export default {
     name: 'confirmOrder',
     components: {
       mHeader,
@@ -241,9 +241,7 @@
       return {
         title: '确认下单',
         sendWay: this.$store.state.sendWay, // 配送方式  1 自取 2 送货上门
-        selectedTotalCountThis: this.$store.state.selectedTotalCountThis, // 商品数量 及时送
-        selectedTotalCountNext: this.$store.state.selectedTotalCountNext, // 商品数量 次日达
-//        totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
+//       totalPriceThis: this.$store.state.totalPriceThis, // 商品总价 及时送
 //        totalPriceNext: this.$store.state.totalPriceNext, // 商品总价 次日达
         showMoreThis: true,  // 显示更多FLag 及时送
         showMoreNext: true,   // 显示更多FLag 次日达
@@ -254,27 +252,13 @@
         payType: 2, // 1 支付宝 2 微信
         leaveMsgThis: '', // 留言 及时送
         leaveMsgNext: '', // 留言 次日达
-        cartInfo: this.$store.state.cartInfo, // 购物车信息
+//        cartInfo: this.$store.state.cartInfo, // 购物车信息
         userInfo: JSON.parse(localStorage.getItem('m-userInfo')), // 用户信息
-        orderList: '',
+        orderList: [], // 生成的订单列表
         localCityId: Number(localStorage.getItem('m-cityId')),
         localAreaId: Number(localStorage.getItem('m-areaId')),
         localVillageId: Number(localStorage.getItem('m-villageId')),
-        clickFlag: false,
-        totalPrice: 0
-      }
-    },
-    created () {
-      // 快速购买
-      if (this.$route.query.fastBuy === 'fastBuy') {
-        var info = this.fastBuyInfo
-        this.$store.commit('saveThisShop', info.carList[0].shandianShop)
-        this.$store.commit('SaveCarOrderThisGoodsList', info.carList[0].shandianShop.goodsList)
-        this.$store.commit('SaveCarOrderNextGoodsList', [])
-        this.selectedTotalCountThis = info.totalBuyCount
-        this.CThisfreight(info.carList[0].shandianShop.freight)
-        var totalPriceThis = Number(this.thisGoodsList[0].buyCount) * Number(this.thisGoodsList[0].canKaoPrice)
-        this.$store.commit('saveTotalPriceThis', totalPriceThis)
+        clickFlag: false
       }
     },
     mounted () {
@@ -283,14 +267,6 @@
     methods: {
       _initScroll () {
         this.contentScroll = new BScroll(this.$refs.content, {click: true})
-      },
-      // 快速购买运费计算
-      CThisfreight (freight) {
-        if (this.totalPriceThis >= this.thisShop.startPrice) {
-          this.$store.commit('saveThisFreight', 0)
-        } else {
-          this.$store.commit('saveThisFreight', freight.toFixed(1))
-        }
       },
       // 点击显示更多与隐藏 togle 及时送
       setCountThis () {
@@ -399,7 +375,7 @@
           }).then((res) => {
             if (res.data.code === 100) {
               this.$store.commit('saveOrderNumList', res.data.orderNumList)
-              this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.totalPrice, res.data.orderNumList, this)
+              this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.orderTotalPrice, res.data.orderNumList, this)
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -411,40 +387,6 @@
             this.clickFlag = false
           })
         }
-      },
-      // 计算总价
-      CtotalPrice () {
-//        if (this.thisGoodsList.length > 0) {
-//          var thisFreight = Number(this.Thisfreight)
-//        } else {
-//          thisFreight = 0
-//        }
-//        // 次日达，自取
-//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '1') {
-//          var nextFreight = 0
-//        }
-//        // 次日达 送货上门
-//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '2') {
-//          nextFreight = Number(this.Nextfreight)
-//        }
-//        let total = Number(this.totalPriceThis) + this.$store.state.Thisfreight + Number(this.totalPriceNext) + this.$store.state.Nextfreight - Number(this.discount)
-//        console.log(total, 'test')
-//        this.totalPrice = total
-//        },
-//        get () {
-//          if (this.thisGoodsList.length > 0) {
-//            var thisFreight = Number(this.Thisfreight)
-//          } else {
-//            thisFreight = 0
-//          }
-//          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
-//            var nextFreight = Number(this.Nextfreight)
-//          } else {
-//            nextFreight = 0
-//          }
-//          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
-//          return total
-//        }
       }
     },
     computed: {
@@ -460,38 +402,9 @@
         return this.NextGoodsList.slice(0, this.limitNumberNext)
       },
       // 合计
-      totalPrice () {
-//        if (this.thisGoodsList.length > 0) {
-//          var thisFreight = Number(this.Thisfreight)
-//        } else {
-//          thisFreight = 0
-//        }
-//        // 次日达，自取
-//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '1') {
-//          var nextFreight = 0
-//        }
-//        // 次日达 送货上门
-//        if (this.NextGoodsList.length > 0 && this.sendWay.key === '2') {
-//          nextFreight = Number(this.Nextfreight)
-//        }
-        let total = Number(this.totalPriceThis) + this.$store.state.Thisfreight + Number(this.totalPriceNext) + this.$store.state.Nextfreight - Number(this.discount)
-        console.log(total, 'test')
-        return total
-//        },
-//        get () {
-//          if (this.thisGoodsList.length > 0) {
-//            var thisFreight = Number(this.Thisfreight)
-//          } else {
-//            thisFreight = 0
-//          }
-//          if (this.NextGoodsList.length > 0 && this.sendWay.key !== '1') {
-//            var nextFreight = Number(this.Nextfreight)
-//          } else {
-//            nextFreight = 0
-//          }
-//          let total = (Number(this.totalPriceThis) + thisFreight + Number(this.totalPriceNext) + nextFreight - Number(this.discount)).toFixed(1)
-//          return total
-//        }
+      orderTotalPrice () {
+//        return this.$store.state.orderTotalPrice
+        return this.$store.state.orderTotalPrice
       },
       disabledAddressFlag: {
         set () {
@@ -511,21 +424,26 @@
       nextShop () {
         return this.$store.state.nextShop
       },
+      // 及时送总价
       totalPriceThis () {
         return this.$store.state.totalPriceThis
       },
+      // 次日达总价
       totalPriceNext () {
         return this.$store.state.totalPriceNext
       },
+      // 收获地址信息
       shippingInfo () {
         return this.$store.state.shippingInfo
       },
+      // 及时送运费
       Thisfreight () {
         return this.$store.state.Thisfreight
       },
+      // 次日达运费
       Nextfreight () {
         return this.$store.state.Nextfreight
-      }, // 运费 次日达
+      },
       // 及时送 商品
       thisGoodsList () {
         return this.$store.state.carOrderThisGoodsList
@@ -533,6 +451,14 @@
       // 次日达 商品
       NextGoodsList () {
         return this.$store.state.carOrderNextGoodsList
+      },
+      // 商品数量 及时送
+      selectedTotalCountThis () {
+        return this.$store.state.selectedTotalCountThis
+      },
+      // 商品数量 次日达
+      selectedTotalCountNext () {
+        return this.$store.state.selectedTotalCountNext
       }
     }
   }

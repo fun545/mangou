@@ -45,9 +45,9 @@
               <p class="numbering">商品编号：{{goodsDetail.huohao}}</p>
             </div>
             <div class="collet-wrap t-c" @click="collectGoods">
-                <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
-                <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
-                <div>收藏</div>
+              <div class="iconfont collect" v-if="collectFlag">&#xe641;</div>
+              <div class="iconfont collect" v-if="!collectFlag">&#xe65d;</div>
+              <div>收藏</div>
             </div>
           </div>
           <div class="guess">
@@ -128,6 +128,7 @@
   import ball from '../components/ball'
   import { bus } from '../util/util'
   import loading from '../components/loading'
+
   export default {
     name: 'detail',
     components: {swiper, swiperSlide, mHeader, guessList, Badge, noLoginFooter, ball, bus, loading},
@@ -430,9 +431,25 @@
               this.$router.push('/selecteAddress')
               return
             }
+            var info = res.data.carMap
+            // 收获地址信息
             this.$store.commit('saveShippingInfo', res.data.carMap.shippingInfo)
-            this.$store.commit('getFastBuyInfo', res.data.carMap)
-            this.$router.push({path: '/confirmOrder', query: {fastBuy: 'fastBuy'}})
+            // 及时送购物车相关信息
+            this.$store.commit('saveThisShop', info.carList[0].shandianShop)
+            // 及时送商品
+            this.$store.commit('SaveCarOrderThisGoodsList', info.carList[0].shandianShop.goodsList)
+            // 次日达商品
+            this.$store.commit('SaveCarOrderNextGoodsList', [])
+            // 及时送选择商品数量
+            this.$store.commit('saveSelectedTotalCountThis', info.totalBuyCount)
+            // 及时送总价
+            var totalPriceThis = Number(info.carList[0].shandianShop.goodsList[0].buyCount) * Number(info.carList[0].shandianShop.goodsList[0].canKaoPrice)
+            this.$store.commit('saveTotalPriceThis', totalPriceThis)
+            // 及时送运费
+            this.CThisfreight(info, totalPriceThis)
+            // 合计
+            this.$store.commit('saveOrderTotalPrice', 'fastBuy')
+            this.$router.push({path: '/confirmOrder'})
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -444,6 +461,14 @@
             return
           }
         })
+      },
+      // 快速购买运费
+      CThisfreight (info, totalPriceThis) {
+        if (totalPriceThis >= info.carList[0].shandianShop.startPrice) {
+          this.$store.commit('saveThisFreight', 0)
+        } else {
+          this.$store.commit('saveThisFreight', info.carList[0].shandianShop.freight.toFixed(1))
+        }
       }
     },
     computed: {
@@ -574,13 +599,13 @@
             .lh(56);
           }
         }
-        .collet-wrap{
+        .collet-wrap {
           position: absolute;
           .r(30);
           .t(74);
           .pt(20);
           .pr(20);
-         /* .pb(20);*/
+          /* .pb(20);*/
           .pl(20);
           color: @theme-color;
         }

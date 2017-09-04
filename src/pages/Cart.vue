@@ -373,7 +373,6 @@
             token: this.token,
             villageId: localStorage.getItem('m-villageId')
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.loadingFlag = false
               // 商品列表 及时送
@@ -384,7 +383,6 @@
               this.Nextfreight = res.data.carList[0].storeShop.freight
               // 运费 及时送
               this.Thisfreight = res.data.carList[1].shandianShop.freight
-              console.log(this.Thisfreight)
               // 及时送相关信息
               this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
               this.thisShop = res.data.carList[1].shandianShop
@@ -910,7 +908,6 @@
       },
       // 运费计算 及时送
       CThisfreight () {
-        console.log(this.thisTotalPrice, this.thisShop.startPrice)
         if (this.thisTotalPrice >= this.thisShop.startPrice) {
           this.$store.commit('saveThisFreight', 0)
           return '免运费'

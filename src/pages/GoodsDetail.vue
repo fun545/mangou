@@ -424,7 +424,6 @@
           villageId: localStorage.getItem('m-villageId')
         }).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data.carMap)
             // 判断没有收获地址
             if (!res.data.carMap.shippingInfo) {
               this.$vux.toast.text('当前无可用收货地址，请填写', 'middle')

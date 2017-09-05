@@ -5,7 +5,7 @@
       <span class="back iconfont" @click="$router.back(-1)" slot="icon">&#xe600;</span>
     </m-header>
     <!-- 页面内容 -->
-    <scroll class="view-content">
+    <div class="view-content" ref="content">
       <div>
         <!-- 订单状态-->
         <div class="flex-box top-info-box">
@@ -250,7 +250,7 @@
         <OrderGoodsList
           :goodsList="orderDetail.goodsList"
           :goodsTotalCount="Number(orderDetail.buyTotalCount)"
-          :scrollObj="contentScrll"
+          :scrollObj="contentScroll"
           :shopType="orderDetail.shopType"
           :totalPrice="Number(orderDetail.totalPrice)"
           :freight="freight"
@@ -294,7 +294,7 @@
           </div>
         </div>
       </div>
-    </scroll>
+    </div>
     <!-- 底部按钮 -->
     <div class="view-footer">
       <!--申请退款 已付款 已收货待评价-->
@@ -331,7 +331,9 @@
   import { XHeader, Timeline, TimelineItem } from 'vux'
   import OrderGoodsList from '../components/orderGoodsList'
   import loading from '../components/loading'
-  export default{
+  import Jroll from 'jroll'
+
+  export default {
     name: 'orderInfo',
     components: {
       XHeader,
@@ -339,12 +341,13 @@
       TimelineItem,
       mHeader,
       OrderGoodsList,
-      loading
+      loading,
+      Jroll
     },
     data () {
       return {
         orderDetail: '', // 订单详情
-        contentScrll: {},
+        contentScroll: {},
         freight: 3,
         discount: 0, // 优惠金额
         logist: '', // 物流信息
@@ -387,6 +390,9 @@
         if (res.data.code === 100) {
           this.logist = res.data
           console.log(this.logist)
+          this.$nextTick(() => {
+            this._initScroll()
+          })
         }
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
@@ -490,6 +496,9 @@
         this.$store.commit('savePayOrder', this.orderDetail)
         this.$router.push({path: '/goPay'})
         return
+      },
+      _initScroll () {
+        this.contentScroll = new Jroll(this.$refs.content)
       }
     },
     filters: {

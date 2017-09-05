@@ -5,7 +5,7 @@
       <div class="back-wrap" @click="$router.back(-1)">
         <span class="back iconfont d-ib" slot="icon">&#xe654;</span>
       </div>
-      <scroll class="content" :listenScroll="true" @scroll="onScroll">
+      <scroll class="content" :listenScroll="true" @scroll="onScroll" @getScrollObj="getScrollObj">
         <div>
           <swiper :options="swiperOption" ref="DetailSwiper" class="DetailSwiper">
             <swiper-slide class="swiper-img" v-for="(item, index) in swiperList" :key="index">
@@ -53,13 +53,14 @@
           <div class="guess">
             <div class="title"></div>
             <div class="d-content">
-              <guess-list :goodsList="goodsList"></guess-list>
+              <guess-list :goodsList="goodsList" type='goodsDetail' @changeData="changeData"
+                          :scrollObj="scrollObj"></guess-list>
             </div>
           </div>
         </div>
         <loading :loadingFlag="loadingFlag" class="loading"></loading>
       </scroll>
-      <div class="footer" v-if="login">
+      <div class="footer" v-if="token">
         <div class="buy-car" @click="$router.push('/cart')">
           <div class="icon d-ib">
             <i class="iconfont center">&#xe613;</i>
@@ -80,7 +81,7 @@
           立即购买
         </div>
       </div>
-      <no-login-footer v-if="!login"></no-login-footer>
+      <no-login-footer v-if="!token"></no-login-footer>
       <!--立即下单-->
       <div class="fast-buy" v-if="close">
         <div class="inner">
@@ -143,7 +144,6 @@
         collectId: '',
         collectFlag: '',
         opcity: 0,
-        login: true,
         swiperOption: {
           notNextTick: true,
           autoplay: 3000,
@@ -154,115 +154,98 @@
         countNm: 1,
         close: false,
         token: localStorage.getItem('m-token'),
-        shopStatus: 0 // 店铺状态
+        shopStatus: 0, // 店铺状态
+        goodsId: this.$route.query.goodsId,
+        scrollObj: {}
       }
     },
     created () {
       if (this.$route.query.shopStatus) {
         this.shopStatus = Number(this.$route.query.shopStatus)
       }
-      if (!this.token) {
-        this.noLogin()
-      } else {
-        this.hasLogin()
-      }
+      this.getData()
     },
     methods: {
+      // 点击收藏或更新收藏状态
       getDetail () {
-        if (!localStorage.getItem('m-token')) {
-          this.$router.push({path: 'login'})
+        this.post('/goods/goodsDetail', {
+          goodsId: this.goodsId,
+          token: this.token,
+          villageId: this.villageId
+        }).then((res) => {
+          if (res.data.code === 100) {
+            this.goodsDetail = res.data.goodsDetail
+            if (res.data.goodsDetail.isCollect === 1) {
+              this.collectFlag = true
+            } else {
+              this.collectFlag = false
+            }
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
+      },
+      // 初始化页面数据
+      getData () {
+        this.loadingFlag = true
+        var paramas = {}
+        paramas.goodsId = this.goodsId
+        paramas.villageId = this.villageId
+        this.token = localStorage.getItem('m-token')
+        if (this.token) {
+          paramas.token = this.token
+        }
+        this.post('/goods/goodsDetail', paramas).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 100) {
+            this.goodsDetail = res.data.goodsDetail
+            this.detailInfo = res.data
+            this.$store.commit('increment', res.data.totalBuyCount)
+            this.$store.commit('changeTotalPrice', res.data.totalPrice)
+            this.goodsList = res.data.listGoods
+            this.swiperList = res.data.goodsDetail.imagesList
+            this.computedSwiperLength()
+            if (res.data.goodsDetail.isCollect === 1) {
+              this.collectFlag = true
+            } else {
+              this.collectFlag = false
+            }
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+          setTimeout(() => {
+            this.loadingFlag = false
+          }, 200)
+        })
+      },
+      // 猜你喜欢进入详情更新数据
+      changeData (goodsId) {
+        this.goodsId = goodsId
+        this.getData()
+      },
+      // 收藏
+      async collectGoods () {
+        if (!this.token) {
+          this.$router.push({path: '/login'})
+          this.$vux.toast('请登录', 'top')
           return
         }
-        this.post('/goods/goodsDetail', {
-          goodsId: this.$route.query.goodsId,
-          token: localStorage.getItem('m-token'),
-          villageId: this.villageId
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.goodsDetail = res.data.goodsDetail
-            if (res.data.goodsDetail.isCollect === 1) {
-              this.collectFlag = true
-            } else {
-              this.collectFlag = false
-            }
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-      },
-      hasLogin () {
-        this.post('/goods/goodsDetail', {
-          goodsId: this.$route.query.goodsId,
-          token: localStorage.getItem('m-token'),
-          villageId: this.villageId
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.goodsDetail = res.data.goodsDetail
-            this.detailInfo = res.data
-            this.$store.commit('increment', res.data.totalBuyCount)
-            this.$store.commit('changeTotalPrice', res.data.totalPrice)
-            this.goodsList = res.data.listGoods
-            this.swiperList = res.data.goodsDetail.imagesList
-            this.computedSwiperLength()
-            if (res.data.goodsDetail.isCollect === 1) {
-              this.collectFlag = true
-            } else {
-              this.collectFlag = false
-            }
-            this.loadingFlag = false
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-        })
-      },
-      noLogin () {
-        this.post('/goods/goodsDetail', {
-          goodsId: this.$route.query.goodsId,
-          villageId: this.villageId
-        }).then((res) => {
-          if (res.data.code === 100) {
-            this.goodsDetail = res.data.goodsDetail
-            this.detailInfo = res.data
-            this.$store.commit('increment', res.data.totalBuyCount)
-            this.$store.commit('changeTotalPrice', res.data.totalPrice)
-            this.goodsList = res.data.listGoods
-            this.swiperList = res.data.goodsDetail.imagesList
-            this.computedSwiperLength()
-            if (res.data.goodsDetail.isCollect === 1) {
-              this.collectFlag = true
-            } else {
-              this.collectFlag = false
-            }
-            this.loadingFlag = false
-          }
-          if (res.data.code === 101) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-          }
-          if (res.data.code === 102) {
-            this.$vux.toast.text(res.data.msg, 'middle')
-            localStorage.removeItem('m-token')
-          }
-          this.loadingFlag = false
-          this.login = false
-        })
-      },
-      collectGoods () {
-        this.getDetail()
+        await this.getDetail()
         if (this.goodsDetail.isCollect === 0) {
           this.post('/collect/insertCollect', {
-            goodsId: this.$route.query.goodsId,
+            goodsId: this.goodsId,
             storeId: this.goodsDetail.storeId,
-            token: localStorage.getItem('m-token'),
+            token: this.token,
             status: 1,
             shopType: this.goodsDetail.shopType
           }).then((res) => {
@@ -281,7 +264,7 @@
           })
         } else {
           this.post('/collect/insertCollect', {
-            goodsId: this.$route.query.goodsId,
+            goodsId: this.goodsId,
             storeId: this.goodsDetail.storeId,
             token: localStorage.getItem('m-token'),
             status: 0,
@@ -311,11 +294,16 @@
         let scrollTop = -Math.round(_this.y)
         this.$refs.header.$el.style.opacity = scrollTop / 300
       },
+      // 获取scroll实力
+      getScrollObj (scrollObj) {
+        this.scrollObj = scrollObj
+      },
+      // 加入购物车
       addCart (item) {
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
-          this.$router.push({path: 'login'})
+          this.$router.push({path: '/login'})
           return
         }
         // 店铺状态
@@ -363,7 +351,7 @@
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
-          this.$router.push({path: 'login'})
+          this.$router.push({path: '/login'})
           return
         }
         // 店铺状态

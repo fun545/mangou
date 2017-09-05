@@ -184,7 +184,7 @@
             </div>
           </div>
           <div class="text-center">
-            <div class="font-small">合计：<span class="theme-color-price">¥{{item.totalPrice}}</span></div>
+            <div class="font-small">合计：<span class="theme-color-price">¥{{Number(item.totalPrice).toFixed(1)}}</span></div>
             <div class="font-mind color-999">({{item.sendType | sendType}})</div>
           </div>
         </div>

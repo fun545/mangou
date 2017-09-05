@@ -24,9 +24,9 @@
           </swiper>
           <!-- 次日达/即时达 -->
           <div class="link-box">
-            <router-link to="this" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt="">
+            <router-link to="next" class="pic"><img src="../assets/jishisong.png" width="100%" height="100%" alt="">
             </router-link>
-            <router-link to="next" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt="">
+            <router-link to="this" class="pic"><img src="../assets/cirida.png" width="100%" height="100%" alt="">
             </router-link>
           </div>
           <div class="active-box">
@@ -184,7 +184,8 @@
 </template>
 
 <script>
-  import { LoadMore } from 'vux'
+  import
+  { LoadMore } from 'vux'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
@@ -279,9 +280,9 @@
           // 店铺信息
           this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
           // 及时送和次日达都没有开通
-//            if (!this.hasNextShop) {
-//              return
-//            }
+          if (!this.hasNextShop) {
+            return
+          }
           // 保存购物车数量
           this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
           /* 轮播图数据 */
@@ -310,7 +311,6 @@
         storeId: localStorage.getItem('m-depotId'),
         villageId: localStorage.getItem('m-villageId')
       }).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
           this.mapTitleTips = res.data.goodsList.mapTitleTips
           this.ystgWords = res.data.goodsList.ystgWords
@@ -541,10 +541,10 @@
       top: 0;
       right: 0;
       .w(80);
-      .h(86);
-      .lh(86);
+      .h(92);
+      .lh(92);
       .pr(30);
-      .fs(29);
+      .fs(35);
       text-align: right;
       color: #e4ffe5;
     }

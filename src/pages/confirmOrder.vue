@@ -88,7 +88,7 @@
             <!--实际付款 及时送-->
             <div class="pay-count">
               实际付款
-              <span class="f-r count">￥{{Number(totalPriceThis) + Number(Thisfreight)}}</span>
+              <span class="f-r count">￥{{(Number(totalPriceThis) + Number(Thisfreight)).toFixed(1)}}</span>
             </div>
           </div>
         </div>

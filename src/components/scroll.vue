@@ -9,6 +9,7 @@
 
 <script type="text/ecmascript-6">
   import JRoll from 'jroll'
+
   export default {
     components: {
       JRoll
@@ -79,6 +80,7 @@
           scrollX: this.scrollX,
           bounce: false
         })
+        this.$emit('getScrollObj', this.scroll)
         // 是否派发滚动事件
         if (this.listenScroll) {
           this.scroll.on('scroll', function () {

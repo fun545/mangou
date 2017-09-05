@@ -20,8 +20,8 @@
         </div>
         <div class="des">
           <p class="name">{{item.goodsName}}</p>
-          <p class="price" v-if="shopType===2">￥{{item.canKaoPrice}}</p>
-          <p class="price" v-if="shopType===1">￥{{item.price}}</p>
+          <p class="price" v-if="shopType===2">￥{{Number(item.canKaoPrice).toFixed(1)}}</p>
+          <p class="price" v-if="shopType===1">￥{{Number(item.price).toFixed(1)}}</p>
         </div>
         <div class="count">
           x{{item.buyCount}}
@@ -41,7 +41,7 @@
         <p>配送费</p>
       </div>
       <div class="right">
-        <p class="s2">￥{{goodsTotalPrice}}</p>
+        <p class="s2">￥{{Number(goodsTotalPrice).toFixed(1)}}</p>
         <div class="s1">
           <span>-</span>
           <!--优惠金额  -->
@@ -59,7 +59,7 @@
       <!--实际付款 及时送-->
       <div class="pay-count">
         实际付款
-        <span class="f-r count">￥{{parseFloat(totalPrice)}}</span>
+        <span class="f-r count">￥{{Number(totalPrice).toFixed(1)}}</span>
       </div>
     </div>
   </div>

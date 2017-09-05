@@ -867,7 +867,7 @@
         var total = 0
         this.thisGoodsList.forEach((item, index) => {
           if (item.checked) {
-            total += item.canKaoPrice * item.buyCount
+            total += Number(item.canKaoPrice).toFixed(1) * item.buyCount
           }
         })
         this.$store.commit('saveTotalPriceThis', total.toFixed(1))
@@ -878,7 +878,7 @@
         var total = 0
         this.NextGoodsList.forEach((item, index) => {
           if (item.checked) {
-            total += item.price * item.buyCount
+            total += Number(item.price).toFixed(1) * item.buyCount
           }
         })
         this.$store.commit('saveTotalPriceNext', total.toFixed(1))

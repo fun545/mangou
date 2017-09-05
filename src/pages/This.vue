@@ -649,7 +649,7 @@
         .h(86);
         .lh(86);
         .pr(30);
-        .fs(29);
+        .fs(35);
         text-align: right;
         color: #e4ffe5;
       }
@@ -699,7 +699,7 @@
           background: #067ec5;
           border-radius: 50%;
           color: #fff;
-          .fs(25);
+          .fs(35);
         }
         :nth-child(2) {
           color: #ffffff;
@@ -732,7 +732,7 @@
         }
 
         .iconfont {
-          .mr(10);
+         /* .mr(10);*/
           font-size: inherit;
         }
       }

@@ -99,10 +99,9 @@ export default {
   },
   // 确认下单合计
   saveOrderTotalPrice (state, val) {
-    state.orderTotalPrice = Number(state.totalPriceThis) + Number(state.totalPriceNext) + Number(state.Thisfreight) + Number(state.Nextfreight)
-    console.log(state.orderTotalPrice)
+    state.orderTotalPrice = (Number(state.totalPriceThis) + Number(state.totalPriceNext) + Number(state.Thisfreight) + Number(state.Nextfreight)).toFixed(1)
     if (val === 'fastBuy') {
-      state.orderTotalPrice = Number(state.totalPriceThis) + Number(state.Thisfreight)
+      state.orderTotalPrice = (Number(state.totalPriceThis) + Number(state.Thisfreight)).toFixed(1)
     }
   },
   // 购物车选中商品总价 及时送
@@ -115,11 +114,11 @@ export default {
   },
   // 购物车选择商品数量 及时送
   saveSelectedTotalCountThis (state, val) {
-    state.selectedTotalCountThis = Number(val).toFixed(1)
+    state.selectedTotalCountThis = Number(val)
   },
   // 购物车选择商品数量 次日达
   saveSelectedTotalCountNext (state, val) {
-    state.selectedTotalCountNext = Number(val).toFixed(1)
+    state.selectedTotalCountNext = Number(val)
   },
   // 运费
   saveThisFreight (state, val) {

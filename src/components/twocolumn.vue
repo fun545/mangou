@@ -27,15 +27,23 @@
 
 <script>
   import buyCarButton from '../components/buyCarButton'
+
   export default {
     props: {
-      goodsList: Array
+      goodsList: Array,
+      type: String,
+      scrollObj: Object
     },
     components: {
       buyCarButton
     },
     methods: {
       goDetail (id) {
+        if (this.type === 'goodsDetail') {
+          this.$emit('changeData', id)
+          this.scrollObj.scrollTo(0, 0, 0)
+          return
+        }
         this.$router.push({
           path: '/goods_detail',
           query: {goodsId: id}

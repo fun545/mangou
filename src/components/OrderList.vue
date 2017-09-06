@@ -61,6 +61,7 @@
         villageId: localStorage.getItem('m-villageId'),
         status: this.status
       }).then((res) => {
+        console.log(res.data)
         if (res.data.code === 100) {
           this.orderList = res.data.orderList
           this.loadingFlag = false

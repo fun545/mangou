@@ -7,6 +7,7 @@
 
 <script>
   import { bus } from '../util/util'
+
   export default {
     props: {
       goods: Object,
@@ -43,6 +44,14 @@
         }
         // 限制点击速度
         if (this.clickTag === 0) {
+          // 库存不足
+          if (item.kucun === 0) {
+            this.$vux.toast.text('该商品存库不足', 'middle')
+            return
+          }
+          if (item.kucun > 0) {
+            bus.$emit('drop', el)
+          }
           this.clickTag = 1
           if (item.shopType === 1) {
             this.storeId = localStorage.getItem('m-depotId')
@@ -59,12 +68,14 @@
             storeId: this.storeId
           }).then((res) => {
             if (res.data.code === 100) {
-              console.log(res.data.totalPrice)
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
-              bus.$emit('drop', el)
+              item.kucun--
             }
             if (res.data.code === 101) {
+              if (res.data.msg === '该商品存库不足') {
+                item.kucun = 0
+              }
               this.$vux.toast.text(res.data.msg, 'top')
             }
             if (res.data.code === 102) {

@@ -190,16 +190,11 @@
         return
       }
       this.post('/village/getStoreByVillageId', {villageId: localStorage.getItem('m-shopId')}).then((res) => {
-        console.log(res.data)
       })
       this.createdMethods()
     },
     watch: {
       '$route' (to, from) {
-//        if (from.path === '/Bmap' || from.path === '/searchVillage' || from.path === '/location') {
-//          this.createdMethods()
-//          console.log(233)
-//        }
         this.$nextTick(() => {
           setTimeout(() => {
             if (typeof this.listSroll.refresh === 'function') {
@@ -222,7 +217,6 @@
         }).then((res) => {
           if (res.data.code === 100) {
             this.storeMsg = res.data.storeInfo
-            console.log(res.data.storeInfo)
             this.shopStatus = res.data.storeInfo.shopStatus
             this.shopStatusMethods(res.data.storeInfo.shopStatus)
           }
@@ -234,7 +228,6 @@
             localStorage.removeItem('m-token')
           }
         })
-        console.log(23333)
         // 一级菜单
         await this.post('/classify/firstClassifyList_new_js', {
           storeId: localStorage.getItem('m-shopId'),

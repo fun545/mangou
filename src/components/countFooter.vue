@@ -1,7 +1,7 @@
 <template>
   <div class="count-fonter">
     <div class="buy-car">
-      <div class="icon d-ib" :class="{'disabled-bg-color':!login}">
+      <div class="icon d-ib" :class="{'disabled-bg-color':!login}" @click="$router.push('/cart')">
         <i class="iconfont center">&#xe613;</i>
         <div class="badge">
           <badge :text="totalBuyCount" v-if="totalBuyCount"></badge>

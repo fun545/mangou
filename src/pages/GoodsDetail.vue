@@ -201,7 +201,6 @@
           paramas.token = this.token
         }
         this.post('/goods/goodsDetail', paramas).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.goodsDetail = res.data.goodsDetail
             this.detailInfo = res.data
@@ -223,9 +222,7 @@
             this.$vux.toast.text(res.data.msg, 'middle')
             localStorage.removeItem('m-token')
           }
-          setTimeout(() => {
-            this.loadingFlag = false
-          }, 200)
+          this.loadingFlag = false
         })
       },
       // 猜你喜欢进入详情更新数据
@@ -237,7 +234,7 @@
       async collectGoods () {
         if (!this.token) {
           this.$router.push({path: '/login'})
-          this.$vux.toast('请登录', 'top')
+          this.$vux.toast.text('请登录', 'top')
           return
         }
         await this.getDetail()

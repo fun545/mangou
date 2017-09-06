@@ -300,71 +300,6 @@
     created () {
       this.createdMethod()
     },
-//    watch: {
-//      '$route' (to, from) {
-//        this.formatData()
-//        if (to.path === '/cart' || from.path === '/cart') {
-//          this.loadingBgColorFlag = true
-//          if (this.token) {
-//            this.post('/car/getUserCar', {
-//              token: this.token,
-//              villageId: localStorage.getItem('m-villageId')
-//            }).then((res) => {
-//              this.$store.state.cartInfo = res.data
-//              if (res.data.code === 100) {
-//                this.nextAllChecked = false
-//                this.thisAllChecked = false
-//                this.allChecked = false
-//                this.loadingFlag = false
-//                // 商品列表 及时送
-//                this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
-//                // 商品列表 次日达
-//                this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-//                // 运费 次日达
-//                this.Nextfreight = res.data.carList[0].storeShop.freight
-//                // 运费 及时送
-//                this.Thisfreight = res.data.carList[1].shandianShop.freight
-//                console.log(this.Thisfreight)
-//                // 及时送相关信息
-//                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
-//                this.thisShop = res.data.carList[1].shandianShop
-//                // 次日达相关信息
-//                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
-//                this.nextShop = res.data.carList[0].storeShop
-//            this.$store.state.thisShop = res.data.carList[1].shandianShop
-//            this.$store.state.nextShop = res.data.carList[0].storeShop
-//                // 收货相关信息
-//            this.$store.state.shippingInfo = res.data.shippingInfo
-//                this.$store.commit('saveShippingInfo', res.data.shippingInfo)
-//                // 判断店铺营业状态
-//                this.shopStatusMethods(this.thisShop.shopStatus)
-//                // 购物车数量
-//                this.$store.commit('increment', res.data.totalBuyCount)
-//                this.$nextTick(() => {
-//                  this._initScroll()
-//                })
-//              }
-//              if (res.data.code === 101) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//              }
-//              if (res.data.code === 102) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//                localStorage.removeItem('m-token')
-//              }
-//            })
-//            // 初始化默认配送方式
-//            this.$store.state.sendWay = {key: '1', value: '客户自取'}
-//          }
-//          this.$nextTick(() => {
-//            setTimeout(() => {
-//              if (typeof this.contentScroll.refresh === 'function') {
-//                this.contentScroll.refresh()
-//              }
-//            }, 1000)
-//          })
-//        }
-//      }
-//    },
     methods: {
       createdMethod () {
         // 获取购物车列表数据
@@ -389,8 +324,6 @@
               // 次日达相关信息
               this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
               this.nextShop = res.data.carList[0].storeShop
-//            this.$store.state.thisShop = res.data.carList[1].shandianShop
-//            this.$store.state.nextShop = res.data.carList[0].storeShop
               // 收货相关信息
 //            this.$store.state.shippingInfo = res.data.shippingInfo
               this.$store.commit('saveShippingInfo', res.data.shippingInfo)
@@ -590,89 +523,128 @@
         })
       },
       // 提示框确认回调(删除一个或多个商品)
-      async delConfirm () {
+      delConfirm () {
+        var delList = []
+        var delIndexListThis = []
+        var delIndexListNext = []
         for (let i = 0; i < this.thisGoodsList.length; i++) {
           var curThis = this.thisGoodsList[i]
           if (curThis.checked) {
-            await this.post('/car/deleteCar', {
-              token: this.token,
-              carId: curThis.carId
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.thisGoodsList.splice(i, 1)
-                i--
-                this.$store.commit('totalBuyCountReduce', 1)
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+            delList.push(curThis.carId)
+            delIndexListThis.push(i)
+//            await this.post('/car/deleteCar', {
+//              token: this.token,
+//              carId: curThis.carId
+//            }).then((res) => {
+//              if (res.data.code === 100) {
+//                this.thisGoodsList.splice(i, 1)
+//                i--
+//                this.$store.commit('totalBuyCountReduce', 1)
+//              }
+//              if (res.data.code === 101) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//              }
+//              if (res.data.code === 102) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//                localStorage.removeItem('m-token')
+//              }
+//            })
           }
           if (curThis.NoGoods) {
-            await this.post('/car/deleteCar', {
-              token: this.token,
-              carId: curThis.carId
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.thisGoodsList.splice(i, 1)
-                i--
-                this.$store.commit('totalBuyCountReduce', 1)
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+            delList.push(curThis.carId)
+            delIndexListThis.push(i)
+//            await this.post('/car/deleteCar', {
+//              token: this.token,
+//              carId: curThis.carId
+//            }).then((res) => {
+//              if (res.data.code === 100) {
+//                this.thisGoodsList.splice(i, 1)
+//                i--
+//                this.$store.commit('totalBuyCountReduce', 1)
+//              }
+//              if (res.data.code === 101) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//              }
+//              if (res.data.code === 102) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//                localStorage.removeItem('m-token')
+//              }
+//            })
           }
         }
         for (let i = 0; i < this.NextGoodsList.length; i++) {
           var curNext = this.NextGoodsList[i]
           if (curNext.checked) {
-            await this.post('/car/deleteCar', {
-              token: this.token,
-              carId: curNext.carId
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.NextGoodsList.splice(i, 1)
-                i--
-                this.$store.commit('totalBuyCountReduce', 1)
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+            delList.push(curNext.carId)
+            delIndexListNext.push(i)
+//            await this.post('/car/deleteCar', {
+//              token: this.token,
+//              carId: curNext.carId
+//            }).then((res) => {
+//              if (res.data.code === 100) {
+//                this.NextGoodsList.splice(i, 1)
+//                i--
+//                this.$store.commit('totalBuyCountReduce', 1)
+//              }
+//              if (res.data.code === 101) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//              }
+//              if (res.data.code === 102) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//                localStorage.removeItem('m-token')
+//              }
+//            })
           }
           if (curNext.NoGoods) {
-            await this.post('/car/deleteCar', {
-              token: this.token,
-              carId: curNext.carId
-            }).then((res) => {
-              if (res.data.code === 100) {
-                this.NextGoodsList.splice(i, 1)
-                i--
-                this.$store.commit('totalBuyCountReduce', 1)
-              }
-              if (res.data.code === 101) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-              }
-              if (res.data.code === 102) {
-                this.$vux.toast.text(res.data.msg, 'middle')
-                localStorage.removeItem('m-token')
-              }
-            })
+            delList.push(curNext.carId)
+            delIndexListNext.push(i)
+//            await this.post('/car/deleteCar', {
+//              token: this.token,
+//              carId: curNext.carId
+//            }).then((res) => {
+//              if (res.data.code === 100) {
+//                this.NextGoodsList.splice(i, 1)
+//                i--
+//                this.$store.commit('totalBuyCountReduce', 1)
+//              }
+//              if (res.data.code === 101) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//              }
+//              if (res.data.code === 102) {
+//                this.$vux.toast.text(res.data.msg, 'middle')
+//                localStorage.removeItem('m-token')
+//              }
+//            })
           }
         }
+        var delStr = delList.join(',')
+        this.post('/car/deleteCar', {
+          token: this.token,
+          carId: delStr
+        }).then((res) => {
+          if (res.data.code === 100) {
+            for (let i = 0; i < delIndexListThis.length; i++) {
+              let curIndex = delIndexListThis[i]
+              this.thisGoodsList.splice(curIndex - i, 1)
+              this.$store.commit('totalBuyCountReduce', 1)
+            }
+            for (let i = 0; i < delIndexListNext.length; i++) {
+              let curIndex = delIndexListNext[i]
+              this.NextGoodsList.splice(curIndex - i, 1)
+              this.$store.commit('totalBuyCountReduce', 1)
+            }
+            setTimeout(() => {
+              this.contentScroll.refresh()
+            })
+          }
+          if (res.data.code === 101) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+          }
+          if (res.data.code === 102) {
+            this.$vux.toast.text(res.data.msg, 'middle')
+            localStorage.removeItem('m-token')
+          }
+        })
       },
       // 选中商品 全选
       thisCheckAll (list) {

@@ -11,6 +11,10 @@
         <div class="ball" v-show="ball.show" ref="endBall" :class="{'detail':type===2,'other':type===3}">
           <div class="inner inner-hook"></div>
         </div>
+        <!--<div class="ball" v-show="ball.show" ref="endBall" :class="{'detail':type===2,'other':type===3}">-->
+        <!--<div class="inner inner-hook"></div>-->
+        <!--<img src="" alt="">-->
+        <!--</div>-->
       </transition>
     </div>
     <div class="tab" ref="tab"></div>
@@ -29,6 +33,7 @@
 <script>
   import { bus } from '../util/util'
   import { Badge } from 'vux'
+
   export default {
     components: {
       bus,

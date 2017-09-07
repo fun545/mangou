@@ -19,7 +19,7 @@ Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: require('./assets/no-img.png'),
   loading: require('./assets/no-img.png'),
-  attempt: 1
+  attempt: 2
   // listenEvents: [ 'scroll' ]
 })
 import api from './util/api'

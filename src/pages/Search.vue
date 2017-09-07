@@ -336,13 +336,16 @@
         if (!this.scrollDisableNext) {
           this.scrollDisableNext = true
           this.NextPageIndex += 1
-          await this.post('/goods/searchGoods', {
-            storeId: this.storeId,
-            shopType: this.shopType,
-            keyName: this.keyName,
-            pageSize: 10,
-            pageIndex: this.NextPageIndex
-          }).then((res) => {
+          var paramas = {}
+          paramas.storeId = this.storeId
+          paramas.shopType = this.shopType
+          paramas.keyName = this.keyName
+          paramas.pageSize = this.pageSize
+          paramas.pageIndex = this.NextPageIndex
+          if (this.token) {
+            paramas.token = this.token
+          }
+          await this.post('/goods/searchGoods', paramas).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsInfo.goodsList
               // 如果是次日达
@@ -375,13 +378,13 @@
         if (!this.scrollDisableThis) {
           this.scrollDisableThis = true
           this.ThisPageIndex += 1
-          await this.post('/goods/searchGoods', {
-            storeId: localStorage.getItem('m-shopId'),
-            shopType: this.shopType,
-            keyName: this.keyName,
-            pageSize: 10,
-            pageIndex: this.ThisPageIndex
-          }).then((res) => {
+          var paramas = {}
+          paramas.storeId = localStorage.getItem('m-shopId')
+          paramas.shopType = this.shopType
+          paramas.keyName = this.keyName
+          paramas.pageSize = this.pageSize
+          paramas.pageIndex = this.ThisPageIndex
+          await this.post('/goods/searchGoods', paramas).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsInfo.goodsList
               // 如果是及时送

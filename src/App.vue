@@ -63,6 +63,10 @@ userInfo,orderPayList,orderRaterList,orderAfterSaleList,orderShippingList,orderS
     /*transition: all 0.5s;*/
   }
 
+  .pic {
+    position: relative;
+  }
+
   .pos-re {
     position: relative;
     left: 0;

@@ -6,7 +6,7 @@
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
           <div class="pic">
-            <img :src="storeMsg.storeImgurl" alt="" width="100%" height="100%">
+            <img v-lazy="imgObj" alt="" width="100%" height="100%">
           </div>
           <div class="col">
             <div class="title"><b>即时送</b><span v-html="storeMsg.storeName"></span></div>
@@ -73,16 +73,9 @@
             </div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
               <div class="pic pos-re" @click="goDetail(item.goodsId)">
-                <!--<lazy-image-->
-                <!--:src='item.goodsImgUrl'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--width="100%"-->
-                <!--height="100%"-->
-                <!--&gt;</lazy-image>-->
-                <!--<img :src="item.goodsImgUrl" width="100%" height="100%">-->
                 <div class="pos-ab" :class="{'daigou':item.goodsType===2}"></div>
                 <img width="100%" height="100%" v-lazy="item.goodsImgUrl"/>
+                <cart-badge :count="item.buyCount"></cart-badge>
               </div>
               <div class="col">
                 <p class="title">{{item.goodsName}}</p>
@@ -97,6 +90,7 @@
               background-color="#f7f7f7"
               class="load-more" v-if="loadMoreFlag"></load-more>
           </div>
+          <noData v-if="noDataFlag"></noData>
         </div>
         <alert v-model="showAlert" button-text="我知道了">
           <p class="alert-title" slot="title">{{alertText}}</p>
@@ -129,6 +123,9 @@
   import loading from '../components/loading'
   import toTop from '../components/toTop'
   import noNextShop from '../components/noNextShop.vue'
+  import noData from '../components/noPage'
+  import cartBadge from '../components/badge'
+
   export default {
     name: 'this',
     components: {
@@ -147,7 +144,9 @@
       LoadMore,
       toTop,
       Alert,
-      noNextShop
+      noNextShop,
+      noData,
+      cartBadge
     },
     data () {
       return {
@@ -181,7 +180,13 @@
         loadMoreFlag: false,
         showAlert: false,      // alert flag
         alertText: '',         // alert文本内容
-        shopStatus: '' // 门店状态
+        shopStatus: '', // 门店状态
+        imgObj: {
+          src: '',
+          error: require('../assets/shopBg@2x.png'),
+          loading: require('../assets/shopBg@2x.png')
+        }, // 懒加载配置
+        noDataFlag: false
       }
     },
     created () {
@@ -189,8 +194,6 @@
         this.loadingFlag = false
         return
       }
-      this.post('/village/getStoreByVillageId', {villageId: localStorage.getItem('m-shopId')}).then((res) => {
-      })
       this.createdMethods()
     },
     watch: {
@@ -215,10 +218,12 @@
         await this.post('/basic/getStoreMsg', {
           storeId: localStorage.getItem('m-shopId')
         }).then((res) => {
+          console.log(res.data)
           if (res.data.code === 100) {
             this.storeMsg = res.data.storeInfo
             this.shopStatus = res.data.storeInfo.shopStatus
             this.shopStatusMethods(res.data.storeInfo.shopStatus)
+            this.imgObj.src = this.storeMsg.storeImgurl
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -289,17 +294,22 @@
               localStorage.removeItem('m-token')
             }
           })
-          await this.post('/goods/goodsList', {
-            firstClassifyId: this.firstId,
-            storeId: localStorage.getItem('m-shopId'),
-            softType: this.softType,
-            villageId: localStorage.getItem('m-villageId'),
-            pageIndex: 1,
-            pageSize: 10
-          }).then((res) => {
+          var paramas = {}
+          paramas.firstClassifyId = this.firstId
+          paramas.storeId = localStorage.getItem('m-shopId')
+          paramas.softType = this.softType
+          paramas.villageId = localStorage.getItem('m-villageId')
+          paramas.pageIndex = 1
+          paramas.pageSize = 10
+          await this.post('/goods/goodsList', paramas).then((res) => {
             if (res.data.code === 100) {
               this.goodsList = res.data.goodsList
               this.loadingFlag = false
+              if (this.goodsList.length === 0) {
+                this.noDataFlag = true
+              } else {
+                this.noDataFlag = false
+              }
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -399,6 +409,11 @@
           await this.post('/goods/goodsList', params).then((res) => {
             if (res.data.code === 100) {
               this.goodsList = res.data.goodsList
+              if (this.goodsList.length === 0) {
+                this.noDataFlag = true
+              } else {
+                this.noDataFlag = false
+              }
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -588,7 +603,7 @@
       .b(100);
       /*z-index: 9;*/
     }
-    .no-next-shop{
+    .no-next-shop {
       bottom: 0;
     }
     .location-search-box {
@@ -725,7 +740,7 @@
         }
 
         .iconfont {
-         /* .mr(10);*/
+          /* .mr(10);*/
           font-size: inherit;
         }
       }

@@ -1,0 +1,28 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.2
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly install normalizeTree
+8 verbose stack TypeError: Cannot read property 'length' of undefined
+8 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:651:27
+8 verbose stack     at Array.forEach (native)
+8 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:650:19
+8 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/iferr/index.js:13:50
+8 verbose stack     at /usr/local/lib/node_modules/npm/lib/install/deps.js:175:5
+8 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:7:26)
+8 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+8 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
+8 verbose stack     at /usr/local/lib/node_modules/npm/lib/install/deps.js:175:5
+8 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:7:26)
+9 verbose cwd /Users/binxiao/Desktop/mangou
+10 error Darwin 14.5.0
+11 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install"
+12 error node v6.11.2
+13 error npm  v3.10.10
+14 error Cannot read property 'length' of undefined
+15 error If you need help, you may report this error at:
+15 error     <https://github.com/npm/npm/issues>
+16 verbose exit [ 1, true ]

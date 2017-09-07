@@ -2,33 +2,35 @@
   <ul>
     <li class="item" v-for="(item,index) in goodsList" :key="index">
       <div class="pic f-l">
-        <!--<lazy-image-->
-        <!--:src='item.goodsImgUrl'-->
-        <!--:placeholder='$store.state.defaultImg'-->
-        <!--:events="['touchmove']"-->
-        <!--@click.native="goDetail(item.goodsId)"-->
-        <!--&gt;</lazy-image>-->
         <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
+        <cart-badge :count="item.buyCount"></cart-badge>
       </div>
       <div class="col f-l">
         <h3 class="title">{{item.goodsName}}</h3>
-        <!--<p class="des">{{item.guige}}</p>-->
         <div v-if="shopType===1">
           <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
-          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span></p>
+          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+          </p>
         </div>
         <div v-if="shopType===2">
-          <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span></p>
+          <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+          </p>
           <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
         </div>
       </div>
-      <buyCarButton :goods="item" v-if="!isCollect" :shopStatus="shopStatus"></buyCarButton>
+      <buyCarButton
+        :goods="item" v-if="!isCollect"
+        :shopStatus="shopStatus"
+        :index="index"
+      ></buyCarButton>
     </li>
   </ul>
 </template>
 
 <script>
   import buyCarButton from '../components/buyCarButton'
+  import cartBadge from '../components/badge'
+
   export default {
     props: {
       goodsList: Array,
@@ -45,7 +47,7 @@
         default: 0 // 正常
       }
     },
-    components: {buyCarButton},
+    components: {buyCarButton, cartBadge},
     methods: {
       goDetail (id) {
         this.$router.push({
@@ -53,6 +55,10 @@
           query: {goodsId: id}
         })
       }
+//      changeBuyCount (item, val) {
+//        item.buyCount = val
+//        console.log(item, val, 'test')
+//      }
     }
   }
 </script>
@@ -71,6 +77,7 @@
     border-bottom: 1px solid @input-border;
     background-color: #fff;
     .pic {
+      position: relative;
       .w(210);
       .h(210);
       img {

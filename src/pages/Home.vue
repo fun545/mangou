@@ -113,20 +113,16 @@
                 <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
                   <div class="top" @click="goDetail(item.goodsId)">
                     <div class="pic">
-                      <!--<lazy-image-->
-                      <!--:src='item.goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
-                      <!--@click.native="goDetail(item.goodsId)"-->
-                      <!--&gt;</lazy-image>-->
                       <img v-lazy="item.goodsImgUrl" alt="">
+                      <cart-badge :count="item.buyCount"></cart-badge>
                     </div>
                     <div class="des">
                       <h3 class="title">{{item.goodsName}}</h3>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
                         class="number">{{item.canKaoPrice.toFixed(1)}}</span>
                       </p>
-                      <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+                      <p class="this-price">即时价：<span class="s1">¥</span><span
+                        class="number">{{item.price.toFixed(1)}}</span></p>
                     </div>
                   </div>
                   <buy-car-button :goods="item"></buy-car-button>
@@ -184,8 +180,7 @@
 </template>
 
 <script>
-  import
-  { LoadMore } from 'vux'
+  import { LoadMore } from 'vux'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import BScroll from 'better-scroll'
   import mFooter from '../components/footer'
@@ -198,6 +193,8 @@
   //  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
+  import cartBadge from '../components/badge'
+
   export default {
     name: 'home',
     components: {
@@ -213,7 +210,8 @@
       ball,
       loadFail,
       noNextShop,
-      loading
+      loading,
+      cartBadge
     },
     data () {
       return {
@@ -223,7 +221,7 @@
         areaId: '',
         villageId: '',
         storeList: [],
-        token: '',
+        token: localStorage.getItem('m-token'),
         mapTitleTips: [],
         ystgWords: [],
         serchKey: '',
@@ -275,7 +273,6 @@
         paramas.token = localStorage.getItem('m-token')
       }
       await this.post('/first/getFirst', paramas).then((res) => {
-        console.log(res.data)
         if (res.data.code === 100) {
           // 店铺信息
           this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
@@ -306,11 +303,14 @@
           return
         }
       })
+      var paramasFG = {}
+      paramasFG.storeId = localStorage.getItem('m-depotId')
+      paramasFG.villageId = localStorage.getItem('m-villageId')
+      if (this.token) {
+        paramasFG.token = this.token
+      }
       /* 首页数据数据 */
-      this.post('/first/getFirstGoods', {
-        storeId: localStorage.getItem('m-depotId'),
-        villageId: localStorage.getItem('m-villageId')
-      }).then((res) => {
+      this.post('/first/getFirstGoods', paramasFG).then((res) => {
         if (res.data.code === 100) {
           this.mapTitleTips = res.data.goodsList.mapTitleTips
           this.ystgWords = res.data.goodsList.ystgWords

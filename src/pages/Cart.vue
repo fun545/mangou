@@ -257,7 +257,6 @@
       CheckerItem,
       BScroll,
       Confirm,
-//      Alert,
       loading
     },
     data () {
@@ -524,14 +523,18 @@
       },
       // 提示框确认回调(删除一个或多个商品)
       delConfirm () {
+        // carId 集合
         var delList = []
         var delIndexListThis = []
         var delIndexListNext = []
+        // 删除数量
+        var delTotalCount = 0
         for (let i = 0; i < this.thisGoodsList.length; i++) {
           var curThis = this.thisGoodsList[i]
           if (curThis.checked) {
             delList.push(curThis.carId)
             delIndexListThis.push(i)
+            delTotalCount += curThis.buyCount
 //            await this.post('/car/deleteCar', {
 //              token: this.token,
 //              carId: curThis.carId
@@ -553,6 +556,7 @@
           if (curThis.NoGoods) {
             delList.push(curThis.carId)
             delIndexListThis.push(i)
+            delTotalCount += curThis.buyCount
 //            await this.post('/car/deleteCar', {
 //              token: this.token,
 //              carId: curThis.carId
@@ -577,6 +581,7 @@
           if (curNext.checked) {
             delList.push(curNext.carId)
             delIndexListNext.push(i)
+            delTotalCount += curNext.buyCount
 //            await this.post('/car/deleteCar', {
 //              token: this.token,
 //              carId: curNext.carId
@@ -598,6 +603,7 @@
           if (curNext.NoGoods) {
             delList.push(curNext.carId)
             delIndexListNext.push(i)
+            delTotalCount += curNext.buyCount
 //            await this.post('/car/deleteCar', {
 //              token: this.token,
 //              carId: curNext.carId
@@ -626,13 +632,12 @@
             for (let i = 0; i < delIndexListThis.length; i++) {
               let curIndex = delIndexListThis[i]
               this.thisGoodsList.splice(curIndex - i, 1)
-              this.$store.commit('totalBuyCountReduce', 1)
             }
             for (let i = 0; i < delIndexListNext.length; i++) {
               let curIndex = delIndexListNext[i]
               this.NextGoodsList.splice(curIndex - i, 1)
-              this.$store.commit('totalBuyCountReduce', 1)
             }
+            this.$store.commit('totalBuyCountReduce', delTotalCount)
             setTimeout(() => {
               this.contentScroll.refresh()
             })

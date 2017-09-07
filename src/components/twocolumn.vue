@@ -2,13 +2,8 @@
   <ul class="goods-detail-wrap clearfix">
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
-        <!--<lazy-image-->
-        <!--:src='item.goodsImgUrl'-->
-        <!--:placeholder='$store.state.defaultImg'-->
-        <!--:events="['touchmove']"-->
-        <!--@click.native="goDetail(item.goodsId)"-->
-        <!--&gt;</lazy-image>-->
         <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
+        <cart-badge :count="item.buyCount"></cart-badge>
       </div>
       <div class="top">
         <h3 class="title">{{item.goodsName}}</h3>
@@ -27,6 +22,7 @@
 
 <script>
   import buyCarButton from '../components/buyCarButton'
+  import cartBadge from '../components/badge'
 
   export default {
     props: {
@@ -35,7 +31,8 @@
       scrollObj: Object
     },
     components: {
-      buyCarButton
+      buyCarButton,
+      cartBadge
     },
     methods: {
       goDetail (id) {

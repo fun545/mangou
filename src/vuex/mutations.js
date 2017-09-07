@@ -62,7 +62,6 @@ export default {
     localStorage.setItem('m-totalBuyCount', count)
     // 变更状态
     state.totalBuyCount = count
-    // console.log(state.totalBuyCount)
   },
   // 改变购物车总价
   changeTotalPrice (state, val) {
@@ -183,4 +182,8 @@ export default {
   saveOkPayBackPath (state, val) {
     state.oKPayBackPath = val
   }
+  // 购物车显示小圆点
+  // changeBuyCount (state, val) {
+  //   state.buyCount = val
+  // }
 }

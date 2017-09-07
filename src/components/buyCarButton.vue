@@ -1,5 +1,5 @@
 <template>
-  <div class="shop-cart-wrap" @click="add($el,goods)">
+  <div class="shop-cart-wrap" @click="add($el,goods,index)">
     <i class="iconfont shop-car" ref="icon" v-if="goods.status===1" :class="{'shop-status':shopStatus!==0}">&#xe658;</i>
     <div v-if="goods.status!==1" class="no-goods">已售罄</div>
   </div>
@@ -15,7 +15,8 @@
       shopStatus: {
         type: Number,
         default: 0
-      }
+      },
+      index: Number
     },
     components: {
       bus
@@ -27,7 +28,8 @@
       }
     },
     methods: {
-      add (el, item) {
+      add (el, item, index) {
+        console.log(item)
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
@@ -42,6 +44,8 @@
         if (item.status !== 1) {
           return
         }
+//        // 限购
+//        if ()
         // 限制点击速度
         if (this.clickTag === 0) {
           // 库存不足
@@ -71,12 +75,14 @@
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
               item.kucun--
+              item.buyCount = res.data.buyCount
+//              this.$emit('changeBuyCount', index, res.data.buyCount)
             }
             if (res.data.code === 101) {
               if (res.data.msg === '该商品存库不足') {
                 item.kucun = 0
               }
-              this.$vux.toast.text(res.data.msg, 'top')
+              this.$vux.toast.text(res.data.msg, 'middle')
             }
             if (res.data.code === 102) {
               this.$vux.toast.text(res.data.msg, 'top')

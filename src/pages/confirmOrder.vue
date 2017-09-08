@@ -41,13 +41,6 @@
           <div class="goods-list">
             <div class="item" v-for="(item, index) in filterListThis" :key="index">
               <div class="pic">
-                <!--<lazy-image-->
-                <!--:src='item.goodsImgUrl'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--width="100%"-->
-                <!--height="100%"-->
-                <!--&gt;</lazy-image>-->
                 <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
               </div>
               <div class="des">
@@ -230,6 +223,7 @@
 <script>
   import mHeader from '../components/header'
   import BScroll from 'better-scroll'
+  import { judgeServeRange } from '../util/util'
   //  import { wxConfig, bus } from '../util/util'
   export default {
     name: 'confirmOrder',
@@ -317,21 +311,31 @@
             let thisOrder = {}
             thisOrder.cityId = this.thisShop.cityId
             thisOrder.areaId = this.thisShop.areaId
+            thisOrder.villageId = this.thisShop.villageId
+            // 配送方式:1自取 2配送上门
+            thisOrder.sendType = 2
+            thisOrder.remarks = this.leaveMsgThis
+            thisOrder.payType = this.payType
+            thisOrder.shippingId = this.shippingInfo.shippingId
+//            thisOrder.qujianName =''
+//            thisOrder.qujianPhone =''
+            thisOrder.storeId = this.thisShop.storeId
+            thisOrder.shopType = this.thisShop.shopType
             thisOrder.goodsList = []
             this.thisGoodsList.forEach((item, index) => {
               let obj = {}
-              obj.carId = item.carId
-              obj.goodsId = item.goodsId
+              if (this.buyWay === 'fastBuy') {
+                obj.goodsId = item.goodsId
+                obj.buyCount = item.buyCount
+                obj.canKaoPrice = item.canKaoPrice
+              }
+              // 普通购买
+              if (this.buyWay === 'nomalBuy') {
+                obj.carId = item.carId
+                obj.goodsId = item.goodsId
+              }
               thisOrder.goodsList.push(obj)
             })
-            thisOrder.payType = this.payType
-            thisOrder.remarks = this.leaveMsgThis
-            // 配送方式:1自取 2配送上门
-            thisOrder.sendType = 2
-            thisOrder.shippingId = this.shippingInfo.shippingId
-            thisOrder.shopType = this.thisShop.shopType
-            thisOrder.storeId = this.thisShop.storeId
-            thisOrder.villageId = this.thisShop.villageId
             this.orderList.push(thisOrder)
           }
           // 次日达
@@ -339,6 +343,7 @@
             let nextOrder = {}
             nextOrder.cityId = this.nextShop.cityId
             nextOrder.areaId = this.nextShop.areaId
+            nextOrder.villageId = this.nextShop.villageId
             nextOrder.goodsList = []
             this.NextGoodsList.forEach((item, index) => {
               let obj = {}
@@ -350,7 +355,6 @@
             nextOrder.remarks = this.leaveMsgNext
             nextOrder.shopType = this.nextShop.shopType
             nextOrder.storeId = this.nextShop.storeId
-            nextOrder.villageId = this.nextShop.villageId
             // 配送方式:1自取 2配送上门
             nextOrder.sendType = Number(this.sendWay.key)
             if (nextOrder.sendType === 2) {
@@ -368,11 +372,20 @@
             this.orderList.push(nextOrder)
           }
           orderJsonObj.orderList = this.orderList
-          let orderJsonStr = JSON.stringify(orderJsonObj)
-          this.post('/orders/submitOrders_new', {
+          var orderJsonStr = JSON.stringify(orderJsonObj)
+          // 快速购买
+          if (this.buyWay === 'fastBuy') {
+            var path = '/orders/submitOrders_right'
+          }
+          // 普通购买
+          if (this.buyWay === 'nomalBuy') {
+            path = '/orders/submitOrders_new'
+          }
+          this.post(path, {
             token: localStorage.getItem('m-token'),
             orderStr: orderJsonStr
           }).then((res) => {
+            console.log(res.data)
             if (res.data.code === 100) {
               this.$store.commit('saveOrderNumList', res.data.orderNumList)
               this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.orderTotalPrice, res.data.orderNumList, this)
@@ -390,6 +403,9 @@
       }
     },
     computed: {
+      buyWay () {
+        return this.$store.state.buyWay
+      },
       fastBuyInfo () {
         return this.$store.state.fastBuyInfo
       },
@@ -406,17 +422,8 @@
 //        return this.$store.state.orderTotalPrice
         return this.$store.state.orderTotalPrice
       },
-      disabledAddressFlag: {
-        set () {
-          // 判断当前收获地址是否可用
-          var disabledAddressFlag = (this.shippingInfo.areaId !== this.localAreaId) || (this.shippingInfo.cityId !== this.localCityId) || (this.shippingInfo.villageId !== this.localVillageId)
-          return disabledAddressFlag
-        },
-        get () {
-          // 判断当前收获地址是否可用
-          var disabledAddressFlag = (this.shippingInfo.areaId !== this.localAreaId) || (this.shippingInfo.cityId !== this.localCityId) || (this.shippingInfo.villageId !== this.localVillageId)
-          return disabledAddressFlag
-        }
+      disabledAddressFlag () {
+        return !judgeServeRange(this, this.shippingInfo.villageId)
       },
       thisShop () {
         return this.$store.state.thisShop

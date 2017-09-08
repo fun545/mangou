@@ -16,13 +16,18 @@
           <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
           </p>
           <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+          <div>{{item.buyCount}}</div>
         </div>
       </div>
       <buyCarButton
-        :goods="item" v-if="!isCollect"
+        :goods="item"
+        v-if="!isCollect"
         :shopStatus="shopStatus"
         :index="index"
+        :goodsList="goodsList"
+        @updateGoods="updateGoods"
       ></buyCarButton>
+      {{item.buyCount}}
     </li>
   </ul>
 </template>
@@ -49,6 +54,9 @@
     },
     components: {buyCarButton, cartBadge},
     methods: {
+      updateGoods (index, count) {
+        this.$emit('updateGoodsList', 'sale', index, count)
+      },
       goDetail (id) {
         this.$router.push({
           path: '/goods_detail',

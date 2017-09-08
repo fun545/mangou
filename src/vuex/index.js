@@ -31,6 +31,8 @@ const state = {
   shopStatus: 0, // 店铺状态：0 正常
   thisShop: '', // 购物车及时送相关信息
   nextShop: '', // 购物车次日达相关信息
+  buyWay: '', // nomalBuy fastBuy
+  serveRangeList: '', // 服务范围
   carOrderThisGoodsList: [], // 确认下单商品数组 即时送
   carOrderNextGoodsList: [], // 确认下单商品数组 次日达
   sendWay: '', // 次日达送货方式

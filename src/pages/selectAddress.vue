@@ -7,7 +7,7 @@
       <div>
         <div class="item" v-for="(item,index) in addressList" :key="index" @click="chooseAddress(item)">
           <div class="top"
-               :class="{'disable-color':(item.areaId!==localAreaId)||(item.cityId!==localCityId)||(item.villageId!==localVillageId)}">
+               :class="{'disable-color':serveRangeFlag(item.villageId)}">
             <div class="user-msg">
               <span>{{item.shippingName}}</span>
               <span class="tel">{{item.shippingPhone}}</span>
@@ -31,6 +31,8 @@
 <script>
   import mHeader from '../components/header'
   import { Toast } from 'vux'
+  import { judgeServeRange } from '../util/util'
+
   export default {
     name: 'selectAddress',
     components: {
@@ -70,6 +72,10 @@
 //      })
     },
     methods: {
+      // 服务范围判断
+      serveRangeFlag (curVillageList) {
+        return !judgeServeRange(this, curVillageList)
+      },
       // 跳转添加地址
       goAddAddress () {
         this.$store.commit('saveAddAddress', '/selecteAddress')
@@ -77,7 +83,7 @@
       },
       // 选择收货地址
       chooseAddress (item) {
-        if ((item.areaId !== this.localAreaId) || (item.cityId !== this.localCityId) || (item.villageId !== this.localVillageId)) {
+        if (!judgeServeRange(this, item.villageId)) {
           this.$vux.toast.text('亲，超出配上范围啦')
         } else {
           this.$store.commit('saveShippingInfo', item)
@@ -121,9 +127,9 @@
         .mb(22);
         background: #fff;
         .top {
-       /*   box-sizing: border-box;*/
+          /*   box-sizing: border-box;*/
           border-top: 1px solid #eee;
-         /* .h(131);*/
+          /* .h(131);*/
           .pl(30);
           .pr(40);
           .pt(24);
@@ -174,22 +180,22 @@
   }
 
   .bt {
-     position: absolute;
-     left: 0;
-     right: 0;
-     bottom: 0;
-     .h(120);
-     .add-address {
-       .w(700);
-       margin: 0 auto;
-       .h(90);
-       .lh(90);
-       background: @theme-color;
-       color: #fff;
-       .fs(34);
-       border-radius: 5px;
-     }
-   }
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .h(120);
+    .add-address {
+      .w(700);
+      margin: 0 auto;
+      .h(90);
+      .lh(90);
+      background: @theme-color;
+      color: #fff;
+      .fs(34);
+      border-radius: 5px;
+    }
+  }
 
 
 </style>

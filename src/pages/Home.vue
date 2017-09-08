@@ -1,4 +1,3 @@
-<!--<script src="../../dist/static/js/app.9ff4a719fae97e928814.js"></script>-->
 <template>
   <div class="home-wrap" @touchmove.prevent>
     <div v-if="!reloadFlag" class="inner">
@@ -37,11 +36,6 @@
               </home-title>
               <div class="content clearfix">
                 <div class="item" v-for="(item,index) in ystgWords" :key="index" @click="goActive(item)">
-                  <!--<lazy-image-->
-                  <!--:src='item.keyword'-->
-                  <!--:placeholder='$store.state.defaultImg'-->
-                  <!--:events="['touchmove']"-->
-                  <!--&gt;</lazy-image>-->
                   <img v-lazy="item.keyword" alt="" width="100%" height="100%">
                 </div>
               </div>
@@ -53,11 +47,6 @@
               </home-title>
               <div class="content">
                 <div class="left f-l" @click="goSerchKey(serchKey)">
-                  <!--<lazy-image-->
-                  <!--:src='serchKey.keyword'-->
-                  <!--:placeholder='$store.state.defaultImg'-->
-                  <!--:events="['touchmove']"-->
-                  <!--&gt;</lazy-image>-->
                   <img v-lazy="serchKey.keyword" alt="" width="100%" height="100%">
                 </div>
                 <div class="right f-l">
@@ -70,11 +59,6 @@
                         class="number">{{specialPriceGoodsList[0].price.toFixed(1)}}</span></p>
                     </div>
                     <div class="pic f-l">
-                      <!--<lazy-image-->
-                      <!--:src='specialPriceGoodsList[0].goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
-                      <!--&gt;</lazy-image>-->
                       <img v-lazy="specialPriceGoodsList[0].goodsImgUrl" alt="" width="100%" height="100%">
                     </div>
                   </div>
@@ -87,11 +71,6 @@
                         class="number">{{specialPriceGoodsList[1].price.toFixed(1)}}</span></p>
                     </div>
                     <div class="pic f-l">
-                      <!--<lazy-image-->
-                      <!--:src='specialPriceGoodsList[1].goodsImgUrl'-->
-                      <!--:placeholder='$store.state.defaultImg'-->
-                      <!--:events="['touchmove']"-->
-                      <!--&gt;</lazy-image>-->
                       <img v-lazy="specialPriceGoodsList[1].goodsImgUrl" width="100%" height="100%">
                     </div>
                   </div>
@@ -140,6 +119,7 @@
               <home-title :title="mapTitleTips[4].name" v-if="mapTitleTips[4]">
                 <img class="icon iconfont" slot="icon" :src="mapTitleTips[4].other">
               </home-title>
+              <!--<new-goods :goodsList="saleGoods" @updateGoodsList="updateGoodsList"></new-goods>-->
               <new-goods :goodsList="saleGoods"></new-goods>
             </div>
             <!-- 新品上架 -->
@@ -194,6 +174,7 @@
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
   import cartBadge from '../components/badge'
+  import { bus } from '../util/util'
 
   export default {
     name: 'home',
@@ -336,10 +317,28 @@
         }
         this.loadingFlag = false
       })
+      bus.$on('updateCount', (item, count) => {
+        item.buyCount = count
+        console.log(item)
+        console.log(1111)
+      })
     },
     methods: {
-//      async createdMethods () {
+//      updateGoodsList (type, index, count) {
+//        if (type === 'sale') {
+//          console.log(this.saleGoods[index].buyCount)
+//          if (typeof this.saleGoods[index].buyCount === 'undefined') {
+//            this.$set(this.saleGoods[index], 'buyCount', count)
+//          } else {
+//            this.saleGoods[index].buyCount = count
+//            console.log(this.saleGoods[index])
+//            console.log('test1')
+//          }
+//        }
 //      },
+      updateCount (item, count) {
+        item.buyCount = count
+      },
       goLocation () {
         if (!localStorage.getItem('m-token')) {
           this.$store.commit('saveSelectVillagePath', '/home')

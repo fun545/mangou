@@ -804,7 +804,7 @@
             // 次日达运费
             this.$store.commit('saveNextfreight', Number(this.Cnextfreight).toFixed(1))
             // 合计
-            this.$store.commit('saveOrderTotalPrice')
+            this.$store.commit('saveOrderTotalPrice', 'nomalBuy')
             // 跳转确认下单页面
             this.$router.push({path: 'confirmOrder'})
           }

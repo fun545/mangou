@@ -10,6 +10,7 @@
 
   export default {
     props: {
+      goodsList: Array,
       goods: Object,
       // 店铺状态
       shopStatus: {
@@ -17,9 +18,6 @@
         default: 0
       },
       index: Number
-    },
-    components: {
-      bus
     },
     data () {
       return {
@@ -29,7 +27,6 @@
     },
     methods: {
       add (el, item, index) {
-        console.log(item)
         // 没登录跳转登录
         if (!localStorage.getItem('m-token')) {
           this.$vux.toast.text('请登录', 'bottom')
@@ -75,8 +72,9 @@
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
               item.kucun--
-              item.buyCount = res.data.buyCount
-//              this.$emit('changeBuyCount', index, res.data.buyCount)
+//              item.buyCount = res.data.buyCount
+              bus.$emit('updateCount', this.goodsList[this.index], res.data.buyCount)
+//              this.$emit('updateGoods', index, res.data.buyCount)
             }
             if (res.data.code === 101) {
               if (res.data.msg === '该商品存库不足') {

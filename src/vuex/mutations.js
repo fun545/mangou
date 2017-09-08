@@ -80,6 +80,10 @@ export default {
     state.totalBuyCount = state.totalBuyCount + count
     localStorage.setItem('m-totalBuyCount', state.totalBuyCount)
   },
+  // 服务范围
+  saveServeRangeList (state, list) {
+    state.serveRangeList = list
+  },
   // 确认订单列表
   saveOrderNumList (state, val) {
     state.orderNumList = val
@@ -98,8 +102,12 @@ export default {
   },
   // 确认下单合计
   saveOrderTotalPrice (state, val) {
-    state.orderTotalPrice = (Number(state.totalPriceThis) + Number(state.totalPriceNext) + Number(state.Thisfreight) + Number(state.Nextfreight)).toFixed(1)
+    if (val === 'nomalBuy') {
+      state.buyWay = 'nomalBuy'
+      state.orderTotalPrice = (Number(state.totalPriceThis) + Number(state.totalPriceNext) + Number(state.Thisfreight) + Number(state.Nextfreight)).toFixed(1)
+    }
     if (val === 'fastBuy') {
+      state.buyWay = 'fastBuy'
       state.orderTotalPrice = (Number(state.totalPriceThis) + Number(state.Thisfreight)).toFixed(1)
     }
   },

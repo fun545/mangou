@@ -81,7 +81,14 @@
                 <p class="title">{{item.goodsName}}</p>
                 <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice}}</span></p>
                 <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price}}</span></p>
-                <shop-car-button :goods="item" class="this-bt" :shopStatus="shopStatus"></shop-car-button>
+                <shop-car-button
+                  :goods="item"
+                  class="this-bt"
+                  :shopStatus="shopStatus"
+                  :index="index"
+                  :goodsList="goodsList"
+                  @updateColumCount="updateGoodsListCount"
+                ></shop-car-button>
               </div>
             </div>
             <load-more
@@ -150,7 +157,7 @@
     },
     data () {
       return {
-        token: '',
+        token: localStorage.getItem('m-token'),
         scrollTop: '',
         sideList: [],
         storeMsg: [],
@@ -211,8 +218,15 @@
       }
     },
     methods: {
+      updateGoodsListCount (list, index, count) {
+        if (typeof list[index].buyCount === 'undefined') {
+          this.$set(list[index], 'buyCount', count)
+        } else {
+          list[index].buyCount = count
+        }
+      },
       async createdMethods () {
-        this.token = localStorage.getItem('m-token')
+//        this.token = localStorage.getItem('m-token')
         this.villageName = localStorage.getItem('m-villageName')
         // 店铺信息
         await this.post('/basic/getStoreMsg', {
@@ -257,10 +271,13 @@
         // 速选商品列表 如果bt===2 则有速选商品
         if (this.sideList[0].bt === 2) {
           this.fastSortFlag = true
-          await this.post('/goods/getLabelGoods', {
-            keyWordId: 7,
-            softType: 3
-          }).then((res) => {
+          let paramas = {}
+          paramas.keyWordId = 7
+          paramas.softType = 3
+          if (this.token) {
+            paramas.token = this.token
+          }
+          await this.post('/goods/getLabelGoods', paramas).then((res) => {
             if (res.data.code === 100) {
               this.fastSortGoodsList = res.data.goodsList
               this.goodsList = this.fastSortGoodsList
@@ -294,13 +311,16 @@
               localStorage.removeItem('m-token')
             }
           })
-          var paramas = {}
+          let paramas = {}
           paramas.firstClassifyId = this.firstId
           paramas.storeId = localStorage.getItem('m-shopId')
           paramas.softType = this.softType
           paramas.villageId = localStorage.getItem('m-villageId')
           paramas.pageIndex = 1
           paramas.pageSize = 10
+          if (this.token) {
+            paramas.token = this.token
+          }
           await this.post('/goods/goodsList', paramas).then((res) => {
             if (res.data.code === 100) {
               this.goodsList = res.data.goodsList
@@ -386,8 +406,14 @@
         params.pageSize = this.pageSize
         params.pageIndex = 1
         this.pageIndex = 1
+        if (this.token) {
+          params.token = this.token
+        }
         // 如果有速选商品
         if (this.ind === 0 && this.fastSortFlag) {
+          var paramasFast = {}
+          paramasFast.keyWordId = 7
+          paramasFast.softType = this.softType
           await this.post('/goods/getLabelGoods', {
             keyWordId: 7,
             softType: this.softType
@@ -534,6 +560,9 @@
           params.villageId = localStorage.getItem('m-villageId')
           params.villageId = localStorage.getItem('m-villageId')
           params.pageIndex = this.pageIndex
+          if (this.token) {
+            params.token = this.token
+          }
           this.post('/goods/goodsList', params).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsList

@@ -104,7 +104,12 @@
                         class="number">{{item.price.toFixed(1)}}</span></p>
                     </div>
                   </div>
-                  <buy-car-button :goods="item"></buy-car-button>
+                  <buy-car-button
+                    :goods="item"
+                    :index="index"
+                    :goodsList="tuijianGoodsList"
+                    @updateColumCount="updateGoodsListCount"
+                  ></buy-car-button>
                 </div>
               </div>
             </div>
@@ -120,7 +125,10 @@
                 <img class="icon iconfont" slot="icon" :src="mapTitleTips[4].other">
               </home-title>
               <!--<new-goods :goodsList="saleGoods" @updateGoodsList="updateGoodsList"></new-goods>-->
-              <new-goods :goodsList="saleGoods"></new-goods>
+              <new-goods
+                :goodsList="saleGoods"
+                @updateGoodsListCount="updateGoodsListCount"
+              ></new-goods>
             </div>
             <!-- 新品上架 -->
             <swiper :options="swiperOption" ref="NewSwiper" class="activeSwiper">
@@ -133,14 +141,14 @@
               <home-title :title="mapTitleTips[3].name" v-if="mapTitleTips[3]">
                 <img class="icon iconfont" slot="icon" :src="mapTitleTips[3].other">
               </home-title>
-              <two-column :goodsList="newGoodsList"></two-column>
+              <two-column :goodsList="newGoodsList" @updateGoodsListCount="updateGoodsListCount"></two-column>
             </div>
             <!-- 实时推荐 -->
             <div class="moreRecommend">
               <home-title :title="mapTitleTips[7].name" v-if="mapTitleTips[7]">
                 <img class="icon iconfont" slot="icon" :src="mapTitleTips[7].other">
               </home-title>
-              <two-column :goodsList="moreRecommendList"></two-column>
+              <two-column :goodsList="moreRecommendList" @updateGoodsListCount="updateGoodsListCount"></two-column>
             </div>
             <load-more
               :tip="loadText"
@@ -174,7 +182,7 @@
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
   import cartBadge from '../components/badge'
-  import { bus } from '../util/util'
+  //  import { bus } from '../util/util'
 
   export default {
     name: 'home',
@@ -317,27 +325,14 @@
         }
         this.loadingFlag = false
       })
-      bus.$on('updateCount', (item, count) => {
-        item.buyCount = count
-        console.log(item)
-        console.log(1111)
-      })
     },
     methods: {
-//      updateGoodsList (type, index, count) {
-//        if (type === 'sale') {
-//          console.log(this.saleGoods[index].buyCount)
-//          if (typeof this.saleGoods[index].buyCount === 'undefined') {
-//            this.$set(this.saleGoods[index], 'buyCount', count)
-//          } else {
-//            this.saleGoods[index].buyCount = count
-//            console.log(this.saleGoods[index])
-//            console.log('test1')
-//          }
-//        }
-//      },
-      updateCount (item, count) {
-        item.buyCount = count
+      updateGoodsListCount (list, index, count) {
+        if (typeof list[index].buyCount === 'undefined') {
+          this.$set(list[index], 'buyCount', count)
+        } else {
+          list[index].buyCount = count
+        }
       },
       goLocation () {
         if (!localStorage.getItem('m-token')) {

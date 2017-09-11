@@ -52,6 +52,7 @@
           }
           if (item.kucun > 0) {
             bus.$emit('drop', el)
+            console.log(item.kucun)
           }
           this.clickTag = 1
           if (item.shopType === 1) {
@@ -73,7 +74,8 @@
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
               item.kucun--
 //              item.buyCount = res.data.buyCount
-              bus.$emit('updateCount', this.goodsList[this.index], res.data.buyCount)
+//              bus.$emit('updateOneColumCount', this.goodsList, this.index, this.count)
+              this.$emit('updateColumCount', this.goodsList, this.index, res.data.buyCount)
 //              this.$emit('updateGoods', index, res.data.buyCount)
             }
             if (res.data.code === 101) {

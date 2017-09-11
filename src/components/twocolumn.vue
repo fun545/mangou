@@ -14,6 +14,12 @@
           <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
           </p>
           <buy-car-button :goods="item"></buy-car-button>
+          <buy-car-button
+            :goods="item"
+            :index="index"
+            :goodsList="goodsList"
+            @updateColumCount="updateColumCount"
+          ></buy-car-button>
         </div>
       </div>
     </li>
@@ -35,6 +41,9 @@
       cartBadge
     },
     methods: {
+      updateColumCount (list, index, count) {
+        this.$emit('updateGoodsListCount', list, index, count)
+      },
       goDetail (id) {
         if (this.type === 'goodsDetail') {
           this.$emit('changeData', id)

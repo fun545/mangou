@@ -19,15 +19,14 @@
           <div>{{item.buyCount}}</div>
         </div>
       </div>
-      <buyCarButton
+      <buy-car-button
         :goods="item"
         v-if="!isCollect"
         :shopStatus="shopStatus"
         :index="index"
         :goodsList="goodsList"
-        @updateGoods="updateGoods"
-      ></buyCarButton>
-      {{item.buyCount}}
+        @updateColumCount="updateColumCount"
+      ></buy-car-button>
     </li>
   </ul>
 </template>
@@ -35,6 +34,7 @@
 <script>
   import buyCarButton from '../components/buyCarButton'
   import cartBadge from '../components/badge'
+  //  import { bus } from '../util/util'
 
   export default {
     props: {
@@ -54,8 +54,8 @@
     },
     components: {buyCarButton, cartBadge},
     methods: {
-      updateGoods (index, count) {
-        this.$emit('updateGoodsList', 'sale', index, count)
+      updateColumCount (list, index, count) {
+        this.$emit('updateGoodsListCount', list, index, count)
       },
       goDetail (id) {
         this.$router.push({

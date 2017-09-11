@@ -33,8 +33,8 @@
           </div>
         </div>
         <div class="list-wrap" ref="listWrap">
-          <one-column v-if="listFlag" :goodsList="list"></one-column>
-          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"></two-column>
+          <one-column v-if="listFlag" :goodsList="list" @updateGoodsListCount="updateGoodsListCount"></one-column>
+          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag" @updateGoodsListCount="updateGoodsListCount"></two-column>
         </div>
         <load-more
           :tip="loadText"
@@ -62,6 +62,7 @@
   import toTop from '../components/toTop'
   import { loadMoreMehod } from '../util/util'
   import { LoadMore } from 'vux'
+
   export default {
     name: 'nextList1',
     components: {instruction, nextSearch, BScroll, twoColumn, noPage, ball, oneColumn, loading, LoadMore},
@@ -95,6 +96,13 @@
       this.getGoods(this.secondId)
     },
     methods: {
+      updateGoodsListCount (list, index, count) {
+        if (typeof list[index].buyCount === 'undefined') {
+          this.$set(list[index], 'buyCount', count)
+        } else {
+          list[index].buyCount = count
+        }
+      },
       change () {
         if (this.listFlag) {
           this.listFlag = false
@@ -102,7 +110,7 @@
           this.listFlag = true
         }
         this.$nextTick(() => {
-          this._initScroll()
+          this.listScroll.refresh()
         })
       },
       _initScroll () {

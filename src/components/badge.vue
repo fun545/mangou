@@ -1,5 +1,5 @@
 <template>
-  <div class="cart-badge t-c">
+  <div class="cart-badge t-c" v-if="count">
     <span>{{count}}</span>
   </div>
 </template>

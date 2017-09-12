@@ -58,7 +58,12 @@
           <!--次日达-->
           <div ref="contentNext" class="contentWrap next" :class="{'active':shopType===1,'no-goods':noGoodsFlagNext}">
             <div>
-              <one-column :goodsList="NextGoodsList" :shopType="shopType" class="content"></one-column>
+              <one-column
+                :goodsList="NextGoodsList"
+                :shopType="shopType"
+                class="content"
+                @updateGoodsListCount="updateGoodsListCount"
+              ></one-column>
               <load-more
                 :tip="loadText"
                 :show-loading="moreIconFlagNext"
@@ -71,8 +76,11 @@
           <!--及时送-->
           <div ref="contentThis" class="contentWrap this" :class="{'active':shopType===2,'no-goods':noGoodsFlagThis}">
             <div>
-              <one-column :goodsList="ThisGoodsList" :shopType="shopType" class="content"
-                          :shopStatus="shopStatus"></one-column>
+              <one-column :goodsList="ThisGoodsList"
+                          :shopType="shopType" class="content"
+                          :shopStatus="shopStatus"
+                          @updateGoodsListCount="updateGoodsListCount"
+              ></one-column>
               <load-more
                 :tip="loadText"
                 :show-loading="moreIconFlagThis"
@@ -198,6 +206,13 @@
       }
     },
     methods: {
+      updateGoodsListCount (list, index, count) {
+        if (typeof list[index].buyCount === 'undefined') {
+          this.$set(list[index], 'buyCount', count)
+        } else {
+          list[index].buyCount = count
+        }
+      },
       // 返回搜索输入
       backSearch () {
         this.goSearchFlag = false
@@ -225,7 +240,6 @@
           this.thisTabFlag = true
           this.shopType = 1
           this.noGoodsFlagThis = false
-          console.log(this.NextGoodsList.length)
           if (this.NextGoodsList.length === 0) {
             this.goSearch()
           }
@@ -263,7 +277,6 @@
         }
         await this.post('/goods/searchGoods', paramas).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             if (res.data.goodsInfo.goodsList.length > 0) {
               this.shopStatus = res.data.goodsInfo.goodsList[0].shopStatus
             }
@@ -272,7 +285,6 @@
 //              this.noPageFlag = true
 //            }
             // 如果是及时送
-            console.log(this.shopType, 'shopType')
             if (this.shopType === 2) {
               this.ThisGoodsList = res.data.goodsInfo.goodsList
               if (this.ThisGoodsList.length === 0) {
@@ -281,7 +293,6 @@
               // 如果是次日达
             } else {
               this.NextGoodsList = res.data.goodsInfo.goodsList
-              console.log(this.NextGoodsList, 'no')
               if (this.NextGoodsList.length === 0) {
                 this.noGoodsFlagNext = true
               }
@@ -478,7 +489,6 @@
     },
     watch: {
       '$route' (to, from) {
-        console.log(to, from)
         // 跟新token
         if (to.path === '/search') {
           this.token = localStorage.getItem('m-token')

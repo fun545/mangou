@@ -4,7 +4,6 @@ export default {
       token: localStorage.getItem('m-token'),
       villageId: localStorage.getItem('m-villageId')
     }).then((res) => {
-      console.log(res.data, 'action')
       if (res.data.code === 100) {
         commit('saveServeRangeList', res.data.villageList)
       }

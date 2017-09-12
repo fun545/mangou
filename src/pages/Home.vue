@@ -216,11 +216,11 @@
         serchKey: '',
         specialPriceGoodsList: [],
         tuijianGoodsList: [],
+        saleGoods: [],
         tuijianImagesList: [],
         adverList: [],
         newGoodsList: [],
         newImageList: [],
-        saleGoods: [],
         saleImagelist: [],
         moreRecommendList: [],
         pageIndex: 0,
@@ -324,6 +324,30 @@
           this.reloadFlag = true
         }
         this.loadingFlag = false
+      })
+    },
+    activated () {
+      // 刷新小圆点数量
+      this.nextCartList = this.$store.state.nextCartList
+      if (this.nextCartList === '') {
+        return
+      }
+      let curGoodsList = []
+      curGoodsList = curGoodsList.concat(this.specialPriceGoodsList, this.tuijianGoodsList, this.newGoodsList,
+        this.saleGoods, this.moreRecommendList)
+      curGoodsList.forEach((item) => {
+        var hasFlag = false
+        if (item.buyCount > 0) {
+          this.nextCartList.forEach((cartItem) => {
+            if (cartItem.goodsId === item.goodsId) {
+              item.buyCount = cartItem.buyCount
+              hasFlag = true
+            }
+          })
+          if (!hasFlag) {
+            item.buyCount = 0
+          }
+        }
       })
     },
     methods: {

@@ -52,7 +52,6 @@
           }
           if (item.kucun > 0) {
             bus.$emit('drop', el)
-            console.log(item.kucun)
           }
           this.clickTag = 1
           if (item.shopType === 1) {

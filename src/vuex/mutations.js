@@ -100,6 +100,14 @@ export default {
   saveShippingInfo (state, val) {
     state.shippingInfo = val
   },
+  // 储存购物车及时送商品列表
+  saveThisCartList (state, val) {
+    state.thisCartList = val
+  },
+  // 储存购物车及时送商品列表
+  saveNextCartList (state, val) {
+    state.nextCartList = val
+  },
   // 确认下单合计
   saveOrderTotalPrice (state, val) {
     if (val === 'nomalBuy') {

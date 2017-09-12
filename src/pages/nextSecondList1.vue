@@ -34,7 +34,8 @@
         </div>
         <div class="list-wrap" ref="listWrap">
           <one-column v-if="listFlag" :goodsList="list" @updateGoodsListCount="updateGoodsListCount"></one-column>
-          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag" @updateGoodsListCount="updateGoodsListCount"></two-column>
+          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"
+                      @updateGoodsListCount="updateGoodsListCount"></two-column>
         </div>
         <load-more
           :tip="loadText"
@@ -87,7 +88,9 @@
         loadingFlag: false,
         storeId: localStorage.getItem('m-depotId'),
         LoadMore,
-        loadMoreFlag: true
+        loadMoreFlag: true,
+        villageId: localStorage.getItem('m-villageId'),
+        token: localStorage.getItem('m-token')
       }
     },
     created () {
@@ -123,12 +126,15 @@
         loadMoreMehod(this.listScroll, this.$refs.listWrap, this.loadMore)
       },
       getGoods (id) {
-        this.post('/goods/goodsList', {
-          secondClassifyId: id,
-          storeId: this.storeId,
-          softType: this.softType,
-          villageId: localStorage.getItem('m-villageId')
-        }).then((res) => {
+        let paramas = {}
+        paramas.secondClassifyId = id
+        paramas.storeId = this.storeId
+        paramas.softType = this.softType
+        paramas.villageId = this.villageId
+        if (this.token) {
+          paramas.token = this.token
+        }
+        this.post('/goods/goodsList', paramas).then((res) => {
           console.log(this.$store.state.totalBuyCount)
           if (res.data.code === 100) {
             if (res.data.goodsList.length === 0) {
@@ -185,13 +191,16 @@
         if (!this.scrollDisable) {
           this.scrollDisable = true
           this.pageIndex += 1
-          this.post('/goods/goodsList', {
-            secondClassifyId: this.secondId,
-            storeId: this.storeId,
-            softType: this.softType,
-            pageIndex: this.pageIndex,
-            pageSize: 10
-          }).then((res) => {
+          let paramas = {}
+          paramas.secondClassifyId = this.secondId
+          paramas.storeId = this.storeId
+          paramas.softType = this.softType
+          paramas.pageIndex = this.pageIndex
+          paramas.pageSize = 10
+          if (this.token) {
+            paramas.token = this.token
+          }
+          this.post('/goods/goodsList', paramas).then((res) => {
             if (res.data.code === 100) {
               let newList = res.data.goodsList
               for (let i = 0; i < newList.length; i++) {

@@ -32,15 +32,6 @@
                 <div class="pic">
                   <img v-lazy="item.classifyImgUrl" alt="" width="100%" height="100%">
                 </div>
-                <!--<div class="pic">-->
-                <!--<lazy-image-->
-                <!--:src='item.classifyImgUrl'-->
-                <!--:placeholder='$store.state.defaultImg'-->
-                <!--:events="['touchmove']"-->
-                <!--width="100%"-->
-                <!--height="100%"-->
-                <!--&gt;</lazy-image>-->
-                <!--</div>-->
                 <p class="name t-c">{{item.classifyName}}</p>
               </div>
             </div>

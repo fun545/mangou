@@ -1,7 +1,7 @@
 <template>
   <div class="this" @touchmove.prevent>
     <!-- 页面头部 -->
-    <div class="head-box" v-if="!scrollFlag">
+    <div class="head-box" v-show="!scrollFlag">
       <!-- 显示页面主题 -->
       <div class="is-cont">
         <div class="flex-box" v-if="storeMsg">
@@ -161,7 +161,7 @@
         scrollTop: '',
         sideList: [],
         storeMsg: [],
-        goodsList: '',
+        goodsList: [],
         ind: 0, // 当前一级菜单索引
         secondIndex: -1, // 当前二级菜单索引
         firstId: '', // 一级菜单对应的classifyId
@@ -203,6 +203,37 @@
       }
       this.createdMethods()
     },
+    activated () {
+//      this.thisCartList = this.$store.state.thisCartList
+//      console.log(this.thisCartList)
+//      this.thisCartList.forEach((cartItem) => {
+//        this.goodsList.forEach((item) => {
+//          if (cartItem.goodsId === item.goodsId) {
+//            item.buyCount = cartItem.buyCount
+//          }
+//        })
+//      })
+      // 刷新小圆点数量
+//      let curGoodsList = this.goodsList
+      this.thisCartList = this.$store.state.thisCartList
+      if (this.thisCartList === '') {
+        return
+      }
+      this.goodsList.forEach((item) => {
+        var hasFlag = false
+        if (item.buyCount > 0) {
+          this.thisCartList.forEach((cartItem) => {
+            if (cartItem.goodsId === item.goodsId) {
+              item.buyCount = cartItem.buyCount
+              hasFlag = true
+            }
+          })
+          if (!hasFlag) {
+            item.buyCount = 0
+          }
+        }
+      })
+    },
     watch: {
       '$route' (to, from) {
         this.$nextTick(() => {
@@ -232,7 +263,6 @@
         await this.post('/basic/getStoreMsg', {
           storeId: localStorage.getItem('m-shopId')
         }).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.storeMsg = res.data.storeInfo
             this.shopStatus = res.data.storeInfo.shopStatus
@@ -271,13 +301,13 @@
         // 速选商品列表 如果bt===2 则有速选商品
         if (this.sideList[0].bt === 2) {
           this.fastSortFlag = true
-          let paramas = {}
-          paramas.keyWordId = 7
-          paramas.softType = 3
+          let paramasFast = {}
+          paramasFast.keyWordId = 7
+          paramasFast.softType = 3
           if (this.token) {
-            paramas.token = this.token
+            paramasFast.token = this.token
           }
-          await this.post('/goods/getLabelGoods', paramas).then((res) => {
+          await this.post('/goods/getLabelGoods', paramasFast).then((res) => {
             if (res.data.code === 100) {
               this.fastSortGoodsList = res.data.goodsList
               this.goodsList = this.fastSortGoodsList
@@ -414,10 +444,10 @@
           var paramasFast = {}
           paramasFast.keyWordId = 7
           paramasFast.softType = this.softType
-          await this.post('/goods/getLabelGoods', {
-            keyWordId: 7,
-            softType: this.softType
-          }).then((res) => {
+          if (this.token) {
+            paramasFast.token = this.token
+          }
+          await this.post('/goods/getLabelGoods', paramasFast).then((res) => {
             if (res.data.code === 100) {
               this.fastSortGoodsList = res.data.goodsList
               this.goodsList = this.fastSortGoodsList

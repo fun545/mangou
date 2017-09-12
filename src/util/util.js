@@ -9,7 +9,6 @@ export const loadMoreMehod = (scrollObj, element, callBack, otherCallBack) => {
     let scrollBoxHeight = scrollBox.offsetHeight
     let innerBoxHeight = scrollBox.children[0].clientHeight
     if (scrollTop + scrollBoxHeight >= innerBoxHeight) {
-      console.log('daodile')
       callBack()
     }
     // 监听滚动事件回调函数

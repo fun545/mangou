@@ -58,13 +58,6 @@
                   </div>
                   <!--商品图片 及时送-->
                   <div class="pic">
-                    <!--<lazy-image-->
-                    <!--:src='item.goodsImgUrl'-->
-                    <!--:placeholder='$store.state.defaultImg'-->
-                    <!--:events="['touchmove']"-->
-                    <!--width="100%"-->
-                    <!--height="100%"-->
-                    <!--&gt;</lazy-image>-->
                     <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%">
                   </div>
                   <!--商品信息 及时送-->
@@ -401,6 +394,8 @@
               if (res.data.code === 100) {
                 item.buyCount = res.data.buyCount
                 this.$store.commit('increment', res.data.totalBuyCount)
+                this.$store.commit('saveThisCartList', this.thisGoodsList)
+                this.$store.commit('saveNextCartList', this.NextGoodsList)
               }
               if (res.data.code === 101) {
                 this.$vux.toast.text(res.data.msg, 'middle')
@@ -434,6 +429,8 @@
               if (res.data.code === 100) {
                 item.buyCount = res.data.buyCount
                 this.$store.commit('increment', res.data.totalBuyCount)
+                this.$store.commit('saveThisCartList', this.thisGoodsList)
+                this.$store.commit('saveNextCartList', this.NextGoodsList)
               }
               if (res.data.code === 101) {
                 this.$vux.toast.text(res.data.msg, 'middle')
@@ -482,6 +479,8 @@
           if (res.data.code === 100) {
             item.buyCount = res.data.buyCount
             this.$store.commit('increment', res.data.totalBuyCount)
+            this.$store.commit('saveThisCartList', this.thisGoodsList)
+            this.$store.commit('saveNextCartList', this.NextGoodsList)
           }
           if (res.data.code === 101) {
             this.$vux.toast.text(res.data.msg, 'middle')
@@ -535,45 +534,11 @@
             delList.push(curThis.carId)
             delIndexListThis.push(i)
             delTotalCount += curThis.buyCount
-//            await this.post('/car/deleteCar', {
-//              token: this.token,
-//              carId: curThis.carId
-//            }).then((res) => {
-//              if (res.data.code === 100) {
-//                this.thisGoodsList.splice(i, 1)
-//                i--
-//                this.$store.commit('totalBuyCountReduce', 1)
-//              }
-//              if (res.data.code === 101) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//              }
-//              if (res.data.code === 102) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//                localStorage.removeItem('m-token')
-//              }
-//            })
           }
           if (curThis.NoGoods) {
             delList.push(curThis.carId)
             delIndexListThis.push(i)
             delTotalCount += curThis.buyCount
-//            await this.post('/car/deleteCar', {
-//              token: this.token,
-//              carId: curThis.carId
-//            }).then((res) => {
-//              if (res.data.code === 100) {
-//                this.thisGoodsList.splice(i, 1)
-//                i--
-//                this.$store.commit('totalBuyCountReduce', 1)
-//              }
-//              if (res.data.code === 101) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//              }
-//              if (res.data.code === 102) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//                localStorage.removeItem('m-token')
-//              }
-//            })
           }
         }
         for (let i = 0; i < this.NextGoodsList.length; i++) {
@@ -582,45 +547,11 @@
             delList.push(curNext.carId)
             delIndexListNext.push(i)
             delTotalCount += curNext.buyCount
-//            await this.post('/car/deleteCar', {
-//              token: this.token,
-//              carId: curNext.carId
-//            }).then((res) => {
-//              if (res.data.code === 100) {
-//                this.NextGoodsList.splice(i, 1)
-//                i--
-//                this.$store.commit('totalBuyCountReduce', 1)
-//              }
-//              if (res.data.code === 101) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//              }
-//              if (res.data.code === 102) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//                localStorage.removeItem('m-token')
-//              }
-//            })
           }
           if (curNext.NoGoods) {
             delList.push(curNext.carId)
             delIndexListNext.push(i)
             delTotalCount += curNext.buyCount
-//            await this.post('/car/deleteCar', {
-//              token: this.token,
-//              carId: curNext.carId
-//            }).then((res) => {
-//              if (res.data.code === 100) {
-//                this.NextGoodsList.splice(i, 1)
-//                i--
-//                this.$store.commit('totalBuyCountReduce', 1)
-//              }
-//              if (res.data.code === 101) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//              }
-//              if (res.data.code === 102) {
-//                this.$vux.toast.text(res.data.msg, 'middle')
-//                localStorage.removeItem('m-token')
-//              }
-//            })
           }
         }
         var delStr = delList.join(',')
@@ -828,6 +759,14 @@
             this.showComfirmDel = true
           }
         }
+      }
+    },
+    watch: {
+      thisGoodsList () {
+        this.$store.commit('saveThisCartList', this.thisGoodsList)
+      },
+      NextGoodsList () {
+        this.$store.commit('saveNextCartList', this.NextGoodsList)
       }
     },
     computed: {

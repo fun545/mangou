@@ -28,6 +28,9 @@
     background: #fff url("../assets/loading_02.png") no-repeat center;
     /*background: rgba(0, 0, 0, 0) url("../assets/loading_02.png") no-repeat center;*/
     background-size: 1.84rem 1.616rem;
+    &.loading-bg-color {
+      background-color: rgba(0, 0, 0, 0);
+    }
     .text {
       position: absolute;
       text-align: center;

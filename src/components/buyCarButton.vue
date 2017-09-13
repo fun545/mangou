@@ -41,14 +41,19 @@
         if (item.status !== 1) {
           return
         }
-//        // 限购
-//        if ()
         // 限制点击速度
         if (this.clickTag === 0) {
           // 库存不足
-          if (item.kucun === 0) {
+          if (item.kucun - item.buyCount <= 0) {
             this.$vux.toast.text('该商品存库不足', 'middle')
             return
+          }
+          // 限购 IsPurchase：1 为开启限购
+          if (item.isPurchase === 1) {
+            if (item.buyCount >= Number(item.purchaseCount)) {
+              this.$vux.toast.text(`亲，该商品每人限购数量为${item.purchaseCount}喔`, 'middle')
+              return
+            }
           }
           if (item.kucun > 0) {
             bus.$emit('drop', el)
@@ -71,11 +76,10 @@
             if (res.data.code === 100) {
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
-              item.kucun--
 //              item.buyCount = res.data.buyCount
 //              bus.$emit('updateOneColumCount', this.goodsList, this.index, this.count)
               this.$emit('updateColumCount', this.goodsList, this.index, res.data.buyCount)
-//              this.$emit('updateGoods', index, res.data.buyCount)
+//              this.goodsItem.buyCount = res.data.buyCount
             }
             if (res.data.code === 101) {
               if (res.data.msg === '该商品存库不足') {
@@ -93,6 +97,11 @@
         }
       }
     }
+//    computed: {
+//      goodsItem () {
+//        return this.$store.state.goodsItem
+//      }
+//    }
   }
 </script>
 

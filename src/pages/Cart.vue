@@ -218,7 +218,7 @@
           </div>
         </div>
         <!--购物车无商品-->
-        <div class="car-no-goods t-c" v-if="!loadingFlag&&thisGoodsList.length===0&&NextGoodsList.length===0">
+        <div class="car-no-goods t-c" v-if="thisGoodsList.length === 0 && NextGoodsList.length === 0">
           <div @click="$router.push({path:'/next'})" class="bt cl">去超市逛逛</div>
         </div>
       </div>
@@ -229,7 +229,7 @@
         </div>
       </div>
       <!--加载动画-->
-      <loading v-if="token" :loadingFlag="loadingFlag" :class="{'loading-bg-color':loadingBgColorFlag}"></loading>
+      <loading v-if="token" :loadingFlag="loadingFlag"></loading>
     </div>
     <m-footer></m-footer>
   </div>
@@ -284,9 +284,9 @@
         ToCountText: '去结算',
         token: localStorage.getItem('m-token'),
         loadingFlag: true, // 加载页面
-        fastClick: false,
-        loadingBgColorFlag: false,
-        Cnextfreight: 0
+        fastClick: false, // 限制快速点击
+        loadingBgColorFlag: false, // 加载透明背景flag
+        Cnextfreight: 0 // 次日达运费
       }
     },
     created () {
@@ -382,6 +382,12 @@
         if (!this.fastClick) {
           this.fastClick = true
           if (type === 1) {
+            // 库存不足
+            if (item.kucun - item.buyCount <= 0) {
+              this.$vux.toast.text('该商品存库不足', 'middle')
+              this.fastClick = false
+              return
+            }
             await this.post('/car/addCar', {
               token: this.token,
               goodsId: item.goodsId,
@@ -459,7 +465,14 @@
           return
         }
         // 大于库存
-        if (item.buyCount > item.kucun) {
+//        if (item.buyCount > item.kucun) {
+//          item.buyCount = item.kucun
+//          this.inputChangePost(item)
+//          return
+//        }
+        // 大于库存
+        if (item.kucun - item.buyCount <= 0) {
+          this.$vux.toast.text('该商品存库不足', 'middle')
           item.buyCount = item.kucun
           this.inputChangePost(item)
           return
@@ -951,11 +964,9 @@
     .b(100);
 
     .loading {
-
       &.loading-bg-color {
         background-color: rgba(0, 0, 0, 0);
       }
-
     }
   }
 

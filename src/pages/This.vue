@@ -72,7 +72,7 @@
               </div>
             </div>
             <div class="goods-item clearfix" v-for="(item,index) in goodsList" :key="index">
-              <div class="pic pos-re" @click="goDetail(item.goodsId)">
+              <div class="pic pos-re" @click="goDetail(item)">
                 <div class="pos-ab" :class="{'daigou':item.goodsType===2}"></div>
                 <img width="100%" height="100%" v-lazy="item.goodsImgUrl"/>
                 <cart-badge :count="item.buyCount"></cart-badge>
@@ -631,10 +631,11 @@
         }
         this.scrollTop = scrollTop
       },
-      goDetail (id) {
+      goDetail (item) {
+        this.$store.commit('saveGoodsItem', item)
         this.$router.push({
           path: '/goods_detail',
-          query: {goodsId: id, shopStatus: this.shopStatus}
+          query: {goodsId: item.goodsId, shopStatus: this.shopStatus}
         })
       }
     },

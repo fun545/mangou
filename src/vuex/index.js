@@ -29,6 +29,7 @@ const state = {
   depotInfo: {}, // 仓库相关信息
   shopInfo: {},   // 店铺相关信息
   shopStatus: 0, // 店铺状态：0 正常
+  goodsItem: '',
   thisShop: '', // 购物车及时送相关信息
   nextShop: '', // 购物车次日达相关信息
   thisCartList: '', // 购物车及时送商品列表

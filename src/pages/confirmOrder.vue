@@ -387,6 +387,30 @@
           }).then((res) => {
             console.log(res.data)
             if (res.data.code === 100) {
+              // 确认下单清除购物车商品 及时送
+              var thisCartList = this.thisCartList
+              this.thisGoodsList.forEach((item, index) => {
+                for (var i = 0; i < thisCartList.length; i++) {
+                  var cur = thisCartList[i]
+                  if (cur.goodsId === item.goodsId) {
+                    thisCartList.splice(i, 1)
+                    i--
+                  }
+                }
+              })
+              // 确认下单清除购物车商品 及时送
+              var nextCartList = this.nextCartList
+              this.NextGoodsList.forEach((item, index) => {
+                for (var i = 0; i < nextCartList.length; i++) {
+                  var cur = nextCartList[i]
+                  if (cur.goodsId === item.goodsId) {
+                    nextCartList.splice(i, 1)
+                    i--
+                  }
+                }
+              })
+              this.$store.commit('saveThisCartList', thisCartList)
+              this.$store.commit('saveNextCartList', nextCartList)
               this.$store.commit('saveOrderNumList', res.data.orderNumList)
               this.weixinPay(JSON.parse(localStorage.getItem('m-userInfo')).userId, this.orderTotalPrice, res.data.orderNumList, this)
             }
@@ -466,6 +490,14 @@
       // 商品数量 次日达
       selectedTotalCountNext () {
         return this.$store.state.selectedTotalCountNext
+      },
+      // 及时送购物车列表
+      thisCartList () {
+        return this.$store.state.thisCartList
+      },
+      // 次日达购物车列表
+      nextCartList () {
+        return this.$store.state.nextCartList
       }
     }
   }

@@ -5,7 +5,7 @@
         <a class="location" @click="goLocation">{{villageName}}</a>
         <a class="search iconfont" @click="goSearch" v-if="hasNextShop">&#xe639;</a>
         <!--isWeiXinFlag&&hasNextShop-->
-        <!--<i class="iconfont scan" @click="scan" v-if="true">&#xe661;</i>-->
+        <i class="iconfont scan" @click="scan" v-if="isWeiXinFlag">&#xe661;</i>
       </div>
       <scroll class="home-view"
               :data="loadMoreNum"
@@ -90,7 +90,7 @@
               </home-title>
               <div class="content clearfix">
                 <div class="item f-l" v-for="(item,index) in tuijianGoodsList" :key="index">
-                  <div class="top" @click="goDetail(item.goodsId)">
+                  <div class="top" @click="goDetail(item)">
                     <div class="pic">
                       <img v-lazy="item.goodsImgUrl" alt="">
                       <cart-badge :count="item.buyCount"></cart-badge>
@@ -98,10 +98,10 @@
                     <div class="des">
                       <h3 class="title">{{item.goodsName}}</h3>
                       <p class="next-price">次日价：<span class="s1">¥</span><span
-                        class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+                        class="number">{{item.price.toFixed(1)}}</span>
                       </p>
                       <p class="this-price">即时价：<span class="s1">¥</span><span
-                        class="number">{{item.price.toFixed(1)}}</span></p>
+                        class="number">{{item.canKaoPrice.toFixed(1)}}</span></p>
                     </div>
                   </div>
                   <buy-car-button
@@ -178,7 +178,7 @@
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
   import loadFail from '../components/loadFail.vue'
-  //  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
+  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
   import cartBadge from '../components/badge'
@@ -238,7 +238,7 @@
         },
         homeSroll: {},
         reloadFlag: false,
-//        isWeiXinFlag: isWeiXinFlag,
+        isWeiXinFlag: isWeiXinFlag,
         newList: [],
         loadMoreNum: 0,
         loadingFlag: true
@@ -394,29 +394,53 @@
         })
       },
 //      扫一扫
-//      scan () {
-//        let _this = this
-//        wxObj.scanQRCode({
-//          needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-//          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-//          success: function (res) {
-//            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-//            console.log(result, 'result')
-//            console.log(res, 'res')
-//            _this.$router.push({path:'/goodsDetail',query:{id:}})
-//          }
-//        })
-//      },
+      scan () {
+        var _this = this
+        wxObj.scanQRCode({
+          needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+          success: function (res) {
+            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+            var splitArr = result.split(',')
+            var huohao = splitArr[1]
+            console.log(result, 'result')
+            console.log(res, 'res')
+            _this.$vux.toast.text(`${huohao}huohao`, 'middle')
+//            _this.$vux.toast.text(`${result}res.resultStr`, 'middle')
+//            _this.$router.push({path: '/goodsDetail', query: {id:}})
+            _this.post('/goods/goodsDetail', {
+              storeId: localStorage.getItem('m-storeId'),
+              villageId: localStorage.getItem('m-villageId'),
+              huohao: huohao
+            }).then(res => {
+              console.log(res.data)
+              _this.$vux.toast.text(`${res.data.code}code`, 'middle')
+              if (res.data.code === 100) {
+                _this.$router.push({
+                  path: '/goods_detail',
+                  query: {huohao: huohao}
+                })
+              } else {
+                _this.$vux.alert.show({
+                  title: '提示',
+                  content: '无此商品'
+                })
+              }
+            })
+          }
+        })
+      },
       goActive (item) {
         this.$router.push({
           path: '/active',
           query: {keyId: item.keyId, remarks: item.remarks, keyBanleImages: item.keyBanleImages}
         })
       },
-      goDetail (id) {
+      goDetail (item) {
+        this.$store.commit('saveGoodsItem', item)
         this.$router.push({
           path: '/goods_detail',
-          query: {goodsId: id}
+          query: {goodsId: item.goodsId}
         })
       },
       goOriginDetail (id) {

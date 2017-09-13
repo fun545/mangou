@@ -160,6 +160,10 @@ export default {
   getFastBuyInfo (state, val) {
     state.fastBuyInfo = val
   },
+  // item info
+  saveGoodsItem (state, val) {
+    state.goodsItem = val
+  },
   // 保存新增编辑地址
   saveAddress (state, val) {
     state.addressInfo = val

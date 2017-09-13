@@ -53,7 +53,11 @@
           <div class="guess">
             <div class="title"></div>
             <div class="d-content">
-              <guess-list :goodsList="goodsList" type='goodsDetail' @changeData="changeData"
+              <guess-list :goodsList="goodsList"
+                          type='goodsDetail'
+                          @changeData="changeData"
+                          @updateGoodsListCount="updateGoodsListCount"
+                          :shopType="goodsDetail.shopType"
                           :scrollObj="scrollObj"></guess-list>
             </div>
           </div>
@@ -72,13 +76,16 @@
             合计：<span>￥{{totalPrice}}</span>
           </div>
         </div>
-        <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt"
-             :class="{'disabled':shopStatus!==0}">
-          加入购物车
-        </div>
-        <div class="button t-c buy" @click="goFastBuy" v-if="goodsDetail.shopType===2&&shopStatus===0"
-             :class="{'disabled':shopStatus!==0}">
-          立即购买
+        <div v-if="goodsDetail.status===2" class="button t-c disabled">已售罄</div>
+        <div v-if="goodsDetail.status===1">
+          <div class="button t-c" @click="addCart(goodsDetail)" ref="cartBt"
+               :class="{'disabled':shopStatus!==0}">
+            加入购物车
+          </div>
+          <div class="button t-c buy" @click="goFastBuy" v-if="goodsDetail.shopType===2&&shopStatus===0"
+               :class="{'disabled':shopStatus!==0}">
+            立即购买
+          </div>
         </div>
       </div>
       <no-login-footer v-if="!token"></no-login-footer>
@@ -156,6 +163,7 @@
         token: localStorage.getItem('m-token'),
         shopStatus: 0, // 店铺状态
         goodsId: this.$route.query.goodsId,
+        huohao: this.$route.query.huohao,
         scrollObj: {}
       }
     },
@@ -166,6 +174,13 @@
       this.getData()
     },
     methods: {
+      updateGoodsListCount (list, index, count) {
+        if (typeof list[index].buyCount === 'undefined') {
+          this.$set(list[index], 'buyCount', count)
+        } else {
+          list[index].buyCount = count
+        }
+      },
       // 点击收藏或更新收藏状态
       getDetail () {
         this.post('/goods/goodsDetail', {
@@ -194,7 +209,12 @@
       getData () {
         this.loadingFlag = true
         var paramas = {}
-        paramas.goodsId = this.goodsId
+        if (typeof this.goodsId !== 'undefined') {
+          paramas.goodsId = this.goodsId
+        }
+        if (typeof this.huohao !== 'undefined') {
+          paramas.huohao = this.huohao
+        }
         paramas.villageId = this.villageId
         this.token = localStorage.getItem('m-token')
         if (this.token) {
@@ -305,11 +325,22 @@
         }
         // 店铺状态
         if (this.shopStatus !== 0) {
-          this.$vux.toast.text('门店休息中，不接收订单', 'center')
+          this.$vux.toast.text('门店休息中，不接收订单', 'middle')
           return
         }
         // 限制点击速度
         if (this.clickTag === 0) {
+          // 库存不足
+          if (item.kucun - item.buyCount <= 0) {
+            this.$vux.toast.text('该商品存库不足', 'middle')
+            return
+          }
+          if (item.isPurchase === 1) {
+            if (item.buyCount >= Number(item.purchaseCount)) {
+              this.$vux.toast.text(`亲，该商品每人限购数量为${item.purchaseCount}喔`, 'middle')
+              return
+            }
+          }
           this.clickTag = 1
           if (item.shopType === 1) {
             this.storeId = localStorage.getItem('m-depotId')
@@ -330,6 +361,11 @@
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
               bus.$emit('drop', this.$refs.cartBt)
               this.$store.commit('increment', res.data.totalBuyCount)
+              if (typeof this.goodsItem.buyCount === 'undefined') {
+                this.$set(this.goodsItem, 'buyCount', res.data.buyCount)
+              } else {
+                this.goodsItem.buyCount = res.data.buyCount
+              }
             }
             if (res.data.code === 101) {
               this.$vux.toast.text(res.data.msg, 'middle')
@@ -377,8 +413,9 @@
       },
       async goBuy () {
         // 加入购物车
-        if (this.goodsDetail.kucun <= 0) {
-          this.$vux.toast.text('库存不足', 'center')
+        // 库存不足
+        if (this.goodsDetail.kucun - this.goodsDetail.buyCount <= 0) {
+          this.$vux.toast.text('该商品存库不足', 'middle')
           return
         }
         await this.post('/car/addCar', {
@@ -461,6 +498,9 @@
       },
       totalPrice () {
         return this.$store.state.totalPrice
+      },
+      goodsItem () {
+        return this.$store.state.goodsItem
       }
     }
   }

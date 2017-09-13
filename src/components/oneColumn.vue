@@ -2,7 +2,7 @@
   <ul>
     <li class="item" v-for="(item,index) in goodsList" :key="index">
       <div class="pic f-l">
-        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
+        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item)">
         <cart-badge :count="item.buyCount"></cart-badge>
       </div>
       <div class="col f-l">
@@ -16,7 +16,6 @@
           <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
           </p>
           <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
-          <div>{{item.buyCount}}</div>
         </div>
       </div>
       <buy-car-button
@@ -57,10 +56,11 @@
       updateColumCount (list, index, count) {
         this.$emit('updateGoodsListCount', list, index, count)
       },
-      goDetail (id) {
+      goDetail (item) {
+        this.$store.commit('saveGoodsItem', item)
         this.$router.push({
           path: '/goods_detail',
-          query: {goodsId: id}
+          query: {goodsId: item.goodsId}
         })
       }
 //      changeBuyCount (item, val) {

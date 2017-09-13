@@ -2,7 +2,7 @@
   <ul class="goods-detail-wrap clearfix">
     <li class="item-two-column f-l" v-for="(item,index) in goodsList" :key="index">
       <div class="pic">
-        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item.goodsId)">
+        <img v-lazy="item.goodsImgUrl" alt="" width="100%" height="100%" @click="goDetail(item)">
         <cart-badge :count="item.buyCount"></cart-badge>
       </div>
       <div class="top">
@@ -10,10 +10,17 @@
       </div>
       <div class="bt">
         <div>
-          <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
-          <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
-          </p>
-          <buy-car-button :goods="item"></buy-car-button>
+          <div v-if="shopType===1">
+            <p class="next-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+            <p class="this-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+            </p>
+          </div>
+          <div v-if="shopType===2">
+            <p class="next-price">即时价：<span class="s1">¥</span><span class="number">{{item.canKaoPrice.toFixed(1)}}</span>
+            </p>
+            <p class="this-price">次日价：<span class="s1">¥</span><span class="number">{{item.price.toFixed(1)}}</span></p>
+          </div>
+          <!--<buy-car-button :goods="item"></buy-car-button>-->
           <buy-car-button
             :goods="item"
             :index="index"
@@ -34,7 +41,11 @@
     props: {
       goodsList: Array,
       type: String,
-      scrollObj: Object
+      scrollObj: Object,
+      shopType: {
+        type: Number,
+        default: 1
+      }
     },
     components: {
       buyCarButton,
@@ -44,15 +55,16 @@
       updateColumCount (list, index, count) {
         this.$emit('updateGoodsListCount', list, index, count)
       },
-      goDetail (id) {
+      goDetail (item) {
+        this.$store.commit('saveGoodsItem', item)
         if (this.type === 'goodsDetail') {
-          this.$emit('changeData', id)
+          this.$emit('changeData', item.goodsId)
           this.scrollObj.scrollTo(0, 0, 0)
           return
         }
         this.$router.push({
           path: '/goods_detail',
-          query: {goodsId: id}
+          query: {goodsId: item.goodsId}
         })
       }
     }

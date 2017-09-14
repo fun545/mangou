@@ -5,7 +5,7 @@
         <a class="location" @click="goLocation">{{villageName}}</a>
         <a class="search iconfont" @click="goSearch" v-if="hasNextShop">&#xe639;</a>
         <!--isWeiXinFlag&&hasNextShop-->
-         <!--扫一扫-->
+        <!--扫一扫-->
         <scan v-if="hasNextShop"></scan>
       </div>
       <scroll class="home-view"
@@ -179,12 +179,10 @@
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
   import loadFail from '../components/loadFail.vue'
-  //  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
   import cartBadge from '../components/badge'
   import scan from '../components/scan'
-  //  import { bus } from '../util/util'
 
   export default {
     name: 'home',
@@ -247,7 +245,8 @@
       }
     },
     async created () {
-      //        localStorage.removeItem('m-villageName')
+//      localStorage.removeItem('m-villageName')
+//      localStorage.removeItem('m-token')
       // 进首页如果之前没有选过小区则跳转选择
       if (!localStorage.getItem('m-villageName') || !localStorage.getItem('m-cityId') || !localStorage.getItem('m-areaId') || !localStorage.getItem('m-villageId') || !localStorage.getItem('m-villageId')) {
         this.$router.replace({path: '/chooseCity'})
@@ -318,12 +317,14 @@
         if (res.data.code === 101) {
           this.$vux.toast.text(res.data.msg, 'middle')
           this.reloadFlag = true
+          this.loadingFlag = false
           return
         }
         if (res.data.code === 102) {
           this.$vux.toast.text(res.data.msg, 'middle')
           localStorage.removeItem('m-token')
           this.reloadFlag = true
+          this.loadingFlag = false
         }
         this.loadingFlag = false
       })
@@ -495,9 +496,9 @@
     }
   }
 
-  .swiper-container {
+  /*.swiper-container {
     .mt(10);
-  }
+  }*/
 
   .location-search-box {
     .pt(28);

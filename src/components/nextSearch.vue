@@ -51,7 +51,7 @@
       .lh(60);
       color: #fff;
       position: absolute;
-      .l(25);
+      .l(32);
       .fs(32);
     }
     .input {
@@ -66,7 +66,7 @@
         border: none;
         color: #ffffff;
         outline: 0;
-        .pl(57);
+        .pl(68);
         .fs(28);
         &::-webkit-input-placeholder {
           color: #fff;

@@ -77,7 +77,7 @@
     color: #e4ffe5;
     z-index: 10;
     &.nextList {
-      .r(158);
+      .r(178);
       .h(83);
       .lh(83);
     }

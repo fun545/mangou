@@ -272,7 +272,7 @@
         .pb(10);
         .ml(73);
         .search {
-          .w(500);
+          .w(480);
           .input {
           }
         }
@@ -299,7 +299,7 @@
       .change {
         position: absolute;
         .t(50%);
-        .r(90);
+        .r(100);
         .mt(-20);
         .fs(40);
         color: #fff;

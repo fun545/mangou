@@ -116,7 +116,7 @@
         .h(45);
         .lh(45);
         width: 100%;
-        background: rgba(249, 93, 67, .9);
+        background: @theme-color;
         bottom: 0;
         color: #fff;
         &.openning {

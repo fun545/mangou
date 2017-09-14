@@ -36,9 +36,10 @@
       background-size: 10rem 14.26666667rem;
     }
     .bt {
-      .mt(880);
-      margin-left: auto;
-      margin-right: auto;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      .b(260);
       .w(442);
       .h(75);
       .lh(75);

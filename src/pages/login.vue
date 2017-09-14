@@ -24,8 +24,8 @@
                 <span slot="label" class="iconfont">&#xe63f;</span>
               </x-input>
             </group>
-            <group gutter="0" class="group">
-              <x-input v-model="userPassword" placeholder="请输入密码" type="password" @change.native="inPut">
+            <group gutter="0" class="group pass-group">
+              <x-input v-model="userPassword" placeholder="请输入密码" type="password" @change.native="inPut" class="pass-world">
                 <span slot="label" class="iconfont">&#xe63e;</span>
               </x-input>
             </group>

@@ -23,7 +23,7 @@
       <!-- 只显示搜索框 -->
       <!--<div class="is-search" v-show="!showCont"><input type="text" placeholder="搜索商品"></div>-->
     </div>
-    <div class="location-search-box" v-if="scrollFlag||!hasThisShop">
+    <div class="location-search-box" v-show="scrollFlag||!hasThisShop">
       <a class="location" @click="goLocation">{{villageName}}</a>
       <a class="search iconfont" @click="goSearch" v-if="hasThisShop">&#xe639;</a>
     </div>
@@ -62,7 +62,7 @@
         </div>
         <div class="googs-list" ref="goodsListWrap">
           <div>
-            <div class="second-menu clearfix">
+            <div class="second-menu clearfix" v-if="!noDataFlag">
               <div class="item" @click="getAll(firstId,1)" :class="{'active':secondIndex===-1}">全部分类</div>
               <div class="item" v-for="(item,index) in secondMenuList" :key="index"
                    @click="getSecondGoods(item.classifyId,2,index)"
@@ -158,7 +158,7 @@
     data () {
       return {
         token: localStorage.getItem('m-token'),
-        scrollTop: '',
+        scrollTop: 0,
         sideList: [],
         storeMsg: [],
         goodsList: [],
@@ -204,17 +204,7 @@
       this.createdMethods()
     },
     activated () {
-//      this.thisCartList = this.$store.state.thisCartList
-//      console.log(this.thisCartList)
-//      this.thisCartList.forEach((cartItem) => {
-//        this.goodsList.forEach((item) => {
-//          if (cartItem.goodsId === item.goodsId) {
-//            item.buyCount = cartItem.buyCount
-//          }
-//        })
-//      })
       // 刷新小圆点数量
-//      let curGoodsList = this.goodsList
       this.thisCartList = this.$store.state.thisCartList
       if (this.thisCartList === '') {
         return
@@ -236,6 +226,9 @@
     },
     watch: {
       '$route' (to, from) {
+        if (from.path === '/goods_detail') {
+          this.listSroll.scrollTo(0, -this.scrollTop, 0)
+        }
         this.$nextTick(() => {
           setTimeout(() => {
             if (typeof this.listSroll.refresh === 'function') {
@@ -353,6 +346,7 @@
           }
           await this.post('/goods/goodsList', paramas).then((res) => {
             if (res.data.code === 100) {
+              console.log(res.data)
               this.goodsList = res.data.goodsList
               this.loadingFlag = false
               if (this.goodsList.length === 0) {
@@ -493,7 +487,7 @@
       // 点击二级分类获取商品
       getSecondGoods (id, type, index) {
         this.pageIndex = 1
-        this.listSroll.scrollTo(0, 0)
+        this.listSroll.scrollTo(0, 0, 0)
         this.secondIndex = index
         this.sortType = type
         this.sortId = id
@@ -504,7 +498,7 @@
         this.firstId = id
         this.sortId = id
         this.sortType = 1
-        this.listSroll.scrollTo(0, -1)
+        this.listSroll.scrollTo(0, -1, 0)
         this.ind = index
         this.getGoods(id, 1)
         // 有速选时没有二级菜单
@@ -623,10 +617,10 @@
       },
       // 滚动回调函数
       onScroll (pos, scrollTop) {
-        if (this.listSroll.directionY === 1) {
+        if (pos.y < -100) {
           this.scrollFlag = true
         }
-        if (pos.y >= 0) {
+        if (pos.y >= -100) {
           this.scrollFlag = false
         }
         this.scrollTop = scrollTop
@@ -690,7 +684,7 @@
         text-overflow: ellipsis;
         overflow-x: hidden;
         color: #fff;
-        .fs(25);
+        .fs(28);
         position: relative;
       }
       .location:before {
@@ -717,7 +711,7 @@
         .h(86);
         .lh(86);
         .pr(30);
-        .fs(35);
+        .fs(38);
         text-align: right;
         color: #e4ffe5;
       }
@@ -735,6 +729,9 @@
     }
     .head-box {
       .h(190);
+      .is-cont .col .iconfont {
+        .pr(8);
+      }
     }
     .is-cont {
       box-sizing: border-box;
@@ -987,6 +984,9 @@
             .mr(0);
           }
         }
+      }
+      .none{
+        z-index: 10;
       }
       .goods-item {
         position: relative;

@@ -4,7 +4,7 @@
       <div class="header">
         <!-- 搜索框 -->
         <div class="search-box">
-          <next-search></next-search>
+          <next-search :nextListFlag="true"></next-search>
           <instruction></instruction>
         </div>
         <span class="back iconfont" @click="$router.back(-1)">&#xe600;</span>
@@ -94,7 +94,6 @@
       }
     },
     created () {
-      console.log(this.$store.state.totalBuyCount, 'test')
       this.secondId = this.$route.query.secondId
       this.getGoods(this.secondId)
     },
@@ -135,7 +134,6 @@
           paramas.token = this.token
         }
         this.post('/goods/goodsList', paramas).then((res) => {
-          console.log(this.$store.state.totalBuyCount)
           if (res.data.code === 100) {
             if (res.data.goodsList.length === 0) {
               this.isActive = false
@@ -276,8 +274,6 @@
         .search {
           .w(500);
           .input {
-            input {
-            }
           }
         }
         .instruction {

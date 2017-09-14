@@ -3,7 +3,7 @@
     <div class="header">
       <!-- 搜索框 -->
       <div class="search-box">
-        <next-search v-if="hasNextShop"></next-search>
+        <next-search v-if="hasNextShop" :nextFlag="true"></next-search>
         <instruction></instruction>
       </div>
       <!-- 弹窗内容 -->

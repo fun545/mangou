@@ -214,6 +214,7 @@
         }
         if (typeof this.huohao !== 'undefined') {
           paramas.huohao = this.huohao
+          paramas.shopType = 1
         }
         paramas.villageId = this.villageId
         this.token = localStorage.getItem('m-token')

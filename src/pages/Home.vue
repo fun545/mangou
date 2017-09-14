@@ -5,7 +5,8 @@
         <a class="location" @click="goLocation">{{villageName}}</a>
         <a class="search iconfont" @click="goSearch" v-if="hasNextShop">&#xe639;</a>
         <!--isWeiXinFlag&&hasNextShop-->
-        <i class="iconfont scan" @click="scan" v-if="isWeiXinFlag">&#xe661;</i>
+         <!--扫一扫-->
+        <scan v-if="hasNextShop"></scan>
       </div>
       <scroll class="home-view"
               :data="loadMoreNum"
@@ -178,10 +179,11 @@
   import buyCarButton from '../components/buyCarButton'
   import ball from '../components/ball'
   import loadFail from '../components/loadFail.vue'
-  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
+  //  import { isWeiXinFlag, wxObj } from '../util/js-sdk'
   import noNextShop from '../components/noNextShop.vue'
   import loading from '../components/loading'
   import cartBadge from '../components/badge'
+  import scan from '../components/scan'
   //  import { bus } from '../util/util'
 
   export default {
@@ -200,7 +202,8 @@
       loadFail,
       noNextShop,
       loading,
-      cartBadge
+      cartBadge,
+      scan
     },
     data () {
       return {
@@ -238,7 +241,6 @@
         },
         homeSroll: {},
         reloadFlag: false,
-        isWeiXinFlag: isWeiXinFlag,
         newList: [],
         loadMoreNum: 0,
         loadingFlag: true
@@ -394,42 +396,6 @@
         })
       },
 //      扫一扫
-      scan () {
-        var _this = this
-        wxObj.scanQRCode({
-          needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-          scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-          success: function (res) {
-            var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-            var splitArr = result.split(',')
-            var huohao = splitArr[1]
-            console.log(result, 'result')
-            console.log(res, 'res')
-            _this.$vux.toast.text(`${huohao}huohao`, 'middle')
-//            _this.$vux.toast.text(`${result}res.resultStr`, 'middle')
-//            _this.$router.push({path: '/goodsDetail', query: {id:}})
-            _this.post('/goods/goodsDetail', {
-              storeId: localStorage.getItem('m-storeId'),
-              villageId: localStorage.getItem('m-villageId'),
-              huohao: huohao
-            }).then(res => {
-              console.log(res.data)
-              _this.$vux.toast.text(`${res.data.code}code`, 'middle')
-              if (res.data.code === 100) {
-                _this.$router.push({
-                  path: '/goods_detail',
-                  query: {huohao: huohao}
-                })
-              } else {
-                _this.$vux.alert.show({
-                  title: '提示',
-                  content: '无此商品'
-                })
-              }
-            })
-          }
-        })
-      },
       goActive (item) {
         this.$router.push({
           path: '/active',
@@ -559,7 +525,7 @@
       text-overflow: ellipsis;
       overflow-x: hidden;
       color: #fff;
-      .fs(25);
+      .fs(28);
       position: relative;
     }
     .location:before {
@@ -586,20 +552,7 @@
       .h(92);
       .lh(92);
       .pr(30);
-      .fs(35);
-      text-align: right;
-      color: #e4ffe5;
-    }
-    .scan {
-      text-align: center;
-      position: absolute;
-      top: 0;
-      .r(118);
-      .w(80);
-      .h(86);
-      .lh(86);
-      .fs(28);
-      .pr(20);
+      .fs(38);
       text-align: right;
       color: #e4ffe5;
     }

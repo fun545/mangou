@@ -1,19 +1,34 @@
 <template>
-  <div class="search" @click="goSearch">
+  <div class="search">
     <span class="iconfont icon">&#xe639;</span>
     <div class="input">
-      <input type="search" v-model="search" placeholder="搜索商品">
+      <input type="search" v-model="search" placeholder="搜索商品/条码" @click="goSearch">
+      <scan :nextListFlag="nextListFlag" :nextFlag="nextFlag"></scan>
     </div>
   </div>
 </template>
 
 <script>
+  import scan from '../components/scan'
 
   export default {
+    props: {
+      nextListFlag: {
+        type: Boolean,
+        default: false
+      },
+      nextFlag: {
+        type: Boolean,
+        default: false
+      }
+    },
     data () {
       return {
         search: ''
       }
+    },
+    components: {
+      scan
     },
     methods: {
       goSearch () {

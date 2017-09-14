@@ -346,7 +346,6 @@
           }
           await this.post('/goods/goodsList', paramas).then((res) => {
             if (res.data.code === 100) {
-              console.log(res.data)
               this.goodsList = res.data.goodsList
               this.loadingFlag = false
               if (this.goodsList.length === 0) {

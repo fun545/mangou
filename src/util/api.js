@@ -25,7 +25,7 @@ function getAppkey (data) {
 export default {
   post: function (path, data) {
     data.phoneType = 3
-    data.versionCode = 9
+    data.versionCode = 16
     data.appKey = getAppkey(data)
     return Vue.http.post(config.url + path, data)
   },

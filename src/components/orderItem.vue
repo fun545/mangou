@@ -461,10 +461,14 @@
     display: flex;
 
     .state-item {
-      .ml(40);
+      .ml(28);
       text-align: center;
       color: #666;
       position: relative;
+      .iconfont {
+        text-align: center;
+        display: inline-block;
+      }
     }
 
     .state-item:before {

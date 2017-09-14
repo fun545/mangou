@@ -106,14 +106,16 @@
             <!--自取-->
             <timeline-item v-if="orderDetail.sendType===1">
               <p class="font-mind">您的商品已送达<span
-                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,请及时到店取货,感谢您的耐心等待。
               </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <!--送货上门-->
             <timeline-item v-if="orderDetail.sendType===2">
               <p class="font-mind">您的商品已送达<span
-                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,待门店确认后配送上门，请保持电话畅通。
               </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
@@ -137,8 +139,9 @@
           <!--status===3 已发货 及时送-->
           <timeline v-if="orderDetail.status===3&&orderDetail.shopType===2">
             <timeline-item>
-              <p class="font-mind">店家已确认接单,正在拣货包装。{{logist.timeStr.frueTime}}</p>
-              <p class="font-mind" style="color:#666;">{{logist.timeStr.sureTime}}</p>
+              <p class="font-mind">您的订单已由{{logist.storeStr.contacstName}}配送员配送,手机号码为:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,请耐心等待,保持电话畅通。{{logist.timeStr.frueTime}}</p>
+              <p class="font-mind" style="color:#666;">{{logist.timeStr.okFaHuoTime}}</p>
             </timeline-item>
             <timeline-item>
               <p class="font-mind">您的订单已提交,等待店家确认。</p>
@@ -182,14 +185,16 @@
             <!--自取-->
             <timeline-item v-if="orderDetail.sendType===1">
               <p class="font-mind">您的商品已送达<span
-                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},请及时到店取货,感谢您的耐心等待。
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,请及时到店取货,感谢您的耐心等待。
               </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
             <!--送货上门-->
             <timeline-item v-if="orderDetail.sendType===2">
               <p class="font-mind">您的商品已送达<span
-                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:{{logist.storeStr.phone}},待门店确认后配送上门，请保持电话畅通。
+                class="theme-color-s1">{{logist.storeStr.address}}</span>取货点,联系电话:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,待门店确认后配送上门，请保持电话畅通。
               </p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.fahuoTime}}</p>
             </timeline-item>
@@ -217,7 +222,8 @@
               <p class="font-mind" style="color:#666;">{{logist.timeStr.finishTime}}</p>
             </timeline-item>
             <timeline-item>
-              <p class="font-mind">您的订单已由{{logist.storeStr.contacstName}}配送员配送,手机号码为:{{logist.storeStr.phone}},请耐心等待,保持电话畅通。{{logist.timeStr.frueTime}}</p>
+              <p class="font-mind">您的订单已由{{logist.storeStr.contacstName}}配送员配送,手机号码为:<span
+                class="theme-color-price">{{logist.storeStr.phone}}</span>,请耐心等待,保持电话畅通。{{logist.timeStr.frueTime}}</p>
               <p class="font-mind" style="color:#666;">{{logist.timeStr.okFaHuoTime}}</p>
             </timeline-item>
             <timeline-item>
@@ -600,11 +606,6 @@
     .pb(10);
     .pl(40);
     background-color: #fff;
-    /*ul li .vux-timeline-item {
-      .vux-timeline-item-content{
-        padding-left:0;
-      }
-    }*/
   }
 
   .order-info-view .title-box {

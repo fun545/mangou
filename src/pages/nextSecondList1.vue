@@ -33,9 +33,11 @@
           </div>
         </div>
         <div class="list-wrap" ref="listWrap">
-          <one-column v-if="listFlag" :goodsList="list" @updateGoodsListCount="updateGoodsListCount"></one-column>
-          <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"
-                      @updateGoodsListCount="updateGoodsListCount"></two-column>
+          <div>
+            <one-column v-if="listFlag" :goodsList="list" @updateGoodsListCount="updateGoodsListCount"></one-column>
+            <two-column :goodsList="list" class="two-cl clearfix" v-if="!listFlag"
+                        @updateGoodsListCount="updateGoodsListCount"></two-column>
+          </div>
         </div>
         <load-more
           :tip="loadText"
@@ -111,9 +113,9 @@
         } else {
           this.listFlag = true
         }
-        this.$nextTick(() => {
+        setTimeout(() => {
           this.listScroll.refresh()
-        })
+        }, 100)
       },
       _initScroll () {
         this.listScroll = new BScroll(this.$refs.listWrap, {
@@ -209,7 +211,6 @@
                   this.listScroll.refresh()
                 }, 50)
               } else {
-//                this.loadText = '到底啦~'
                 this.moreIconFlag = false
                 this.$vux.toast.text('没有更多商品了', 'middle')
                 this.loadMoreFlag = false

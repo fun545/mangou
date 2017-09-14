@@ -37,9 +37,7 @@
     },
     methods: {
       getCity () {
-        console.log(1)
         this.post('/village/cityList_new', {}).then((res) => {
-          console.log(res.data)
           if (res.data.code === 100) {
             this.cityList = res.data.cityList
           }

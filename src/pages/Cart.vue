@@ -300,7 +300,6 @@
             token: this.token,
             villageId: localStorage.getItem('m-villageId')
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               this.loadingFlag = false
               var carList = res.data.carList
@@ -340,26 +339,6 @@
                 this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
                 this.thisShop = carList[1].shandianShop
               }
-              // 商品列表 及时送
-//              if (this.hasNextShop) {
-//                // 商品列表 次日达
-//                this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-//                // 运费 次日达
-//                this.Nextfreight = res.data.carList[0].storeShop.freight
-//                // 次日达相关信息
-//                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
-//                this.nextShop = res.data.carList[0].storeShop
-//              }
-//              if (this.hasThisShop) {
-//                this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
-//                // 运费 及时送
-//                this.Thisfreight = res.data.carList[1].shandianShop.freight
-//                // 及时送相关信息
-//                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
-//                this.thisShop = res.data.carList[1].shandianShop
-//              }
-              // 收货相关信息
-//            this.$store.state.shippingInfo = res.data.shippingInfo
               this.$store.commit('saveShippingInfo', res.data.shippingInfo)
               // 判断店铺营业状态
               this.shopStatusMethods(this.thisShop.shopStatus)

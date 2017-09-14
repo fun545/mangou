@@ -12,14 +12,14 @@
             <div class="iconfont">&#xe64d;</div>
             <div class="flex-col">
               <p>市场咨询：</p>
-              <p class="font-mind">13755038401</p>
+              <p class="font-mind">18684969907</p>
             </div>
           </a>
           <a href="tel:0731-85491868" class="flex-box">
             <div class="iconfont">&#xe64e;</div>
             <div class="flex-col">
               <p>客服咨询：</p>
-              <p class="font-mind">0731-85491868</p>
+              <p class="font-mind">400-0861937</p>
             </div>
           </a>
         </div>

@@ -9,6 +9,7 @@
         </div>
       </div>
     </router-link>
+    <span class="iconfont back" @click="$router.back(-1)">&#xe648;</span>
     <div class="header">
     </div>
     <div class="middle">
@@ -25,7 +26,8 @@
               </x-input>
             </group>
             <group gutter="0" class="group pass-group">
-              <x-input v-model="userPassword" placeholder="请输入密码" type="password" @change.native="inPut" class="pass-world">
+              <x-input v-model="userPassword" placeholder="请输入密码" type="password" @change.native="inPut"
+                       class="pass-world">
                 <span slot="label" class="iconfont">&#xe63e;</span>
               </x-input>
             </group>
@@ -64,6 +66,7 @@
 <script type="text/ecmascript-6">
   import { Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, md5 } from 'vux'
   import getCode from '../components/_getCode'
+
   export default {
     name: 'login',
     components: {Tab, TabItem, Sticky, XInput, Group, XButton, CheckIcon, Popover, getCode, md5},
@@ -76,7 +79,7 @@
         type: 4,
         code: '', // 验证码
         loginType: 2, // 默认2 快速登录 1 账号登录
-        userPassword: ''
+        userPassword: localStorage.getItem('m-passWord')
       }
     },
     methods: {
@@ -99,8 +102,6 @@
       inPut () {
         if (this.userPassword.trim()) {
           this.pass = this.userPassword
-//          // 记住用户密码
-//          localStorage.setItem('m-passWord', this.userPassword)
         }
       },
       login () {
@@ -117,7 +118,6 @@
           areaId: localStorage.getItem('m-areaId')
         }).then((res) => {
           if (res.data.code === 100) {
-            console.log(res.data)
             // vuex存储 token
             localStorage.setItem('m-token', res.data.userInfo.token)
             // 本地存储 token
@@ -129,7 +129,8 @@
             // 记住用户手机号
             localStorage.setItem('m-phone', this.tel)
             this.$store.state.login = true
-            console.log(JSON.parse(localStorage.getItem('m-userInfo')))
+            // 记住用户密码
+            localStorage.setItem('m-passWord', this.userPassword)
             // 登录成功跳转个人中心
             this.$router.back()
           }
@@ -162,6 +163,18 @@
     background-image: url("../assets/loginBG@2x.png.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    .back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      .fs(42);
+      color: #fff;
+      .pr(30);
+      .pl(38);
+      .pt(24);
+      .pb(24);
+      z-index: 10;
+    }
     .register {
       position: absolute;
       .t(24);
@@ -269,10 +282,12 @@
           }
         }
         .forget {
-          .h(70);
-          .lh(70);
+          .w(150);
+          .h(88);
+          .lh(108);
           color: #fff;
           .fs(24);
+          float: right;
           .icon {
             .fs(26);
           }

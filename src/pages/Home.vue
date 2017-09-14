@@ -267,10 +267,6 @@
         if (res.data.code === 100) {
           // 店铺信息
           this.$store.commit('saveStoreInfo', res.data.firstInfo.storeList)
-          // 及时送和次日达都没有开通
-          if (!this.hasNextShop) {
-            return
-          }
           // 保存购物车数量
           this.$store.commit('increment', res.data.firstInfo.totalBuyCount)
           /* 轮播图数据 */
@@ -294,6 +290,10 @@
           return
         }
       })
+      // 及时送和次日达都没有开通
+      if (!this.hasNextShop) {
+        return
+      }
       var paramasFG = {}
       paramasFG.storeId = localStorage.getItem('m-depotId')
       paramasFG.villageId = localStorage.getItem('m-villageId')

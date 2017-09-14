@@ -99,7 +99,6 @@
       // 跳转地图
       goMap () {
         this.$store.commit('saveSelectVillagePath', '/home')
-        console.log(this.$store.state.selectVillagePath)
         this.$router.push('/Bmap')
       },
       // 获取当前位置信息

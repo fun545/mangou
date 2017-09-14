@@ -385,7 +385,6 @@
             token: localStorage.getItem('m-token'),
             orderStr: orderJsonStr
           }).then((res) => {
-            console.log(res.data)
             if (res.data.code === 100) {
               // 确认下单清除购物车商品 及时送
               var thisCartList = this.thisCartList

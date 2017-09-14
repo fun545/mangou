@@ -300,22 +300,64 @@
             token: this.token,
             villageId: localStorage.getItem('m-villageId')
           }).then((res) => {
+            console.log(res.data)
             if (res.data.code === 100) {
               this.loadingFlag = false
+              var carList = res.data.carList
+              if (carList.length === 1) {
+                // 如果只有及时送
+                if (this.hasThisShop) {
+                  this.thisGoodsList = carList[0].shandianShop.goodsList
+                  // 运费 及时送
+                  this.Thisfreight = carList[0].shandianShop.freight
+                  // 及时送相关信息
+                  this.$store.commit('saveThisShop', carList[0].shandianShop)
+                  this.thisShop = carList[0].shandianShop
+                }
+                // 如果只有次日达
+                if (this.hasNextShop) {
+                  // 商品列表 次日达
+                  this.NextGoodsList = carList[0].storeShop.goodsList
+                  // 运费 次日达
+                  this.Nextfreight = carList[0].storeShop.freight
+                  // 次日达相关信息
+                  this.$store.commit('saveNextShop', carList[0].storeShop)
+                  this.nextShop = carList[0].storeShop
+                }
+              }
+              if (carList.length === 2) {
+                // 商品列表 次日达
+                this.NextGoodsList = carList[0].storeShop.goodsList
+                // 运费 次日达
+                this.Nextfreight = carList[0].storeShop.freight
+                // 次日达相关信息
+                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
+                this.nextShop = carList[0].storeShop
+                this.thisGoodsList = carList[1].shandianShop.goodsList
+                // 运费 及时送
+                this.Thisfreight = carList[1].shandianShop.freight
+                // 及时送相关信息
+                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
+                this.thisShop = carList[1].shandianShop
+              }
               // 商品列表 及时送
-              this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
-              // 商品列表 次日达
-              this.NextGoodsList = res.data.carList[0].storeShop.goodsList
-              // 运费 次日达
-              this.Nextfreight = res.data.carList[0].storeShop.freight
-              // 运费 及时送
-              this.Thisfreight = res.data.carList[1].shandianShop.freight
-              // 及时送相关信息
-              this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
-              this.thisShop = res.data.carList[1].shandianShop
-              // 次日达相关信息
-              this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
-              this.nextShop = res.data.carList[0].storeShop
+//              if (this.hasNextShop) {
+//                // 商品列表 次日达
+//                this.NextGoodsList = res.data.carList[0].storeShop.goodsList
+//                // 运费 次日达
+//                this.Nextfreight = res.data.carList[0].storeShop.freight
+//                // 次日达相关信息
+//                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
+//                this.nextShop = res.data.carList[0].storeShop
+//              }
+//              if (this.hasThisShop) {
+//                this.thisGoodsList = res.data.carList[1].shandianShop.goodsList
+//                // 运费 及时送
+//                this.Thisfreight = res.data.carList[1].shandianShop.freight
+//                // 及时送相关信息
+//                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
+//                this.thisShop = res.data.carList[1].shandianShop
+//              }
               // 收货相关信息
 //            this.$store.state.shippingInfo = res.data.shippingInfo
               this.$store.commit('saveShippingInfo', res.data.shippingInfo)
@@ -880,6 +922,12 @@
 //          }
 //        })
 //        return count.toFixed(1)
+      },
+      hasNextShop () {
+        return this.$store.state.hasNextShop
+      },
+      hasThisShop () {
+        return this.$store.state.hasThisShop
       }
       // 暂时不做
 //      singlePriceNext () {

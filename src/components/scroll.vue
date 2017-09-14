@@ -78,7 +78,7 @@
         // better-scroll的初始化
         this.scroll = new JRoll(this.$refs.wrapper, {
           scrollX: this.scrollX,
-          bounce: false
+          bounce: true
         })
         this.$emit('getScrollObj', this.scroll)
         // 是否派发滚动事件

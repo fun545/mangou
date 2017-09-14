@@ -160,6 +160,7 @@
         </div>
       </scroll>
     </div>
+    <!--reloadFlag-->
     <m-footer :totalCount="totalBuyCount"></m-footer>
     <ball></ball>
     <load-fail v-if="reloadFlag"></load-fail>
@@ -492,7 +493,13 @@
   .home-wrap {
     height: 100%;
     .loading {
-      z-index: 101;
+      z-index: 9;
+    }
+    .no-next-shop {
+      z-index: 100;
+    }
+    .load-fail {
+      z-index: 99;
     }
   }
 
@@ -508,7 +515,7 @@
     display: flex;
     align-items: center;
     position: absolute;
-    z-index: 2;
+    z-index: 10;
     top: 0;
     right: 0;
     left: 0;

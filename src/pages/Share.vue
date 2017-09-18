@@ -14,14 +14,13 @@
 
 <script>
   import mHeader from '../components/header'
+
   export default {
     components: {
       mHeader
     },
     methods: {
-      share () {
-//        this.$vux.alert.show({content: '分享弹窗触发'})
-      }
+      share () {}
     }
   }
 </script>

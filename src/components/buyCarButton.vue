@@ -55,9 +55,9 @@
               return
             }
           }
-          if (item.kucun > 0) {
-            bus.$emit('drop', el)
-          }
+//          if (item.kucun > 0) {
+//            bus.$emit('drop', el)
+//          }
           this.clickTag = 1
           if (item.shopType === 1) {
             this.storeId = localStorage.getItem('m-depotId')
@@ -74,6 +74,7 @@
             storeId: this.storeId
           }).then((res) => {
             if (res.data.code === 100) {
+              bus.$emit('drop', el)
               this.$store.commit('increment', res.data.totalBuyCount)
               this.$store.commit('changeTotalPrice', res.data.totalPrice)
 //              item.buyCount = res.data.buyCount

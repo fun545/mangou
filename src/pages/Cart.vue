@@ -326,18 +326,33 @@
               }
               if (carList.length === 2) {
                 // 商品列表 次日达
-                this.NextGoodsList = carList[0].storeShop.goodsList
-                // 运费 次日达
-                this.Nextfreight = carList[0].storeShop.freight
-                // 次日达相关信息
-                this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
-                this.nextShop = carList[0].storeShop
-                this.thisGoodsList = carList[1].shandianShop.goodsList
-                // 运费 及时送
-                this.Thisfreight = carList[1].shandianShop.freight
-                // 及时送相关信息
-                this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
-                this.thisShop = carList[1].shandianShop
+                if (carList[0].shopType === 1) {
+                  this.NextGoodsList = carList[0].storeShop.goodsList
+                  // 运费 次日达
+                  this.Nextfreight = carList[0].storeShop.freight
+                  // 次日达相关信息
+                  this.$store.commit('saveNextShop', res.data.carList[0].storeShop)
+                  this.nextShop = carList[0].storeShop
+                  this.thisGoodsList = carList[1].shandianShop.goodsList
+                  // 运费 及时送
+                  this.Thisfreight = carList[1].shandianShop.freight
+                  // 及时送相关信息
+                  this.$store.commit('saveThisShop', res.data.carList[1].shandianShop)
+                  this.thisShop = carList[1].shandianShop
+                } else {
+                  this.NextGoodsList = carList[1].storeShop.goodsList
+                  // 运费 次日达
+                  this.Nextfreight = carList[1].storeShop.freight
+                  // 次日达相关信息
+                  this.$store.commit('saveNextShop', res.data.carList[1].storeShop)
+                  this.nextShop = carList[1].storeShop
+                  this.thisGoodsList = carList[0].shandianShop.goodsList
+                  // 运费 及时送
+                  this.Thisfreight = carList[0].shandianShop.freight
+                  // 及时送相关信息
+                  this.$store.commit('saveThisShop', res.data.carList[0].shandianShop)
+                  this.thisShop = carList[0].shandianShop
+                }
               }
               this.$store.commit('saveShippingInfo', res.data.shippingInfo)
               // 判断店铺营业状态
